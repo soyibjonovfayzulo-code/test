@@ -1,0 +1,25 @@
+{
+  "name": "vite-starter",
+  "private": true,
+  "version": "0.0.0",
+  "type": "module",
+  "scripts": {
+    "dev": "vite",
+    "build": "vite build",
+    "preview": "vite preview",
+    "audit": "node audit-tests.cjs",
+    "ai:server": "node server/ai-backend.mjs"
+  },
+  "devDependencies": {
+    "jsdom": "^30.0.1",
+    "vite": "^5.4.2"
+  },
+  "dependencies": {
+    "@capacitor/android": "^8.5.0",
+    "@capacitor/cli": "^8.5.0",
+    "@capacitor/core": "^8.5.0",
+    "JSCPP": "^2.0.9",
+    "pyodide": "^314.0.6",
+    "sql.js": "^1.14.2"
+  }
+}

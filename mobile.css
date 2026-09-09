@@ -1,0 +1,1301 @@
+/* ============================================================
+   ITTest — Modern Mobile-First UI/UX System (mobile.css)
+   Faqat < 768px ekranlarda qo'llanadi. Desktop (>=768px) saqlanadi.
+   Qo'llab-quvvatlanadigan o'lchamlar: 320px, 360px, 390px, 412px, 430px.
+   ============================================================ */
+
+/* Base: desktopda yashiriladigan mobil elementlar */
+.m-dash {
+  display: none;
+}
+
+/* ============================================================
+   MOBILE (< 768px)
+   ============================================================ */
+@media (max-width: 767px) {
+
+  :root {
+    --m-accent: #7c5cff;
+    --m-accent-2: #4f8cff;
+    --m-glass: rgba(18, 24, 44, 0.76);
+    --m-glass-2: rgba(26, 32, 58, 0.65);
+    --m-border: rgba(124, 92, 255, 0.24);
+    --m-radius: 18px;
+    --m-radius-sm: 12px;
+  }
+
+  /* ------------------------------------------------------------
+     1. ZERO HORIZONTAL SCROLL & RESET
+     ------------------------------------------------------------ */
+  html,
+  body {
+    overflow-x: hidden !important;
+    width: 100% !important;
+    max-width: 100vw !important;
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    -webkit-text-size-adjust: 100%;
+    -webkit-tap-highlight-color: transparent;
+  }
+
+  *,
+  *::before,
+  *::after {
+    box-sizing: border-box;
+  }
+
+  #app,
+  .app {
+    width: 100% !important;
+    max-width: 100vw !important;
+    min-width: 0 !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    overflow-x: hidden !important;
+    display: flex;
+    flex-direction: column;
+  }
+
+  .main,
+  .main .content {
+    width: 100% !important;
+    max-width: 100% !important;
+    min-width: 0 !important;
+    margin: 0 !important;
+    padding: 0 !important;
+  }
+
+  .main .page {
+    width: 100% !important;
+    max-width: 100% !important;
+    min-width: 0 !important;
+    padding: 12px 12px 32px !important;
+    margin: 0 !important;
+    box-sizing: border-box !important;
+  }
+
+  /* ------------------------------------------------------------
+     2. STICKY MOBILE TOPBAR (HEADER)
+     ------------------------------------------------------------ */
+  .topbar {
+    position: fixed !important;
+    top: 0 !important;
+    z-index: 80 !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: space-between !important;
+    gap: 8px !important;
+    width: 100% !important;
+    max-width: 100% !important;
+    height: auto !important;
+    min-height: 54px !important;
+    padding: 8px 12px !important;
+    padding-top: calc(8px + env(safe-area-inset-top, 0px)) !important;
+    margin: 0 !important;
+    background: rgba(11, 15, 30, 0.88) !important;
+    backdrop-filter: blur(18px) saturate(180%) !important;
+    -webkit-backdrop-filter: blur(18px) saturate(180%) !important;
+    border-bottom: 1px solid var(--m-border) !important;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.35) !important;
+  }
+
+  .topbar-left {
+    display: flex !important;
+    align-items: center !important;
+    gap: 10px !important;
+    min-width: 0 !important;
+    flex: 1 1 auto !important;
+  }
+
+  .topbar .hamburger {
+    width: 40px !important;
+    height: 40px !important;
+    min-width: 40px !important;
+    flex: 0 0 40px !important;
+    display: inline-flex !important;
+    flex-direction: column !important;
+    align-items: center !important;
+    justify-content: center !important;
+    gap: 4.5px !important;
+    border-radius: 12px !important;
+    background: var(--m-glass-2) !important;
+    border: 1px solid var(--m-border) !important;
+    cursor: pointer !important;
+  }
+
+  .topbar .hamburger span {
+    width: 18px !important;
+    height: 2px !important;
+    border-radius: 2px !important;
+    background: #e6e9ff !important;
+  }
+
+  .topbar-left h2,
+  #pageTitle {
+    font-size: 17px !important;
+    font-weight: 700 !important;
+    letter-spacing: -0.2px !important;
+    color: #f8fafc !important;
+    white-space: nowrap !important;
+    overflow: hidden !important;
+    text-overflow: ellipsis !important;
+    max-width: calc(100vw - 190px) !important;
+    margin: 0 !important;
+  }
+
+  .topbar-right {
+    display: flex !important;
+    align-items: center !important;
+    gap: 6px !important;
+    flex: 0 0 auto !important;
+  }
+
+  .topbar .icon-btn {
+    width: 38px !important;
+    height: 38px !important;
+    min-width: 38px !important;
+    flex: 0 0 38px !important;
+    border-radius: 11px !important;
+    background: var(--m-glass-2) !important;
+    border: 1px solid var(--m-border) !important;
+    display: inline-flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    font-size: 15px !important;
+    cursor: pointer !important;
+  }
+
+  .topbar .user-chip {
+    padding: 0 !important;
+    background: none !important;
+    border: none !important;
+    cursor: pointer !important;
+  }
+
+  .topbar .user-chip #topbarUsername {
+    display: none !important;
+  }
+
+  .topbar .user-avatar {
+    width: 36px !important;
+    height: 36px !important;
+    min-width: 36px !important;
+    border-radius: 50% !important;
+    background: linear-gradient(135deg, var(--m-accent), var(--m-accent-2)) !important;
+    box-shadow: 0 0 0 2px rgba(124, 92, 255, 0.4) !important;
+    font-size: 13px !important;
+    font-weight: 700 !important;
+    color: #fff !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+  }
+
+  /* Dropdown menus on mobile */
+  .notif-dropdown,
+  .ux-user-dropdown {
+    position: fixed !important;
+    top: calc(56px + env(safe-area-inset-top, 0px)) !important;
+    right: 10px !important;
+    left: auto !important;
+    width: min(320px, calc(100vw - 20px)) !important;
+    max-width: calc(100vw - 20px) !important;
+    border-radius: 16px !important;
+    background: rgba(14, 18, 36, 0.96) !important;
+    backdrop-filter: blur(20px) !important;
+    border: 1px solid var(--m-border) !important;
+    box-shadow: 0 12px 36px rgba(0, 0, 0, 0.6) !important;
+    z-index: 100 !important;
+  }
+
+  /* ------------------------------------------------------------
+     3. SIDEBAR DRAWER & OVERLAY
+     ------------------------------------------------------------ */
+  .sidebar {
+    position: fixed !important;
+    left: 0 !important;
+    top: 0 !important;
+    bottom: 0 !important;
+    width: min(82vw, 300px) !important;
+    max-width: 300px !important;
+    transform: translateX(-105%) !important;
+    transition: transform 0.28s cubic-bezier(0.16, 1, 0.3, 1) !important;
+    background: rgba(12, 16, 32, 0.96) !important;
+    backdrop-filter: blur(22px) saturate(190%) !important;
+    -webkit-backdrop-filter: blur(22px) saturate(190%) !important;
+    border-right: 1px solid var(--m-border) !important;
+    box-shadow: 14px 0 45px rgba(0, 0, 0, 0.55) !important;
+    z-index: 95 !important;
+    overflow-y: auto !important;
+    -webkit-overflow-scrolling: touch !important;
+    display: flex !important;
+    flex-direction: column !important;
+    padding: 0 0 24px 0 !important;
+  }
+
+  .sidebar.active {
+    transform: translateX(0) !important;
+  }
+
+  .sidebar-overlay {
+    position: fixed !important;
+    inset: 0 !important;
+    background: rgba(4, 6, 16, 0.68) !important;
+    backdrop-filter: blur(4px) !important;
+    opacity: 0 !important;
+    pointer-events: none !important;
+    transition: opacity 0.26s ease !important;
+    z-index: 94 !important;
+  }
+
+  .sidebar-overlay.active {
+    opacity: 1 !important;
+    pointer-events: auto !important;
+  }
+
+  .sidebar-header {
+    display: flex !important;
+    align-items: center !important;
+    justify-content: space-between !important;
+    padding: 16px 14px 12px !important;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.06) !important;
+  }
+
+  .sidebar-logo {
+    font-size: 18px !important;
+    font-weight: 800 !important;
+    color: #fff !important;
+    display: flex !important;
+    align-items: center !important;
+    gap: 6px !important;
+  }
+
+  .sidebar-close {
+    width: 36px !important;
+    height: 36px !important;
+    border-radius: 10px !important;
+    background: var(--m-glass-2) !important;
+    border: 1px solid var(--m-border) !important;
+    color: #fff !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    font-size: 16px !important;
+    cursor: pointer !important;
+  }
+
+  .sidebar-nav {
+    flex: 1 1 auto !important;
+    padding: 10px 8px !important;
+    display: flex !important;
+    flex-direction: column !important;
+    gap: 3px !important;
+  }
+
+  .sidebar .nav-item {
+    min-height: 46px !important;
+    padding: 10px 14px !important;
+    border-radius: 12px !important;
+    margin: 1px 0 !important;
+    font-size: 14px !important;
+    font-weight: 600 !important;
+    display: flex !important;
+    align-items: center !important;
+    gap: 12px !important;
+  }
+
+  .sidebar .nav-item.active {
+    background: rgba(124, 92, 255, 0.18) !important;
+    box-shadow: inset 0 0 0 1px var(--m-border) !important;
+    color: #fff !important;
+  }
+
+  .sidebar-footer {
+    padding: 10px 12px !important;
+    border-top: 1px solid rgba(255, 255, 255, 0.06) !important;
+  }
+
+  /* ------------------------------------------------------------
+     4. DASHBOARD PAGE
+     ------------------------------------------------------------ */
+  #page-dashboard .welcome-banner,
+  #page-dashboard .stats-grid,
+  #page-dashboard .dash-grid {
+    display: none !important;
+  }
+
+  .m-dash {
+    display: block !important;
+    width: 100% !important;
+    max-width: 100% !important;
+  }
+
+  .m-hero {
+    position: relative !important;
+    display: flex !important;
+    align-items: stretch !important;
+    gap: 8px !important;
+    width: 100% !important;
+    padding: 16px 14px !important;
+    border-radius: var(--m-radius) !important;
+    background: linear-gradient(135deg, rgba(42, 24, 88, 0.92), rgba(20, 26, 56, 0.92)) !important;
+    border: 1px solid var(--m-border) !important;
+    box-shadow: 0 8px 30px rgba(74, 47, 189, 0.25) !important;
+    overflow: hidden !important;
+  }
+
+  .m-hero-content {
+    flex: 1 1 auto !important;
+    min-width: 0 !important;
+    display: flex !important;
+    flex-direction: column !important;
+    align-items: flex-start !important;
+    gap: 6px !important;
+    z-index: 1 !important;
+  }
+
+  .m-hero-flame {
+    font-size: 11px !important;
+    font-weight: 700 !important;
+    color: #ffb86b !important;
+    background: rgba(255, 168, 76, 0.14) !important;
+    border: 1px solid rgba(255, 168, 76, 0.35) !important;
+    padding: 3px 9px !important;
+    border-radius: 999px !important;
+  }
+
+  .m-hero-course {
+    font-size: 19px !important;
+    font-weight: 800 !important;
+    color: #fff !important;
+    line-height: 1.25 !important;
+    margin: 2px 0 0 !important;
+    word-break: break-word !important;
+  }
+
+  .m-hero-lesson {
+    font-size: 12.5px !important;
+    color: #b9b3d9 !important;
+    margin: 0 !important;
+    word-break: break-word !important;
+  }
+
+  .m-hero-progress {
+    width: 100% !important;
+    height: 7px !important;
+    border-radius: 999px !important;
+    background: rgba(255, 255, 255, 0.1) !important;
+    overflow: hidden !important;
+    margin-top: 3px !important;
+  }
+
+  .m-hero-progress-fill {
+    height: 100% !important;
+    border-radius: 999px !important;
+    background: linear-gradient(90deg, var(--m-accent), var(--m-accent-2)) !important;
+  }
+
+  .m-hero-pct {
+    font-size: 11.5px !important;
+    font-weight: 600 !important;
+    color: #cfc7f5 !important;
+  }
+
+  .m-hero-btn {
+    margin-top: 6px !important;
+    min-height: 42px !important;
+    padding: 10px 18px !important;
+    border-radius: 12px !important;
+    border: none !important;
+    background: linear-gradient(135deg, var(--m-accent), var(--m-accent-2)) !important;
+    color: #fff !important;
+    font-size: 14px !important;
+    font-weight: 700 !important;
+    box-shadow: 0 4px 16px rgba(124, 92, 255, 0.4) !important;
+    cursor: pointer !important;
+    display: inline-flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+  }
+
+  .m-hero-btn:active {
+    transform: scale(0.97) !important;
+  }
+
+  .m-hero-art {
+    flex: 0 0 54px !important;
+    align-self: center !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    width: 54px !important;
+    height: 54px !important;
+    border-radius: 16px !important;
+    background: rgba(124, 92, 255, 0.18) !important;
+    border: 1px solid var(--m-border) !important;
+    z-index: 1 !important;
+  }
+
+  .m-hero-art-code {
+    font-size: 18px !important;
+    font-weight: 800 !important;
+    color: #c9b8ff !important;
+    font-family: monospace !important;
+  }
+
+  /* 4-Stat 2x2 Grid */
+  .m-stats {
+    display: grid !important;
+    grid-template-columns: 1fr 1fr !important;
+    gap: 8px !important;
+    margin-top: 10px !important;
+  }
+
+  .m-stat {
+    display: flex !important;
+    flex-direction: column !important;
+    align-items: center !important;
+    gap: 2px !important;
+    padding: 10px 6px !important;
+    border-radius: 14px !important;
+    background: var(--m-glass) !important;
+    border: 1px solid rgba(255, 255, 255, 0.07) !important;
+    min-width: 0 !important;
+  }
+
+  .m-stat-ico {
+    font-size: 16px !important;
+  }
+
+  .m-stat-val {
+    font-size: 17px !important;
+    font-weight: 800 !important;
+    color: #fff !important;
+  }
+
+  .m-stat-lbl {
+    font-size: 10.5px !important;
+    color: #94a3b8 !important;
+    text-align: center !important;
+  }
+
+  .m-section-head {
+    display: flex !important;
+    align-items: center !important;
+    justify-content: space-between !important;
+    gap: 8px !important;
+    margin: 16px 0 8px !important;
+  }
+
+  .m-section-head h3 {
+    font-size: 15px !important;
+    font-weight: 700 !important;
+    color: #fff !important;
+    margin: 0 !important;
+  }
+
+  .m-link {
+    font-size: 12px !important;
+    font-weight: 600 !important;
+    color: #a68cff !important;
+    background: none !important;
+    border: none !important;
+    padding: 4px 6px !important;
+    cursor: pointer !important;
+  }
+
+  .m-chips {
+    display: flex !important;
+    gap: 6px !important;
+    overflow-x: auto !important;
+    -webkit-overflow-scrolling: touch !important;
+    scrollbar-width: none !important;
+    padding: 2px 0 6px !important;
+  }
+
+  .m-chips::-webkit-scrollbar {
+    display: none !important;
+  }
+
+  .m-chip {
+    flex: 0 0 auto !important;
+    min-height: 34px !important;
+    padding: 6px 14px !important;
+    border-radius: 999px !important;
+    font-size: 12px !important;
+    font-weight: 600 !important;
+    color: #b9b3d9 !important;
+    background: var(--m-glass-2) !important;
+    border: 1px solid rgba(255, 255, 255, 0.08) !important;
+    cursor: pointer !important;
+  }
+
+  .m-chip.active {
+    color: #fff !important;
+    background: linear-gradient(135deg, var(--m-accent), var(--m-accent-2)) !important;
+    border-color: transparent !important;
+  }
+
+  .m-courses {
+    display: flex !important;
+    flex-direction: column !important;
+    gap: 9px !important;
+    margin-top: 4px !important;
+  }
+
+  .m-course-card {
+    display: flex !important;
+    align-items: center !important;
+    gap: 10px !important;
+    width: 100% !important;
+    padding: 12px !important;
+    border-radius: 16px !important;
+    background: var(--m-glass) !important;
+    border: 1px solid rgba(255, 255, 255, 0.07) !important;
+    cursor: pointer !important;
+  }
+
+  .m-course-card:active {
+    transform: scale(0.985) !important;
+    border-color: var(--m-border) !important;
+  }
+
+  .m-course-icon {
+    flex: 0 0 42px !important;
+    width: 42px !important;
+    height: 42px !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    font-size: 20px !important;
+    border-radius: 12px !important;
+    background: rgba(124, 92, 255, 0.14) !important;
+    border: 1px solid var(--m-border) !important;
+  }
+
+  .m-course-body {
+    flex: 1 1 auto !important;
+    min-width: 0 !important;
+    display: flex !important;
+    flex-direction: column !important;
+    gap: 3px !important;
+  }
+
+  .m-course-title {
+    font-size: 14.5px !important;
+    font-weight: 700 !important;
+    color: #fff !important;
+    white-space: nowrap !important;
+    overflow: hidden !important;
+    text-overflow: ellipsis !important;
+  }
+
+  .m-course-desc {
+    font-size: 11.5px !important;
+    color: #8f8aa8 !important;
+    white-space: nowrap !important;
+    overflow: hidden !important;
+    text-overflow: ellipsis !important;
+  }
+
+  .m-course-meta {
+    display: flex !important;
+    align-items: center !important;
+    gap: 8px !important;
+    font-size: 10.5px !important;
+    color: #8f8aa8 !important;
+  }
+
+  .m-course-progress {
+    width: 100% !important;
+    height: 4px !important;
+    border-radius: 999px !important;
+    background: rgba(255, 255, 255, 0.08) !important;
+    overflow: hidden !important;
+  }
+
+  .m-course-progress span {
+    display: block !important;
+    height: 100% !important;
+    background: linear-gradient(90deg, var(--m-accent), var(--m-accent-2)) !important;
+  }
+
+  .m-course-arrow {
+    flex: 0 0 32px !important;
+    width: 32px !important;
+    height: 32px !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    border-radius: 10px !important;
+    font-size: 14px !important;
+    color: #fff !important;
+    background: rgba(124, 92, 255, 0.2) !important;
+  }
+
+  /* ------------------------------------------------------------
+     5. DARSLAR (LESSONS) SECTION
+     ------------------------------------------------------------ */
+  .ls-courses-grid {
+    display: grid !important;
+    grid-template-columns: 1fr !important;
+    gap: 10px !important;
+  }
+
+  .ls-course-card {
+    padding: 14px 12px !important;
+  }
+
+  .ls-course-head {
+    flex-direction: column !important;
+    padding: 14px 12px !important;
+    gap: 12px !important;
+  }
+
+  .ls-course-head-actions {
+    width: 100% !important;
+    display: flex !important;
+    flex-direction: column !important;
+    gap: 8px !important;
+  }
+
+  .ls-course-head-actions .btn {
+    width: 100% !important;
+  }
+
+  .ls-lessons-grid {
+    display: grid !important;
+    grid-template-columns: 1fr !important;
+    gap: 8px !important;
+  }
+
+  .ls-lesson-card {
+    padding: 12px 14px !important;
+  }
+
+  .ls-viewer-wrap {
+    padding: 0 !important;
+  }
+
+  .ls-viewer-card {
+    border-radius: 16px !important;
+    padding: 12px !important;
+  }
+
+  .ls-viewer-hero {
+    padding: 12px 0 8px !important;
+  }
+
+  .ls-viewer-hero h3 {
+    font-size: 17px !important;
+    line-height: 1.3 !important;
+  }
+
+  .ls-mascot-intro {
+    flex-direction: column !important;
+    text-align: center !important;
+    padding: 12px !important;
+    gap: 8px !important;
+  }
+
+  .ls-mascot-intro .mascot {
+    --mascot-size: 110px !important;
+  }
+
+  .ls-content-section {
+    padding: 12px 0 !important;
+  }
+
+  .ls-content-codeblock {
+    margin: 8px 0 !important;
+    border-radius: 12px !important;
+  }
+
+  pre.ls-content-code,
+  .ls-content-code {
+    max-width: 100% !important;
+    overflow-x: auto !important;
+    white-space: pre !important;
+    font-size: 12.5px !important;
+    padding: 10px 12px !important;
+    border-radius: 10px !important;
+  }
+
+  .ls-open-playground {
+    width: 100% !important;
+    margin-top: 6px !important;
+    min-height: 40px !important;
+  }
+
+  .ls-img-preview-frame,
+  .ls-livedemo-frame,
+  .ls-ex-preview {
+    width: 100% !important;
+    height: 200px !important;
+    border-radius: 12px !important;
+  }
+
+  .ls-quiz-options {
+    display: flex !important;
+    flex-direction: column !important;
+    gap: 8px !important;
+  }
+
+  .ls-quiz-option {
+    width: 100% !important;
+    min-height: 48px !important;
+    padding: 10px 12px !important;
+    font-size: 14px !important;
+    text-align: left !important;
+    display: flex !important;
+    align-items: center !important;
+    gap: 10px !important;
+  }
+
+  .ls-viewer-footer {
+    display: flex !important;
+    flex-direction: column !important;
+    gap: 8px !important;
+  }
+
+  .ls-viewer-footer .btn {
+    width: 100% !important;
+  }
+
+  /* ------------------------------------------------------------
+     6. CODING PAGE (IDE / PLAYGROUND) — CRITICAL MOBILE UX
+     ------------------------------------------------------------ */
+  .coding-header {
+    padding: 10px 12px !important;
+    margin-bottom: 10px !important;
+    border-radius: 16px !important;
+    display: flex !important;
+    flex-direction: column !important;
+    gap: 8px !important;
+  }
+
+  .coding-header-left {
+    display: flex !important;
+    flex-direction: column !important;
+    gap: 6px !important;
+    width: 100% !important;
+  }
+
+  .coding-editor-tabs {
+    display: flex !important;
+    gap: 4px !important;
+    width: 100% !important;
+  }
+
+  .coding-tab {
+    flex: 1 1 0 !important;
+    min-height: 36px !important;
+    padding: 6px 4px !important;
+    font-size: 12.5px !important;
+    font-weight: 700 !important;
+    white-space: nowrap !important;
+    text-align: center !important;
+    border-radius: 10px !important;
+  }
+
+  .coding-select-wrap {
+    width: 100% !important;
+  }
+
+  #codingLangSelect {
+    width: 100% !important;
+    min-height: 38px !important;
+    font-size: 13px !important;
+    border-radius: 10px !important;
+  }
+
+  .coding-toolbar-controls {
+    display: flex !important;
+    flex-direction: column !important;
+    gap: 8px !important;
+    width: 100% !important;
+  }
+
+  .auto-run-switch {
+    display: none !important; /* Mobileda joy tejash */
+  }
+
+  /* Coding actions — 2 tartibli qator */
+  .coding-actions {
+    display: grid !important;
+    grid-template-columns: 1fr 1fr !important;
+    gap: 6px !important;
+    width: 100% !important;
+  }
+
+  .coding-actions #aiPanelToggle,
+  .coding-actions #codingRunBtn {
+    grid-column: span 1 !important;
+    min-height: 42px !important;
+    font-size: 13.5px !important;
+    font-weight: 700 !important;
+    white-space: nowrap !important;
+  }
+
+  .coding-actions #codingRunBtn {
+    background: linear-gradient(135deg, #10b981, #059669) !important;
+    color: #fff !important;
+    box-shadow: 0 4px 14px rgba(16, 185, 129, 0.4) !important;
+  }
+
+  .coding-actions #codingOpenBrowserBtn,
+  .coding-actions #codingSaveBtn,
+  .coding-actions #codingProjectsBtn,
+  .coding-actions #codingResetBtn,
+  .coding-actions #codingDownloadBtn {
+    min-height: 36px !important;
+    font-size: 11.5px !important;
+    white-space: nowrap !important;
+    padding: 6px 8px !important;
+    text-align: center !important;
+    justify-content: center !important;
+  }
+
+  .coding-workspace {
+    display: flex !important;
+    flex-direction: column !important;
+    gap: 10px !important;
+    width: 100% !important;
+  }
+
+  .coding-editor-panel {
+    width: 100% !important;
+    border-radius: 16px !important;
+    overflow: hidden !important;
+  }
+
+  .editor-header {
+    padding: 8px 12px !important;
+  }
+
+  .editor-shortcuts {
+    display: none !important; /* Mobileda klaviatura yo'q */
+  }
+
+  .editor-body {
+    min-height: 220px !important;
+    height: 240px !important;
+    max-height: 300px !important;
+  }
+
+  .editor-container {
+    height: 100% !important;
+    display: flex !important;
+  }
+
+  .line-numbers {
+    width: 30px !important;
+    min-width: 30px !important;
+    font-size: 11.5px !important;
+    padding: 8px 2px !important;
+  }
+
+  .editor-surface {
+    flex: 1 1 auto !important;
+    min-width: 0 !important;
+    position: relative !important;
+    height: 100% !important;
+  }
+
+  .code-textarea,
+  .editor-highlight {
+    font-size: 13px !important;
+    line-height: 1.5 !important;
+    padding: 8px 10px !important;
+    overflow-x: auto !important;
+    white-space: pre !important;
+  }
+
+  .coding-output-panel {
+    width: 100% !important;
+    border-radius: 16px !important;
+    overflow: hidden !important;
+  }
+
+  .output-tabs {
+    display: flex !important;
+    gap: 4px !important;
+    padding: 6px 8px !important;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.08) !important;
+  }
+
+  .output-tab {
+    flex: 1 1 0 !important;
+    min-height: 34px !important;
+    font-size: 12px !important;
+    padding: 4px 6px !important;
+    white-space: nowrap !important;
+    border-radius: 8px !important;
+  }
+
+  #view-preview iframe,
+  #codingIframe {
+    width: 100% !important;
+    height: 240px !important;
+    min-height: 200px !important;
+    border: none !important;
+  }
+
+  #view-console,
+  #view-errors {
+    height: 200px !important;
+    overflow-y: auto !important;
+  }
+
+  /* AI Assistant Panel Drawer */
+  .ai-panel {
+    position: fixed !important;
+    inset: auto 0 0 0 !important;
+    width: 100% !important;
+    max-height: 75vh !important;
+    border-radius: 20px 20px 0 0 !important;
+    background: rgba(14, 18, 36, 0.98) !important;
+    backdrop-filter: blur(24px) !important;
+    border-top: 1px solid var(--m-border) !important;
+    box-shadow: 0 -10px 40px rgba(0, 0, 0, 0.7) !important;
+    z-index: 93 !important;
+    padding: 14px !important;
+    overflow-y: auto !important;
+  }
+
+  /* ------------------------------------------------------------
+     7. LOYIHALARIM (PROJECTS) PAGE
+     ------------------------------------------------------------ */
+  .projects-head {
+    display: flex !important;
+    flex-direction: column !important;
+    gap: 10px !important;
+    margin-bottom: 12px !important;
+  }
+
+  .projects-head .btn {
+    width: 100% !important;
+    min-height: 42px !important;
+  }
+
+  .projects-grid {
+    display: grid !important;
+    grid-template-columns: 1fr !important;
+    gap: 10px !important;
+  }
+
+  /* ------------------------------------------------------------
+     8. TESTLAR (TESTS) PAGE & TEST TAKING
+     ------------------------------------------------------------ */
+  .page-toolbar {
+    flex-direction: column !important;
+    gap: 8px !important;
+  }
+
+  .search-box {
+    width: 100% !important;
+  }
+
+  .filter-chips {
+    display: flex !important;
+    overflow-x: auto !important;
+    gap: 6px !important;
+    width: 100% !important;
+    padding-bottom: 4px !important;
+  }
+
+  .subject-cards {
+    display: grid !important;
+    grid-template-columns: 1fr !important;
+    gap: 10px !important;
+  }
+
+  .test-header {
+    flex-direction: row !important;
+    align-items: center !important;
+    justify-content: space-between !important;
+    gap: 8px !important;
+  }
+
+  .test-body {
+    display: flex !important;
+    flex-direction: column !important;
+    gap: 12px !important;
+  }
+
+  .question-area {
+    width: 100% !important;
+  }
+
+  .navigator-area {
+    width: 100% !important;
+    margin-top: 10px !important;
+  }
+
+  .question-nav {
+    display: grid !important;
+    grid-template-columns: repeat(5, 1fr) !important;
+    gap: 6px !important;
+  }
+
+  .test-nav-buttons {
+    display: flex !important;
+    flex-direction: row !important;
+    align-items: center !important;
+    justify-content: space-between !important;
+    gap: 6px !important;
+    margin-top: 12px !important;
+  }
+
+  .test-nav-buttons .btn {
+    min-height: 44px !important;
+    padding: 8px 12px !important;
+  }
+
+  /* ------------------------------------------------------------
+     9. DUEL PAGE
+     ------------------------------------------------------------ */
+  .duel-lobby {
+    display: flex !important;
+    flex-direction: column !important;
+    gap: 10px !important;
+  }
+
+  .duel-welcome {
+    padding: 14px 12px !important;
+  }
+
+  .duel-welcome h1 {
+    font-size: 19px !important;
+  }
+
+  .duel-mode-chips,
+  .duel-diff-chips {
+    display: flex !important;
+    flex-wrap: wrap !important;
+    gap: 6px !important;
+  }
+
+  .duel-chip {
+    flex: 1 1 calc(50% - 6px) !important;
+    min-height: 38px !important;
+    font-size: 12.5px !important;
+  }
+
+  .tow-visualizer {
+    padding: 10px 8px !important;
+    gap: 6px !important;
+  }
+
+  .tow-player {
+    min-width: 0 !important;
+  }
+
+  .tow-username {
+    font-size: 12px !important;
+    white-space: nowrap !important;
+    overflow: hidden !important;
+    text-overflow: ellipsis !important;
+    max-width: 60px !important;
+  }
+
+  .duel-options {
+    display: flex !important;
+    flex-direction: column !important;
+    gap: 8px !important;
+  }
+
+  .duel-options .btn,
+  .duel-options button {
+    width: 100% !important;
+    min-height: 46px !important;
+    padding: 10px 12px !important;
+    font-size: 13.5px !important;
+  }
+
+  .duel-result-players-scores {
+    display: flex !important;
+    align-items: center !important;
+    justify-content: space-around !important;
+    gap: 6px !important;
+  }
+
+  /* ------------------------------------------------------------
+     10. DO'KON (STORE) PAGE
+     ------------------------------------------------------------ */
+  .store-hero {
+    flex-direction: column !important;
+    gap: 10px !important;
+    padding: 14px 12px !important;
+  }
+
+  .store-layout {
+    display: flex !important;
+    flex-direction: column !important;
+    gap: 12px !important;
+  }
+
+  .store-preview {
+    width: 100% !important;
+  }
+
+  .store-avatar-stage {
+    height: 120px !important;
+  }
+
+  .store-tabs {
+    display: flex !important;
+    overflow-x: auto !important;
+    gap: 6px !important;
+    padding-bottom: 4px !important;
+  }
+
+  .store-tab {
+    flex: 0 0 auto !important;
+    min-height: 34px !important;
+    font-size: 12px !important;
+    padding: 6px 12px !important;
+  }
+
+  .store-grid {
+    display: grid !important;
+    grid-template-columns: repeat(2, 1fr) !important;
+    gap: 8px !important;
+  }
+
+  .store-card {
+    padding: 10px !important;
+  }
+
+  /* ------------------------------------------------------------
+     11. PROFIL & SOZLAMALAR & YUTUQLAR & REYTING
+     ------------------------------------------------------------ */
+  .profile-header {
+    flex-direction: column !important;
+    align-items: center !important;
+    text-align: center !important;
+    padding: 16px 12px !important;
+  }
+
+  .profile-stats {
+    display: grid !important;
+    grid-template-columns: 1fr 1fr !important;
+    gap: 8px !important;
+  }
+
+  .profile-actions .btn {
+    width: 100% !important;
+    min-height: 42px !important;
+  }
+
+  .setting-row {
+    flex-direction: column !important;
+    align-items: flex-start !important;
+    gap: 8px !important;
+    padding: 10px 0 !important;
+  }
+
+  .setting-row .btn {
+    width: 100% !important;
+  }
+
+  .achievement-grid {
+    display: grid !important;
+    grid-template-columns: 1fr !important;
+    gap: 8px !important;
+  }
+
+  .leaderboard {
+    display: flex !important;
+    flex-direction: column !important;
+    gap: 6px !important;
+  }
+
+  /* ------------------------------------------------------------
+     12. MODALS & DIALOGS
+     ------------------------------------------------------------ */
+  .modal-overlay {
+    padding: 10px !important;
+  }
+
+  .modal {
+    width: min(480px, calc(100vw - 16px)) !important;
+    max-width: calc(100vw - 16px) !important;
+    max-height: 88vh !important;
+    margin: auto !important;
+    overflow-y: auto !important;
+    border-radius: 18px !important;
+    padding: 16px !important;
+  }
+
+  .modal-footer {
+    display: flex !important;
+    flex-direction: column !important;
+    gap: 8px !important;
+  }
+
+  .modal-footer .btn {
+    width: 100% !important;
+    min-height: 42px !important;
+  }
+}
+
+/* ============================================================
+   FINE-TUNING FOR NARROW SCREENS (<= 360px & <= 320px)
+   ============================================================ */
+@media (max-width: 360px) {
+  .topbar-left h2,
+  #pageTitle {
+    font-size: 15px !important;
+    max-width: calc(100vw - 165px) !important;
+  }
+
+  .m-hero-art {
+    display: none !important;
+  }
+
+  .m-hero-course {
+    font-size: 17px !important;
+  }
+
+  .m-stat-val {
+    font-size: 15px !important;
+  }
+
+  .coding-actions {
+    grid-template-columns: 1fr !important;
+  }
+
+  .store-grid {
+    grid-template-columns: 1fr !important;
+  }
+}
+
+@media (max-width: 320px) {
+  .main .page {
+    padding: 8px 8px 24px !important;
+  }
+
+  .m-hero {
+    padding: 12px 10px !important;
+  }
+
+  .m-hero-btn {
+    width: 100% !important;
+  }
+
+  .m-stats {
+    grid-template-columns: 1fr !important;
+  }
+}
+
+/* ============================================================
+   ACCESSIBILITY & REDUCED MOTION
+   ============================================================ */
+@media (prefers-reduced-motion: reduce) {
+  * {
+    animation-duration: 0.01ms !important;
+    transition-duration: 0.01ms !important;
+  }
+}

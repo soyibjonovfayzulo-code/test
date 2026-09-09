@@ -1,0 +1,7 @@
+<?xml version='1.0' encoding='utf-8'?>
+<resources>
+    <string name="app_name">ITtest</string>
+    <string name="title_activity_main">ITtest</string>
+    <string name="package_name">com.ustafon.myapp</string>
+    <string name="custom_url_scheme">com.ustafon.myapp</string>
+</resources>
