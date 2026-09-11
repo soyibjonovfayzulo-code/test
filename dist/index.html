@@ -13,27 +13,91 @@
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap"
-    rel="stylesheet" />
-  <script type="module" crossorigin src="/assets/index-D9vixicn.js"></script>
-  <link rel="stylesheet" crossorigin href="/assets/index-BJtmYgOM.css">
+    rel="stylesheet" />
+  <script type="module" crossorigin src="/assets/index-2TakuZw7.js"></script>
+  <link rel="stylesheet" crossorigin href="/assets/index-CrS90kqm.css">
 </head>
 
 <body>
 
   <!-- ====================== AUTH SCREEN ====================== -->
   <div id="authScreen" class="auth-screen">
-    <div class="auth-bg" aria-hidden="true">
+    <!-- DECOR: background atmosphere — z:0-2, pointer-events:none -->
+    <div class="auth-bg" aria-hidden="true" data-depth="3">
       <span class="orb orb-1"></span>
       <span class="orb orb-2"></span>
       <span class="orb orb-3"></span>
+      <div class="auth-grid"></div>
+      <div class="auth-particles auth-particles--a"></div>
+      <div class="auth-particles auth-particles--b"></div>
+      <svg class="auth-wave auth-wave--l" viewBox="0 0 620 620" fill="none" aria-hidden="true">
+        <defs>
+          <linearGradient id="awgL" x1="0" y1="0" x2="620" y2="620" gradientUnits="userSpaceOnUse">
+            <stop offset="0" stop-color="#38BDF8" />
+            <stop offset="1" stop-color="#4F46E5" stop-opacity="0" />
+          </linearGradient>
+        </defs>
+        <path d="M-40 120 C 160 40, 240 240, 120 330 S -60 470, 90 560" stroke="url(#awgL)" stroke-width="1.6" />
+        <path d="M-60 210 C 120 150, 210 300, 110 380 S -30 500, 70 585" stroke="url(#awgL)" stroke-width="1"
+          opacity=".7" />
+        <path d="M-80 300 C 90 250, 170 360, 90 430 S -10 520, 55 590" stroke="url(#awgL)" stroke-width="2.2"
+          stroke-dasharray="0.1 15" stroke-linecap="round" opacity=".85" />
+      </svg>
+      <svg class="auth-wave auth-wave--r" viewBox="0 0 640 640" fill="none" aria-hidden="true">
+        <defs>
+          <linearGradient id="awgR" x1="640" y1="640" x2="0" y2="0" gradientUnits="userSpaceOnUse">
+            <stop offset="0" stop-color="#2563EB" />
+            <stop offset="1" stop-color="#38BDF8" stop-opacity="0" />
+          </linearGradient>
+        </defs>
+        <path d="M680 520 C 460 580, 380 380, 520 300 S 720 160, 560 60" stroke="url(#awgR)" stroke-width="1.6" />
+        <path d="M700 430 C 520 470, 450 320, 560 260 S 690 150, 585 70" stroke="url(#awgR)" stroke-width="1"
+          opacity=".65" />
+        <path d="M720 340 C 570 380, 520 270, 610 220 S 670 140, 600 80" stroke="url(#awgR)" stroke-width="2.6"
+          stroke-dasharray="0.1 13" stroke-linecap="round" opacity=".9" />
+      </svg>
     </div>
+
+    <!-- DECOR: ITTest robot mascot — z:3, pointer-events:none -->
+    <div class="auth-robot" aria-hidden="true" data-depth="8">
+      <div class="auth-robot-halo"></div>
+      <div class="auth-robot-inner">
+        <div class="auth-robot-peeker">
+          <img class="auth-robot-img" src="./mascot/it-robot.png" alt="" draggable="false" loading="lazy"
+            onerror="this.closest('.auth-robot')&&this.closest('.auth-robot').classList.add('auth-robot-broken')" />
+          <span class="auth-robot-sweep"></span>
+        </div>
+      </div>
+      <div class="auth-robot-glow"></div>
+    </div>
+
+    <!-- DECOR: floating tech elements — z:4, pointer-events:none -->
+    <div class="auth-chips" aria-hidden="true" data-depth="5">
+      <span class="tech-chip tc-1"><i>&lt;/&gt;</i></span>
+      <span class="tech-chip tc-2"><i>{ }</i></span>
+      <span class="tech-chip tc-3"><i>[ ]</i></span>
+      <span class="tech-chip tc-4"><i>HTML</i></span>
+      <span class="tech-chip tc-5"><i>CSS</i></span>
+      <span class="tech-chip tc-6"><i>JS</i></span>
+      <span class="tech-chip tc-7"><i>🐍 Python</i></span>
+      <span class="tech-chip tc-8"><i>🗄️ SQL</i></span>
+      <span class="tech-chip tc-9"><i>🧠 AI</i></span>
+      <pre class="auth-codehint"><code>const learn = (skill) =&gt; {
+  return growth;
+}</code></pre>
+    </div>
+
+    <p class="auth-tagline" aria-hidden="true">Better Skills.<br />Brighter Future.</p>
+
+    <!-- CONTENT — z:10 -->
     <div class="auth-container">
       <div class="auth-brand">
-        <div class="auth-logo" aria-hidden="true">🧠</div>
+        <div class="auth-logo" aria-hidden="true"><span>🧠</span></div>
         <h1>IT<span>Test</span></h1>
         <p>IT va AI bo'yicha online test platformasi</p>
       </div>
-      <div class="auth-card">
+      <div class="auth-card" data-depth="1.5">
+        <span class="auth-card-topline" aria-hidden="true"></span>
         <div class="auth-tabs" role="tablist" aria-label="Kirish yoki ro'yxatdan o'tish">
           <button class="auth-tab active" data-tab="login" role="tab" aria-selected="true">Kirish</button>
           <button class="auth-tab" data-tab="register" role="tab" aria-selected="false">Ro'yxatdan o'tish</button>
@@ -43,19 +107,42 @@
         <form id="loginForm" class="auth-form active" autocomplete="on">
           <div class="form-group">
             <label for="loginEmail">Email yoki Username</label>
-            <input type="text" id="loginEmail" name="loginEmail" placeholder="sardor_dev yoki sardor@mail.com"
-              autocomplete="username" required />
+            <div class="input-shell">
+              <input type="text" id="loginEmail" name="loginEmail" placeholder="sardor_dev yoki sardor@mail.com"
+                autocomplete="username" required />
+              <span class="input-ico" aria-hidden="true">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"
+                  stroke-linejoin="round">
+                  <rect x="3" y="5" width="18" height="14" rx="3" />
+                  <path d="m3 7 9 6 9-6" />
+                </svg>
+              </span>
+            </div>
           </div>
           <div class="form-group">
             <label for="loginPassword">Parol</label>
             <div class="pwd-wrap">
               <input type="password" id="loginPassword" name="loginPassword" placeholder="••••••••"
                 autocomplete="current-password" required />
+              <span class="input-ico" aria-hidden="true">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"
+                  stroke-linejoin="round">
+                  <rect x="4" y="10" width="16" height="10" rx="2.5" />
+                  <path d="M8 10V7a4 4 0 0 1 8 0v3" />
+                </svg>
+              </span>
               <button type="button" class="pwd-toggle" data-target="loginPassword"
-                aria-label="Parolni ko'rsatish yoki yashirish">👁</button>
+                aria-label="Parolni ko'rsatish yoki yashirish">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"
+                  stroke-linejoin="round">
+                  <path d="M2 12s3.5-6 10-6 10 6 10 6-3.5 6-10 6-10-6-10-6Z" />
+                  <circle cx="12" cy="12" r="2.6" />
+                </svg>
+              </button>
             </div>
           </div>
-          <button type="submit" class="btn btn-primary btn-block">Kirish</button>
+          <button type="submit" class="btn btn-primary btn-block auth-submit">Kirish <span class="btn-arrow"
+              aria-hidden="true">→</span></button>
         </form>
 
         <!-- Register Form -->
@@ -63,32 +150,81 @@
           <div class="form-row">
             <div class="form-group">
               <label for="regFirstname">Ism</label>
-              <input type="text" id="regFirstname" name="regFirstname" placeholder="Sardor" autocomplete="given-name"
-                required />
+              <div class="input-shell">
+                <input type="text" id="regFirstname" name="regFirstname" placeholder="Sardor" autocomplete="given-name"
+                  required />
+                <span class="input-ico" aria-hidden="true">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"
+                    stroke-linejoin="round">
+                    <circle cx="12" cy="8" r="4" />
+                    <path d="M4 20c1.5-3.5 4.5-5 8-5s6.5 1.5 8 5" />
+                  </svg>
+                </span>
+              </div>
             </div>
             <div class="form-group">
               <label for="regLastname">Familiya</label>
-              <input type="text" id="regLastname" name="regLastname" placeholder="Rahimov" autocomplete="family-name"
-                required />
+              <div class="input-shell">
+                <input type="text" id="regLastname" name="regLastname" placeholder="Rahimov" autocomplete="family-name"
+                  required />
+                <span class="input-ico" aria-hidden="true">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"
+                    stroke-linejoin="round">
+                    <circle cx="12" cy="8" r="4" />
+                    <path d="M4 20c1.5-3.5 4.5-5 8-5s6.5 1.5 8 5" />
+                  </svg>
+                </span>
+              </div>
             </div>
           </div>
           <div class="form-group">
             <label for="regUsername">Username</label>
-            <input type="text" id="regUsername" name="regUsername" placeholder="sardor_dev" autocomplete="username"
-              required />
+            <div class="input-shell">
+              <input type="text" id="regUsername" name="regUsername" placeholder="sardor_dev" autocomplete="username"
+                required />
+              <span class="input-ico" aria-hidden="true">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"
+                  stroke-linejoin="round">
+                  <circle cx="12" cy="8" r="4" />
+                  <path d="M4 20c1.5-3.5 4.5-5 8-5s6.5 1.5 8 5" />
+                </svg>
+              </span>
+            </div>
           </div>
           <div class="form-group">
             <label for="regEmail">Email</label>
-            <input type="email" id="regEmail" name="regEmail" placeholder="sardor@mail.com" autocomplete="email"
-              required />
+            <div class="input-shell">
+              <input type="email" id="regEmail" name="regEmail" placeholder="sardor@mail.com" autocomplete="email"
+                required />
+              <span class="input-ico" aria-hidden="true">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"
+                  stroke-linejoin="round">
+                  <rect x="3" y="5" width="18" height="14" rx="3" />
+                  <path d="m3 7 9 6 9-6" />
+                </svg>
+              </span>
+            </div>
           </div>
           <div class="form-group">
             <label for="regPassword">Parol</label>
             <div class="pwd-wrap">
               <input type="password" id="regPassword" name="regPassword" placeholder="••••••••"
                 autocomplete="new-password" required />
+              <span class="input-ico" aria-hidden="true">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"
+                  stroke-linejoin="round">
+                  <rect x="4" y="10" width="16" height="10" rx="2.5" />
+                  <path d="M8 10V7a4 4 0 0 1 8 0v3" />
+                </svg>
+              </span>
               <button type="button" class="pwd-toggle" data-target="regPassword"
-                aria-label="Parolni ko'rsatish yoki yashirish">👁</button>
+                aria-label="Parolni ko'rsatish yoki yashirish">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"
+                  stroke-linejoin="round">
+                  <path d="M2 12s3.5-6 10-6 10 6 10 6-3.5 6-10 6-10-6-10-6Z" />
+                  <circle cx="12" cy="12" r="2.6" />
+                </svg>
+              </button>
             </div>
           </div>
           <div class="form-group">
@@ -96,14 +232,34 @@
             <div class="pwd-wrap">
               <input type="password" id="regConfirmPassword" name="regConfirmPassword" placeholder="••••••••"
                 autocomplete="new-password" required />
+              <span class="input-ico" aria-hidden="true">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"
+                  stroke-linejoin="round">
+                  <rect x="4" y="10" width="16" height="10" rx="2.5" />
+                  <path d="M8 10V7a4 4 0 0 1 8 0v3" />
+                </svg>
+              </span>
               <button type="button" class="pwd-toggle" data-target="regConfirmPassword"
-                aria-label="Parolni ko'rsatish yoki yashirish">👁</button>
+                aria-label="Parolni ko'rsatish yoki yashirish">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"
+                  stroke-linejoin="round">
+                  <path d="M2 12s3.5-6 10-6 10 6 10 6-3.5 6-10 6-10-6-10-6Z" />
+                  <circle cx="12" cy="12" r="2.6" />
+                </svg>
+              </button>
             </div>
           </div>
-          <button type="submit" class="btn btn-primary btn-block">Ro'yxatdan o'tish</button>
+          <button type="submit" class="btn btn-primary btn-block auth-submit">Ro'yxatdan o'tish <span class="btn-arrow"
+              aria-hidden="true">→</span></button>
         </form>
       </div>
     </div>
+
+    <!-- Interactive: theme switch — z:20 -->
+    <button type="button" id="authThemeToggle" class="auth-theme-toggle" aria-label="Mavzuni almashtirish">
+      <span class="theme-icon-dark" aria-hidden="true">🌙</span>
+      <span class="theme-icon-light" aria-hidden="true">☀️</span>
+    </button>
   </div>
 
   <!-- ====================== MAIN APP ====================== -->
@@ -213,231 +369,117 @@
 
         <!-- DASHBOARD PAGE -->
         <section id="page-dashboard" class="page active">
-          <div class="welcome-banner hero-premium">
-            <div class="hero-left">
-              <div class="hero-top-badge">
-                <span class="hero-top-badge-dot" aria-hidden="true"></span>
-                Bilimingni sinab ko'r va g'olib bo'l!
-              </div>
-
-              <h1 class="hero-title">
-                Bilim — Kuch,<br>
-                Test — <span class="hero-gradient-text">Yo‘l!</span>
-              </h1>
-
-              <p class="hero-subtitle">
-                IT sohasidagi bilimlaringizni sinang, reytingda yuqori o‘rinni egallang va
-                do‘stlaringiz bilan duel qiling!
-              </p>
-
-              <div class="hero-bottom-wrap">
-                <div class="hero-user-row">
-                  <span class="hero-user-text" id="welcomeMini">Salom, User 👋</span>
-                </div>
-                <div class="welcome-level">
-                  <div class="level-badge" id="dashLevelBadge">Level 1</div>
-                  <div class="xp-bar-wrap">
-                    <div class="xp-bar-info">
-                      <span id="dashXpText">0 XP</span>
-                      <span id="dashXpNext">/ 100 XP</span>
+          <div class="nd" id="ndRoot">
+            <!-- 1. WELCOME HERO — real user data (ism, avatar, level, XP) -->
+            <section class="nd-hero nd-reveal" aria-labelledby="ndHeroTitle">
+              <div class="nd-hero-text">
+                <span class="nd-hero-kicker"><span aria-hidden="true">🚀</span> Bugun ham bir qadam oldinga</span>
+                <h1 class="nd-hero-title" id="ndHeroTitle">Xush kelibsiz, <span class="nd-hero-name" id="ndHeroName">…</span> <span
+                    aria-hidden="true">👋</span></h1>
+                <p class="nd-hero-sub" id="ndHeroSub">Bugun atigi 15 daqiqa ajrating — o‘zingizni kechagidan kuchliroq qiling.</p>
+                <div class="nd-hero-meta">
+                  <span class="nd-hero-avatar" id="ndHeroAvatar" aria-hidden="true">U</span>
+                  <div class="nd-hero-level">
+                    <span class="nd-hero-level-badge" id="ndHeroLevel">Level 1</span>
+                    <div class="nd-hero-xp" id="ndHeroXpTrack" role="progressbar" aria-valuemin="0" aria-valuemax="100"
+                      aria-valuenow="0" aria-label="Level XP progressi">
+                      <span class="nd-hero-xp-fill" id="ndHeroXpFill"></span>
                     </div>
-                    <div class="xp-bar" role="progressbar" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0"
-                      aria-label="Level XP progressi">
-                      <div class="xp-bar-fill" id="dashXpFill"></div>
-                    </div>
+                    <span class="nd-hero-xp-text" id="ndHeroXpText">0 / 100 XP</span>
                   </div>
                 </div>
               </div>
+              <div class="nd-hero-robot" id="ndHeroRobot" aria-hidden="true"></div>
+            </section>
 
-              <!-- 🤖 ITTest Robot Maskot (doimiy qahramon) -->
-              <div class="hero-mascot-card" id="heroMascotCard" aria-hidden="true">
-                <div class="mascot mascot--idle">
-                  <img src="./mascot/it-robot.png" alt="" draggable="false" loading="lazy"
-                    onerror="this.closest('.mascot')&&this.closest('.mascot').classList.add('mascot-broken')" />
-                </div>
-                <div class="hero-mascot-say">
-                  <b>ITTest Robot</b>
-                  <span>Sizning yordamchingiz — bugun ham birga o'rganamiz! 🚀</span>
-                </div>
-              </div>
-            </div>
+            <!-- 2. BUGUNGI PROGRESS + DAILY STREAK (faqat bugungi real data) -->
+            <section class="nd-row nd-row-2">
+              <article class="nd-card nd-card--progress nd-reveal" aria-labelledby="ndTodayTitle">
+                <header class="nd-card-head">
+                  <h2 class="nd-card-title" id="ndTodayTitle"><span aria-hidden="true">🔥</span> Bugungi progress</h2>
+                  <span class="nd-chip-note" aria-hidden="true">TODAY</span>
+                </header>
+                <div class="nd-today-body" id="ndTodayBody"></div>
+              </article>
+              <article class="nd-card nd-card--streak nd-reveal" aria-labelledby="ndStreakTitle">
+                <header class="nd-card-head">
+                  <h2 class="nd-card-title" id="ndStreakTitle"><span aria-hidden="true">🔥</span> Streak</h2>
+                </header>
+                <div class="nd-streak-body" id="ndStreakBody"></div>
+              </article>
+            </section>
 
-            <div class="hero-right">
-              <div class="hero-image-wrap">
-                <div class="hero-ring-glow" aria-hidden="true"></div>
-                <img class="hero-main-image" alt="IT va AI mavzusidagi grafik logotip" src="/assets/hero-ai-CzW6aM1I.jpg" />
+            <!-- 3. CURRENT LESSON — real davom etish (1-dars hardcode EMAS) -->
+            <section class="nd-row">
+              <article class="nd-card nd-card--lesson nd-reveal" id="ndLessonCard" aria-labelledby="ndLessonTitle">
+                <header class="nd-card-head">
+                  <h2 class="nd-card-title" id="ndLessonTitle"><span aria-hidden="true">📚</span> Hozir o‘qiyotgan darsingiz</h2>
+                </header>
+                <div class="nd-lesson-body" id="ndLessonBody"></div>
+              </article>
+            </section>
 
-                <div class="hero-code-badge hero-code-html" aria-hidden="true">
-                  <span class="hcb-icon">{<span>/</span>}</span>
-                  <span class="hcb-label">HTML</span>
-                </div>
-                <div class="hero-code-badge hero-code-py" aria-hidden="true">
-                  <span class="hcb-icon">🐍</span>
-                  <span class="hcb-label">Python</span>
-                </div>
-                <div class="hero-code-badge hero-code-js" aria-hidden="true">
-                  <span class="hcb-icon">JS</span>
-                  <span class="hcb-label">JavaScript</span>
-                </div>
-                <div class="hero-code-badge hero-code-java" aria-hidden="true">
-                  <span class="hcb-icon">☕</span>
-                  <span class="hcb-label">Java</span>
-                </div>
-                <div class="hero-code-badge hero-code-sql" aria-hidden="true">
-                  <span class="hcb-icon">🗄</span>
-                  <span class="hcb-label">SQL</span>
-                </div>
-              </div>
-            </div>
-          </div>
+            <!-- 4. QUICK ACTIONS — haqiqiy route'lar (dead button YO'Q) -->
+            <section class="nd-quick nd-reveal" role="group" aria-label="Tezkor harakatlar">
+              <button class="nd-quick-btn" data-goto="lessons" type="button"><span class="nd-quick-ico"
+                  aria-hidden="true">📚</span><span class="nd-quick-t">Darslar</span></button>
+              <button class="nd-quick-btn" data-goto="tests" type="button"><span class="nd-quick-ico"
+                  aria-hidden="true">🧠</span><span class="nd-quick-t">Testlar</span></button>
+              <button class="nd-quick-btn" data-goto="coding" type="button"><span class="nd-quick-ico"
+                  aria-hidden="true">💻</span><span class="nd-quick-t">Coding</span></button>
+              <button class="nd-quick-btn" data-goto="duel" type="button"><span class="nd-quick-ico"
+                  aria-hidden="true">⚔️</span><span class="nd-quick-t">Duel</span></button>
+              <button class="nd-quick-btn" data-goto="projects" type="button"><span class="nd-quick-ico"
+                  aria-hidden="true">🗂</span><span class="nd-quick-t">Loyihalarim</span></button>
+              <button class="nd-quick-btn" data-goto="#challenge" type="button"><span class="nd-quick-ico"
+                  aria-hidden="true">🔥</span><span class="nd-quick-t">Challenge</span></button>
+            </section>
 
-          <div class="stats-grid">
-            <div class="stat-card">
-              <div class="stat-icon xp-icon" aria-hidden="true">⭐</div>
-              <div class="stat-info"><span class="stat-value" id="statXp">0</span><span class="stat-label">Umumiy
-                  ball</span></div>
-            </div>
-            <div class="stat-card">
-              <div class="stat-icon test-icon" aria-hidden="true">📝</div>
-              <div class="stat-info"><span class="stat-value" id="statTests">0</span><span class="stat-label">Ishlangan
-                  testlar</span></div>
-            </div>
-            <div class="stat-card">
-              <div class="stat-icon avg-icon" aria-hidden="true">📈</div>
-              <div class="stat-info"><span class="stat-value" id="statAvg">0%</span><span class="stat-label">O'rtacha
-                  natija</span></div>
-            </div>
-            <div class="stat-card">
-              <div class="stat-icon streak-icon" aria-hidden="true">🔥</div>
-              <div class="stat-info"><span class="stat-value" id="statStreak">0</span><span class="stat-label">Streak
-                  (kun)</span></div>
-            </div>
-            <div class="stat-card duel-stat-card">
-              <div class="stat-icon duel-icon" aria-hidden="true">⚔️</div>
-              <div class="stat-info stat-info-compact">
-                <div class="stat-row"><span class="stat-row-label">🏆 G‘alabalar</span> <span class="stat-row-val"
-                    id="statDuelWins">0</span></div>
-                <div class="stat-row"><span class="stat-row-label">❌ Yutqazishlar</span> <span class="stat-row-val"
-                    id="statDuelLosses">0</span></div>
-                <div class="stat-row stat-row-sub"><span class="stat-row-label">🎮 Jami duel</span> <span
-                    class="stat-row-val" id="statDuelTotal">0</span></div>
-              </div>
-            </div>
-          </div>
+            <!-- 5. TEST + DUEL + CHALLENGE (kichik compact holatda) -->
+            <section class="nd-row nd-row-3">
+              <article class="nd-card nd-card--tests nd-reveal" aria-labelledby="ndTestsTitle">
+                <header class="nd-card-head">
+                  <h2 class="nd-card-title" id="ndTestsTitle"><span aria-hidden="true">🧠</span> Testlar</h2>
+                </header>
+                <div class="nd-mini-body" id="ndTestsBody"></div>
+              </article>
+              <article class="nd-card nd-card--duel nd-reveal" aria-labelledby="ndDuelTitle">
+                <header class="nd-card-head">
+                  <h2 class="nd-card-title" id="ndDuelTitle"><span aria-hidden="true">⚔️</span> Duel</h2>
+                </header>
+                <div class="nd-mini-body" id="ndDuelBody"></div>
+              </article>
+              <article class="nd-card nd-card--challenge nd-reveal" id="ndChallengeCard" aria-labelledby="ndChallengeTitle">
+                <header class="nd-card-head">
+                  <h2 class="nd-card-title" id="ndChallengeTitle"><span aria-hidden="true">🔥</span> Bugungi challenge</h2>
+                </header>
+                <div class="nd-challenge-body" id="ndChallengeBody"></div>
+              </article>
+            </section>
 
-          <!-- ============ MOBILE-ONLY DASHBOARD (Android redesign) ============ -->
-          <div class="m-dash" id="mDash">
-            <div class="m-hero" id="mHero">
-              <div class="m-hero-content">
-                <span class="m-hero-flame">🔥 Davom eting</span>
-                <h2 class="m-hero-course" id="mHeroCourse">Darslar</h2>
-                <p class="m-hero-lesson" id="mHeroLesson">Birinchi darsni tanlang</p>
-                <div class="m-hero-progress" role="progressbar" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0"
-                  aria-label="Dars progressi">
-                  <div class="m-hero-progress-fill" id="mHeroFill"></div>
-                </div>
-                <span class="m-hero-pct" id="mHeroPct">0%</span>
-                <button class="m-hero-btn" id="mHeroBtn" type="button">Davom ettirish →</button>
-              </div>
-              <div class="m-hero-art" aria-hidden="true">
-                <span class="m-hero-art-code">&lt;/&gt;</span>
-              </div>
-            </div>
+            <!-- 6. XP / STREAK / YUTUQLAR (compact) + KEYINGI MAQSAD -->
+            <section class="nd-row nd-row-2">
+              <article class="nd-card nd-card--stats nd-reveal">
+                <h2 class="visually-hidden">Statistika</h2>
+                <div class="nd-stats-body" id="ndStatsBody"></div>
+              </article>
+              <article class="nd-card nd-card--goal nd-reveal" aria-labelledby="ndGoalTitle">
+                <header class="nd-card-head">
+                  <h2 class="nd-card-title" id="ndGoalTitle"><span aria-hidden="true">🎯</span> Keyingi maqsad</h2>
+                </header>
+                <div class="nd-goal-body" id="ndGoalBody"></div>
+              </article>
+            </section>
 
-            <div class="m-stats">
-              <div class="m-stat"><span class="m-stat-ico" aria-hidden="true">📚</span><span class="m-stat-val"
-                  id="mStatLessons">0</span><span class="m-stat-lbl">Jami darslar</span></div>
-              <div class="m-stat"><span class="m-stat-ico" aria-hidden="true">✅</span><span class="m-stat-val"
-                  id="mStatDone">0</span><span class="m-stat-lbl">Tugallangan</span></div>
-              <div class="m-stat"><span class="m-stat-ico" aria-hidden="true">🔥</span><span class="m-stat-val"
-                  id="mStatStreak">0</span><span class="m-stat-lbl">Kundalik seriya</span></div>
-              <div class="m-stat"><span class="m-stat-ico" aria-hidden="true">⭐</span><span class="m-stat-val"
-                  id="mStatXp">0</span><span class="m-stat-lbl">Jami XP</span></div>
-            </div>
-
-            <div class="m-section-head">
-              <h3>🚀 Dasturlash yo‘nalishlari</h3>
-              <button class="m-link" id="mAllCourses" type="button">Barchasini ko‘rish →</button>
-            </div>
-
-            <div class="m-chips" id="mChips" role="tablist" aria-label="Kurslarni saralash">
-              <button class="m-chip active" data-cat="all" type="button" role="tab"
-                aria-selected="true">Barchasi</button>
-              <button class="m-chip" data-cat="frontend" type="button" role="tab" aria-selected="false">Web
-                dasturlash</button>
-              <button class="m-chip" data-cat="backend" type="button" role="tab" aria-selected="false">Backend</button>
-              <button class="m-chip" data-cat="dasturlash" type="button" role="tab"
-                aria-selected="false">Dasturlash</button>
-              <button class="m-chip" data-cat="ai" type="button" role="tab" aria-selected="false">AI</button>
-              <button class="m-chip" data-cat="boshqa" type="button" role="tab" aria-selected="false">Boshqalar</button>
-            </div>
-
-            <div class="m-courses" id="mCourses"></div>
-          </div>
-          <!-- ============ /MOBILE-ONLY DASHBOARD ============ -->
-
-          <div class="dash-grid">
-            <div class="card">
-              <div class="card-header">
-                <h3>Fanlar bo'yicha progress</h3>
-              </div>
-              <div class="card-body" id="subjectProgress"></div>
-            </div>
-            <div class="card">
-              <div class="card-header">
-                <h3>So'nggi natijalar</h3>
-                <a href="#results" class="link-btn">Barchasi</a>
-              </div>
-              <div class="card-body" id="recentResults"></div>
-            </div>
-          </div>
-
-          <div class="dash-grid dash-grid-charts">
-            <div class="card chart-card">
-              <div class="card-header">
-                <h3>📈 Progress grafigi</h3>
-                <span class="muted" id="chartSubtitle">Oxirgi 10 ta test</span>
-              </div>
-              <div class="card-body chart-body">
-                <div id="lineChartContainer" class="line-chart-wrap" role="img"
-                  aria-label="Oxirgi testlar bo'yicha ball grafigi"></div>
-                <div class="chart-legend">
-                  <div class="legend-item"><span class="legend-dot legend-dot-primary" aria-hidden="true"></span> Ball
-                    (%)</div>
-                  <div class="legend-item"><span class="legend-dot legend-dot-pass" aria-hidden="true"></span> Passed
-                    chegarasi (50%)</div>
-                </div>
-              </div>
-            </div>
-            <div class="card chart-card">
-              <div class="card-header">
-                <h3>🎯 Javoblar statistikasi</h3>
-              </div>
-              <div class="card-body chart-body donut-body">
-                <div id="donutChart" class="donut-chart-wrap" role="img"
-                  aria-label="To'g'ri, noto'g'ri va o'tkazilgan javoblar diagrammasi"></div>
-                <div class="chart-stats">
-                  <div class="chart-stat chart-stat-correct"><span class="cs-val" id="csCorrect">0</span><span
-                      class="cs-lbl">To'g'ri</span></div>
-                  <div class="chart-stat chart-stat-wrong"><span class="cs-val" id="csWrong">0</span><span
-                      class="cs-lbl">Noto'g'ri</span></div>
-                  <div class="chart-stat chart-stat-skipped"><span class="cs-val" id="csSkipped">0</span><span
-                      class="cs-lbl">O'tkazilgan</span></div>
-                </div>
-              </div>
-            </div>
-          </div>
-
-          <!-- Fanlar bo'yicha o'rtacha natija (bar chart) -->
-          <div class="card chart-card subject-bar-card">
-            <div class="card-header">
-              <h3>📊 Fanlar bo'yicha o'rtacha natija</h3>
-              <span class="muted">Barcha testlar · o'rtacha %</span>
-            </div>
-            <div class="card-body chart-body">
-              <div id="barChartContainer" class="bar-chart-wrap" role="img"
-                aria-label="Fanlar bo'yicha o'rtacha natija diagrammasi"></div>
-            </div>
+            <!-- 7. RECENT ACTIVITY — compact timeline (oxirgi 3–4 real event) -->
+            <section class="nd-row">
+              <article class="nd-card nd-card--activity nd-reveal" aria-labelledby="ndActivityTitle">
+                <header class="nd-card-head">
+                  <h2 class="nd-card-title" id="ndActivityTitle"><span aria-hidden="true">🕓</span> So‘nggi faoliyat</h2>
+                </header>
+                <div class="nd-activity-body" id="ndActivityBody"></div>
+              </article>
+            </section>
           </div>
         </section>
 
@@ -1503,7 +1545,7 @@
 
   <!-- ====================== ONBOARDING (yangi user uchun) ====================== -->
   <div id="onboardingRoot" hidden></div>
-
+
 </body>
 
 </html>

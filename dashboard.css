@@ -1,0 +1,681 @@
+/* ============================================================
+   ITTest — YANGI DASHBOARD CSS (0 dan)
+   HOME / ACTION CENTER dizayn tizimi.
+   Breakpoints: desktop 1280–1920 (2–3 kolonka), tablet 768–1024
+   (adaptiv 2 kolonka), mobil 320–430 (1 kolonka, horizontal
+   scroll YO'Q, touch target 44px+).
+   ============================================================ */
+
+.nd {
+  display: grid;
+  gap: 22px;
+  width: 100%;
+  max-width: 1440px;
+  margin: 0 auto;
+}
+
+/* ---------- Umumiy qatorlar ---------- */
+.nd-row {
+  display: grid;
+  gap: 22px;
+  min-width: 0;
+}
+.nd-row-2 { grid-template-columns: 1.2fr 1fr; }
+.nd-row-3 { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+
+/* ---------- Karta bazasi ---------- */
+.nd-card {
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: 24px;
+  box-shadow: var(--shadow-soft);
+  padding: 22px 24px;
+  min-width: 0;
+  backdrop-filter: var(--glass);
+  -webkit-backdrop-filter: var(--glass);
+}
+.nd-card-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  margin-bottom: 16px;
+}
+.nd-chip-note {
+  font-size: .68rem;
+  font-weight: 700;
+  letter-spacing: .08em;
+  color: var(--secondary);
+  background: var(--primary-soft);
+  border: 1px solid var(--border);
+  border-radius: 999px;
+  padding: 4px 10px;
+}
+.nd-card-title {
+  font-size: 1.02rem;
+  font-weight: 700;
+  letter-spacing: .01em;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin: 0;
+}
+
+/* ---------- Hero ---------- */
+.nd-hero {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 24px;
+  padding: 26px 30px;
+  border: 1px solid var(--border);
+  border-radius: 28px;
+  background:
+    radial-gradient(900px 260px at 88% -40%, var(--primary-soft), transparent 65%),
+    radial-gradient(600px 220px at 10% 120%, rgba(6, 182, 212, .08), transparent 60%),
+    var(--card);
+  box-shadow: var(--shadow-soft);
+  min-width: 0;
+}
+.nd-hero-text { min-width: 0; }
+.nd-hero-kicker {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  font-size: .8rem;
+  font-weight: 600;
+  color: var(--secondary);
+  background: var(--primary-soft);
+  border: 1px solid var(--border);
+  border-radius: 999px;
+  padding: 6px 14px;
+  margin-bottom: 12px;
+}
+.nd-hero-title {
+  font-size: clamp(1.35rem, 2.2vw, 1.8rem);
+  font-weight: 800;
+  line-height: 1.25;
+  margin: 0 0 6px;
+}
+.nd-hero-name { color: var(--primary); }
+.nd-hero-sub {
+  color: var(--muted);
+  font-size: .95rem;
+  margin: 0 0 16px;
+  max-width: 46ch;
+}
+.nd-hero-meta {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+.nd-hero-avatar {
+  width: 44px;
+  height: 44px;
+  flex: 0 0 44px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.35rem;
+  border-radius: 14px;
+  background: var(--primary-soft);
+  border: 1px solid var(--border);
+}
+.nd-hero-level {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+.nd-hero-level-badge {
+  font-size: .78rem;
+  font-weight: 700;
+  color: var(--primary);
+  background: var(--primary-soft);
+  border: 1px solid var(--border-focus);
+  border-radius: 999px;
+  padding: 5px 12px;
+  white-space: nowrap;
+}
+.nd-hero-xp {
+  width: 140px;
+  height: 8px;
+  border-radius: 999px;
+  background: var(--primary-soft);
+  border: 1px solid var(--border);
+  overflow: hidden;
+}
+.nd-hero-xp-fill {
+  display: block;
+  height: 100%;
+  width: 0%;
+  border-radius: inherit;
+  background: linear-gradient(90deg, var(--primary), var(--secondary));
+  transition: width .8s cubic-bezier(.16, 1, .3, 1);
+}
+.nd-hero-xp-text {
+  font-size: .78rem;
+  color: var(--muted);
+  white-space: nowrap;
+}
+.nd-hero-robot {
+  flex: 0 0 auto;
+  width: 148px;
+  display: flex;
+  justify-content: center;
+}
+.nd-hero-robot .mascot { transform: scale(.92); transform-origin: center; }
+
+/* ---------- Bugungi progress ---------- */
+.nd-today {
+  display: flex;
+  align-items: center;
+  gap: 26px;
+  flex-wrap: wrap;
+}
+.nd-ring-wrap {
+  position: relative;
+  width: 132px;
+  height: 132px;
+  flex: 0 0 132px;
+}
+.nd-ring { width: 100%; height: 100%; transform: rotate(-90deg); }
+.nd-ring-track {
+  fill: none;
+  stroke: var(--primary-soft);
+  stroke-width: 11;
+}
+.nd-ring-fill {
+  fill: none;
+  stroke: var(--primary);
+  stroke-width: 11;
+  stroke-linecap: round;
+  transition: stroke-dashoffset 1s cubic-bezier(.16, 1, .3, 1);
+}
+.nd-ring-caption {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 0;
+}
+.nd-ring-caption b { font-size: 1.7rem; line-height: 1.1; }
+.nd-ring-caption span { font-size: .75rem; color: var(--muted); }
+.nd-today-side { flex: 1; min-width: 200px; }
+.nd-facts {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 8px;
+  margin: 0 0 10px;
+  padding: 0;
+  list-style: none;
+}
+.nd-facts li {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  background: var(--primary-soft);
+  border: 1px solid var(--border);
+  border-radius: 14px;
+  padding: 9px 12px;
+  font-size: .85rem;
+  min-width: 0;
+}
+.nd-fact-ico { flex: 0 0 auto; }
+.nd-fact-t { color: var(--muted); flex: 1; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.nd-fact-v { font-weight: 700; white-space: nowrap; }
+.nd-hint {
+  color: var(--muted);
+  font-size: .84rem;
+  margin: 8px 0 0;
+}
+.nd-hint--ok { color: var(--success); font-weight: 600; }
+
+/* ---------- Streak ---------- */
+.nd-streak-body { display: grid; gap: 14px; }
+.nd-streak-num {
+  display: flex;
+  align-items: baseline;
+  gap: 10px;
+}
+.nd-streak-num b { font-size: 2.3rem; line-height: 1; }
+.nd-streak-num span:last-child { color: var(--muted); font-size: .9rem; }
+.nd-streak-flame { font-size: 1.5rem; align-self: center; }
+.nd-week {
+  display: grid;
+  grid-template-columns: repeat(7, minmax(0, 1fr));
+  gap: 6px;
+}
+.nd-day {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 10px;
+  border: 1px solid var(--border);
+  background: transparent;
+  min-height: 34px;
+  font-size: .72rem;
+  color: var(--muted);
+}
+.nd-day i { font-style: normal; }
+.nd-day--today { border-color: var(--border-focus); }
+.nd-day--on {
+  background: linear-gradient(135deg, var(--primary), var(--secondary));
+  color: #fff;
+  border-color: transparent;
+}
+
+/* ---------- Current lesson ---------- */
+.nd-lesson {
+  display: flex;
+  align-items: center;
+  gap: 18px;
+  flex-wrap: wrap;
+}
+.nd-lesson-icon {
+  width: 56px;
+  height: 56px;
+  flex: 0 0 56px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.6rem;
+  border-radius: 18px;
+  background: var(--primary-soft);
+  border: 1px solid var(--border);
+}
+.nd-lesson-info { flex: 1; min-width: 220px; }
+.nd-lesson-course {
+  font-size: .78rem;
+  font-weight: 600;
+  color: var(--secondary);
+  text-transform: uppercase;
+  letter-spacing: .06em;
+}
+.nd-lesson-title {
+  margin: 4px 0 8px;
+  font-size: 1.08rem;
+  font-weight: 700;
+}
+.nd-lesson-meta {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  font-size: .82rem;
+  color: var(--muted);
+  margin-bottom: 10px;
+  flex-wrap: wrap;
+}
+.nd-xp-chip {
+  display: inline-flex;
+  align-items: center;
+  font-size: .78rem;
+  font-weight: 700;
+  color: var(--warning);
+  background: rgba(245, 158, 11, .12);
+  border: 1px solid rgba(245, 158, 11, .25);
+  border-radius: 999px;
+  padding: 3px 10px;
+}
+.nd-lesson-progress {
+  height: 8px;
+  border-radius: 999px;
+  background: var(--primary-soft);
+  border: 1px solid var(--border);
+  overflow: hidden;
+}
+.nd-lesson-progress span {
+  display: block;
+  height: 100%;
+  border-radius: inherit;
+  background: linear-gradient(90deg, var(--primary), var(--secondary));
+  transition: width .8s cubic-bezier(.16, 1, .3, 1);
+}
+.nd-lesson-pct { font-size: .78rem; color: var(--muted); }
+.nd-lesson-cta { flex: 0 0 auto; }
+.nd-lesson-done {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 8px;
+}
+.nd-lesson-done h3 { margin: 0; }
+.nd-lesson-done p { margin: 0; color: var(--muted); font-size: .9rem; }
+
+/* ---------- Quick actions ---------- */
+.nd-quick {
+  display: grid;
+  grid-template-columns: repeat(6, minmax(0, 1fr));
+  gap: 12px;
+}
+.nd-quick-btn {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  min-height: 88px;
+  padding: 12px 8px;
+  border-radius: 20px;
+  border: 1px solid var(--border);
+  background: var(--card);
+  color: var(--text);
+  box-shadow: var(--shadow-soft);
+  cursor: pointer;
+  transition: transform .18s ease, border-color .18s ease, background .18s ease;
+  min-width: 0;
+  font: inherit;
+}
+.nd-quick-btn:hover {
+  transform: translateY(-3px);
+  border-color: var(--border-focus);
+  background: var(--card-hover);
+}
+.nd-quick-btn:active { transform: translateY(-1px) scale(.98); }
+.nd-quick-ico { font-size: 1.4rem; }
+.nd-quick-t { font-size: .8rem; font-weight: 600; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 100%; }
+
+/* ---------- Kichik KV ro'yxatlar (Test / Duel) ---------- */
+.nd-kv {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 9px 0;
+  border-bottom: 1px dashed var(--border);
+  font-size: .9rem;
+}
+.nd-kv:last-of-type { border-bottom: none; }
+.nd-kv-l { color: var(--muted); }
+.nd-kv-v { font-weight: 700; white-space: nowrap; }
+.nd-mini-bar {
+  height: 7px;
+  border-radius: 999px;
+  background: var(--primary-soft);
+  border: 1px solid var(--border);
+  overflow: hidden;
+  margin: 4px 0 12px;
+}
+.nd-mini-bar span {
+  display: block;
+  height: 100%;
+  border-radius: inherit;
+  background: linear-gradient(90deg, var(--primary), var(--secondary));
+  transition: width .8s cubic-bezier(.16, 1, .3, 1);
+}
+.nd-goal-line {
+  display: flex;
+  justify-content: space-between;
+  font-size: .8rem;
+  color: var(--muted);
+  margin-top: 8px;
+}
+
+/* ---------- Challenge ---------- */
+.nd-challenge-task { margin: 0 0 10px; font-size: .92rem; line-height: 1.5; }
+.nd-challenge-title { color: var(--muted); font-size: .86rem; }
+.nd-challenge-meta {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-size: .8rem;
+  color: var(--muted);
+  margin-bottom: 12px;
+  flex-wrap: wrap;
+}
+.nd-card--challenge { position: relative; }
+.nd-card--challenge::before {
+  content: '';
+  position: absolute;
+  inset: -1px;
+  border-radius: inherit;
+  background: linear-gradient(120deg, transparent 20%, rgba(245, 158, 11, .07) 40%, transparent 60%);
+  background-size: 250% 100%;
+  animation: ndChShimmer 4.5s ease-in-out infinite;
+  pointer-events: none;
+}
+.nd-card--done::before { display: none; }
+@keyframes ndChShimmer {
+  0%, 60% { background-position: 130% 0; }
+  100% { background-position: -130% 0; }
+}
+.nd-flash { animation: ndFlash .9s ease; }
+@keyframes ndFlash {
+  0% { box-shadow: 0 0 0 0 rgba(245, 158, 11, .45); }
+  100% { box-shadow: 0 0 0 14px rgba(245, 158, 11, 0); }
+}
+
+/* ---------- Stats (compact horizontal) ---------- */
+.nd-stats-body {
+  display: flex;
+  align-items: stretch;
+  justify-content: space-around;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+.nd-stat {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  background: var(--primary-soft);
+  border: 1px solid var(--border);
+  border-radius: 16px;
+  padding: 12px 16px;
+  min-height: 52px;
+  font: inherit;
+  color: inherit;
+  cursor: pointer;
+  transition: transform .18s ease, border-color .18s ease;
+  min-width: 0;
+}
+.nd-stat:hover { transform: translateY(-2px); border-color: var(--border-focus); }
+.nd-stat b { font-size: 1.15rem; }
+.nd-stat span:last-child { color: var(--muted); font-size: .82rem; white-space: nowrap; }
+.nd-stat-ico { font-size: 1.1rem; }
+.nd-stat-sep { width: 1px; background: var(--border); align-self: stretch; }
+
+/* ---------- Next goal ---------- */
+.nd-goal-top {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  gap: 12px;
+  margin-bottom: 10px;
+}
+.nd-goal-lvl { font-weight: 700; }
+.nd-goal-xp { color: var(--muted); font-size: .84rem; white-space: nowrap; }
+.nd-goal-bar {
+  height: 10px;
+  border-radius: 999px;
+  background: var(--primary-soft);
+  border: 1px solid var(--border);
+  overflow: hidden;
+}
+.nd-goal-bar span {
+  display: block;
+  height: 100%;
+  border-radius: inherit;
+  background: linear-gradient(90deg, var(--primary), var(--secondary));
+  transition: width .9s cubic-bezier(.16, 1, .3, 1);
+}
+
+/* ---------- Activity feed ---------- */
+.nd-feed { display: grid; gap: 4px; margin: 0; padding: 0; list-style: none; }
+.nd-feed-item {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 10px 6px;
+  border-bottom: 1px dashed var(--border);
+  min-width: 0;
+}
+.nd-feed-item:last-child { border-bottom: none; }
+.nd-feed-ico { flex: 0 0 auto; font-size: 1.05rem; }
+.nd-feed-text { flex: 1; min-width: 0; display: flex; flex-direction: column; gap: 2px; }
+.nd-feed-text b {
+  font-weight: 600;
+  font-size: .88rem;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.nd-feed-text span { color: var(--muted); font-size: .78rem; }
+.nd-feed-time { flex: 0 0 auto; color: var(--muted); font-size: .75rem; white-space: nowrap; }
+
+/* ---------- Empty states ---------- */
+.nd-empty {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 8px;
+  padding: 10px 0;
+}
+.nd-empty--row {
+  flex-direction: row;
+  align-items: center;
+  gap: 14px;
+  flex-wrap: wrap;
+}
+.nd-empty--row p { margin: 0; }
+.nd-empty--row div { flex: 1; min-width: 160px; }
+.nd-empty h3 { margin: 0; font-size: 1rem; }
+.nd-empty p { margin: 0; color: var(--muted); font-size: .88rem; }
+.nd-empty-ico {
+  width: 48px;
+  height: 48px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.5rem;
+  border-radius: 16px;
+  background: var(--primary-soft);
+  border: 1px solid var(--border);
+}
+
+/* ---------- Tugmalar ---------- */
+.nd-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  min-height: 44px;
+  padding: 10px 18px;
+  border-radius: 14px;
+  font: inherit;
+  font-weight: 600;
+  font-size: .9rem;
+  cursor: pointer;
+  border: 1px solid transparent;
+  transition: transform .18s ease, box-shadow .18s ease, background .18s ease, border-color .18s ease;
+  white-space: nowrap;
+}
+.nd-btn--primary {
+  color: #fff;
+  background: linear-gradient(135deg, var(--primary), var(--secondary));
+  box-shadow: var(--shadow-soft), var(--glow);
+}
+.nd-btn--primary:hover { transform: translateY(-2px); box-shadow: var(--shadow), var(--glow); }
+.nd-btn--ghost {
+  color: var(--text);
+  background: transparent;
+  border-color: var(--border);
+}
+.nd-btn--ghost:hover { border-color: var(--border-focus); background: var(--primary-soft); }
+.nd-btn--warning {
+  color: #fff;
+  background: linear-gradient(135deg, var(--warning), #fbbf24);
+}
+.nd-btn--warning:hover { transform: translateY(-2px); box-shadow: var(--shadow-soft); }
+.nd-btn--lg { width: 100%; min-width: 180px; }
+.nd-btn:active { transform: translateY(0) scale(.98); }
+
+/* Joriy dars tugmasi — subtle pulse */
+.nd-pulse { animation: ndPulse 2.6s ease-in-out infinite; }
+@keyframes ndPulse {
+  0%, 100% { box-shadow: var(--shadow-soft), 0 0 0 0 rgba(99, 102, 241, .28); }
+  50% { box-shadow: var(--shadow-soft), 0 0 0 8px rgba(99, 102, 241, 0); }
+}
+
+/* ---------- Reveal (staggered) ---------- */
+.nd-reveal {
+  opacity: 0;
+  transform: translateY(14px);
+  transition: opacity .55s ease, transform .55s cubic-bezier(.16, 1, .3, 1);
+}
+.nd-reveal.nd-in { opacity: 1; transform: none; }
+
+/* ---------- Focus / accessibility ---------- */
+.nd button:focus-visible,
+.nd [role="progressbar"]:focus-visible {
+  outline: 2px solid var(--primary);
+  outline-offset: 2px;
+  border-radius: 12px;
+}
+
+/* =====================================================
+   RESPONSIVE
+   ===================================================== */
+
+/* Desktop kichik (<1280): 3 kolonka → 2 + challenge to'liq kenglik */
+@media (max-width: 1279px) {
+  .nd-row-3 { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .nd-card--challenge { grid-column: 1 / -1; }
+  .nd-quick { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+}
+
+/* Tablet: 768–1024 adaptiv 2 kolonka */
+@media (max-width: 1024px) and (min-width: 769px) {
+  .nd-row-2 { grid-template-columns: 1fr 1fr; }
+  .nd-hero-robot { width: 120px; }
+  .nd-hero-robot .mascot { transform: scale(.75); }
+}
+
+/* Mobil: <768 — 1 kolonka, horizontal scroll YO'Q */
+@media (max-width: 768px) {
+  .nd { gap: 16px; }
+  .nd-row-2,
+  .nd-row-3 { grid-template-columns: 1fr; }
+  .nd-hero {
+    flex-direction: column-reverse;
+    align-items: flex-start;
+    padding: 22px 20px;
+    gap: 12px;
+  }
+  .nd-hero-robot { width: 110px; align-self: center; }
+  .nd-hero-robot .mascot { transform: scale(.68); }
+  .nd-hero-sub { max-width: 100%; }
+  .nd-card { padding: 18px; border-radius: 22px; }
+  .nd-quick { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .nd-quick-btn { min-height: 84px; }
+  .nd-facts { grid-template-columns: 1fr 1fr; }
+  .nd-today { gap: 18px; }
+  .nd-lesson-cta { width: 100%; }
+  .nd-btn--lg { min-width: 0; width: 100%; }
+  .nd-stats-body { justify-content: flex-start; }
+}
+
+/* Juda tor mobil (≤360): text kesilmasin */
+@media (max-width: 360px) {
+  .nd-hero { padding: 18px 16px; }
+  .nd-facts { grid-template-columns: 1fr; }
+  .nd-week { gap: 4px; }
+  .nd-day { font-size: .66rem; }
+  .nd-hero-xp { width: 110px; }
+}
+
+/* =====================================================
+   REDUCED MOTION
+   ===================================================== */
+@media (prefers-reduced-motion: reduce) {
+  .nd *,
+  .nd *::before,
+  .nd *::after {
+    animation: none !important;
+    transition: none !important;
+  }
+  .nd-reveal { opacity: 1; transform: none; }
+  .nd-ring-fill { transition: none !important; }
+}

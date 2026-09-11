@@ -1318,193 +1318,24 @@ function updateDuelStatsUI() {
 }
 
 function renderDashboard() {
+  /* YANGI DASHBOARD (0 dan qayta qurilgan) — window.ITDashboard.render()
+     real user data bilan render qiladi: hero, bugungi progress, streak,
+     current lesson, quick actions, test/duel/challenge, XP/goal, activity.
+     Eski giant hero, stats-grid, fanlar progressi, chartlar va
+     "So'nggi natijalar" paneli Dashboarddan butunlay olib tashlandi. */
+  if (window.ITDashboard && typeof window.ITDashboard.render === "function") {
+    try {
+      window.ITDashboard.render();
+      return;
+    } catch (e) {
+      console.warn("Dashboard render xatosi:", e);
+    }
+  }
+  /* Fallback: dashboard.js moduli hali yuklanmagan bo'lsa — minimal welcome */
   const u = currentUser;
   if (!u) return;
-  const xp = u.xp || 0;
-  const lvl = u.level || 1;
-  $("#welcomeMini").textContent = `Salom, ${u.firstname} 👋`;
-  $("#dashLevelBadge").textContent = `Level ${lvl}`;
-  const xpp = xpProgress(xp);
-  $("#dashXpText").textContent = `${xpp.current} XP`;
-  $("#dashXpNext").textContent = `/ ${xpp.next} XP`;
-  $("#dashXpFill").style.width = `${xpp.percent}%`;
-
-  const s = userStats(u);
-  $("#statXp").textContent = u.points || 0;
-  $("#statTests").textContent = s.total;
-  $("#statAvg").textContent = `${s.avgPercent}%`;
-  $("#statStreak").textContent = u.streak || 0;
-
-  updateDuelStatsUI();
-
-  // Fanlar progress
-  const sp = $("#subjectProgress");
-  sp.innerHTML = "";
-  for (const sbj of SUBJECTS) {
-    const st = s.bySubject[sbj.name] || { count: 0, totalScore: 0, bestScore: 0 };
-    const maxBest = MAX_SCORE_PER_TEST * 9;
-    const percent = maxBest ? Math.min(100, Math.round((st.bestScore * 100) / maxBest)) : 0;
-    const row = document.createElement("div");
-    row.className = "progress-item";
-    row.innerHTML = `
-      <div class="progress-item-head">
-        <span><strong>${sbj.icon}</strong> ${sbj.name}</span>
-        <span class="muted">${st.count} ta · ${percent}%</span>
-      </div>
-      <div class="progress-bar"><div class="progress-fill" style="width:${percent}%"></div></div>
-    `;
-    sp.appendChild(row);
-  }
-
-  // Recent results
-  const rr = $("#recentResults");
-  rr.innerHTML = "";
-  const recent = (u.testResults || []).slice().sort((a, b) => b.timestamp - a.timestamp).slice(0, 5);
-  if (!recent.length) rr.innerHTML = `<div class="empty-state"><div class="empty-state-icon">📝</div><h3>Hali test ishlanmagan</h3><p>Testlarni boshlash uchun Testlar sahifasiga o'ting</p></div>`;
-  for (const r of recent) {
-    const d = new Date(r.timestamp);
-    const dateStr = `${d.getDate()}/${d.getMonth() + 1}`;
-    const el = document.createElement("div");
-    el.className = "recent-item";
-    el.innerHTML = `
-      <div class="recent-item-info">
-        <div class="recent-item-name">${SUBJECTS.find(x => x.name === r.subject)?.icon || '📝'} ${r.subject} · ${r.title}</div>
-        <div class="recent-item-sub">${dateStr} · ${DIFFICULTY_LABELS[r.difficulty] || ''}</div>
-      </div>
-      <div class="recent-item-score">
-        <div class="recent-item-pct">${r.score}/50 · ${r.percent}%</div>
-        <span class="badge ${r.passed ? 'badge-success' : 'badge-danger'}">${r.passed ? 'PASSED' : 'FAILED'}</span>
-      </div>
-    `;
-    rr.appendChild(el);
-  }
-
-  // CHARTS
-  renderLineChart(u);
-  renderDonutChart(u);
-}
-
-/* ---------- CHARTS ---------- */
-function renderLineChart(u) {
-  const container = $("#lineChartContainer");
-  if (!container) return;
-  const all = (u.testResults || []).slice().sort((a, b) => a.timestamp - b.timestamp);
-  const lastN = all.slice(-10);
-
-  const subTitle = $("#chartSubtitle");
-  if (subTitle) subTitle.textContent = all.length ? `Oxirgi ${lastN.length} ta test · jami ${all.length}` : "Hali test ishlanmagan";
-
-  if (!lastN.length) {
-    container.innerHTML = `<div class="line-chart-empty"><div class="big-icon">📊</div><div>Test ishlaganingizda bu yerda progress grafigi ko'rinadi</div></div>`;
-    return;
-  }
-
-  const W = 800, H = 260, P = { l: 40, r: 20, t: 20, b: 34 };
-  const chartW = W - P.l - P.r, chartH = H - P.t - P.b;
-  const n = lastN.length;
-
-  const x = i => P.l + (chartW * i) / Math.max(1, n - 1);
-  const y = v => P.t + chartH - (v / 100) * chartH;
-  const yPass = y(50);
-
-  const pts = lastN.map((r, i) => [x(i), y(r.percent)]);
-  const linePath = pts.map((p, i) => `${i === 0 ? 'M' : 'L'} ${p[0]} ${p[1]}`).join(' ');
-  const areaPath = `${linePath} L ${pts[pts.length - 1][0]} ${P.t + chartH} L ${pts[0][0]} ${P.t + chartH} Z`;
-
-  let gridLines = '';
-  [0, 25, 50, 75, 100].forEach(v => {
-    const yy = y(v);
-    gridLines += `<line x1="${P.l}" y1="${yy}" x2="${W - P.r}" y2="${yy}" stroke="var(--border)" stroke-dasharray="${v === 50 ? '6 4' : '3 3'}" stroke-width="1" opacity="${v === 50 ? '0.8' : '0.45'}" />`;
-    gridLines += `<text x="${P.l - 8}" y="${yy + 4}" text-anchor="end" font-size="10" fill="var(--muted)" opacity="0.9">${v}%</text>`;
-  });
-
-  let xLabels = '';
-  lastN.forEach((r, i) => {
-    const d = new Date(r.timestamp);
-    const label = n <= 5 ? `${d.getDate()}/${d.getMonth() + 1}` : (i % Math.ceil(n / 5) === 0 || i === n - 1 ? `T${i + 1}` : '');
-    if (label) {
-      xLabels += `<text x="${x(i)}" y="${H - 12}" text-anchor="middle" font-size="10" fill="var(--muted)" opacity="0.9">${label}</text>`;
-    }
-  });
-
-  let ptsMarkers = '';
-  pts.forEach((p, i) => {
-    const r = lastN[i];
-    ptsMarkers += `<circle cx="${p[0]}" cy="${p[1]}" r="4.5" fill="${r.passed ? 'var(--success)' : 'var(--primary)'}" stroke="#fff" stroke-width="2"/>`;
-    ptsMarkers += `<title>${r.subject} · ${r.title} — ${r.percent}%${r.passed ? ' (PASSED)' : ''}</title>`;
-  });
-
-  container.innerHTML = `
-    <svg viewBox="0 0 ${W} ${H}" preserveAspectRatio="none" xmlns="http://www.w3.org/2000/svg">
-      <defs>
-        <linearGradient id="areaGrad" x1="0" x2="0" y1="0" y2="1">
-          <stop offset="0%" stop-color="var(--primary)" stop-opacity="0.35"/>
-          <stop offset="100%" stop-color="var(--primary)" stop-opacity="0"/>
-        </linearGradient>
-      </defs>
-      ${gridLines}
-      <line x1="${P.l}" y1="${yPass}" x2="${W - P.r}" y2="${yPass}" stroke="var(--success)" stroke-width="2" stroke-dasharray="8 6" opacity="0.75"/>
-      <path d="${areaPath}" fill="url(#areaGrad)"/>
-      <path d="${linePath}" fill="none" stroke="var(--primary)" stroke-width="3" stroke-linejoin="round" stroke-linecap="round"/>
-      ${ptsMarkers}
-      ${xLabels}
-    </svg>
-  `;
-}
-
-function renderDonutChart(u) {
-  const wrap = $("#donutChart");
-  if (!wrap) return;
-  const all = u.testResults || [];
-  const totals = { correct: 0, incorrect: 0, skipped: 0 };
-  all.forEach(r => {
-    totals.correct += r.correct || 0;
-    totals.incorrect += r.incorrect || 0;
-    totals.skipped += r.skipped || 0;
-  });
-
-  $("#csCorrect").textContent = totals.correct;
-  $("#csWrong").textContent = totals.incorrect;
-  $("#csSkipped").textContent = totals.skipped;
-
-  const sum = totals.correct + totals.incorrect + totals.skipped;
-  if (!sum) {
-    wrap.innerHTML = `<div class="donut-empty"><div style="font-size:56px;opacity:0.5">🎯</div><div>Ma'lumotlar mavjud emas</div></div>`;
-    return;
-  }
-
-  const pct = Math.round((totals.correct / sum) * 100);
-  const R = 78, C = 2 * Math.PI * R, CX = 100, CY = 100;
-  const segments = [
-    { val: totals.correct, color: 'var(--success)', label: 'correct' },
-    { val: totals.incorrect, color: 'var(--danger)', label: 'wrong' },
-    { val: totals.skipped, color: 'var(--muted)', label: 'skipped' },
-  ];
-
-  let offset = 0;
-  let circles = '';
-  segments.forEach(s => {
-    if (!s.val) return;
-    const len = (s.val / sum) * C;
-    circles += `<circle cx="${CX}" cy="${CY}" r="${R}"
-      stroke="${s.color}" stroke-width="22" fill="none"
-      stroke-dasharray="${len.toFixed(3)} ${C.toFixed(3)}"
-      stroke-dashoffset="${(-offset).toFixed(3)}"
-      stroke-linecap="butt"
-      transform="rotate(-90 ${CX} ${CY})" />`;
-    offset += len;
-  });
-
-  wrap.innerHTML = `
-    <svg viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg">
-      <circle cx="${CX}" cy="${CY}" r="${R}" stroke="var(--bg)" stroke-width="22" fill="none"/>
-      ${circles}
-    </svg>
-    <div class="donut-center-text">
-      <span class="dc-big">${pct}%</span>
-      <span class="dc-small">Aniqlik</span>
-    </div>
-  `;
+  const nameEl = $("#ndHeroName");
+  if (nameEl) nameEl.textContent = u.firstname || u.username || "Foydalanuvchi";
 }
 
 /* ====================== TESTS PAGE (fanlar grid) ====================== */

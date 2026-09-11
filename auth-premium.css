@@ -1,0 +1,1019 @@
+/* =====================================================================
+   ITTEST AUTH — PREMIUM RESPONSIVE REDESIGN
+   Dark: cinematic tech  ·  Light: clean futuristic  ·  Mobile-first
+   Layers: bg 0 | grid 1 | particles 2 | robot 3 | chips 4 | content 10
+   Barcha dekorativ qatlamlar: pointer-events: none
+   Eslatma: bu fayl style.css'dagi eski .auth-* qoidalarini
+   .auth-screen scope bilan soyab qiladi — app qismiga tegmaydi.
+   ===================================================================== */
+
+/* ---------- TOKENS (DARK default) ---------- */
+.auth-screen {
+  --ab-0: #050816;
+  --ab-1: #07111f;
+  --ab-2: #08182a;
+  --ab-acc: #2563eb;
+  --ab-acc2: #4f46e5;
+  --ab-acc3: #38bdf8;
+  --ab-card: rgba(7, 17, 31, 0.68);
+  --ab-card-brd: rgba(90, 140, 220, 0.16);
+  --ab-input: #060b16;
+  --ab-input-brd: rgba(96, 140, 200, 0.2);
+  --ab-text: #f4f8ff;
+  --ab-muted: #8ca3c3;
+  --ab-label: #a9c0e2;
+  --ab-chip-bg: rgba(13, 28, 52, 0.55);
+  --ab-chip-brd: rgba(96, 150, 235, 0.25);
+  --ab-chip-text: #9db8df;
+  --ab-grid: rgba(56, 130, 246, 0.06);
+  --ab-halo: rgba(37, 99, 235, 0.32);
+  --ab-part: #38bdf8;
+  --ab-tabbg: rgba(4, 10, 22, 0.6);
+  --ab-shadow: 0 32px 90px rgba(1, 5, 18, 0.65);
+  color: var(--ab-text);
+  position: relative;
+  min-height: 100vh;
+  min-height: 100svh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow-x: hidden;
+  background: var(--ab-1);
+}
+
+/* ---------- LIGHT TOKENS ---------- */
+[data-theme="light"] .auth-screen {
+  --ab-card: rgba(255, 255, 255, 0.78);
+  --ab-card-brd: #dce7f5;
+  --ab-input: #f7faff;
+  --ab-input-brd: #d7e3f4;
+  --ab-text: #0b1b33;
+  --ab-muted: #5a6b85;
+  --ab-label: #33486b;
+  --ab-chip-bg: rgba(255, 255, 255, 0.66);
+  --ab-chip-brd: rgba(37, 99, 235, 0.14);
+  --ab-chip-text: #3b5a86;
+  --ab-grid: rgba(37, 99, 235, 0.05);
+  --ab-halo: rgba(96, 150, 255, 0.28);
+  --ab-part: #7fb2ff;
+  --ab-tabbg: #eef4fd;
+  --ab-shadow: 0 32px 80px rgba(31, 63, 135, 0.16);
+}
+
+/* ---------- CROSS-FADED GRADIENT BACKDROP (smooth theme switch) ---------- */
+.auth-screen::before,
+.auth-screen::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+  transition: opacity 0.6s ease;
+}
+
+.auth-screen::before {
+  background:
+    radial-gradient(1100px 700px at 85% 110%, rgba(37, 99, 235, 0.16), transparent 60%),
+    radial-gradient(900px 600px at 10% -10%, rgba(79, 70, 229, 0.18), transparent 55%),
+    linear-gradient(135deg, var(--ab-0) 0%, var(--ab-1) 45%, var(--ab-2) 100%);
+  opacity: 1;
+}
+
+.auth-screen::after {
+  background:
+    radial-gradient(1000px 640px at 88% 108%, rgba(37, 99, 235, 0.1), transparent 60%),
+    radial-gradient(820px 560px at 8% -12%, rgba(79, 70, 229, 0.08), transparent 55%),
+    linear-gradient(135deg, #ffffff 0%, #f7faff 48%, #eef5ff 100%);
+  opacity: 0;
+}
+
+[data-theme="light"] .auth-screen::before { opacity: 0; }
+[data-theme="light"] .auth-screen::after { opacity: 1; }
+
+/* ---------- BACKGROUND LAYER (z:0) ---------- */
+.auth-screen .auth-bg {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+  overflow: hidden;
+  animation: authBgFade 1.4s ease backwards;
+}
+
+@keyframes authBgFade {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+/* Soft glow orbs (bokeh atmosphere) */
+.auth-screen .orb {
+  position: absolute;
+  border-radius: 50%;
+  pointer-events: none;
+  filter: blur(90px);
+  opacity: 0.16;
+  animation: authOrbFloat 14s ease-in-out infinite;
+  transition: opacity 0.5s ease;
+}
+
+.auth-screen .orb-1 { width: 520px; height: 520px; background: #4f46e5; top: -160px; left: -140px; }
+.auth-screen .orb-2 { width: 420px; height: 420px; background: #2563eb; bottom: -120px; right: -100px; animation-delay: -4s; }
+.auth-screen .orb-3 { width: 300px; height: 300px; background: #38bdf8; top: 38%; left: 55%; opacity: 0.1; animation-delay: -8s; }
+
+[data-theme="light"] .auth-screen .orb { opacity: 0.15; filter: blur(80px); }
+[data-theme="light"] .auth-screen .orb-3 { opacity: 0.08; }
+
+@keyframes authOrbFloat {
+  0%, 100% { transform: translate(0, 0) scale(1); }
+  33% { transform: translate(30px, -18px) scale(1.05); }
+  66% { transform: translate(-18px, 22px) scale(0.96); }
+}
+
+/* Digital grid (z:1 ichida, juda nozik) */
+.auth-screen .auth-grid {
+  position: absolute;
+  inset: -2px;
+  z-index: 1;
+  pointer-events: none;
+  background-image:
+    linear-gradient(var(--ab-grid) 1px, transparent 1px),
+    linear-gradient(90deg, var(--ab-grid) 1px, transparent 1px);
+  background-size: 56px 56px;
+  -webkit-mask-image: radial-gradient(ellipse 95% 85% at 50% 45%, #000 25%, transparent 78%);
+  mask-image: radial-gradient(ellipse 95% 85% at 50% 45%, #000 25%, transparent 78%);
+  transition: opacity 0.5s ease;
+}
+
+/* Particles (z:2) — currentColor orqali tema bilan o'zgaradi */
+.auth-screen .auth-particles {
+  position: absolute;
+  inset: 0;
+  z-index: 2;
+  pointer-events: none;
+  color: var(--ab-part);
+  transition: color 0.5s ease;
+}
+
+.auth-screen .auth-particles::before,
+.auth-screen .auth-particles::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 3px;
+  height: 3px;
+  border-radius: 50%;
+  background: currentColor;
+  box-shadow:
+    8vw 14vh 0 0 currentColor, 21vw 76vh 0 -1px currentColor, 33vw 32vh 0 0 currentColor,
+    47vw 9vh 0 -1px currentColor, 57vw 58vh 0 0 currentColor, 71vw 24vh 0 -1px currentColor,
+    83vw 66vh 0 0 currentColor, 93vw 40vh 0 -1px currentColor, 12vw 52vh 0 0 currentColor,
+    65vw 88vh 0 -1px currentColor, 38vw 92vh 0 0 currentColor, 88vw 12vh 0 -1px currentColor;
+  opacity: 0.55;
+  animation: authParticleDrift 22s linear infinite;
+}
+
+.auth-screen .auth-particles--b::before {
+  width: 2px;
+  height: 2px;
+  box-shadow:
+    15vw 24vh 0 0 currentColor, 28vw 66vh 0 -1px currentColor, 42vw 18vh 0 0 currentColor,
+    52vw 82vh 0 -1px currentColor, 63vw 44vh 0 0 currentColor, 76vw 74vh 0 -1px currentColor,
+    91vw 88vh 0 0 currentColor, 6vw 88vh 0 -1px currentColor, 97vw 60vh 0 0 currentColor,
+    35vw 6vh 0 -1px currentColor;
+  opacity: 0.4;
+  animation: authParticleDrift 30s linear infinite reverse;
+}
+
+[data-theme="light"] .auth-screen .auth-particles { opacity: 0.5; }
+
+@keyframes authParticleDrift {
+  from { transform: translate3d(0, 0, 0); }
+  to { transform: translate3d(-10px, -36px, 0); }
+}
+
+/* Abstract digital waves (sahifa chetlarida) */
+.auth-screen .auth-wave {
+  position: absolute;
+  z-index: 1;
+  pointer-events: none;
+  overflow: visible;
+  opacity: 0.6;
+  animation: authWaveDrift 16s ease-in-out infinite alternate;
+  transition: opacity 0.5s ease;
+}
+
+.auth-screen .auth-wave--l {
+  left: -140px;
+  top: -120px;
+  width: min(46vw, 660px);
+  color: #38bdf8;
+}
+
+.auth-screen .auth-wave--r {
+  right: -140px;
+  bottom: -140px;
+  width: min(52vw, 760px);
+  color: #2563eb;
+  animation-duration: 20s;
+  animation-delay: -6s;
+}
+
+[data-theme="light"] .auth-screen .auth-wave--l { opacity: 0.32; }
+[data-theme="light"] .auth-screen .auth-wave--r { opacity: 0.26; }
+
+@keyframes authWaveDrift {
+  from { transform: translate3d(0, 0, 0); }
+  to { transform: translate3d(26px, 14px, 0); }
+}
+
+/* ---------- ROBOT MASCOT (z:3) — ITTest brand mascot ---------- */
+.auth-screen .auth-robot {
+  position: absolute;
+  z-index: 3;
+  left: 2vw;
+  bottom: 0;
+  width: min(30vw, 480px);
+  min-width: 320px;
+  height: 74%;
+  max-height: 780px;
+  pointer-events: none;
+  will-change: transform;
+  transition: opacity 0.6s ease;
+  animation: authRobotIn 1.1s cubic-bezier(0.16, 1, 0.3, 1) 0.15s backwards;
+}
+
+@keyframes authRobotIn {
+  from { opacity: 0; transform: scale(0.92) translateY(30px); }
+  to { opacity: 1; transform: scale(1) translateY(0); }
+}
+
+/* Binance-style peek animation — img qatlamida, idle'n faqat boshida.
+   (Parallax tashqi .auth-robot'da, float .auth-robot-inner'da —
+   transform zanjiri bir-birini buzmaydi.) */
+.auth-screen.auth-robot-peek .auth-robot-peeker {
+  animation: authRobotPeek 13s ease-in-out 1.6s infinite;
+  will-change: transform;
+}
+
+@keyframes authRobotPeek {
+  0%, 58% { transform: translateX(0) translateY(0); }
+  63%, 78% { transform: translateX(44px) translateY(-14px); }
+  82%, 100% { transform: translateX(0) translateY(0); }
+}
+
+/* Light-blue halo (ayniqsa light tema uchun) */
+.auth-screen .auth-robot-halo {
+  position: absolute;
+  left: 50%;
+  top: 52%;
+  width: 92%;
+  aspect-ratio: 1;
+  transform: translate(-50%, -50%);
+  border-radius: 50%;
+  background: radial-gradient(circle, var(--ab-halo) 0%, transparent 66%);
+  filter: blur(30px);
+  transition: background 0.5s ease;
+}
+
+/* Inner: float breathing — hover holatdan mustaqil animatsiya */
+.auth-screen .auth-robot-inner {
+  position: absolute;
+  inset: 0;
+  animation: authRobotFloat 6.5s ease-in-out infinite;
+}
+
+@keyframes authRobotFloat {
+  0%, 100% { transform: translate3d(0, 0, 0); }
+  50% { transform: translate3d(0, -16px, 0); }
+}
+
+.auth-screen .auth-robot-img {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  object-position: center bottom;
+  -webkit-user-drag: none;
+  user-select: none;
+  /* Semi-background: biroz qoraytirilgan, blue rim light hissi */
+  filter: brightness(0.82) saturate(1.05) drop-shadow(0 30px 60px rgba(2, 8, 26, 0.6));
+  transition: filter 0.5s ease;
+}
+
+[data-theme="light"] .auth-screen .auth-robot {
+  --ab-halo: rgba(96, 150, 255, 0.3);
+}
+
+[data-theme="light"] .auth-screen .auth-robot-img {
+  filter: brightness(1.03) contrast(1.02) drop-shadow(0 26px 48px rgba(43, 92, 176, 0.35));
+}
+
+/* Glossy sweep — robot bo'ylab har 7s da o'tadigan yorug'lik */
+.auth-screen .auth-robot-sweep {
+  position: absolute;
+  inset: 6% 18% 10% 18%;
+  pointer-events: none;
+  background: linear-gradient(115deg, transparent 40%, rgba(160, 210, 255, 0.14) 50%, transparent 60%);
+  transform: translateX(-120%);
+  animation: authRobotSweep 7s ease-in-out infinite;
+}
+
+@keyframes authRobotSweep {
+  0%, 55% { transform: translateX(-120%); }
+  75%, 100% { transform: translateX(120%); }
+}
+
+/* Pod / glow beneath */
+.auth-screen .auth-robot-glow {
+  position: absolute;
+  left: 50%;
+  bottom: 4%;
+  width: 58%;
+  height: 34px;
+  transform: translateX(-50%);
+  border-radius: 50%;
+  background: radial-gradient(ellipse, rgba(56, 140, 255, 0.4), transparent 70%);
+  filter: blur(12px);
+  transition: background 0.5s ease;
+}
+
+[data-theme="light"] .auth-screen .auth-robot-glow {
+  background: radial-gradient(ellipse, rgba(70, 130, 235, 0.3), transparent 70%);
+}
+
+/* Asset yuklanmasa — layout buzilmasin */
+.auth-screen .auth-robot-broken { display: none; }
+
+/* ---------- FLOATING TECH CHIPS (z:4) ---------- */
+.auth-screen .auth-chips {
+  position: absolute;
+  inset: 0;
+  z-index: 4;
+  pointer-events: none;
+  will-change: transform;
+}
+
+.auth-screen .tech-chip {
+  position: absolute;
+  pointer-events: none;
+  padding: 9px 16px;
+  border-radius: 14px;
+  background: var(--ab-chip-bg);
+  border: 1px solid var(--ab-chip-brd);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  color: var(--ab-chip-text);
+  font-weight: 700;
+  font-size: 14px;
+  letter-spacing: 0.04em;
+  white-space: nowrap;
+  box-shadow: 0 14px 34px rgba(2, 8, 26, 0.35);
+  transition: background 0.5s ease, border-color 0.5s ease, color 0.5s ease, box-shadow 0.5s ease;
+  animation: authChipFloat 8s ease-in-out infinite;
+}
+
+[data-theme="light"] .auth-screen .tech-chip {
+  box-shadow: 0 12px 28px rgba(46, 90, 175, 0.12);
+}
+
+.auth-screen .tech-chip i {
+  font-style: normal;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+
+/* Monospace glyphs biroz boshqacha uslubda */
+.auth-screen .tech-chip.tc-1 i,
+.auth-screen .tech-chip.tc-2 i,
+.auth-screen .tech-chip.tc-3 i {
+  font-family: 'Cascadia Code', 'Fira Code', Consolas, monospace;
+  color: var(--ab-acc3);
+  font-weight: 600;
+}
+
+[data-theme="light"] .auth-screen .tech-chip.tc-1 i,
+[data-theme="light"] .auth-screen .tech-chip.tc-2 i,
+[data-theme="light"] .auth-screen .tech-chip.tc-3 i { color: #2563eb; }
+
+/* Pozitsiyalar — kompozitsiya muvozanatli, tasodifiy emas */
+.auth-screen .tc-1 { top: 17%; left: 6.5%; animation-duration: 7.5s; }
+.auth-screen .tc-2 { top: 37%; left: 15%; animation-duration: 9s; animation-delay: -2s; }
+.auth-screen .tc-3 { top: 68%; left: 5.5%; animation-duration: 8.5s; animation-delay: -4s; }
+.auth-screen .tc-4 { top: 27%; left: 22%; font-size: 15px; animation-duration: 10s; animation-delay: -1s; }
+.auth-screen .tc-5 { top: 55%; left: 19%; animation-duration: 9.5s; animation-delay: -3.5s; }
+.auth-screen .tc-6 { top: 22%; right: 9%; animation-duration: 8s; animation-delay: -2.5s; }
+.auth-screen .tc-7 { top: 47%; right: 4.5%; animation-duration: 10.5s; animation-delay: -5s; }
+.auth-screen .tc-8 { top: 71%; right: 11%; animation-duration: 9s; animation-delay: -1.5s; }
+.auth-screen .tc-9 { top: 9%; right: 22%; font-size: 15px; animation-duration: 8.8s; animation-delay: -3s; }
+
+@keyframes authChipFloat {
+  0%, 100% { transform: translate3d(0, 0, 0) rotate(0deg); }
+  50% { transform: translate3d(0, -12px, 0) rotate(-1.4deg); }
+}
+
+/* Kichik kod snippeti — o'ng tomonda */
+.auth-screen .auth-codehint {
+  position: absolute;
+  top: 24%;
+  right: 16.5%;
+  pointer-events: none;
+  margin: 0;
+  padding: 12px 16px;
+  border-radius: 12px;
+  border: 1px solid var(--ab-chip-brd);
+  background: var(--ab-chip-bg);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  color: var(--ab-chip-text);
+  font-family: 'Cascadia Code', 'Fira Code', Consolas, monospace;
+  font-size: 12px;
+  line-height: 1.7;
+  white-space: pre;
+  opacity: 0.85;
+  transition: background 0.5s ease, border-color 0.5s ease, color 0.5s ease;
+  animation: authChipFloat 11s ease-in-out -4s infinite;
+}
+
+/* Tagline — chap pastda (reference dagi "Better Skills. Brighter Future.") */
+.auth-screen .auth-tagline {
+  position: absolute;
+  z-index: 4;
+  left: 4.5vw;
+  bottom: 9%;
+  pointer-events: none;
+  margin: 0;
+  font-size: 19px;
+  line-height: 1.55;
+  font-weight: 600;
+  letter-spacing: 0.01em;
+  color: var(--ab-muted);
+  transition: color 0.5s ease;
+  animation: authChipFloat 9s ease-in-out -2s infinite;
+}
+
+/* ---------- CONTENT (z:10) ---------- */
+.auth-screen .auth-container {
+  position: relative;
+  z-index: 10;
+  width: 100%;
+  max-width: 480px;
+  padding: 24px 20px 40px;
+  max-height: 100vh;
+  max-height: 100svh;
+  overflow-y: auto;
+  scrollbar-width: none;
+}
+
+.auth-screen .auth-container::-webkit-scrollbar { display: none; }
+
+.auth-screen .auth-brand {
+  text-align: center;
+  margin-bottom: 26px;
+  animation: authFadeUp 0.8s cubic-bezier(0.16, 1, 0.3, 1) 0.1s backwards;
+}
+
+.auth-screen .auth-logo {
+  width: 76px;
+  height: 76px;
+  background: linear-gradient(135deg, #2563eb 0%, #4f46e5 55%, #38bdf8 130%);
+  border-radius: 22px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 38px;
+  margin: 0 auto 18px;
+  box-shadow:
+    0 18px 50px rgba(37, 99, 235, 0.42),
+    inset 0 1px 0 rgba(255, 255, 255, 0.35);
+  position: relative;
+  animation: authLogoFloat 5s ease-in-out infinite;
+}
+
+[data-theme="light"] .auth-screen .auth-logo {
+  box-shadow:
+    0 18px 44px rgba(37, 99, 235, 0.3),
+    inset 0 1px 0 rgba(255, 255, 255, 0.5);
+}
+
+@keyframes authLogoFloat {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-8px); }
+}
+
+.auth-screen .auth-brand h1 {
+  font-size: 36px;
+  font-weight: 800;
+  letter-spacing: -0.6px;
+  color: #fff;
+}
+
+[data-theme="light"] .auth-screen .auth-brand h1 { color: #0b1b33; }
+
+.auth-screen .auth-brand h1 span {
+  background: linear-gradient(90deg, #6d8cff, #38bdf8);
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+  color: transparent;
+}
+
+[data-theme="light"] .auth-screen .auth-brand h1 span {
+  background: linear-gradient(90deg, #2563eb, #4f46e5);
+  -webkit-background-clip: text;
+  background-clip: text;
+}
+
+.auth-screen .auth-brand p {
+  color: var(--ab-muted);
+  font-size: 14.5px;
+  margin-top: 9px;
+  transition: color 0.5s ease;
+}
+
+/* ---------- LOGIN CARD (z:10) ---------- */
+.auth-screen .auth-card {
+  position: relative;
+  width: 100%;
+  background: var(--ab-card);
+  border: 1px solid var(--ab-card-brd);
+  border-radius: 28px;
+  padding: 30px 28px 28px;
+  box-shadow: var(--ab-shadow);
+  backdrop-filter: blur(22px) saturate(160%);
+  -webkit-backdrop-filter: blur(22px) saturate(160%);
+  overflow: hidden;
+  transition: background 0.5s ease, border-color 0.5s ease, box-shadow 0.5s ease;
+  animation: authFadeUp 0.9s cubic-bezier(0.16, 1, 0.3, 1) 0.25s backwards;
+  will-change: transform;
+}
+
+[data-theme="light"] .auth-screen .auth-card {
+  background: rgba(255, 255, 255, 0.82);
+  box-shadow:
+    0 30px 80px rgba(31, 63, 135, 0.14),
+    0 4px 18px rgba(31, 63, 135, 0.06),
+    inset 0 1px 0 rgba(255, 255, 255, 0.9);
+}
+
+@keyframes authFadeUp {
+  from { opacity: 0; transform: translateY(24px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+/* Karta tepasidagi gradient chiziq */
+.auth-screen .auth-card-topline {
+  position: absolute;
+  top: 0;
+  left: 8%;
+  right: 8%;
+  height: 1.5px;
+  background: linear-gradient(90deg, transparent, rgba(99, 160, 255, 0.55), transparent);
+  pointer-events: none;
+}
+
+/* Yuqori ichki yorug'lik */
+.auth-screen .auth-card::before {
+  content: '';
+  position: absolute;
+  inset: 0 0 auto 0;
+  height: 45%;
+  background: linear-gradient(180deg, rgba(120, 170, 255, 0.06), transparent);
+  pointer-events: none;
+}
+
+[data-theme="light"] .auth-screen .auth-card::before {
+  background: linear-gradient(180deg, rgba(37, 99, 235, 0.035), transparent);
+}
+
+/* Tabs */
+.auth-screen .auth-tabs {
+  display: flex;
+  gap: 4px;
+  background: var(--ab-tabbg);
+  border: 1px solid var(--ab-card-brd);
+  border-radius: 16px;
+  padding: 5px;
+  margin-bottom: 24px;
+  position: relative;
+  transition: background 0.5s ease, border-color 0.5s ease;
+}
+
+.auth-screen .auth-tab {
+  flex: 1;
+  min-height: 44px;
+  padding: 10px;
+  border-radius: 12px;
+  font-weight: 600;
+  font-size: 15px;
+  color: var(--ab-muted);
+  transition: color 0.3s ease, background 0.3s ease, box-shadow 0.3s ease;
+}
+
+.auth-screen .auth-tab:hover:not(.active) { color: var(--ab-text); }
+
+.auth-screen .auth-tab.active {
+  background: linear-gradient(135deg, #2563eb, #4f46e5);
+  color: #fff;
+  box-shadow: 0 6px 20px rgba(37, 99, 235, 0.42);
+}
+
+.auth-screen .auth-form { display: none; }
+.auth-screen .auth-form.active { display: block; }
+
+/* Formalar */
+.auth-screen .form-group { margin-bottom: 16px; }
+
+.auth-screen .form-row {
+  display: flex;
+  gap: 12px;
+}
+
+.auth-screen .form-row .form-group { flex: 1; min-width: 0; }
+
+.auth-screen .form-group label {
+  display: block;
+  font-size: 13px;
+  font-weight: 600;
+  margin-bottom: 7px;
+  color: var(--ab-label);
+  transition: color 0.5s ease;
+}
+
+/* ---------- INPUTS ---------- */
+.auth-screen .input-shell {
+  position: relative;
+}
+
+.auth-screen .form-group input {
+  width: 100%;
+  min-height: 50px;
+  padding: 13px 16px;
+  background: var(--ab-input);
+  border: 1px solid var(--ab-input-brd);
+  border-radius: 14px;
+  color: var(--ab-text);
+  font-size: 15px;
+  transition: border var(--transition, 0.2s ease), box-shadow 0.25s ease, background 0.5s ease, color 0.5s ease;
+}
+
+.auth-screen .input-shell .input-ico {
+  position: absolute;
+  right: 16px;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 20px;
+  height: 20px;
+  color: var(--ab-muted);
+  opacity: 0.7;
+  pointer-events: none;
+  transition: color 0.3s ease;
+}
+
+.auth-screen .input-shell .input-ico svg {
+  width: 100%;
+  height: 100%;
+  display: block;
+}
+
+.auth-screen .input-shell input { padding-right: 46px; }
+
+.auth-screen .form-group input:focus {
+  outline: none;
+  border-color: rgba(56, 130, 246, 0.65);
+  box-shadow: 0 0 0 4px rgba(37, 99, 235, 0.16);
+}
+
+.auth-screen .input-shell:focus-within .input-ico {
+  color: var(--ab-acc3);
+  opacity: 1;
+}
+
+.auth-screen .form-group input::placeholder {
+  color: var(--ab-muted);
+  opacity: 0.55;
+}
+
+/* Parol maydoni: ikonka + eye toggle */
+.auth-screen .pwd-wrap {
+  position: relative;
+}
+
+.auth-screen .pwd-wrap input { padding-right: 84px; }
+
+.auth-screen .pwd-wrap .input-ico {
+  right: 52px;
+}
+
+.auth-screen .pwd-toggle {
+  position: absolute;
+  right: 8px;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 40px;
+  height: 40px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 10px;
+  color: var(--ab-muted);
+  opacity: 0.85;
+  transition: opacity var(--transition, 0.2s ease), color 0.2s ease, background 0.2s ease;
+}
+
+.auth-screen .pwd-toggle svg {
+  width: 21px;
+  height: 21px;
+  display: block;
+}
+
+.auth-screen .pwd-toggle:hover {
+  opacity: 1;
+  color: var(--ab-acc3);
+  background: rgba(56, 130, 246, 0.1);
+}
+
+.auth-screen .pwd-toggle:focus-visible {
+  outline: 2px solid var(--ab-acc3);
+  outline-offset: 2px;
+}
+
+/* ---------- SUBMIT BUTTON (pill, gradient) ---------- */
+.auth-screen .auth-submit {
+  width: 100%;
+  min-height: 52px;
+  margin-top: 4px;
+  border-radius: 16px;
+  font-size: 16px;
+  font-weight: 700;
+  letter-spacing: 0.01em;
+  background: linear-gradient(135deg, #2563eb 0%, #4f46e5 100%);
+  color: #fff;
+  box-shadow: 0 14px 34px rgba(37, 99, 235, 0.4), inset 0 1px 0 rgba(255, 255, 255, 0.22);
+  transition: transform 0.25s ease, box-shadow 0.25s ease, background 0.3s ease;
+}
+
+.auth-screen .auth-submit:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 18px 42px rgba(37, 99, 235, 0.5), inset 0 1px 0 rgba(255, 255, 255, 0.22);
+}
+
+.auth-screen .auth-submit:active { transform: scale(0.98); }
+
+.auth-screen .auth-submit:focus-visible {
+  outline: 2px solid #7dd3fc;
+  outline-offset: 3px;
+}
+
+.auth-screen .btn-arrow {
+  display: inline-block;
+  transition: transform 0.25s ease;
+}
+
+.auth-screen .auth-submit:hover .btn-arrow { transform: translateX(4px); }
+
+/* ---------- THEME TOGGLE (interactive, z:20) ---------- */
+.auth-screen .auth-theme-toggle {
+  position: absolute;
+  z-index: 20;
+  top: 18px;
+  right: 18px;
+  width: 44px;
+  height: 44px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 14px;
+  font-size: 18px;
+  background: var(--ab-chip-bg);
+  border: 1px solid var(--ab-chip-brd);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  color: var(--ab-text);
+  box-shadow: 0 8px 24px rgba(2, 8, 26, 0.35);
+  transition: background 0.5s ease, border-color 0.5s ease, transform 0.25s ease, box-shadow 0.25s ease;
+}
+
+.auth-screen .auth-theme-toggle:hover {
+  transform: translateY(-2px);
+  border-color: rgba(99, 160, 255, 0.5);
+}
+
+.auth-screen .auth-theme-toggle:focus-visible {
+  outline: 2px solid var(--ab-acc3);
+  outline-offset: 2px;
+}
+
+.auth-screen .auth-theme-toggle .theme-icon-light { display: none; }
+[data-theme="light"] .auth-screen .auth-theme-toggle .theme-icon-dark { display: none; }
+[data-theme="light"] .auth-screen .auth-theme-toggle .theme-icon-light { display: inline; }
+
+/* =====================================================================
+   RESPONSIVE — MOBILE (320–767px): QAYTA COMPOSE qilingan layout
+   ===================================================================== */
+@media (max-width: 767px) {
+  .auth-screen {
+    align-items: flex-start;
+  }
+
+  .auth-screen .auth-container {
+    max-width: 500px;
+    padding: 20px 16px 32px;
+  }
+
+  /* Robot: background decorative character, formani siqmaydi */
+  .auth-screen .auth-robot {
+    top: auto;
+    bottom: 0;
+    left: 50%;
+    right: auto;
+    transform: translateX(-50%);
+    width: min(88vw, 340px);
+    min-width: 0;
+    height: 250px;
+    max-height: none;
+    opacity: 0.42;
+    animation: none;
+  }
+
+  .auth-screen .auth-robot-peek .auth-robot-peeker { animation: none; }
+
+  /* Tagline mobilanda ko'rinmaydi (joy tejash) */
+  .auth-screen .auth-tagline { display: none; }
+
+  /* Chips: faqat eng muhimlari, xira, card ustidan o'tmaydi */
+  .auth-screen .tc-2, .auth-screen .tc-5, .auth-screen .tc-7 { display: none; }
+
+  .auth-screen .tech-chip {
+    padding: 6px 11px;
+    font-size: 11.5px;
+    border-radius: 11px;
+    opacity: 0.55;
+  }
+
+  .auth-screen .tc-1 { top: 12%; left: 5%; }
+  .auth-screen .tc-3 { top: 46%; left: 3.5%; }
+  .auth-screen .tc-4 { top: 24%; left: 4%; }
+  .auth-screen .tc-6 { top: 15%; right: 5%; }
+  .auth-screen .tc-8 { top: 52%; right: 4%; }
+  .auth-screen .tc-9 { top: 5.5%; right: 6%; }
+
+  .auth-screen .auth-codehint { display: none; }
+
+  /* Typografiya */
+  .auth-screen .auth-brand { margin-bottom: 18px; }
+  .auth-screen .auth-logo { width: 62px; height: 62px; font-size: 31px; border-radius: 18px; margin-bottom: 13px; }
+  .auth-screen .auth-brand h1 { font-size: 28px; }
+  .auth-screen .auth-brand p { font-size: 13.5px; margin-top: 6px; }
+
+  /* Card */
+  .auth-screen .auth-card {
+    padding: 22px 20px 22px;
+    border-radius: 24px;
+  }
+
+  .auth-screen .auth-tab { font-size: 14.5px; min-height: 44px; }
+  .auth-screen .form-group input { font-size: 15px; min-height: 48px; }
+  .auth-screen .auth-submit { min-height: 50px; font-size: 15.5px; }
+
+  .auth-screen .auth-theme-toggle {
+    top: 12px;
+    right: 12px;
+    width: 42px;
+    height: 42px;
+  }
+
+  /* 320–360px: yanada ixcham */
+  @media (max-width: 360px) {
+    .auth-screen .auth-robot { width: 96vw; height: 215px; opacity: 0.35; }
+    .auth-screen .auth-brand h1 { font-size: 25px; }
+    .auth-screen .auth-card { padding: 20px 16px; border-radius: 22px; }
+    .auth-screen .tech-chip.tc-4 { display: none; }
+  }
+}
+
+/* Kichik balandlikdagi landscape telefonlar */
+@media (max-width: 767px) and (max-height: 620px) {
+  .auth-screen .auth-robot { height: 170px; opacity: 0.3; }
+  .auth-screen .auth-brand { margin-bottom: 12px; }
+  .auth-screen .auth-logo { width: 50px; height: 50px; font-size: 25px; margin-bottom: 9px; }
+}
+
+/* =====================================================================
+   DESKTOP — TABLET (768px+): balanced centered kompozitsiya
+   ===================================================================== */
+@media (min-width: 768px) {
+  .auth-screen .auth-robot {
+    left: 3vw;
+    bottom: 2vh;
+    width: min(38vw, 470px);
+    min-width: 300px;
+    height: 70%;
+  }
+
+  .auth-screen .auth-tagline {
+    left: 5vw;
+    bottom: 10%;
+    font-size: 21px;
+  }
+}
+
+/* =====================================================================
+   DESKTOP (1024px+): 2-side cinematic kompozitsiya
+   ===================================================================== */
+@media (min-width: 1024px) {
+  .auth-screen .auth-container {
+    max-width: 500px;
+    padding: 32px 24px 48px;
+  }
+
+  .auth-screen .auth-brand { margin-bottom: 30px; }
+  .auth-screen .auth-brand h1 { font-size: 40px; }
+
+  .auth-screen .auth-robot {
+    left: 3.5vw;
+    bottom: 0;
+    width: min(34vw, 520px);
+    min-width: 360px;
+    height: 76%;
+    max-height: 820px;
+  }
+}
+
+/* Katta desktoplar (1440px+): nafas ko'proq */
+@media (min-width: 1440px) {
+  .auth-screen .auth-container { max-width: 500px; }
+  .auth-screen .auth-card { padding: 32px 30px 30px; }
+  .auth-screen .auth-brand h1 { font-size: 42px; }
+  .auth-screen .auth-logo { width: 82px; height: 82px; font-size: 41px; }
+
+  .auth-screen .auth-robot {
+    left: 6vw;
+    width: min(30vw, 540px);
+  }
+}
+
+/* Ultra-wide (1920px+) */
+@media (min-width: 1800px) {
+  .auth-screen .auth-robot { left: 9vw; height: 78%; }
+  .auth-screen .auth-tagline { left: 7vw; bottom: 11%; font-size: 23px; }
+}
+
+/* Tabletda tagline robot bilan ustma-ust tushmasin */
+@media (min-width: 768px) and (max-width: 1023px) {
+  .auth-screen .auth-tagline { display: none; }
+  .auth-screen .auth-robot { opacity: 0.75; }
+}
+
+/* ---------- ACCESSIBILITY & MOTION ---------- */
+.auth-screen .auth-tab:focus-visible,
+.auth-screen .auth-theme-toggle:focus-visible,
+.auth-screen .auth-submit:focus-visible,
+.auth-screen .pwd-toggle:focus-visible,
+.auth-screen .form-group input:focus-visible {
+  outline: 2px solid var(--ab-acc3);
+  outline-offset: 2px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+
+  .auth-screen .auth-bg,
+  .auth-screen .orb,
+  .auth-screen .auth-grid,
+  .auth-screen .auth-particles::before,
+  .auth-screen .auth-particles::after,
+  .auth-screen .auth-wave,
+  .auth-screen .auth-robot,
+  .auth-screen .auth-robot-peek .auth-robot-peeker,
+  .auth-screen .auth-robot-inner,
+  .auth-screen .auth-robot-sweep,
+  .auth-screen .auth-chips,
+  .auth-screen .tech-chip,
+  .auth-screen .auth-codehint,
+  .auth-screen .auth-tagline,
+  .auth-screen .auth-brand,
+  .auth-screen .auth-card,
+  .auth-screen .auth-logo {
+    animation: none !important;
+    transition: none !important;
+  }
+
+  .auth-screen .auth-robot { opacity: 0.9; }
+}
+
+/* Eslatma: parallax faqat (pointer:fine) va desktopda JS tomonidan
+   yoqiladi — touch qurilmalarda hech qanday transform qo'llanmaydi. */
+
+/* Print: faqat forma */
+@media print {
+
+  .auth-screen .auth-bg,
+  .auth-screen .auth-robot,
+  .auth-screen .auth-chips,
+  .auth-screen .auth-tagline,
+  .auth-screen .auth-theme-toggle {
+    display: none !important;
+  }
+}
