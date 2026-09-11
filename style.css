@@ -865,19 +865,29 @@ ul {
 }
 
 /* TOPBAR */
+/* Root-cause fix: oldin `position: fixed` edi lekin left/right/width YO'Q edi —
+   shrink-to-fit bo'lib chapdagi kichik blok ko'rinishida qolardi va content
+   ostida content yashirinib qolardi. Endi sticky: full width (sidebar bilan
+   align), content tabiiy oqimda header OSTIDA boshlanadi, scroll'da sakramaydi. */
 .topbar {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 16px 24px;
-  background: var(--card);
+  padding: 12px 24px;
+  min-height: 64px;
+  background: color-mix(in srgb, var(--bg) 92%, var(--card));
   border-bottom: 1px solid var(--border);
   backdrop-filter: var(--glass);
   -webkit-backdrop-filter: var(--glass);
-  position: fixed;
+  box-shadow: var(--shadow-soft);
+  position: sticky;
   top: 0;
-  z-index: 50;
+  left: 0;
+  width: 100%;
+  z-index: 90;
   gap: 12px;
+  /* Header ichidagi dropdown'lar stack contexti izolyatsiya qilinadi */
+  isolation: isolate;
 }
 
 .topbar-left {
@@ -7176,6 +7186,63 @@ textarea {
 .code-textarea::selection {
   background: rgba(148, 163, 184, 0.25);
 }
+
+/* ==========================================================
+   LAYER HIERARCHY & CLICK AUDIT
+   Maqsad: dekorativ elementlar HECH QACHON button/link/text
+   clickini ushlab qolmasin. Hierarchy:
+     background/dekor      → z-index: auto/0  + pointer-events: none
+     content (cards/hero)  → z-index: 1–10
+     topbar                → z-index: 90
+     sidebar (drawer)      → z-index: 100
+     modal                 → z-index: 1000
+     toast                 → z-index: 2000
+     loading               → z-index: 3000
+     confetti (decor)      → z-index: 9999 (pointer-events: none)
+   ========================================================== */
+
+/* --- Dekorativ pseudo-elementlar / overlaylar: faqat vizual --- */
+.auth-bg::after,
+.auth-bg .orb,
+.welcome-banner::before,
+.welcome-banner::after,
+.btn::after,
+.xp-bar-fill::after,
+.progress-fill::after,
+.subject-card::before,
+.store-item::before,
+.store-avatar-stage.store-effect-sparkle::before,
+.sidebar .nav-item.active::before,
+.hero-ring-glow {
+  pointer-events: none;
+}
+
+/* Hero'dagi suzuvchi kod badge'lari — aria-hidden dekoratsiyalar:
+   ular :hover'ga ega, lekin clickni ushlab qolmasin. */
+.hero-code-badge {
+  pointer-events: none;
+}
+
+/* Header ichidagi barcha interactive elementlar aniq clickable
+   (transparent overlay ular ustida qolmasin): */
+.topbar .hamburger,
+.topbar .icon-btn,
+.topbar .notif-btn,
+.topbar .user-chip,
+.topbar .ux-user-dropdown .ux-menu-item {
+  position: relative;
+  z-index: 2;
+  cursor: pointer;
+}
+
+/* Header background/border qatlami — elementlar ostida, click to'siq emas */
+.topbar::before {
+  content: none;
+}
+
+/* Scroll'da header Ostidagi content hech qachon ko'rinmasin:
+   sticky header oqimda — padding-top hack talab etilmadi.
+   (fixed header variantida mobile safe-area header ICHIDA hisoblanadi) */
 
 .code-textarea:focus {
   outline: none;
