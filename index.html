@@ -19,6 +19,7 @@
   <link rel="stylesheet" href="ai-assistant.css" />
   <link rel="stylesheet" href="mascot.css" />
   <link rel="stylesheet" href="mobile.css" />
+  <link rel="stylesheet" href="onboarding.css" />
 </head>
 
 <body>
@@ -1180,11 +1181,13 @@
 
         <!-- ====================== DARSLAR PAGE (kurslar grid) ====================== -->
         <section id="page-lessons" class="page">
-          <div id="lsContinueSlot"></div>
           <div class="ls-section-head">
-            <h3>🎓 Dasturlash yo‘nalishlari</h3>
-            <p>O‘zingizga yoqqan tilni tanlang va bosqichma-bosqich o‘rganishni boshlang.</p>
+            <h3>📚 Darslar</h3>
+            <p>Kod yozishni bosqichma-bosqich o‘rganing.</p>
           </div>
+          <div id="lsOverallSlot"></div>
+          <div id="lsContinueSlot"></div>
+          <div class="ls-topics-head"><span>📚 Mavzular</span><span class="ls-topics-count" id="lsTopicsCount"></span></div>
           <div class="ls-courses-grid" id="lsCoursesGrid"></div>
         </section>
 
@@ -1502,11 +1505,15 @@
     <p>Yuklanmoqda...</p>
   </div>
 
+  <!-- ====================== ONBOARDING (yangi user uchun) ====================== -->
+  <div id="onboardingRoot" hidden></div>
+
   <script type="module" src="lessons-data.js"></script>
   <script type="module" src="mascot.js"></script>
   <script type="module" src="lessons-app.js"></script>
   <script type="module" src="mobile.js"></script>
   <script type="module" src="ai-assistant.js"></script>
+  <script type="module" src="onboarding.js"></script>
   <script type="module" src="script.js"></script>
 </body>
 

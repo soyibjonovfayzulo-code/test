@@ -50,7 +50,8 @@ setTimeout(function () {
   console.log('\n[2. RENDER — 1-dars ekranda]');
   w.Lessons.handlePage('lessons');
   click(doc.querySelectorAll('#lsCoursesGrid .ls-course-card')[0]);
-  click(doc.querySelectorAll('#lessonLevelBody .ls-level-option')[0]);
+  /* Daraja endi diagnostika testi orqali aniqlanadi; modal qoladi —
+     darslar fallback 'intermediate' bilan ochiq (openLesson ishlaydi). */
   w.Lessons.openLesson('html', 'html-d1');
   const viewer = doc.querySelector('#lsLessonContainer');
   const txt = viewer.textContent;

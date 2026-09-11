@@ -5,15 +5,17 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
   <title>IT/AI Test Platform</title>
-  <meta name="description" content="IT va AI sohalari bo'yicha bilimlaringizni sinash, darslarni o'rganish, duel o'ynash va reytingda yuqori o'rinlarni egallash uchun online test platformasi." />
+  <link rel="icon" href="/assets/icon-Cz6newZm.png">
+  <meta name="description"
+    content="IT va AI sohalari bo'yicha bilimlaringizni sinash, darslarni o'rganish, duel o'ynash va reytingda yuqori o'rinlarni egallash uchun online test platformasi." />
   <meta name="theme-color" content="#0b0f1a" />
   <link rel="icon" href="./favicon.ico" />
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap"
-    rel="stylesheet" />
-  <script type="module" crossorigin src="/assets/index-Db_VmMvr.js"></script>
-  <link rel="stylesheet" crossorigin href="/assets/index-C9sZfeIg.css">
+    rel="stylesheet" />
+  <script type="module" crossorigin src="/assets/index-7Oot3J1m.js"></script>
+  <link rel="stylesheet" crossorigin href="/assets/index-CkXenhNz.css">
 </head>
 
 <body>
@@ -41,13 +43,16 @@
         <form id="loginForm" class="auth-form active" autocomplete="on">
           <div class="form-group">
             <label for="loginEmail">Email yoki Username</label>
-            <input type="text" id="loginEmail" name="loginEmail" placeholder="sardor_dev yoki sardor@mail.com" autocomplete="username" required />
+            <input type="text" id="loginEmail" name="loginEmail" placeholder="sardor_dev yoki sardor@mail.com"
+              autocomplete="username" required />
           </div>
           <div class="form-group">
             <label for="loginPassword">Parol</label>
             <div class="pwd-wrap">
-              <input type="password" id="loginPassword" name="loginPassword" placeholder="••••••••" autocomplete="current-password" required />
-              <button type="button" class="pwd-toggle" data-target="loginPassword" aria-label="Parolni ko'rsatish yoki yashirish">👁</button>
+              <input type="password" id="loginPassword" name="loginPassword" placeholder="••••••••"
+                autocomplete="current-password" required />
+              <button type="button" class="pwd-toggle" data-target="loginPassword"
+                aria-label="Parolni ko'rsatish yoki yashirish">👁</button>
             </div>
           </div>
           <button type="submit" class="btn btn-primary btn-block">Kirish</button>
@@ -58,33 +63,41 @@
           <div class="form-row">
             <div class="form-group">
               <label for="regFirstname">Ism</label>
-              <input type="text" id="regFirstname" name="regFirstname" placeholder="Sardor" autocomplete="given-name" required />
+              <input type="text" id="regFirstname" name="regFirstname" placeholder="Sardor" autocomplete="given-name"
+                required />
             </div>
             <div class="form-group">
               <label for="regLastname">Familiya</label>
-              <input type="text" id="regLastname" name="regLastname" placeholder="Rahimov" autocomplete="family-name" required />
+              <input type="text" id="regLastname" name="regLastname" placeholder="Rahimov" autocomplete="family-name"
+                required />
             </div>
           </div>
           <div class="form-group">
             <label for="regUsername">Username</label>
-            <input type="text" id="regUsername" name="regUsername" placeholder="sardor_dev" autocomplete="username" required />
+            <input type="text" id="regUsername" name="regUsername" placeholder="sardor_dev" autocomplete="username"
+              required />
           </div>
           <div class="form-group">
             <label for="regEmail">Email</label>
-            <input type="email" id="regEmail" name="regEmail" placeholder="sardor@mail.com" autocomplete="email" required />
+            <input type="email" id="regEmail" name="regEmail" placeholder="sardor@mail.com" autocomplete="email"
+              required />
           </div>
           <div class="form-group">
             <label for="regPassword">Parol</label>
             <div class="pwd-wrap">
-              <input type="password" id="regPassword" name="regPassword" placeholder="••••••••" autocomplete="new-password" required />
-              <button type="button" class="pwd-toggle" data-target="regPassword" aria-label="Parolni ko'rsatish yoki yashirish">👁</button>
+              <input type="password" id="regPassword" name="regPassword" placeholder="••••••••"
+                autocomplete="new-password" required />
+              <button type="button" class="pwd-toggle" data-target="regPassword"
+                aria-label="Parolni ko'rsatish yoki yashirish">👁</button>
             </div>
           </div>
           <div class="form-group">
             <label for="regConfirmPassword">Parolni tasdiqlash</label>
             <div class="pwd-wrap">
-              <input type="password" id="regConfirmPassword" name="regConfirmPassword" placeholder="••••••••" autocomplete="new-password" required />
-              <button type="button" class="pwd-toggle" data-target="regConfirmPassword" aria-label="Parolni ko'rsatish yoki yashirish">👁</button>
+              <input type="password" id="regConfirmPassword" name="regConfirmPassword" placeholder="••••••••"
+                autocomplete="new-password" required />
+              <button type="button" class="pwd-toggle" data-target="regConfirmPassword"
+                aria-label="Parolni ko'rsatish yoki yashirish">👁</button>
             </div>
           </div>
           <button type="submit" class="btn btn-primary btn-block">Ro'yxatdan o'tish</button>
@@ -103,20 +116,34 @@
         <button class="sidebar-close" id="sidebarClose" aria-label="Menyuni yopish" type="button">✕</button>
       </div>
       <nav class="sidebar-nav" aria-label="Asosiy navigatsiya">
-        <a href="#dashboard" class="nav-item active" data-page="dashboard"><span class="nav-icon" aria-hidden="true">🏠</span><span class="nav-label">Bosh sahifa</span></a>
-        <a href="#lessons" class="nav-item" data-page="lessons"><span class="nav-icon" aria-hidden="true">📚</span><span class="nav-label">Darslar</span></a>
-        <a href="#tests" class="nav-item" data-page="tests"><span class="nav-icon" aria-hidden="true">📝</span><span class="nav-label">Testlar</span></a>
-        <a href="#duel" class="nav-item" data-page="duel"><span class="nav-icon" aria-hidden="true">⚔️</span><span class="nav-label">Duel</span></a>
-        <a href="#store" class="nav-item" data-page="store"><span class="nav-icon" aria-hidden="true">🛍️</span><span class="nav-label">Do'kon</span></a>
-        <a href="#coding" class="nav-item" data-page="coding"><span class="nav-icon" aria-hidden="true">💻</span><span class="nav-label">Coding</span></a>
-        <a href="#projects" class="nav-item" data-page="projects"><span class="nav-icon" aria-hidden="true">📁</span><span class="nav-label">Loyihalarim</span></a>
-        <a href="#ranking" class="nav-item" data-page="ranking"><span class="nav-icon" aria-hidden="true">🏆</span><span class="nav-label">Reyting</span></a>
-        <a href="#achievements" class="nav-item" data-page="achievements"><span class="nav-icon" aria-hidden="true">🎖</span><span class="nav-label">Yutuqlar</span></a>
-        <a href="#profile" class="nav-item" data-page="profile"><span class="nav-icon" aria-hidden="true">👤</span><span class="nav-label">Profil</span></a>
-        <a href="#settings" class="nav-item" data-page="settings"><span class="nav-icon" aria-hidden="true">⚙️</span><span class="nav-label">Sozlamalar</span></a>
+        <a href="#dashboard" class="nav-item active" data-page="dashboard"><span class="nav-icon"
+            aria-hidden="true">🏠</span><span class="nav-label">Bosh sahifa</span></a>
+        <a href="#lessons" class="nav-item" data-page="lessons"><span class="nav-icon" aria-hidden="true">📚</span><span
+            class="nav-label">Darslar</span></a>
+        <a href="#tests" class="nav-item" data-page="tests"><span class="nav-icon" aria-hidden="true">📝</span><span
+            class="nav-label">Testlar</span></a>
+        <a href="#duel" class="nav-item" data-page="duel"><span class="nav-icon" aria-hidden="true">⚔️</span><span
+            class="nav-label">Duel</span></a>
+        <a href="#store" class="nav-item" data-page="store"><span class="nav-icon" aria-hidden="true">🛍️</span><span
+            class="nav-label">Do'kon</span></a>
+        <a href="#coding" class="nav-item" data-page="coding"><span class="nav-icon" aria-hidden="true">💻</span><span
+            class="nav-label">Coding</span></a>
+        <a href="#projects" class="nav-item" data-page="projects"><span class="nav-icon"
+            aria-hidden="true">📁</span><span class="nav-label">Loyihalarim</span></a>
+        <a href="#results" class="nav-item" data-page="results"><span class="nav-icon" aria-hidden="true">📊</span><span
+            class="nav-label">Natijalar</span></a>
+        <a href="#ranking" class="nav-item" data-page="ranking"><span class="nav-icon" aria-hidden="true">🏆</span><span
+            class="nav-label">Reyting</span></a>
+        <a href="#achievements" class="nav-item" data-page="achievements"><span class="nav-icon"
+            aria-hidden="true">🎖</span><span class="nav-label">Yutuqlar</span></a>
+        <a href="#profile" class="nav-item" data-page="profile"><span class="nav-icon" aria-hidden="true">👤</span><span
+            class="nav-label">Profil</span></a>
+        <a href="#settings" class="nav-item" data-page="settings"><span class="nav-icon"
+            aria-hidden="true">⚙️</span><span class="nav-label">Sozlamalar</span></a>
       </nav>
       <div class="sidebar-footer">
-        <button class="nav-item logout-btn" id="logoutBtn" type="button"><span class="nav-icon" aria-hidden="true">🚪</span><span class="nav-label">Chiqish</span></button>
+        <button class="nav-item logout-btn" id="logoutBtn" type="button"><span class="nav-icon"
+            aria-hidden="true">🚪</span><span class="nav-label">Chiqish</span></button>
       </div>
     </aside>
     <div class="sidebar-overlay" id="sidebarOverlay"></div>
@@ -139,7 +166,8 @@
             <span class="theme-icon-light" aria-hidden="true">☀️</span>
           </button>
           <div class="notif-wrap">
-            <button class="icon-btn notif-btn" id="notifBtn" aria-label="Bildirishnomalar" aria-expanded="false" aria-controls="notifDropdown" type="button">
+            <button class="icon-btn notif-btn" id="notifBtn" aria-label="Bildirishnomalar" aria-expanded="false"
+              aria-controls="notifDropdown" type="button">
               <span aria-hidden="true">🔔</span>
               <span class="notif-badge" id="notifBadge"></span>
             </button>
@@ -162,13 +190,19 @@
                 </div>
               </div>
               <div class="ux-user-sep"></div>
-              <button type="button" class="ux-menu-item" data-menu="profile"><span class="ux-menu-ico" aria-hidden="true">👤</span><span>Profilim</span></button>
-              <button type="button" class="ux-menu-item" data-menu="settings"><span class="ux-menu-ico" aria-hidden="true">⚙️</span><span>Sozlamalar</span></button>
-              <button type="button" class="ux-menu-item" data-menu="lang"><span class="ux-menu-ico" aria-hidden="true">🌐</span><span>Til</span></button>
-              <button type="button" class="ux-menu-item" data-menu="theme"><span class="ux-menu-ico" aria-hidden="true">🌙</span><span>Mavzu</span></button>
-              <button type="button" class="ux-menu-item" data-menu="help"><span class="ux-menu-ico" aria-hidden="true">❓</span><span>Yordam</span></button>
+              <button type="button" class="ux-menu-item" data-menu="profile"><span class="ux-menu-ico"
+                  aria-hidden="true">👤</span><span>Profilim</span></button>
+              <button type="button" class="ux-menu-item" data-menu="settings"><span class="ux-menu-ico"
+                  aria-hidden="true">⚙️</span><span>Sozlamalar</span></button>
+              <button type="button" class="ux-menu-item" data-menu="lang"><span class="ux-menu-ico"
+                  aria-hidden="true">🌐</span><span>Til</span></button>
+              <button type="button" class="ux-menu-item" data-menu="theme"><span class="ux-menu-ico"
+                  aria-hidden="true">🌙</span><span>Mavzu</span></button>
+              <button type="button" class="ux-menu-item" data-menu="help"><span class="ux-menu-ico"
+                  aria-hidden="true">❓</span><span>Yordam</span></button>
               <div class="ux-user-sep"></div>
-              <button type="button" class="ux-menu-item ux-menu-danger" data-menu="logout"><span class="ux-menu-ico" aria-hidden="true">🚪</span><span>Chiqish</span></button>
+              <button type="button" class="ux-menu-item ux-menu-danger" data-menu="logout"><span class="ux-menu-ico"
+                  aria-hidden="true">🚪</span><span>Chiqish</span></button>
             </div>
           </div>
         </div>
@@ -207,7 +241,8 @@
                       <span id="dashXpText">0 XP</span>
                       <span id="dashXpNext">/ 100 XP</span>
                     </div>
-                    <div class="xp-bar" role="progressbar" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0" aria-label="Level XP progressi">
+                    <div class="xp-bar" role="progressbar" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0"
+                      aria-label="Level XP progressi">
                       <div class="xp-bar-fill" id="dashXpFill"></div>
                     </div>
                   </div>
@@ -297,7 +332,10 @@
                 <span class="m-hero-flame">🔥 Davom eting</span>
                 <h2 class="m-hero-course" id="mHeroCourse">Darslar</h2>
                 <p class="m-hero-lesson" id="mHeroLesson">Birinchi darsni tanlang</p>
-                <div class="m-hero-progress" role="progressbar" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0" aria-label="Dars progressi"><div class="m-hero-progress-fill" id="mHeroFill"></div></div>
+                <div class="m-hero-progress" role="progressbar" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0"
+                  aria-label="Dars progressi">
+                  <div class="m-hero-progress-fill" id="mHeroFill"></div>
+                </div>
                 <span class="m-hero-pct" id="mHeroPct">0%</span>
                 <button class="m-hero-btn" id="mHeroBtn" type="button">Davom ettirish →</button>
               </div>
@@ -307,10 +345,14 @@
             </div>
 
             <div class="m-stats">
-              <div class="m-stat"><span class="m-stat-ico" aria-hidden="true">📚</span><span class="m-stat-val" id="mStatLessons">0</span><span class="m-stat-lbl">Jami darslar</span></div>
-              <div class="m-stat"><span class="m-stat-ico" aria-hidden="true">✅</span><span class="m-stat-val" id="mStatDone">0</span><span class="m-stat-lbl">Tugallangan</span></div>
-              <div class="m-stat"><span class="m-stat-ico" aria-hidden="true">🔥</span><span class="m-stat-val" id="mStatStreak">0</span><span class="m-stat-lbl">Kundalik seriya</span></div>
-              <div class="m-stat"><span class="m-stat-ico" aria-hidden="true">⭐</span><span class="m-stat-val" id="mStatXp">0</span><span class="m-stat-lbl">Jami XP</span></div>
+              <div class="m-stat"><span class="m-stat-ico" aria-hidden="true">📚</span><span class="m-stat-val"
+                  id="mStatLessons">0</span><span class="m-stat-lbl">Jami darslar</span></div>
+              <div class="m-stat"><span class="m-stat-ico" aria-hidden="true">✅</span><span class="m-stat-val"
+                  id="mStatDone">0</span><span class="m-stat-lbl">Tugallangan</span></div>
+              <div class="m-stat"><span class="m-stat-ico" aria-hidden="true">🔥</span><span class="m-stat-val"
+                  id="mStatStreak">0</span><span class="m-stat-lbl">Kundalik seriya</span></div>
+              <div class="m-stat"><span class="m-stat-ico" aria-hidden="true">⭐</span><span class="m-stat-val"
+                  id="mStatXp">0</span><span class="m-stat-lbl">Jami XP</span></div>
             </div>
 
             <div class="m-section-head">
@@ -319,10 +361,13 @@
             </div>
 
             <div class="m-chips" id="mChips" role="tablist" aria-label="Kurslarni saralash">
-              <button class="m-chip active" data-cat="all" type="button" role="tab" aria-selected="true">Barchasi</button>
-              <button class="m-chip" data-cat="frontend" type="button" role="tab" aria-selected="false">Web dasturlash</button>
+              <button class="m-chip active" data-cat="all" type="button" role="tab"
+                aria-selected="true">Barchasi</button>
+              <button class="m-chip" data-cat="frontend" type="button" role="tab" aria-selected="false">Web
+                dasturlash</button>
               <button class="m-chip" data-cat="backend" type="button" role="tab" aria-selected="false">Backend</button>
-              <button class="m-chip" data-cat="dasturlash" type="button" role="tab" aria-selected="false">Dasturlash</button>
+              <button class="m-chip" data-cat="dasturlash" type="button" role="tab"
+                aria-selected="false">Dasturlash</button>
               <button class="m-chip" data-cat="ai" type="button" role="tab" aria-selected="false">AI</button>
               <button class="m-chip" data-cat="boshqa" type="button" role="tab" aria-selected="false">Boshqalar</button>
             </div>
@@ -341,6 +386,7 @@
             <div class="card">
               <div class="card-header">
                 <h3>So'nggi natijalar</h3>
+                <a href="#results" class="link-btn">Barchasi</a>
               </div>
               <div class="card-body" id="recentResults"></div>
             </div>
@@ -353,10 +399,13 @@
                 <span class="muted" id="chartSubtitle">Oxirgi 10 ta test</span>
               </div>
               <div class="card-body chart-body">
-                <div id="lineChartContainer" class="line-chart-wrap" role="img" aria-label="Oxirgi testlar bo'yicha ball grafigi"></div>
+                <div id="lineChartContainer" class="line-chart-wrap" role="img"
+                  aria-label="Oxirgi testlar bo'yicha ball grafigi"></div>
                 <div class="chart-legend">
-                  <div class="legend-item"><span class="legend-dot legend-dot-primary" aria-hidden="true"></span> Ball (%)</div>
-                  <div class="legend-item"><span class="legend-dot legend-dot-pass" aria-hidden="true"></span> Passed chegarasi (50%)</div>
+                  <div class="legend-item"><span class="legend-dot legend-dot-primary" aria-hidden="true"></span> Ball
+                    (%)</div>
+                  <div class="legend-item"><span class="legend-dot legend-dot-pass" aria-hidden="true"></span> Passed
+                    chegarasi (50%)</div>
                 </div>
               </div>
             </div>
@@ -365,7 +414,8 @@
                 <h3>🎯 Javoblar statistikasi</h3>
               </div>
               <div class="card-body chart-body donut-body">
-                <div id="donutChart" class="donut-chart-wrap" role="img" aria-label="To'g'ri, noto'g'ri va o'tkazilgan javoblar diagrammasi"></div>
+                <div id="donutChart" class="donut-chart-wrap" role="img"
+                  aria-label="To'g'ri, noto'g'ri va o'tkazilgan javoblar diagrammasi"></div>
                 <div class="chart-stats">
                   <div class="chart-stat chart-stat-correct"><span class="cs-val" id="csCorrect">0</span><span
                       class="cs-lbl">To'g'ri</span></div>
@@ -375,6 +425,18 @@
                       class="cs-lbl">O'tkazilgan</span></div>
                 </div>
               </div>
+            </div>
+          </div>
+
+          <!-- Fanlar bo'yicha o'rtacha natija (bar chart) -->
+          <div class="card chart-card subject-bar-card">
+            <div class="card-header">
+              <h3>📊 Fanlar bo'yicha o'rtacha natija</h3>
+              <span class="muted">Barcha testlar · o'rtacha %</span>
+            </div>
+            <div class="card-body chart-body">
+              <div id="barChartContainer" class="bar-chart-wrap" role="img"
+                aria-label="Fanlar bo'yicha o'rtacha natija diagrammasi"></div>
             </div>
           </div>
         </section>
@@ -388,9 +450,11 @@
               <input type="text" id="testSearch" placeholder="Fan qidirish..." />
             </div>
             <div class="filter-chips" id="diffFilter" role="tablist" aria-label="Qiyinlik darajasi bo'yicha filtr">
-              <button class="chip active" data-diff="all" type="button" role="tab" aria-selected="true">Barchasi</button>
+              <button class="chip active" data-diff="all" type="button" role="tab"
+                aria-selected="true">Barchasi</button>
               <button class="chip" data-diff="beginner" type="button" role="tab" aria-selected="false">Beginner</button>
-              <button class="chip" data-diff="intermediate" type="button" role="tab" aria-selected="false">Intermediate</button>
+              <button class="chip" data-diff="intermediate" type="button" role="tab"
+                aria-selected="false">Intermediate</button>
               <button class="chip" data-diff="advanced" type="button" role="tab" aria-selected="false">Advanced</button>
             </div>
           </div>
@@ -417,7 +481,8 @@
           </div>
           <div class="test-progress">
             <div class="test-progress-text" id="testProgressText">Savol 1 / 20</div>
-            <div class="progress-bar" role="progressbar" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0" aria-label="Test progressi">
+            <div class="progress-bar" role="progressbar" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0"
+              aria-label="Test progressi">
               <div class="progress-fill" id="testProgressFill"></div>
             </div>
           </div>
@@ -440,8 +505,10 @@
           <div class="test-nav-buttons">
             <button class="btn btn-ghost" id="prevBtn" type="button">← Oldingi</button>
             <div class="test-nav-center">
-              <button class="btn btn-ghost btn-sm" id="clearAnswerBtn" type="button" title="Javobni tozalash">✕ Tozalash</button>
-              <button class="btn btn-ghost btn-sm" id="markReviewBtn" type="button" title="Ko'rib chiqish uchun belgilash">⚑
+              <button class="btn btn-ghost btn-sm" id="clearAnswerBtn" type="button" title="Javobni tozalash">✕
+                Tozalash</button>
+              <button class="btn btn-ghost btn-sm" id="markReviewBtn" type="button"
+                title="Ko'rib chiqish uchun belgilash">⚑
                 Belgilash</button>
             </div>
             <button class="btn btn-primary" id="nextBtn" type="button">Keyingi →</button>
@@ -474,12 +541,21 @@
           </div>
         </section>
 
+        <!-- RESULTS HISTORY PAGE -->
+        <section id="page-results" class="page">
+          <div class="page-head">
+            <h2>Natijalar tarixi</h2>
+          </div>
+          <div id="resultsTableWrap"></div>
+        </section>
+
         <!-- RANKING PAGE -->
         <section id="page-ranking" class="page">
           <div class="page-head">
             <h2>Reyting</h2>
             <div class="filter-chips" id="rankFilter" role="tablist" aria-label="Reyting davri bo'yicha filtr">
-              <button class="chip active" data-period="all" type="button" role="tab" aria-selected="true">Umumiy</button>
+              <button class="chip active" data-period="all" type="button" role="tab"
+                aria-selected="true">Umumiy</button>
               <button class="chip" data-period="week" type="button" role="tab" aria-selected="false">Haftalik</button>
               <button class="chip" data-period="month" type="button" role="tab" aria-selected="false">Oylik</button>
             </div>
@@ -572,8 +648,10 @@
                 <div class="form-group">
                   <label id="duelModeLabel">Raqibni tanlang (Rejim):</label>
                   <div class="duel-mode-chips" id="duelModeSelector" role="radiogroup" aria-labelledby="duelModeLabel">
-                    <button type="button" class="duel-chip active" data-mode="bot" role="radio" aria-checked="true">🤖 Bot bilan</button>
-                    <button type="button" class="duel-chip" data-mode="player" role="radio" aria-checked="false">👥 Real Player</button>
+                    <button type="button" class="duel-chip active" data-mode="bot" role="radio" aria-checked="true">🤖
+                      Bot bilan</button>
+                    <button type="button" class="duel-chip" data-mode="player" role="radio" aria-checked="false">👥 Real
+                      Player</button>
                   </div>
                 </div>
 
@@ -581,13 +659,17 @@
                 <div class="form-group" id="botDifficultyGroup">
                   <label id="duelDiffLabel">Bot qiyinchilik darajasi:</label>
                   <div class="duel-diff-chips" id="duelDiffSelector" role="radiogroup" aria-labelledby="duelDiffLabel">
-                    <button type="button" class="duel-chip active" data-diff="easy" role="radio" aria-checked="true">Oson</button>
-                    <button type="button" class="duel-chip" data-diff="medium" role="radio" aria-checked="false">O'rtacha</button>
-                    <button type="button" class="duel-chip" data-diff="hard" role="radio" aria-checked="false">Qiyin</button>
+                    <button type="button" class="duel-chip active" data-diff="easy" role="radio"
+                      aria-checked="true">Oson</button>
+                    <button type="button" class="duel-chip" data-diff="medium" role="radio"
+                      aria-checked="false">O'rtacha</button>
+                    <button type="button" class="duel-chip" data-diff="hard" role="radio"
+                      aria-checked="false">Qiyin</button>
                   </div>
                 </div>
 
-                <button class="btn btn-primary btn-block btn-lg" id="duelStartSearchBtn" type="button">DUELNI BOSHLASH</button>
+                <button class="btn btn-primary btn-block btn-lg" id="duelStartSearchBtn" type="button">DUELNI
+                  BOSHLASH</button>
               </div>
             </div>
 
@@ -619,7 +701,8 @@
                   <div class="m-status text-warning" id="mmP2Status">Kutilmoqda...</div>
                 </div>
               </div>
-              <div class="matchmaking-progress-bar" role="progressbar" aria-valuemin="0" aria-valuemax="100" aria-label="Raqib qidirish jarayoni">
+              <div class="matchmaking-progress-bar" role="progressbar" aria-valuemin="0" aria-valuemax="100"
+                aria-label="Raqib qidirish jarayoni">
                 <div class="mm-progress-fill" id="mmProgressFill"></div>
               </div>
             </div>
@@ -658,7 +741,8 @@
                 <span class="duel-timer-badge" id="duelTimerBadge" role="timer" aria-live="polite">10</span>
               </div>
               <!-- Visual Timer Progress Bar -->
-              <div class="duel-timer-progress" role="progressbar" aria-valuemin="0" aria-valuemax="100" aria-label="Savol vaqti">
+              <div class="duel-timer-progress" role="progressbar" aria-valuemin="0" aria-valuemax="100"
+                aria-label="Savol vaqti">
                 <div class="duel-timer-fill" id="duelTimerFill"></div>
               </div>
               <div class="card-body">
@@ -746,7 +830,8 @@
             </div>
 
             <div class="result-actions">
-              <button class="btn btn-primary" id="duelBackToLobbyBtn" type="button">Duel Bosh Sahifasiga Qaytish</button>
+              <button class="btn btn-primary" id="duelBackToLobbyBtn" type="button">Duel Bosh Sahifasiga
+                Qaytish</button>
               <button class="btn btn-ghost" data-nav="dashboard" type="button">Dashboardga qaytish</button>
             </div>
           </div>
@@ -784,14 +869,22 @@
             <div class="store-catalog">
               <div class="store-toolbar">
                 <div class="store-tabs" id="storeFilters" role="tablist" aria-label="Do'kon kategoriyalari">
-                  <button class="store-tab active" data-category="all" type="button" role="tab" aria-selected="true">Barchasi</button>
-                  <button class="store-tab" data-category="avatar" type="button" role="tab" aria-selected="false">👤 Avatar</button>
-                  <button class="store-tab" data-category="hat" type="button" role="tab" aria-selected="false">🎩 Bosh kiyim</button>
-                  <button class="store-tab" data-category="glasses" type="button" role="tab" aria-selected="false">🕶️ Ko'zoynak</button>
-                  <button class="store-tab" data-category="clothes" type="button" role="tab" aria-selected="false">👕 Kiyim</button>
-                  <button class="store-tab" data-category="frame" type="button" role="tab" aria-selected="false">🔥 Ramka</button>
-                  <button class="store-tab" data-category="effect" type="button" role="tab" aria-selected="false">🌈 Effekt</button>
-                  <button class="store-tab" data-category="gift" type="button" role="tab" aria-selected="false">🎁 Sovg'alar</button>
+                  <button class="store-tab active" data-category="all" type="button" role="tab"
+                    aria-selected="true">Barchasi</button>
+                  <button class="store-tab" data-category="avatar" type="button" role="tab" aria-selected="false">👤
+                    Avatar</button>
+                  <button class="store-tab" data-category="hat" type="button" role="tab" aria-selected="false">🎩 Bosh
+                    kiyim</button>
+                  <button class="store-tab" data-category="glasses" type="button" role="tab" aria-selected="false">🕶️
+                    Ko'zoynak</button>
+                  <button class="store-tab" data-category="clothes" type="button" role="tab" aria-selected="false">👕
+                    Kiyim</button>
+                  <button class="store-tab" data-category="frame" type="button" role="tab" aria-selected="false">🔥
+                    Ramka</button>
+                  <button class="store-tab" data-category="effect" type="button" role="tab" aria-selected="false">🌈
+                    Effekt</button>
+                  <button class="store-tab" data-category="gift" type="button" role="tab" aria-selected="false">🎁
+                    Sovg'alar</button>
                 </div>
                 <span class="store-catalog-count" id="storeCatalogCount"></span>
               </div>
@@ -804,19 +897,23 @@
         <section id="page-coding" class="page">
           <div class="coding-header card">
             <div class="project-context-bar" id="projectContextBar">
-              <button type="button" class="btn btn-ghost btn-sm" id="projectBackToProjectsBtn" hidden>← Loyihalarim</button>
+              <button type="button" class="btn btn-ghost btn-sm" id="projectBackToProjectsBtn" hidden>←
+                Loyihalarim</button>
               <span class="project-current-name" id="projectCurrentName" hidden></span>
               <span class="project-choose-hint" id="projectChooseHint" hidden>Loyiha tanlanmagan</span>
               <div class="project-choose-actions" id="projectChooseActions" hidden>
                 <button type="button" class="btn btn-primary btn-sm" id="projectQuickNewBtn">＋ Yangi loyiha</button>
-                <button type="button" class="btn btn-ghost btn-sm" id="projectQuickOpenBtn">📁 Loyihalarimdan ochish</button>
+                <button type="button" class="btn btn-ghost btn-sm" id="projectQuickOpenBtn">📁 Loyihalarimdan
+                  ochish</button>
               </div>
             </div>
             <div class="coding-header-left">
               <div class="coding-editor-tabs" id="editorTabs" role="tablist" aria-label="Fayl tablari">
-                <button type="button" class="coding-tab" data-tab="html" role="tab" aria-selected="true">🌐 HTML</button>
+                <button type="button" class="coding-tab" data-tab="html" role="tab" aria-selected="true">🌐
+                  HTML</button>
                 <button type="button" class="coding-tab" data-tab="css" role="tab" aria-selected="false">🎨 CSS</button>
-                <button type="button" class="coding-tab" data-tab="js" role="tab" aria-selected="false">⚡ JavaScript</button>
+                <button type="button" class="coding-tab" data-tab="js" role="tab" aria-selected="false">⚡
+                  JavaScript</button>
               </div>
 
               <div class="coding-select-wrap">
@@ -865,9 +962,12 @@
               <div class="coding-explorer-head"><span>EXPLORER</span><span class="muted">⌄</span></div>
               <div class="coding-project-tree">
                 <div class="coding-tree-root">▾ 📁 ITTEST-PROJECT</div>
-                <button type="button" class="coding-file active" data-coding-file="html" aria-selected="true"><span>🌐</span> index.html</button>
-                <button type="button" class="coding-file" data-coding-file="css" aria-selected="false"><span>🎨</span> style.css</button>
-                <button type="button" class="coding-file" data-coding-file="js" aria-selected="false"><span>⚡</span> script.js</button>
+                <button type="button" class="coding-file active" data-coding-file="html"
+                  aria-selected="true"><span>🌐</span> index.html</button>
+                <button type="button" class="coding-file" data-coding-file="css" aria-selected="false"><span>🎨</span>
+                  style.css</button>
+                <button type="button" class="coding-file" data-coding-file="js" aria-selected="false"><span>⚡</span>
+                  script.js</button>
                 <div class="coding-tree-folder">▸ 📁 assets</div>
               </div>
               <div class="coding-explorer-footer muted">UTF-8 · Web Stack</div>
@@ -1009,11 +1109,12 @@
             <!-- Right: Output Panel -->
             <div class="coding-output-panel card">
               <div class="output-tabs" id="outputTabs" role="tablist" aria-label="Natija tablari">
-                <button type="button" class="output-tab active" data-tab="preview" role="tab" aria-selected="true">👁️ Live Preview</button>
-                <button type="button" class="output-tab" data-tab="console" role="tab" aria-selected="false">🖥️ Konsol <span
-                    class="badge badge-sm hidden" id="consoleBadge">0</span></button>
-                <button type="button" class="output-tab" data-tab="errors" role="tab" aria-selected="false">❌ Xatolar <span
-                    class="badge badge-danger badge-sm hidden" id="errorBadge">0</span></button>
+                <button type="button" class="output-tab active" data-tab="preview" role="tab" aria-selected="true">👁️
+                  Live Preview</button>
+                <button type="button" class="output-tab" data-tab="console" role="tab" aria-selected="false">🖥️ Konsol
+                  <span class="badge badge-sm hidden" id="consoleBadge">0</span></button>
+                <button type="button" class="output-tab" data-tab="errors" role="tab" aria-selected="false">❌ Xatolar
+                  <span class="badge badge-danger badge-sm hidden" id="errorBadge">0</span></button>
               </div>
 
               <div class="output-body">
@@ -1076,11 +1177,13 @@
 
         <!-- ====================== DARSLAR PAGE (kurslar grid) ====================== -->
         <section id="page-lessons" class="page">
-          <div id="lsContinueSlot"></div>
           <div class="ls-section-head">
-            <h3>🎓 Dasturlash yo‘nalishlari</h3>
-            <p>O‘zingizga yoqqan tilni tanlang va bosqichma-bosqich o‘rganishni boshlang.</p>
+            <h3>📚 Darslar</h3>
+            <p>Kod yozishni bosqichma-bosqich o‘rganing.</p>
           </div>
+          <div id="lsOverallSlot"></div>
+          <div id="lsContinueSlot"></div>
+          <div class="ls-topics-head"><span>📚 Mavzular</span><span class="ls-topics-count" id="lsTopicsCount"></span></div>
           <div class="ls-courses-grid" id="lsCoursesGrid"></div>
         </section>
 
@@ -1116,7 +1219,8 @@
   </div>
 
   <!-- Finish Test Confirm Modal -->
-  <div class="modal-overlay" id="finishTestModal" role="dialog" aria-modal="true" aria-labelledby="finishTestModalTitle">
+  <div class="modal-overlay" id="finishTestModal" role="dialog" aria-modal="true"
+    aria-labelledby="finishTestModalTitle">
     <div class="modal modal-sm">
       <div class="modal-header">
         <h3 id="finishTestModalTitle">Testni yakunlamoqchimisiz?</h3>
@@ -1133,7 +1237,8 @@
   </div>
 
   <!-- Edit Profile Modal -->
-  <div class="modal-overlay" id="editProfileModal" role="dialog" aria-modal="true" aria-labelledby="editProfileModalTitle">
+  <div class="modal-overlay" id="editProfileModal" role="dialog" aria-modal="true"
+    aria-labelledby="editProfileModalTitle">
     <div class="modal">
       <div class="modal-header">
         <h3 id="editProfileModalTitle">Profilni tahrirlash</h3>
@@ -1195,7 +1300,8 @@
   </div>
 
   <!-- Yangi loyiha Modal -->
-  <div class="modal-overlay" id="projectNewModal" role="dialog" aria-modal="true" aria-labelledby="projectNewModalTitle">
+  <div class="modal-overlay" id="projectNewModal" role="dialog" aria-modal="true"
+    aria-labelledby="projectNewModalTitle">
     <div class="modal modal-sm">
       <div class="modal-header">
         <h3 id="projectNewModalTitle">＋ Yangi loyiha</h3>
@@ -1221,7 +1327,8 @@
   </div>
 
   <!-- Loyihani o'chirish tasdiq Modal -->
-  <div class="modal-overlay" id="projectDeleteModal" role="dialog" aria-modal="true" aria-labelledby="projectDeleteModalTitle">
+  <div class="modal-overlay" id="projectDeleteModal" role="dialog" aria-modal="true"
+    aria-labelledby="projectDeleteModalTitle">
     <div class="modal modal-sm">
       <div class="modal-header">
         <h3 id="projectDeleteModalTitle">🗑️ O'chirish</h3>
@@ -1238,7 +1345,8 @@
   </div>
 
   <!-- Loyiha ⋮ menyusi (bottom sheet) -->
-  <div class="modal-overlay project-sheet-overlay" id="projectMenuModal" role="dialog" aria-modal="true" aria-labelledby="projectMenuTitle">
+  <div class="modal-overlay project-sheet-overlay" id="projectMenuModal" role="dialog" aria-modal="true"
+    aria-labelledby="projectMenuTitle">
     <div class="modal modal-sm project-sheet">
       <div class="modal-body project-sheet-body">
         <div class="project-sheet-title" id="projectMenuTitle">Loyiha</div>
@@ -1349,7 +1457,8 @@
   </div>
 
   <!-- O'rganish sozlamalari modal -->
-  <div class="modal-overlay" id="lessonSettingsModal" role="dialog" aria-modal="true" aria-labelledby="lessonSettingsModalTitle">
+  <div class="modal-overlay" id="lessonSettingsModal" role="dialog" aria-modal="true"
+    aria-labelledby="lessonSettingsModalTitle">
     <div class="modal">
       <div class="modal-header">
         <h3 id="lessonSettingsModalTitle">⚙️ O‘rganish sozlamalari</h3>
@@ -1363,7 +1472,8 @@
   </div>
 
   <!-- Chiqish tasdiqlash modal -->
-  <div class="modal-overlay" id="logoutConfirmModal" role="dialog" aria-modal="true" aria-labelledby="logoutConfirmModalTitle">
+  <div class="modal-overlay" id="logoutConfirmModal" role="dialog" aria-modal="true"
+    aria-labelledby="logoutConfirmModalTitle">
     <div class="modal modal-sm">
       <div class="modal-header">
         <h3 id="logoutConfirmModalTitle">🚪 Chiqish</h3>
@@ -1390,7 +1500,10 @@
     <div class="loader" aria-hidden="true"></div>
     <p>Yuklanmoqda...</p>
   </div>
-
+
+  <!-- ====================== ONBOARDING (yangi user uchun) ====================== -->
+  <div id="onboardingRoot" hidden></div>
+
 </body>
 
 </html>

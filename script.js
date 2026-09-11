@@ -1108,6 +1108,12 @@ function bindNav() {
     logoutUser();
   });
 
+function showAuthScreen() {
+  $("#app").classList.add("hidden");
+  $("#authScreen").classList.remove("hidden");
+  const loginTab = $(".auth-tab[data-tab='login']");
+  if (loginTab) loginTab.click();
+}
   syncSidebarState();
 }
 
@@ -1162,6 +1168,9 @@ function logoutUser() {
   const userChip = $("#userChip");
   if (userDropdown) userDropdown.classList.remove("active");
   if (userChip) userChip.setAttribute("aria-expanded", "false");
+  if (window.ITOnboarding) {
+    try { window.ITOnboarding.hide(); } catch (e) { /* noop */ }
+  }
   showToast("🚪 Hisobdan chiqdingiz. Yana ko'rishguncha!", "info");
   showAuthScreen();
 }
@@ -1176,7 +1185,24 @@ function showApp() {
   $("#app").classList.remove("hidden");
   refreshUserChip();
   showPage("dashboard");
+  /* 🤖 YANGI FOYDALANUVCHI ONBOARDING — faqat ro'yxatdan o'tgan va hali
+     onboardingni tugatmagan userlar uchun (existing userlar darhol dashboardga) */
+  if (window.ITOnboarding) {
+    try { window.ITOnboarding.maybeStart(currentUser); }
+    catch (e) { console.warn("Onboarding start xatosi:", e); }
+  }
 }
+
+/* ====================== ONBOARDING BRIDGE ====================== */
+/* Onboarding tugatilganda / o'tkazib yuborilganda user belgisini tozalash.
+   Shu bilan "LOGIN → DASHBOARD" backward-compatible flow saqlanadi. */
+window.__itOnboardingFinish = function () {
+  if (!currentUser) return false;
+  delete currentUser.onboardingPending;
+  currentUser.onboardingCompleted = true;
+  saveUsersAndCurrent();
+  return true;
+};
 
 function bindAuth() {
   $$(".pwd-toggle").forEach(b => b.addEventListener("click", () => {
@@ -1239,7 +1265,8 @@ function bindAuth() {
       streak: 0, lastActiveDay: null, testResults: [],
       duelHistory: [],
       achievements: [],
-      store: { inventory: [], equipped: {} }
+      store: { inventory: [], equipped: {} },
+      onboardingPending: true
     };
     users.push(u);
     currentUser = u;

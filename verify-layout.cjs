@@ -116,7 +116,8 @@ function click(el) { el.dispatchEvent(new w.MouseEvent('click', { bubbles: true 
 setTimeout(function () {
   w.Lessons.handlePage('lessons');
   click(doc.querySelectorAll('#lsCoursesGrid .ls-course-card')[0]);
-  click(doc.querySelectorAll('#lessonLevelBody .ls-level-option')[0]);
+  /* Daraja endi diagnostika testi orqali aniqlanadi (openLevelModal);
+     darslar fallback 'intermediate' (barchasi ochiq) bilan ochiladi. */
   w.Lessons.openLesson('html', 'html-d1');
 
   const viewer = doc.querySelector('#lsLessonContainer');
