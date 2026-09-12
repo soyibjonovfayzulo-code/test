@@ -54,7 +54,7 @@ const cards = document.querySelectorAll('#lsCoursesGrid .ls-course-card');
 ok(cards.length === courses.length, courses.length + ' ta karta chiqdi');
 ok(cards[0].textContent.includes(courses[0].name), '1-karta = ' + courses[0].name + ' (tartib saqlangan)');
 ok(cards[cards.length - 1].textContent.includes(courses[courses.length - 1].name), 'Oxirgi karta = ' + courses[courses.length - 1].name);
-ok(/Boshlash/.test(cards[0].textContent), 'Yangi userda: ▶ Boshlash statusi');
+ok(/Boshlanmagan/.test(cards[0].textContent), 'Yangi userda: "Boshlanmagan" holati');
 
 console.log('\n[3] DAVOM ETTIRISH — joriy darsni ochadi');
 /* HTML kursda 1-darsni tugallangan qilib qo'yish -> resume = 2-dars */
@@ -79,7 +79,7 @@ render();
 const cards2 = document.querySelectorAll('#lsCoursesGrid .ls-course-card');
 const htmlCard = Array.from(cards2).find(c => c.getAttribute('data-course') === 'html');
 ok(/Davom etmoqda/.test(htmlCard.textContent), 'HTML: ▶ Davom etmoqda (' + pctNow + '%)');
-ok(/Davom ettirish/.test(htmlCard.textContent), 'HTML: Davom ettirish tugmasi');
+ok(htmlCard.getAttribute('role') === 'button' && htmlCard.getAttribute('tabindex') === '0', 'HTML: butun karta clickable (yagona action, "Davom ettirish" yo\'q)');
 ok(!/Tugallangan/.test(htmlCard.textContent) || pctNow === 100, 'HTML hali tugallanmagan');
 
 console.log('\n[5] KURS OCHILISHI buzilmagan');

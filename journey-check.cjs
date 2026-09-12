@@ -1,7 +1,9 @@
-/* JOURNEY PATH — YANGI UX SMOKE-TEST (jsdom)
+/* COURSE PATH — SNAKE / WINDING ROAD SMOKE-TEST (jsdom)
    Run: node journey-check.cjs
-   Tekshiradi: node click → detail panel → Boshlash → dars ochiladi;
-   locked node → ochilmaydi + toast; node holatlari; zigzag offsetlar. */
+   Tekshiradi: #lsCoursePath container; node holatlari (current/locked/done);
+   deterministik zigzag (--l/--r/--card-col); SVG road (base+progress);
+   node click → lessonView (mavjud openLesson oqimi); locked → toast + qulf modal;
+   completed → "Qayta ko'rish"; kurslararo progress izolyatsiyasi; robot headerda. */
 const fs = require('fs');
 const path = require('path');
 const { JSDOM } = require('jsdom');
@@ -17,7 +19,7 @@ const doc = w.document;
 
 const visitedPages = [];
 w.__itShowPage = (name) => { visitedPages.push(name); };
-w.__itGetCurrentUser = () => ({ username: 'journeyuser', email: 'j@mail.com' });
+w.__itGetCurrentUser = () => ({ username: 'pathuser', email: 'p@mail.com' });
 w.showToast = (msg, type) => { w.__lastToast = { msg, type }; };
 w.confirm = () => true;
 w.eval(fs.readFileSync(path.join(root, 'mascot.js'), 'utf8'));
@@ -52,38 +54,50 @@ function answerDiagnostic(mode) {
   }
 }
 
-/* 1. Kurs tanlash -> kurs sahifasi -> journey path chiqishi */
+/* 1. Kurs tanlash -> kurs sahifasi -> course path chiqishi */
 w.Lessons.handlePage('lessons');
 click(doc.querySelectorAll('#lsCoursesGrid .ls-course-card')[0]); // HTML
 answerDiagnostic('wrong'); // beginner (sequential qulf)
-const journey = doc.querySelector('#lsJourney');
-ok(!!journey, 'Journey path container chiqdi (#lsJourney)');
-const nodes = doc.querySelectorAll('#lsJourney .ls-jnode');
+const cpath = doc.querySelector('#lsCoursePath');
+ok(!!cpath, 'Course path container chiqdi (#lsCoursePath)');
+ok(!doc.querySelector('#lsJourney'), 'Eski journey path DOMda YO\'Q');
+ok(!doc.querySelector('.ls-path-node') && !doc.querySelector('.ls-jnode'), 'Eski timeline/journey node\'lari yo\'q');
+const nodes = doc.querySelectorAll('#lsCoursePath .ls-cnode');
 ok(nodes.length === w.CoursesAPI.getCourse('html').lessonCount, 'Har bir dars uchun node chiqdi (' + nodes.length + ')');
-ok(nodes[0].classList.contains('ls-jnode--current'), '1-dars node = CURRENT');
-ok(nodes[1].classList.contains('ls-jnode--locked'), '2-dars node = LOCKED');
+ok(nodes[0].classList.contains('ls-cnode--current'), '1-dars node = CURRENT');
+ok(nodes[1].classList.contains('ls-cnode--locked'), '2-dars node = LOCKED');
 ok(nodes[0].getAttribute('data-state') === 'current', 'Node data-state=current');
 ok(nodes[1].getAttribute('data-state') === 'locked', 'Node data-state=locked');
-ok(!!doc.querySelector('#lsJourney .ls-jnode-robot .mascot'), 'Robot current node yaqinida');
-ok(!!doc.querySelector('#lsJourney .ls-jlinks'), 'SVG connector elementi bor');
-ok(!!doc.querySelector('#lsBackToLessons'), '← Darslarga qaytish tugmasi bor');
+ok(!!doc.querySelector('#lsCoursePath .ls-croad-base') && !!doc.querySelector('#lsCoursePath .ls-croad-progress'), 'SVG road: base + progress path bor');
+const progEl = doc.querySelector('#lsCoursePath .ls-croad-progress');
+ok(!!progEl && progEl.getAttribute('pathLength') === '1', 'Progress path pathLength=1 (dasharray texnikasi)');
+ok(!!doc.querySelector('#lsCoursePath .ls-ccard'), 'Lesson card chiqdi');
+const card0 = doc.querySelectorAll('#lsCoursePath .ls-ccard')[0];
+ok(card0.textContent.indexOf('Davom etmoqda') !== -1, 'Current card: "Davom etmoqda" statusi bor');
+ok(card0.textContent.indexOf('Davom ettirish') !== -1, 'Current card: "Davom ettirish →" actioni bor');
+ok(card0.textContent.indexOf('daqiqa') !== -1 && card0.textContent.indexOf('XP') !== -1, 'Card: davomiylik + XP');
+ok(!!doc.querySelector('#lsCourseContainer .ls-hero-robot .mascot'), 'Robot course headerda');
+ok(!!doc.querySelector('#lsBackToLessons'), '← Kursga qaytish tugmasi bor');
 
-/* 2. Node click → detail panel (darhol ochilmaydi) */
-const before = visitedPages.length;
+/* 2. Deterministik zigzag: node x fraksiyalari + kartalar chap-o'ng almashinishi */
+const rows = doc.querySelectorAll('#lsCoursePath .ls-crow');
+const styles = Array.from(rows).map(function (r) { return r.getAttribute('style') || ''; });
+ok(styles[0].indexOf('* 0.38') !== -1, 'Row1 node x = 0.38 (chap)');
+ok(styles[1].indexOf('* 0.66') !== -1, 'Row2 node x = 0.66 (o\'ng)');
+ok(styles[2].indexOf('* 0.3') !== -1, 'Row3 node x = 0.30 (chap, boshqa amplituda)');
+const cardCols = styles.map(function (s) {
+  const m = s.match(/--card-col:(\d)/);
+  return m ? m[1] : '';
+});
+ok(cardCols[0] === '3' && cardCols[1] === '1' && cardCols[2] === '3', 'Kartalar navbatlama o\'ng(3)/chap(1) tomonda');
+ok(nodes[0].closest('.ls-crow') !== nodes[1].closest('.ls-crow'), 'Har node o\'z rowida');
+
+/* 3. Node click → lesson view ochiladi (eski openLesson oqimi saqlangan) */
 click(nodes[0]);
-const panel = doc.querySelector('#lsJourneyDetail');
-ok(!!panel && !panel.hidden, 'Node bosilganda detail panel ochildi (lesson ochilmadi)');
-ok(visitedPages.length === before, 'Node bosilganda lesson DARHOL ochilmadi');
-ok(panel.textContent.includes('HTML nima?'), 'Panel dars nomini korsatadi (lessons-data dan)');
-ok(panel.textContent.includes('15'), 'Panel davomiylikni korsatadi');
-ok(panel.textContent.includes('XP'), 'Panel XP ni korsatadi');
-const goBtn = panel.querySelector('.ls-detail-go');
-ok(!!goBtn && goBtn.textContent.includes('Boshlash'), 'Panelda [Boshlash] tugmasi bor');
-
-/* 3. Boshlash → mavjud lesson view ochiladi → darsni test orqali tugallash */
-click(goBtn);
-ok(visitedPages[visitedPages.length - 1] === 'lessonView', 'Boshlash -> lessonView ochildi');
+ok(visitedPages[visitedPages.length - 1] === 'lessonView', 'Node click -> lessonView ochildi');
 ok(doc.querySelector('#lsLessonContainer').textContent.length > 0, 'Lesson kontenti render qilindi');
+
+/* 4. Darsni test orqali tugallash */
 click(doc.querySelector('#lsMarkReadBtn'));
 click(doc.querySelector('#lsStartQuizBtn'));
 const quizBank = w.CoursesAPI.getCourse('html').lessons[0].quiz.questions;
@@ -96,42 +110,32 @@ for (let qi = 0; qi < 5; qi++) {
 }
 ok(doc.querySelector('.ls-result-hero') !== null, 'Test natijasi chiqdi (PASS)');
 
-/* 4. Darsdan kursga qaytish → completed/current unlock */
+/* 5. Kurs sahifasiga qaytish → done/current/locked holatlar yangilangan */
 click(doc.querySelector('#lsBackToCourse'));
 ok(visitedPages[visitedPages.length - 1] === 'lessonCourse', 'Kurs sahifasiga qaytdi');
-const nodes2 = doc.querySelectorAll('#lsJourney .ls-jnode');
-ok(nodes2[0].classList.contains('ls-jnode--done'), '1-dars node = DONE (✓)');
-ok(nodes2[1].classList.contains('ls-jnode--current'), '2-dars node endi CURRENT (unlock)');
-ok(nodes2[2].classList.contains('ls-jnode--locked'), '3-dars hali LOCKED');
+const nodes2 = doc.querySelectorAll('#lsCoursePath .ls-cnode');
+ok(nodes2[0].classList.contains('ls-cnode--done'), '1-dars node = DONE (✓)');
+ok(nodes2[1].classList.contains('ls-cnode--current'), '2-dars node endi CURRENT (unlock)');
+ok(nodes2[2].classList.contains('ls-cnode--locked'), '3-dars hali LOCKED');
+const cards2 = doc.querySelectorAll('#lsCoursePath .ls-ccard');
+ok(cards2[0].textContent.indexOf('Tugallangan') !== -1 && cards2[0].textContent.indexOf('Qayta ko‘rish') !== -1, 'Completed card: "Tugallangan" + "Qayta ko\'rish"');
+ok(cards2[1].textContent.indexOf('Davom etmoqda') !== -1, '2-dars kartasi "Davom etmoqda"');
 
-/* 5. Locked node → ochilmaydi + toast */
+/* 6. Locked node → ochilmaydi + toast + qulf modal (eski oqim) */
 const beforeLocked = visitedPages.length;
 click(nodes2[2]);
 ok(visitedPages.length === beforeLocked, 'Locked node sahifani o\'zgartirmadi');
 ok(w.__lastToast && w.__lastToast.msg.indexOf('yopiq') !== -1, 'Locked toast chiqdi');
 ok(doc.querySelector('#lessonLockedModal').classList.contains('active'), 'Qulf modal ham ochiladi (eski oqim)');
 
-/* 6. Completed node → panel "Qayta ko'rish" bilan ochiladi */
+/* 7. Yana bir kurs (CSS) — alohida course path, progress izolyatsiyasi */
 click(doc.querySelector('#lessonLockedFooter .btn-ghost'));
-click(nodes2[0]);
-const panel2 = doc.querySelector('#lsJourneyDetail');
-ok(!!panel2 && !panel2.hidden && panel2.querySelector('.ls-detail-go').textContent.includes('Qayta ko‘rish'), 'Completed node → "Qayta ko\'rish" paneli');
-
-/* 7. Panel yopilishi: Esc */
-doc.dispatchEvent(new w.KeyboardEvent('keydown', { key: 'Escape', bubbles: true }));
-ok(doc.querySelector('#lsJourneyDetail').hidden, 'Esc panelni yopadi');
-
-/* 8. Yana bir kurs (CSS) — alohida course path */
 w.Lessons.openCourse('css');
 answerDiagnostic('wrong');
-const cssNodes = doc.querySelectorAll('#lsJourney .ls-jnode');
+const cssNodes = doc.querySelectorAll('#lsCoursePath .ls-cnode');
 ok(cssNodes.length === w.CoursesAPI.getCourse('css').lessonCount, 'CSS kursi alohida path (' + cssNodes.length + ' node)');
-ok(cssNodes[0].classList.contains('ls-jnode--current'), 'CSS 1-dars CURRENT (course-specific progress)');
-ok(doc.querySelector('#lsCourseContainer').textContent.includes('0%'), 'CSS progress 0% (HTML progress ta\'sir qilmadi)');
-
-/* 9. Zigzag determinizm: --ls-xf pattern [0,1,-1] */
-const rows = doc.querySelectorAll('#lsJourney .ls-jrow');
-ok(rows[0].style.getPropertyValue('--ls-xf') === '0' && rows[1].style.getPropertyValue('--ls-xf') === '1' && rows[2].style.getPropertyValue('--ls-xf') === '-1', 'Zigzag ofsetlar deterministik [0,1,-1]');
+ok(cssNodes[0].classList.contains('ls-cnode--current'), 'CSS 1-dars CURRENT (course-specific progress)');
+ok(doc.querySelector('#lsCourseContainer').textContent.indexOf('0%') !== -1, 'CSS progress 0% (HTML progress ta\'sir qilmadi)');
 
 console.log('\n==========================================');
 console.log('  NATIJA: ' + passed + ' otdi, ' + failed + ' xato');

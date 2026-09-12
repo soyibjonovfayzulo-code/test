@@ -148,7 +148,7 @@ setTimeout(function () {
   // Kurs sahifasi ham render
   click(doc.querySelector('#lsQuizBackBtn'));
   click(doc.querySelector('#lsBackToCourse'));
-  ok(doc.querySelectorAll('#lsCourseContainer .ls-lesson-card').length >= 31, 'Kurs sahifasi: 31+ dars kartasi');
+  ok(doc.querySelectorAll('#lsCourseContainer .ls-ccard').length >= 31, 'Kurs sahifasi: 31+ dars kartasi');
 
   ok(consoleErrors === 0, 'Console error = 0 (' + consoleErrors + ')');
 
