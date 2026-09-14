@@ -1,0 +1,364 @@
+/* ==========================================================
+   ITTest MASCOT — Robot (3D Mascot Engine + Neon Platform)
+   Faqat transform / opacity / scale / translate — GPU friendly
+   ========================================================== */
+
+.mascot {
+  --mascot-size: 96px;
+  position: relative;
+  width: var(--mascot-size);
+  height: calc(var(--mascot-size) * 1.08);
+  display: inline-flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-end;
+  flex-shrink: 0;
+  pointer-events: none;
+  user-select: none;
+}
+
+/* ---- Robot Body Wrapper ---- */
+.mascot-body {
+  position: relative;
+  width: 100%;
+  height: 92%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transform-origin: 50% 96%;
+  will-change: transform;
+  z-index: 2;
+}
+
+.mascot img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  display: block;
+  filter: drop-shadow(0 8px 24px rgba(0, 195, 255, 0.45));
+}
+
+.mascot.mascot-broken { display: none !important; }
+
+/* ---- Living Eyes Visor Overlay ---- */
+.mascot-eyes {
+  position: absolute;
+  top: 23%;
+  left: 32%;
+  width: 36%;
+  height: 16%;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 4%;
+  pointer-events: none;
+  z-index: 3;
+}
+
+.mascot-eye {
+  position: relative;
+  width: 28%;
+  height: 65%;
+  border-radius: 50%;
+  background: radial-gradient(circle, #00f2fe 30%, #00c6ff 100%);
+  box-shadow: 0 0 8px #00f2fe, 0 0 16px rgba(0, 210, 255, 0.85);
+  opacity: 0.9;
+  transform-origin: 50% 50%;
+  animation: mascotEyeBlink 4.2s ease-in-out infinite, mascotEyeGlance 7s ease-in-out infinite;
+}
+
+.mascot-eye--l { left: 2%; }
+.mascot-eye--r { right: 2%; }
+
+@keyframes mascotEyeBlink {
+  0%, 90%, 100% { transform: scaleY(1); opacity: 0.9; }
+  94%           { transform: scaleY(0.08); opacity: 0.3; }
+}
+
+@keyframes mascotEyeGlance {
+  0%, 65%, 100% { transform: translateX(0); }
+  70%, 82%      { transform: translateX(2.2px); }
+}
+
+/* ---- Futuristic Grounded Pedestal / Platform ---- */
+.mascot-platform {
+  position: absolute;
+  bottom: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 86%;
+  height: 13px;
+  border-radius: 50%;
+  background: radial-gradient(ellipse at center, rgba(14, 28, 60, 0.95), rgba(6, 12, 28, 0.98));
+  border: 1.5px solid rgba(0, 229, 255, 0.85);
+  box-shadow: 0 0 16px rgba(0, 229, 255, 0.7), 0 4px 14px rgba(0, 0, 0, 0.85), inset 0 0 10px rgba(0, 229, 255, 0.45);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1;
+}
+
+.mascot-platform-ring {
+  width: 68%;
+  height: 5px;
+  border-radius: 50%;
+  border: 1px solid rgba(0, 242, 254, 0.9);
+  box-shadow: 0 0 8px #00f2fe;
+}
+
+.mascot-platform-glow {
+  position: absolute;
+  bottom: 2px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 105%;
+  height: 18px;
+  background: radial-gradient(ellipse at center, rgba(0, 229, 255, 0.45), transparent 72%);
+  pointer-events: none;
+}
+
+/* ---- Size modifiers ---- */
+.mascot-xs { --mascot-size: 44px; }
+.mascot-sm { --mascot-size: 60px; }
+.mascot-md { --mascot-size: 88px; }
+.mascot-lg { --mascot-size: 140px; }
+
+/* ---- Robot States & Animations ---- */
+
+/* IDLE: Breathing / Light floating above platform */
+.mascot--idle .mascot-body { animation: mascotIdle 3.4s ease-in-out infinite; }
+@keyframes mascotIdle {
+  0%, 100% { transform: translateY(0) rotate(0deg); }
+  50%      { transform: translateY(-5px) rotate(-1deg); }
+}
+
+/* THINKING: Tilt head & eye inquiry */
+.mascot--thinking .mascot-body { animation: mascotThink 2s ease-in-out infinite; }
+.mascot--thinking .mascot-eye {
+  animation: mascotEyeThink 2s ease-in-out infinite;
+  box-shadow: 0 0 12px #00f2fe, 0 0 20px #7c5cff;
+}
+@keyframes mascotThink {
+  0%, 100% { transform: translateY(0) rotate(0deg); }
+  35%      { transform: translateY(-3px) rotate(-5deg); }
+  70%      { transform: translateY(-3px) rotate(-2deg); }
+}
+@keyframes mascotEyeThink {
+  0%, 100% { transform: translate(0, 0); }
+  50%      { transform: translate(-1.5px, -2px); }
+}
+
+/* SUCCESS: Happy bounce & bright pulse */
+.mascot--success .mascot-body { animation: mascotBounce 0.65s cubic-bezier(0.16, 1, 0.3, 1); }
+.mascot--success .mascot-eye {
+  box-shadow: 0 0 14px #00f2fe, 0 0 24px #00f2fe;
+}
+@keyframes mascotBounce {
+  0%   { transform: translateY(0) scale(1); }
+  35%  { transform: translateY(-14px) scale(1.05); }
+  60%  { transform: translateY(0) scale(0.97); }
+  80%  { transform: translateY(-4px) scale(1.02); }
+  100% { transform: translateY(0) scale(1); }
+}
+
+/* ERROR: Gentle shake */
+.mascot--error .mascot-body { animation: mascotShake 0.48s ease-in-out; }
+.mascot--error .mascot-eye {
+  box-shadow: 0 0 10px #ff0055, 0 0 16px rgba(255, 0, 85, 0.7);
+  background: radial-gradient(circle, #ff0055 30%, #ff5e62 100%);
+}
+@keyframes mascotShake {
+  0%, 100%  { transform: translateX(0); }
+  20%       { transform: translateX(-5px) rotate(-3deg); }
+  40%       { transform: translateX(5px) rotate(3deg); }
+  60%       { transform: translateX(-3px) rotate(-2deg); }
+  80%       { transform: translateX(3px) rotate(2deg); }
+}
+
+/* COMPLETE: Celebration glow & joy */
+.mascot--complete .mascot-body { animation: mascotCelebrate 1.2s ease-in-out infinite; }
+.mascot--complete .mascot img {
+  filter: drop-shadow(0 8px 28px rgba(0, 229, 255, 0.7)) drop-shadow(0 0 16px rgba(124, 92, 255, 0.6));
+}
+@keyframes mascotCelebrate {
+  0%, 100% { transform: translateY(0) rotate(0deg) scale(1); }
+  25%      { transform: translateY(-12px) rotate(-5deg) scale(1.04); }
+  50%      { transform: translateY(0) rotate(0deg) scale(0.98); }
+  75%      { transform: translateY(-12px) rotate(5deg) scale(1.04); }
+}
+
+/* ROCKET / NEW LESSON: Forward motion */
+.mascot--rocket .mascot-body,
+.mascot--newLesson .mascot-body { animation: mascotRocket 2s ease-in-out infinite; }
+@keyframes mascotRocket {
+  0%   { transform: translate(0, 0) rotate(0deg); }
+  40%  { transform: translate(6px, -8px) rotate(4deg); }
+  60%  { transform: translate(8px, -10px) rotate(5deg); }
+  80%  { transform: translate(3px, -3px) rotate(2deg); }
+  100% { transform: translate(0, 0) rotate(0deg); }
+}
+
+/* ---- ⭐ +XP float ---- */
+.mascot-xp {
+  position: absolute;
+  left: 50%;
+  top: -6px;
+  transform: translateX(-50%);
+  font-size: 14px;
+  font-weight: 800;
+  color: #fbbf24;
+  text-shadow: 0 0 12px rgba(251, 191, 36, 0.9);
+  pointer-events: none;
+  animation: mascotXpFloat 1.3s ease-out forwards;
+  white-space: nowrap;
+  z-index: 10;
+}
+@keyframes mascotXpFloat {
+  0%   { opacity: 0; transform: translate(-50%, 8px) scale(0.7); }
+  20%  { opacity: 1; transform: translate(-50%, -8px) scale(1.1); }
+  100% { opacity: 0; transform: translate(-50%, -60px) scale(1); }
+}
+
+/* ---- Speech bubbles disabled per user design requirement ---- */
+.mascot-bubble {
+  display: none !important;
+}
+
+/* ==========================================================
+   JOYLASHUV KONTEKSTLARI
+   ========================================================== */
+
+/* --- Dashboard hero card --- */
+.hero-mascot-card {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-top: 14px;
+  padding: 8px 14px 8px 8px;
+  width: fit-content;
+  max-width: 100%;
+  background: rgba(10, 14, 28, 0.55);
+  border: 1px solid rgba(0, 229, 255, 0.25);
+  border-radius: 18px;
+  backdrop-filter: blur(12px);
+  box-shadow: 0 0 20px rgba(0, 229, 255, 0.2);
+}
+.hero-mascot-card .mascot { --mascot-size: 68px; }
+.hero-mascot-say { display: none !important; }
+
+/* --- Coding AI panel head --- */
+.mascot-ai { --mascot-size: 34px; margin-right: 6px; }
+
+/* --- Test savoli ichida --- */
+.q-mascot-row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 10px;
+}
+.q-mascot-row .mascot { --mascot-size: 48px; }
+.q-mascot-text { display: none !important; }
+
+/* --- Test natija hero --- */
+#resultHero .mascot { --mascot-size: 80px; }
+
+/* --- Darslar: intro (text chap / robot o'ng, KATTA rasm + platforma) --- */
+.ls-mascot-intro {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 20px;
+  padding: 16px 22px;
+  margin-bottom: 16px;
+  background: linear-gradient(135deg, rgba(16, 24, 48, 0.75), rgba(10, 16, 36, 0.85));
+  border: 1px solid rgba(0, 229, 255, 0.22);
+  border-radius: 18px;
+  box-shadow: 0 8px 28px rgba(0, 0, 0, 0.35);
+  overflow: visible;
+}
+.ls-mascot-intro .mascot { --mascot-size: 135px; order: 2; }
+.ls-mascot-intro-text { order: 1; flex: 1 1 auto; min-width: 0; }
+.ls-mascot-intro-text h4 { margin: 0 0 6px; font-size: 18px; font-weight: 800; color: #fff; }
+.ls-mascot-intro-text p { margin: 0; font-size: 14px; line-height: 1.5; color: rgba(226, 232, 240, 0.85); }
+
+.ls-quiz-hero .mascot,
+.ls-result-hero .mascot { --mascot-size: 60px; }
+.ls-quiz-hero { display: flex; flex-wrap: wrap; align-items: center; gap: 10px; }
+
+/* ==========================================================
+   MOBILE (320–430px)
+   ========================================================== */
+@media (max-width: 640px) {
+  .mascot { --mascot-size: 60px; }
+  .mascot-sm { --mascot-size: 48px; }
+  .mascot-lg { --mascot-size: 96px; }
+  .hero-mascot-card .mascot { --mascot-size: 48px; }
+  .hero-mascot-card { padding: 6px 10px 6px 6px; margin-inline: auto; }
+  
+  .ls-mascot-intro {
+    flex-direction: column;
+    text-align: center;
+    gap: 12px;
+    padding: 14px 12px;
+  }
+  .ls-mascot-intro .mascot { --mascot-size: 110px; order: 2; margin-inline: auto; }
+  .ls-mascot-intro-text { order: 1; }
+  .ls-mascot-intro-text h4 { font-size: 16px; }
+  .ls-mascot-intro-text p { font-size: 13px; }
+
+  #resultHero .mascot { --mascot-size: 64px; }
+  .mascot-ai { --mascot-size: 26px; }
+}
+
+@media (max-width: 360px) {
+  .mascot { --mascot-size: 50px; }
+  .mascot-sm { --mascot-size: 42px; }
+  .hero-mascot-card .mascot { --mascot-size: 40px; }
+  .ls-mascot-intro .mascot { --mascot-size: 92px; }
+}
+
+/* ==========================================================
+   OQ / QORA FONDA 3D MODEL ADAPTIVLIGI (Light / Dark Mode)
+   ========================================================== */
+[data-theme="light"] .mascot img {
+  filter: drop-shadow(0 6px 20px rgba(37, 99, 235, 0.4)) brightness(1.02) contrast(1.04);
+}
+
+[data-theme="light"] .mascot-platform {
+  background: radial-gradient(ellipse at center, rgba(220, 235, 255, 0.95), rgba(200, 220, 250, 0.98));
+  border: 1.5px solid rgba(37, 99, 235, 0.7);
+  box-shadow: 0 0 16px rgba(37, 99, 235, 0.4), 0 4px 12px rgba(0, 0, 0, 0.15), inset 0 0 8px rgba(37, 99, 235, 0.3);
+}
+
+[data-theme="light"] .mascot-platform-ring {
+  border-color: rgba(37, 99, 235, 0.8);
+  box-shadow: 0 0 6px rgba(37, 99, 235, 0.6);
+}
+
+[data-theme="light"] .ls-mascot-intro {
+  background: rgba(255, 255, 255, 0.85);
+  border-color: rgba(99, 102, 241, 0.25);
+  box-shadow: 0 6px 20px rgba(99, 102, 241, 0.12);
+}
+
+[data-theme="light"] .ls-mascot-intro-text h4 {
+  color: #0f172a;
+}
+
+[data-theme="light"] .ls-mascot-intro-text p {
+  color: #475569;
+}
+
+/* Accessibility */
+@media (prefers-reduced-motion: reduce) {
+  .mascot-body,
+  .mascot-eye,
+  .mascot--idle .mascot-body,
+  .mascot--thinking .mascot-body,
+  .mascot--complete .mascot-body,
+  .mascot--rocket .mascot-body,
+  .mascot--newLesson .mascot-body,
+  .mascot--error .mascot-body,
+  .mascot--success .mascot-body { animation: none !important; }
+  .mascot-xp { animation-duration: 0.6s !important; }
+}

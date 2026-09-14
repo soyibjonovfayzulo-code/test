@@ -1,0 +1,41 @@
+{
+  "name": "C++",
+  "icon": "🔧",
+  "description": "Tizim dasturlash — OOP, STL, Pointerlar va Xotira boshqaruvi",
+  "beginner": [
+    { "q": "C++ dasturlash tili kim tomonidan yaratilgan?", "o": ["Bjarne Stroustrup", "Guido van Rossum", "James Gosling", "Dennis Ritchie"], "c": 0, "e": "Bjarne Stroustrup 1979-yilda Bell Labs da C++ ni yaratgan." },
+    { "q": "C++ da ekranga matn chiqarish uchun qaysi oqim ishlatiladi?", "o": ["cin", "cout", "printf", "print"], "c": 1, "e": "std::cout oqimi console output uchun ishlatiladi." },
+    { "q": "C++ da foydalanuvchidan kiritishni o'qish oqimi qaysi?", "o": ["cin", "cout", "input", "read"], "c": 0, "e": "std::cin oqimi console input uchun ishlatiladi." },
+    { "q": "C++ da kodingiz qaysi kutubxona bilan boshlanadi?", "o": ["#include <iostream>", "#include <stdio.h>", "#include <conio.h>", "import iostream"], "c": 0, "e": "<iostream> kirish-chiqish oqimlarini ta'minlaydi." },
+    { "q": "C++ da main() funksiyasi odatda nimani qaytaradi?", "o": ["int (masalan return 0;)", "void", "float", "string"], "c": 0, "e": "main() funksiyasi 0 (muvaffaqiyat) qaytaruvchi int funksiya." },
+    { "q": "C++ da o'zgaruvchi e'lon qilish sintaksisi:", "o": ["int x = 10;", "var x = 10;", "x := 10;", "let x = 10;"], "c": 0, "e": "C++ da tur (type) va nom ko'rsatiladi: int x = 10;" },
+    { "q": "C++ da bir qatorli izoh belgilash:", "o": ["// izoh", "# izoh", "/* izoh */", "-- izoh"], "c": 0, "e": "// belgisi bir qatorli izoh uchun." },
+    { "q": "C++ da doimiy qiymat (konstanta) yaratish uchun so'z:", "o": ["const", "final", "static", "val"], "c": 0, "e": "const o'zgaruvchini faqat o'qish rejimidga o'tkazadi." },
+    { "q": "Mantiqiy 'va' (AND) operatori:", "o": ["&&", "and", "&", "AND"], "c": 0, "e": "&& — mantiqiy AND operatori." },
+    { "q": "Mantiqiy 'yoki' (OR) operatori:", "o": ["||", "or", "|", "OR"], "c": 0, "e": "|| — mantiqiy OR operatori." }
+  ],
+  "intermediate": [
+    { "q": "C++ da ko'rsatkich (Pointer) nima saqlaydi?", "o": ["Boshqa o'zgaruvchining xotira manzilini (memory address)", "Faqat butun son", "Matn", "Fayl nomi"], "c": 0, "e": "Pointer o'zgaruvchining xotiradagi hex manzilini saqlaydi." },
+    { "q": "Pointer o'zgaruvchisini e'lon qilish simvoli qaysi?", "o": ["*", "&", "#", "@"], "c": 0, "e": "int *ptr = &x; ko'rinishida yoziladi." },
+    { "q": "O'zgaruvchining xotira manzilini olish operatori qaysi?", "o": ["& (address-of)", "* (dereference)", "->", "."], "c": 0, "e": "&x x ning xotiradagi manzilini qaytaradi." },
+    { "q": "Reference (havola) e'lon qilish simvoli qaysi?", "o": ["&", "*", "%", "$"], "c": 0, "e": "int &ref = x; ref x ning taxallusi (alias) bo'ladi." },
+    { "q": "Dinamik xotira ajratish uchun C++ da qaysi operator ishlatiladi?", "o": ["new", "malloc", "alloc", "create"], "c": 0, "e": "new operatori heap xotiradan joy ajratadi." },
+    { "q": "Dinamik ajratilgan xotirani bo'shatish uchun qaysi operator kerak?", "o": ["delete", "free", "remove", "clear"], "c": 0, "e": "delete ptr; yoki delete[] arr; xotirani bo'shatadi." },
+    { "q": "C++ STL dagi dinamik massiv konteyneri qaysi?", "o": ["std::vector", "std::array", "std::list", "std::map"], "c": 0, "e": "std::vector o'lchami avtomatik o'sadigan massiv." },
+    { "q": "Klass konstruktori (constructor) nomi qanday bo'ladi?", "o": ["Klass nomi bilan bir xil", "init()", "main()", "construct()"], "c": 0, "e": "Konstruktor nomi klass nomi bilan aynan bir xil bo'ladi." },
+    { "q": "Destruktor (destructor) nomi qanday belgilanadi?", "o": ["~KlassNomi()", "delete()", "destroy()", "stop()"], "c": 0, "e": "~ (tilda) belgisi destruktor funksiyasini anglatadi." },
+    { "q": "std::map STL konteyneri ma'lumotni qanday saqlaydi?", "o": ["Key-Value juftligi ko'rinishida va kalit bo'yicha tartiblangan", "Faqat vektor kabi", "Queue kabi", "Stack kabi"], "c": 0, "e": "std::map Red-Black Tree asosida kalitlarni tartiblab saqlaydi." }
+  ],
+  "advanced": [
+    { "q": "RAII (Resource Acquisition Is Initialization) nimani anglatadi?", "o": ["Resurslarni obyekt hayot tsikli (constructor/destructor) bilan avtomatik boshqarish", "Fayllarni tez o'qish usuli", "Multi-thread xavfsizligi", "Kompilyator bayrog'i"], "c": 0, "e": "RAII resurs oqishining (memory leak) oldini oladi." },
+    { "q": "C++ 11 dagi Move Semantics (std::move) nimaga xizmat qiladi?", "o": ["Nusxalamasdan resursga egalikni ko'chirish (transfer ownership)", "Kodni ko'chirish", "Fayl joyini o'zgartirish", "Oqimni to'xtatish"], "c": 0, "e": "Move semantics rvalue reference (&&) orqali keraksiz kopiya qilishni yo'qotadi." },
+    { "q": "Smart Pointerlar (std::unique_ptr, std::shared_ptr) maqsadi nima?", "o": ["Dinamik xotirani avtomatik boshqarish va xotira sizib chiqishining oldini olish", "Kodni tezlashtirish", "Array hajmini oshirish", "Interfeys chizish"], "c": 0, "e": "Smart pointerlar RAII asosida delete ni avtomatik bajaradi." },
+    { "q": "std::unique_ptr va std::shared_ptr farqi nima?", "o": ["unique_ptr yagona egalik (exclusive ownership), shared_ptr esa ko'p egalik (reference counting)", "Farqi yo'q", "unique_ptr sekinroq", "shared_ptr xotira ajratmaydi"], "c": 0, "e": "unique_ptr kopiya qilinmaydi (move-only), shared_ptr ref count yuradi." },
+    { "q": "Virtual funksiya (virtual function) va vtable nima uchun kerak?", "o": ["Polimorfizm va dinamik bog'lanish (dynamic binding)ni ta'minlash uchun", "Kompilyatsiyani tezlashtirish uchun", "Statik chaqirish uchun", "Fayl yaratish uchun"], "c": 0, "e": "virtual funksiyalar runtime vaqtida to'g'ri metodni chaqirish imkonini beradi." },
+    { "q": "Pure Virtual Function sintaksisi qanday?", "o": ["virtual void func() = 0;", "virtual void func();", "pure void func();", "abstract void func();"], "c": 0, "e": "= 0 bilan tugagan virtual metod pure virtual funksiya hisoblanadi (Abstract Class)." },
+    { "q": "C++ constexpr kalit so'zi nima qiladi?", "o": ["Ifodani kompilyatsiya vaqtida (compile-time) hisoblashni talab qiladi", "Runtime da ishlaydi", "Faqat float uchun", "Memory o'chiradi"], "c": 0, "e": "constexpr kompilyatsiya bosqichida qiymatni hisoblab qo'yadi." },
+    { "q": "Template Metaprogramming (TMP) nima?", "o": ["Kompilyatsiyada ishlaydigan va kod generatsiya qiluvchi shablonli dasturlash", "UI dizayn", "Baza so'rovi", "Android app"], "c": 0, "e": "TMP kompilyatsiya vaqtida murakkab hisoblashlarni va tiplarni tekshirishni bajaradi." },
+    { "q": "Undefined Behavior (UB) degani nima?", "o": ["Standart bo'yicha natijasi kafolatlanmagan va har qanday xatolikka olib keluvchi holat", "Kompilyator xatosi", "Syntax error", "Warning"], "c": 0, "e": "UB (masalan, dangling pointer, buffer overflow) kutilmagan natijalarga sabab bo'ladi." },
+    { "q": "std::atomic nima uchun ishlatiladi?", "o": ["Thread-safe bo'lgan va lock-free atomar operatsiyalarni bajarish uchun", "Fayllarni siqish uchun", "Kodni o'chirish uchun", "Stringlarni ulash uchun"], "c": 0, "e": "std::atomic poyga holati (race condition) ga yo'l qo'ymaydi." }
+  ]
+}

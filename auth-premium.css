@@ -696,16 +696,12 @@
   opacity: 0.55;
 }
 
-/* Parol maydoni: ikonka + eye toggle */
+/* Parol maydoni: faqat eye toggle (quluf ikonkasi olib tashlangan) */
 .auth-screen .pwd-wrap {
   position: relative;
 }
 
-.auth-screen .pwd-wrap input { padding-right: 84px; }
-
-.auth-screen .pwd-wrap .input-ico {
-  right: 52px;
-}
+.auth-screen .pwd-wrap input { padding-right: 52px; }
 
 .auth-screen .pwd-toggle {
   position: absolute;

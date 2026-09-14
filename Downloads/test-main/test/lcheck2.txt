@@ -1,0 +1,204 @@
+
+[DATA ARXITEKTURASI]
+  ✅ CoursesAPI mavjud
+  ✅ 10 ta kurs bor (10)
+  ✅ HTML kursi 31 dars (31)
+  ✅ JavaScript kursi 40 dars (40)
+  ✅ CSS kursi 25 dars
+  ✅ findLesson ishlaydi
+  ✅ nextLesson ishlaydi
+  ✅ Noto'g'ri id -> null
+  ✅ Data'ga 1 qator qo'shilib yangi dars paydo bo'ldi (32)
+  ✅ Qayta o'chirildi (31)
+
+[DARSLAR BOSH SAHIFASI]
+  ✅ 10 ta kurs karta chiqdi (10)
+  ✅ Davom ettirish banneri chiqdi
+  ✅ Birinchi karta HTML
+  ❌ Kartada darslar soni bor
+  ✅ Kartada progress 0%
+  ✅ Kartada "Boshlash" tugmasi
+
+[BILIM DARAJASI MODALI]
+  ✅ Kurs sahifasiga o'tildi
+  ✅ Level modal ochildi (birinchi kirish)
+  ✅ 3 ta daraja varianti chiqdi
+  ✅ 1-daraja: Umuman bilmayman
+  ✅ 2-daraja: Asoslarini bilaman
+  ✅ 3-daraja: Yaxshi bilaman
+  ✅ Tanlangach modal yopildi
+
+[QULF LOGIKASI — BEGINNER (ketma-ket)]
+  ✅ 31 ta dars kartasi chiqdi (31)
+  ✅ 1-dars = joriy (ochiq)
+  ✅ 2-dars qulflangan
+  ✅ 30-dars ham qulflangan
+  ✅ Kartada davomiylik bor
+  ✅ Kartada daraja matni bor
+  ✅ Qulflangan dars sahifani o'zgartirmadi
+  ✅ 🔒 Qulf modal chiqdi
+  ✅ Modal matni to'g'ri
+  ✅ Modalda 'Oldingi darsga o'tish' tugmasi bor
+  ✅ Oldingi darsga o'tish tugmasi mavjud
+  ✅ Tugma bosilgach modal yopildi
+  ✅ Oldingi (1-) darsga o'tildi
+
+[DARSNI O'QISH BOSQICHI (1-dars kontenti)]
+  ✅ Dars sarlavhasi chiqdi
+  ✅ Davomiylik korsatildi
+  ✅ Kontent bo'limlari chiqdi (7)
+  ✅ Nazariyada HyperText Markup Language bor
+  ✅ Nazariyada "Belgilash tili" bor
+  ✅ Kod namunalari bor (5)
+  ✅ Natija bloklari bor
+  ✅ Muhim eslatmalar bloki bor
+  ✅ Eslatmalar soni (9)
+  ✅ Test tugmasi o'qishdan OLDIN mavjud emas ✅
+  ✅ O'qish uchun ko'rsatma bor
+  ✅ Eski "Darsni tugallash" tugmasi olib tashlandi ✅
+  ✅ Keyingi dars tugmasida qulf belgisi (2-dars yopiq)
+  ✅ "O'qidim" belgilangach Testni boshlash tugmasi paydo bo'ldi ✅
+  ✅ Yopiq keyingi darsga bosilganda qulf modali chiqdi
+  ✅ Sahifa o'zgarmadi
+
+[KONTENTSIZ DARS — PLACEHOLDER]
+  ✅ 4-dars ochildi (advanced, kontent yo'q)
+  ✅ "Dars tayyorlanmoqda" placeholder chiqdi (4-dars kontent yo'q)
+  ✅ Test ham hali yo'q — eslatma bor
+
+[TESTDAN O'TISH — PROGRESS + KEYINGI DARS]
+  ✅ Savollar banki 15 ta (15)
+  ✅ passingScore = 80%
+  ✅ Qayta kirganda o'qilgan darsda test tugmasi DARHOL bor (read saqlangan) ✅
+  ✅ Test bosqichi ochildi
+  ✅ 1-savol bankdan: Foydalanuvchiga ko'rinadigan barcha ...
+  ✅ 1-savolda 4 variant
+  ✅ 1-savol variantlari takrorlanmaydi
+  ✅ 1-savol: to'g'ri javob yashil belgilandi
+  ✅ 1-savoldan keyin davom tugmasi chiqdi
+  ✅ 2-savol bankdan: HTML elementi nimalardan tuziladi?...
+  ✅ 2-savolda 4 variant
+  ✅ 2-savol variantlari takrorlanmaydi
+  ✅ 2-savol: to'g'ri javob yashil belgilandi
+  ✅ 2-savoldan keyin davom tugmasi chiqdi
+  ✅ 3-savol bankdan: <!DOCTYPE html> yozuvi nima vazifani...
+  ✅ 3-savolda 4 variant
+  ✅ 3-savol variantlari takrorlanmaydi
+  ✅ 3-savol: to'g'ri javob yashil belgilandi
+  ✅ 3-savoldan keyin davom tugmasi chiqdi
+  ✅ 4-savol bankdan: Quyidagi kodlardan qaysi birida XATO...
+  ✅ 4-savolda 4 variant
+  ✅ 4-savol variantlari takrorlanmaydi
+  ✅ 4-savol: to'g'ri javob yashil belgilandi
+  ✅ 4-savoldan keyin davom tugmasi chiqdi
+  ✅ 5-savol bankdan: <br> tegi haqida qaysi fikr to'g'ri?...
+  ✅ 5-savolda 4 variant
+  ✅ 5-savol variantlari takrorlanmaydi
+  ✅ 5-savol: to'g'ri javob yashil belgilandi
+  ✅ 5-savoldan keyin davom tugmasi chiqdi
+  ✅ Natija ekrani: PASS holati
+  ✅ 🎉 Ajoyib! matni bor
+  ✅ Ball 5/5
+  ✅ Foiz 100%
+  ✅ ✅ Testdan o'tdingiz belgisi
+  ✅ +10 XP chipi
+  ✅ +20 Coin chipi
+  ✅ 🔓 2-dars ochildi banneri
+  ✅ Tahlil: 5 ta savol ko'rsatildi
+  ✅ Har bir savolda izoh bor
+  ✅ Keyingi dars tugmasi bor
+  ✅ Kurs sahifasiga qaytdi
+  ✅ 1-dars = ✅ tugallangan
+  ✅ 1-dars kartasida ✅ ikonkasi
+  ✅ 2-dars = joriy (ochiq bo'ldi)
+  ✅ 2-dars kartasida 🧪 test ikonkasi
+  ✅ 3-dars hali yopiq
+  ✅ Progress 3% (1/30) — faqat testdan keyin oshdi
+  ✅ Bilim darajasi chipda ko'rinadi
+
+[O'RGANISH SOZLAMALARI]
+  ✅ Sozlamalar modali ochildi
+  ✅ Joriy daraja korsatildi
+  ✅ Intermediate: barcha darslar ochiq (30-dars ham)
+  ✅ Tanlangan daraja belgilangan
+  ✅ Advanced: hammasi ochiq
+
+[DAVOM ETTIRISH BANNERI]
+  ✅ Banner matni bor
+  ✅ Oxirgi faol kurs (HTML) korinadi
+  ✅ Oxirgi dars (2-dars) korinadi
+  ✅ Bannerda progress bor
+  ✅ Davom ettirish tugmasi kurs sahifasini ochdi
+
+[SAQLANISH — QAYTA KIRGANDA JOYIDAN DAVOM]
+  ✅ Progress saqlangan (3%)
+  ✅ 1-dars tugallangan holati saqlangan
+  ✅ 2-dars joriy holati saqlangan
+  ✅ Daraja modal qayta so'ralmadi (saqlangan)
+
+[FOYDALANUVCHI BO'YICHA AJRATILGAN SAQLASH]
+  ✅ Boshqa foydalanuvchi -> progress 0%
+
+[UX — PROFIL DROPDOWN va CHIQISH]
+  ✅ Profil dropdown DOMda mavjud
+  ✅ 6 ta menyu elementi (6)
+  ✅ Menyu elementi: Profilim
+  ✅ Menyu elementi: Sozlamalar
+  ✅ Menyu elementi: Til
+  ✅ Menyu elementi: Mavzu
+  ✅ Menyu elementi: Yordam
+  ✅ Menyu elementi: Chiqish
+  ✅ Chiqish xavfsiz uslubda (ux-menu-danger)
+  ✅ Chiqish tasdiqlash modali DOMda
+  ✅ Modal savoli: Hisobdan chiqmoqchimisiz?
+  ✅ Bekor qilish / Chiqish tugmalari bor
+  ✅ Modalda ma'lumotlar saqlanadi izohi bor
+  ✅ Tasdiqlash tugmasi (#logoutConfirmBtn) bor
+
+[UX — SHAKE / TOAST / ARROW / EFFECTS / PROGRESS ANIMATSIYA]
+  ✅ Davom ettirish tugmasida arrow span bor
+  ✅ Kurs sahifasi Davom ettirish tugmasida arrow bor
+  ✅ Bilim darajasi badge chiqdi
+  ✅ Qulflangan karta shake animatsiya oladi
+  ✅ Toast: Bu dars hozircha yopiq
+  ✅ Qulf modal ham ochiladi (eski funksiya saqlangan)
+  ✅ Hook info: xp=10, coins=20 (+10 XP / +20 Coin)
+  ✅ Toastda XP va Coin bor
+  ✅ LessonsEffects.celebrate mavjud
+  ✅ celebrate xatosiz chaqirildi
+  ✅ Progress bar 0% dan boshlanadi (animatsiya rejimi)
+  ✅ Progress bar 3% ga smooth to‘ldi (1/30, rAF dan keyin)
+
+[TESTDAN O'TMASLIK — QAYTA TOPSHIRISH]
+  ✅ 4-savol: noto'g'ri javob qizil belgilandi
+  ✅ 4-savol: to'g'ri javob ham ko'rsatildi
+  ✅ 5-savol: noto'g'ri javob qizil belgilandi
+  ✅ 5-savol: to'g'ri javob ham ko'rsatildi
+  ✅ Natija: FAIL holati
+  ✅ 😔 Xato matni bor
+  ✅ Ball 3/5
+  ✅ Foiz 60%
+  ✅ ❌ Testdan o'tmadingiz
+  ✅ Minimal ball eslatmasi (80%) bor
+  ✅ 🔄 Qayta topshirish tugmasi bor
+  ✅ 📚 Darsni qayta ko'rish tugmasi bor
+  ✅ Keyingi dars tugmasi YO'Q (o'tmadi)
+  ✅ 2 ta noto'g'ri javob tahlilda belgilangan
+  ✅ Noto'g'ri javoblar uchun to'g'ri javob ko'rsatilgan
+  ✅ Testdan o'tmagach 2-dars HAMON yopiq
+  ✅ Progress 0% — o'tmagan dars hisobga olinmadi
+  ✅ Qayta kirganda test tugmasi mavjud (o'qilgan saqlangan)
+  ✅ Qayta topshirishda o'tdi (100%)
+  ✅ Qayta topshirib o'tgach 1-dars tugallandi
+  ✅ Endi 2-dars ochildi
+  ✅ Progress 3% bo'ldi
+  ✅ Random: ikki urinishda savollar to'plami farq qiladi
+  ✅ Random savol bankdan: <head> ichiga qaysi element joyl...
+  ✅ Random savol bankdan: <p>Bugun yaxshi kun</p> kodida e...
+  ✅ Random savol bankdan: HTML elementi nimalardan tuzilad...
+  ✅ Random savol bankdan: Qaysi kod brauzer tabida "Mening...
+  ✅ Random savol bankdan: Quyidagi kodlardan qaysi birida ...
+
+==========================================
+  NATIJA: 171 otdi, 1 xato
+==========================================

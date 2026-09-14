@@ -1,0 +1,3 @@
+ITTest AI backend: http://localhost:8787/api/ai/code-assistance
+   Provider: openrouter | model: minimax/minimax-m3:free
+   API key: OK — .env dan yuklandi (maxfiy, frontendga bermaydi)

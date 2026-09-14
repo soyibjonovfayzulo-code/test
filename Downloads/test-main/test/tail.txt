@@ -1,0 +1,42 @@
+  тЬЕ Toast: Bu dars hozircha yopiq
+  тЬЕ Qulf modal ham ochiladi (eski funksiya saqlangan)
+  тЬЕ Hook info: xp=10, coins=20 (+10 XP / +20 Coin)
+  тЬЕ Toastda XP va Coin bor
+  тЬЕ LessonsEffects.celebrate mavjud
+  тЬЕ celebrate xatosiz chaqirildi
+  тЬЕ Progress bar 0% dan boshlanadi (animatsiya rejimi)
+  тЬЕ Progress bar 3% ga smooth toтАШldi (1/30, rAF dan keyin)
+
+[TESTDAN O'TMASLIK тАФ QAYTA TOPSHIRISH]
+  тЬЕ 4-savol: noto'g'ri javob qizil belgilandi
+  тЬЕ 4-savol: to'g'ri javob ham ko'rsatildi
+  тЬЕ 5-savol: noto'g'ri javob qizil belgilandi
+  тЬЕ 5-savol: to'g'ri javob ham ko'rsatildi
+  тЬЕ Natija: FAIL holati
+  тЬЕ ЁЯШФ Xato matni bor
+  тЬЕ Ball 3/5
+  тЬЕ Foiz 60%
+  тЬЕ тЭМ Testdan o'tmadingiz
+  тЬЕ Minimal ball eslatmasi (80%) bor
+  тЬЕ ЁЯФД Qayta topshirish tugmasi bor
+  тЬЕ ЁЯУЪ Darsni qayta ko'rish tugmasi bor
+  тЬЕ Keyingi dars tugmasi YO'Q (o'tmadi)
+  тЬЕ 2 ta noto'g'ri javob tahlilda belgilangan
+  тЬЕ Noto'g'ri javoblar uchun to'g'ri javob ko'rsatilgan
+  тЬЕ Testdan o'tmagach 2-dars HAMON yopiq
+  тЬЕ Progress 0% тАФ o'tmagan dars hisobga olinmadi
+  тЬЕ Qayta kirganda test tugmasi mavjud (o'qilgan saqlangan)
+  тЬЕ Qayta topshirishda o'tdi (100%)
+  тЬЕ Qayta topshirib o'tgach 1-dars tugallandi
+  тЬЕ Endi 2-dars ochildi
+  тЬЕ Progress 3% bo'ldi
+  тЬЕ Random: ikki urinishda savollar to'plami farq qiladi
+  тЬЕ Random savol bankdan: Quyidagi kod natijasida nima chi...
+  тЬЕ Random savol bankdan: HTML elementi nimalardan tuzilad...
+  тЬЕ Random savol bankdan: Qaysi kod brauzer tabida "Mening...
+  тЬЕ Random savol bankdan: HTML тАФ qanday til?...
+  тЬЕ Random savol bankdan: HTML nomining "HyperText" qismi ...
+
+==========================================
+  NATIJA: 171 otdi, 1 xato
+==========================================

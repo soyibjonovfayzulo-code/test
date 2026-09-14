@@ -130,13 +130,6 @@
             <div class="pwd-wrap">
               <input type="password" id="loginPassword" name="loginPassword" placeholder="••••••••"
                 autocomplete="current-password" required />
-              <span class="input-ico" aria-hidden="true">
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"
-                  stroke-linejoin="round">
-                  <rect x="4" y="10" width="16" height="10" rx="2.5" />
-                  <path d="M8 10V7a4 4 0 0 1 8 0v3" />
-                </svg>
-              </span>
               <button type="button" class="pwd-toggle" data-target="loginPassword"
                 aria-label="Parolni ko'rsatish yoki yashirish">
                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"
@@ -216,13 +209,6 @@
             <div class="pwd-wrap">
               <input type="password" id="regPassword" name="regPassword" placeholder="••••••••"
                 autocomplete="new-password" required />
-              <span class="input-ico" aria-hidden="true">
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"
-                  stroke-linejoin="round">
-                  <rect x="4" y="10" width="16" height="10" rx="2.5" />
-                  <path d="M8 10V7a4 4 0 0 1 8 0v3" />
-                </svg>
-              </span>
               <button type="button" class="pwd-toggle" data-target="regPassword"
                 aria-label="Parolni ko'rsatish yoki yashirish">
                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"
@@ -238,13 +224,6 @@
             <div class="pwd-wrap">
               <input type="password" id="regConfirmPassword" name="regConfirmPassword" placeholder="••••••••"
                 autocomplete="new-password" required />
-              <span class="input-ico" aria-hidden="true">
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"
-                  stroke-linejoin="round">
-                  <rect x="4" y="10" width="16" height="10" rx="2.5" />
-                  <path d="M8 10V7a4 4 0 0 1 8 0v3" />
-                </svg>
-              </span>
               <button type="button" class="pwd-toggle" data-target="regConfirmPassword"
                 aria-label="Parolni ko'rsatish yoki yashirish">
                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"
@@ -292,8 +271,6 @@
             class="nav-label">Coding</span></a>
         <a href="#projects" class="nav-item" data-page="projects"><span class="nav-icon"
             aria-hidden="true">📁</span><span class="nav-label">Loyihalarim</span></a>
-        <a href="#results" class="nav-item" data-page="results"><span class="nav-icon" aria-hidden="true">📊</span><span
-            class="nav-label">Natijalar</span></a>
         <a href="#ranking" class="nav-item" data-page="ranking"><span class="nav-icon" aria-hidden="true">🏆</span><span
             class="nav-label">Reyting</span></a>
         <a href="#achievements" class="nav-item" data-page="achievements"><span class="nav-icon"
@@ -486,6 +463,17 @@
                 <div class="nd-activity-body" id="ndActivityBody"></div>
               </article>
             </section>
+
+            <!-- 8. SO'NGGI NATIJALAR — in-page statistika (alohida Results page'ga link YO'Q) -->
+            <section class="nd-row">
+              <article class="nd-card nd-card--recent nd-reveal" aria-labelledby="ndRecentTitle">
+                <header class="nd-card-head">
+                  <h2 class="nd-card-title" id="ndRecentTitle"><span aria-hidden="true">📊</span> So‘nggi natijalar</h2>
+                  <span class="nd-chip-note" aria-hidden="true">LAST 5</span>
+                </header>
+                <div class="nd-recent-body" id="recentResults"></div>
+              </article>
+            </section>
           </div>
         </section>
 
@@ -587,14 +575,6 @@
             </div>
             <div class="card-body" id="reviewBody"></div>
           </div>
-        </section>
-
-        <!-- RESULTS HISTORY PAGE -->
-        <section id="page-results" class="page">
-          <div class="page-head">
-            <h2>Natijalar tarixi</h2>
-          </div>
-          <div id="resultsTableWrap"></div>
         </section>
 
         <!-- RANKING PAGE -->
