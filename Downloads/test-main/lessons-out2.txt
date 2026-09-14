@@ -1,0 +1,108 @@
+﻿
+[DATA ARXITEKTURASI]
+  тЬЕ CoursesAPI mavjud
+  тЬЕ 10 ta kurs bor (10)
+  тЬЕ HTML kursi 30 dars (30)
+  тЬЕ JavaScript kursi 40 dars (40)
+  тЬЕ CSS kursi 25 dars
+  тЬЕ findLesson ishlaydi
+  тЬЕ nextLesson ishlaydi
+  тЬЕ Noto'g'ri id -> null
+  тЬЕ Data'ga 1 qator qo'shilib yangi dars paydo bo'ldi (31)
+  тЬЕ Qayta o'chirildi (30)
+
+[DARSLAR BOSH SAHIFASI]
+  тЬЕ 10 ta kurs karta chiqdi (10)
+  тЬЕ Davom ettirish banneri chiqdi
+  тЬЕ Birinchi karta HTML
+  тЬЕ Kartada darslar soni bor
+  тЬЕ Kartada progress 0%
+  тЬЕ Kartada "Boshlash" tugmasi
+
+[BILIM DARAJASI MODALI]
+  тЬЕ Kurs sahifasiga o'tildi
+  тЬЕ Level modal ochildi (birinchi kirish)
+  тЬЕ 3 ta daraja varianti chiqdi
+  тЬЕ 1-daraja: Umuman bilmayman
+  тЬЕ 2-daraja: Asoslarini bilaman
+  тЬЕ 3-daraja: Yaxshi bilaman
+  тЬЕ Tanlangach modal yopildi
+
+[QULF LOGIKASI тАФ BEGINNER (ketma-ket)]
+  тЬЕ 30 ta dars kartasi chiqdi (30)
+  тЭМ 1-dars = joriy (ochiq)
+  тЬЕ 2-dars qulflangan
+  тЬЕ 30-dars ham qulflangan
+  тЭМ Kartada davomiylik bor
+  тЬЕ Kartada daraja matni bor
+  тЬЕ Qulflangan dars sahifani o'zgartirmadi
+  тЬЕ ЁЯФТ Qulf modal chiqdi
+  тЬЕ Modal matni to'g'ri
+  тЬЕ Modalda 'Oldingi darsga o'tish' tugmasi bor
+  тЬЕ Oldingi darsga o'tish tugmasi mavjud
+  тЬЕ Tugma bosilgach modal yopildi
+  тЬЕ Oldingi (1-) darsga o'tildi
+
+[DARSNI O'QISH BOSQICHI (1-dars kontenti)]
+  тЬЕ Dars sarlavhasi chiqdi
+  тЬЕ Davomiylik korsatildi
+  тЬЕ Kontent bo'limlari chiqdi (7)
+  тЬЕ Nazariyada HyperText Markup Language bor
+  тЬЕ Nazariyada "Belgilash tili" bor
+  тЬЕ Kod namunalari bor (5)
+  тЬЕ Natija bloklari bor
+  тЬЕ Muhim eslatmalar bloki bor
+  тЬЕ Eslatmalar soni (9)
+  тЬЕ Test tugmasi o'qishdan OLDIN mavjud emas тЬЕ
+  тЬЕ O'qish uchun ko'rsatma bor
+  тЬЕ Eski "Darsni tugallash" tugmasi olib tashlandi тЬЕ
+  тЬЕ Keyingi dars tugmasida qulf belgisi (2-dars yopiq)
+  тЬЕ "O'qidim" belgilangach Testni boshlash tugmasi paydo bo'ldi тЬЕ
+  тЬЕ Yopiq keyingi darsga bosilganda qulf modali chiqdi
+  тЬЕ Sahifa o'zgarmadi
+
+[KONTENTSIZ DARS тАФ PLACEHOLDER]
+  тЬЕ 3-dars ochildi (advanced)
+  тЬЕ "Dars tayyorlanmoqda" placeholder chiqdi (kontent yo'q)
+  тЬЕ Test ham hali yo'q тАФ eslatma bor
+
+[TESTDAN O'TISH тАФ PROGRESS + KEYINGI DARS]
+  тЬЕ Savollar banki 15 ta (15)
+  тЬЕ passingScore = 80%
+node : C:\Users\USTAFON\Desktop\aaaayti\lessons
+-check.cjs:35
+строка:1 знак:1
++ node lessons-check.cjs 2>&1 | Out-File -Encod
+ing utf8 lessons-out2.tx ...
++ ~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    + CategoryInfo          : NotSpecified: (C 
+   :\Users\USTAFO...ns-check.cjs:35:String) [  
+  ], RemoteException
+    + FullyQualifiedErrorId : NativeCommandErr 
+   or
+ 
+function click(el) { el.dispatchEvent(new w.Mou
+seEvent('click', { bubbles: true })); }
+                        ^
+
+TypeError: Cannot read properties of null (read
+ing 'dispatchEvent')
+    at click (C:\Users\USTAFON\Desktop\aaaayti\
+lessons-check.cjs:35:25)
+    at Object.<anonymous> (C:\Users\USTAFON\Des
+ktop\aaaayti\lessons-check.cjs:160:1)
+    at Module._compile (node:internal/modules/c
+js/loader:1872:14)
+    at Object..js (node:internal/modules/cjs/lo
+ader:2003:10)
+    at Module.load (node:internal/modules/cjs/l
+oader:1594:32)
+    at Module._load (node:internal/modules/cjs/
+loader:1396:12)
+    at wrapModuleLoad (node:internal/modules/cj
+s/loader:255:19)
+    at Module.executeUserEntryPoint [as runMain
+] (node:internal/modules/run_main:154:5)
+    at node:internal/main/run_main_module:33:47
+
+Node.js v24.19.0

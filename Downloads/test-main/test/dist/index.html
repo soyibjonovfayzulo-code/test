@@ -1,0 +1,1406 @@
+<!DOCTYPE html>
+<html lang="uz" data-theme="dark">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+  <title>IT/AI Test Platform</title>
+  <meta name="description" content="IT va AI sohalari bo'yicha bilimlaringizni sinash, darslarni o'rganish, duel o'ynash va reytingda yuqori o'rinlarni egallash uchun online test platformasi." />
+  <meta name="theme-color" content="#0b0f1a" />
+  <link rel="icon" href="./favicon.ico" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap"
+    rel="stylesheet" />
+  <script type="module" crossorigin src="/assets/index-TMYkAq7o.js"></script>
+  <link rel="stylesheet" crossorigin href="/assets/index-C6IGyACn.css">
+</head>
+
+<body>
+
+  <!-- ====================== AUTH SCREEN ====================== -->
+  <div id="authScreen" class="auth-screen">
+    <div class="auth-bg" aria-hidden="true">
+      <span class="orb orb-1"></span>
+      <span class="orb orb-2"></span>
+      <span class="orb orb-3"></span>
+    </div>
+    <div class="auth-container">
+      <div class="auth-brand">
+        <div class="auth-logo" aria-hidden="true">🧠</div>
+        <h1>IT<span>Test</span></h1>
+        <p>IT va AI bo'yicha online test platformasi</p>
+      </div>
+      <div class="auth-card">
+        <div class="auth-tabs" role="tablist" aria-label="Kirish yoki ro'yxatdan o'tish">
+          <button class="auth-tab active" data-tab="login" role="tab" aria-selected="true">Kirish</button>
+          <button class="auth-tab" data-tab="register" role="tab" aria-selected="false">Ro'yxatdan o'tish</button>
+        </div>
+
+        <!-- Login Form -->
+        <form id="loginForm" class="auth-form active" autocomplete="on">
+          <div class="form-group">
+            <label for="loginEmail">Email yoki Username</label>
+            <input type="text" id="loginEmail" name="loginEmail" placeholder="sardor_dev yoki sardor@mail.com" autocomplete="username" required />
+          </div>
+          <div class="form-group">
+            <label for="loginPassword">Parol</label>
+            <div class="pwd-wrap">
+              <input type="password" id="loginPassword" name="loginPassword" placeholder="••••••••" autocomplete="current-password" required />
+              <button type="button" class="pwd-toggle" data-target="loginPassword" aria-label="Parolni ko'rsatish yoki yashirish">👁</button>
+            </div>
+          </div>
+          <button type="submit" class="btn btn-primary btn-block">Kirish</button>
+        </form>
+
+        <!-- Register Form -->
+        <form id="registerForm" class="auth-form" autocomplete="on">
+          <div class="form-row">
+            <div class="form-group">
+              <label for="regFirstname">Ism</label>
+              <input type="text" id="regFirstname" name="regFirstname" placeholder="Sardor" autocomplete="given-name" required />
+            </div>
+            <div class="form-group">
+              <label for="regLastname">Familiya</label>
+              <input type="text" id="regLastname" name="regLastname" placeholder="Rahimov" autocomplete="family-name" required />
+            </div>
+          </div>
+          <div class="form-group">
+            <label for="regUsername">Username</label>
+            <input type="text" id="regUsername" name="regUsername" placeholder="sardor_dev" autocomplete="username" required />
+          </div>
+          <div class="form-group">
+            <label for="regEmail">Email</label>
+            <input type="email" id="regEmail" name="regEmail" placeholder="sardor@mail.com" autocomplete="email" required />
+          </div>
+          <div class="form-group">
+            <label for="regPassword">Parol</label>
+            <div class="pwd-wrap">
+              <input type="password" id="regPassword" name="regPassword" placeholder="••••••••" autocomplete="new-password" required />
+              <button type="button" class="pwd-toggle" data-target="regPassword" aria-label="Parolni ko'rsatish yoki yashirish">👁</button>
+            </div>
+          </div>
+          <div class="form-group">
+            <label for="regConfirmPassword">Parolni tasdiqlash</label>
+            <div class="pwd-wrap">
+              <input type="password" id="regConfirmPassword" name="regConfirmPassword" placeholder="••••••••" autocomplete="new-password" required />
+              <button type="button" class="pwd-toggle" data-target="regConfirmPassword" aria-label="Parolni ko'rsatish yoki yashirish">👁</button>
+            </div>
+          </div>
+          <button type="submit" class="btn btn-primary btn-block">Ro'yxatdan o'tish</button>
+        </form>
+      </div>
+    </div>
+  </div>
+
+  <!-- ====================== MAIN APP ====================== -->
+  <div id="app" class="app hidden">
+
+    <!-- SIDEBAR -->
+    <aside class="sidebar" id="sidebar">
+      <div class="sidebar-header">
+        <div class="sidebar-logo"><span aria-hidden="true">🧠</span> <span>IT<span>Test</span></span></div>
+        <button class="sidebar-close" id="sidebarClose" aria-label="Menyuni yopish" type="button">✕</button>
+      </div>
+      <nav class="sidebar-nav" aria-label="Asosiy navigatsiya">
+        <a href="#dashboard" class="nav-item active" data-page="dashboard"><span class="nav-icon" aria-hidden="true">🏠</span><span class="nav-label">Bosh sahifa</span></a>
+        <a href="#lessons" class="nav-item" data-page="lessons"><span class="nav-icon" aria-hidden="true">📚</span><span class="nav-label">Darslar</span></a>
+        <a href="#tests" class="nav-item" data-page="tests"><span class="nav-icon" aria-hidden="true">📝</span><span class="nav-label">Testlar</span></a>
+        <a href="#duel" class="nav-item" data-page="duel"><span class="nav-icon" aria-hidden="true">⚔️</span><span class="nav-label">Duel</span></a>
+        <a href="#store" class="nav-item" data-page="store"><span class="nav-icon" aria-hidden="true">🛍️</span><span class="nav-label">Do'kon</span></a>
+        <a href="#coding" class="nav-item" data-page="coding"><span class="nav-icon" aria-hidden="true">💻</span><span class="nav-label">Coding</span></a>
+        <a href="#projects" class="nav-item" data-page="projects"><span class="nav-icon" aria-hidden="true">📁</span><span class="nav-label">Loyihalarim</span></a>
+        <a href="#results" class="nav-item" data-page="results"><span class="nav-icon" aria-hidden="true">📊</span><span class="nav-label">Natijalar</span></a>
+        <a href="#ranking" class="nav-item" data-page="ranking"><span class="nav-icon" aria-hidden="true">🏆</span><span class="nav-label">Reyting</span></a>
+        <a href="#achievements" class="nav-item" data-page="achievements"><span class="nav-icon" aria-hidden="true">🎖</span><span class="nav-label">Yutuqlar</span></a>
+        <a href="#profile" class="nav-item" data-page="profile"><span class="nav-icon" aria-hidden="true">👤</span><span class="nav-label">Profil</span></a>
+        <a href="#settings" class="nav-item" data-page="settings"><span class="nav-icon" aria-hidden="true">⚙️</span><span class="nav-label">Sozlamalar</span></a>
+      </nav>
+      <div class="sidebar-footer">
+        <button class="nav-item logout-btn" id="logoutBtn" type="button"><span class="nav-icon" aria-hidden="true">🚪</span><span class="nav-label">Chiqish</span></button>
+      </div>
+    </aside>
+    <div class="sidebar-overlay" id="sidebarOverlay"></div>
+
+    <!-- MAIN CONTENT -->
+    <main class="main">
+      <!-- TOPBAR -->
+      <header class="topbar">
+        <div class="topbar-left">
+          <button class="hamburger" id="hamburger" aria-label="Menyuni ochish" type="button">
+            <span></span>
+            <span></span>
+            <span></span>
+          </button>
+          <h2 id="pageTitle">Bosh sahifa</h2>
+        </div>
+        <div class="topbar-right">
+          <button class="icon-btn" id="themeToggle" aria-label="Mavzuni almashtirish" type="button">
+            <span class="theme-icon-dark" aria-hidden="true">🌙</span>
+            <span class="theme-icon-light" aria-hidden="true">☀️</span>
+          </button>
+          <div class="notif-wrap">
+            <button class="icon-btn notif-btn" id="notifBtn" aria-label="Bildirishnomalar" aria-expanded="false" aria-controls="notifDropdown" type="button">
+              <span aria-hidden="true">🔔</span>
+              <span class="notif-badge" id="notifBadge"></span>
+            </button>
+            <div class="notif-dropdown" id="notifDropdown">
+              <div class="notif-header">Bildirishnomalar</div>
+              <div class="notif-list" id="notifList"></div>
+            </div>
+          </div>
+          <div class="ux-user-wrap">
+            <button type="button" class="user-chip" id="userChip" aria-expanded="false" aria-controls="userDropdown">
+              <div class="user-avatar" id="topbarAvatar">U</div>
+              <span id="topbarUsername">User</span>
+            </button>
+            <div class="ux-user-dropdown" id="userDropdown">
+              <div class="ux-user-head">
+                <div class="user-avatar" id="dropdownAvatar">U</div>
+                <div class="ux-user-meta">
+                  <strong id="dropdownUsername">User</strong>
+                  <span id="dropdownEmail"></span>
+                </div>
+              </div>
+              <div class="ux-user-sep"></div>
+              <button type="button" class="ux-menu-item" data-menu="profile"><span class="ux-menu-ico" aria-hidden="true">👤</span><span>Profilim</span></button>
+              <button type="button" class="ux-menu-item" data-menu="settings"><span class="ux-menu-ico" aria-hidden="true">⚙️</span><span>Sozlamalar</span></button>
+              <button type="button" class="ux-menu-item" data-menu="lang"><span class="ux-menu-ico" aria-hidden="true">🌐</span><span>Til</span></button>
+              <button type="button" class="ux-menu-item" data-menu="theme"><span class="ux-menu-ico" aria-hidden="true">🌙</span><span>Mavzu</span></button>
+              <button type="button" class="ux-menu-item" data-menu="help"><span class="ux-menu-ico" aria-hidden="true">❓</span><span>Yordam</span></button>
+              <div class="ux-user-sep"></div>
+              <button type="button" class="ux-menu-item ux-menu-danger" data-menu="logout"><span class="ux-menu-ico" aria-hidden="true">🚪</span><span>Chiqish</span></button>
+            </div>
+          </div>
+        </div>
+      </header>
+
+      <!-- CONTENT AREA -->
+      <div class="content">
+
+        <!-- DASHBOARD PAGE -->
+        <section id="page-dashboard" class="page active">
+          <div class="welcome-banner hero-premium">
+            <div class="hero-left">
+              <div class="hero-top-badge">
+                <span class="hero-top-badge-dot" aria-hidden="true"></span>
+                Bilimingni sinab ko'r va g'olib bo'l!
+              </div>
+
+              <h1 class="hero-title">
+                Bilim — Kuch,<br>
+                Test — <span class="hero-gradient-text">Yo‘l!</span>
+              </h1>
+
+              <p class="hero-subtitle">
+                IT sohasidagi bilimlaringizni sinang, reytingda yuqori o‘rinni egallang va
+                do‘stlaringiz bilan duel qiling!
+              </p>
+
+              <div class="hero-bottom-wrap">
+                <div class="hero-user-row">
+                  <span class="hero-user-text" id="welcomeMini">Salom, User 👋</span>
+                </div>
+                <div class="welcome-level">
+                  <div class="level-badge" id="dashLevelBadge">Level 1</div>
+                  <div class="xp-bar-wrap">
+                    <div class="xp-bar-info">
+                      <span id="dashXpText">0 XP</span>
+                      <span id="dashXpNext">/ 100 XP</span>
+                    </div>
+                    <div class="xp-bar" role="progressbar" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0" aria-label="Level XP progressi">
+                      <div class="xp-bar-fill" id="dashXpFill"></div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <!-- 🤖 ITTest Robot Maskot (doimiy qahramon) -->
+              <div class="hero-mascot-card" id="heroMascotCard" aria-hidden="true">
+                <div class="mascot mascot--idle">
+                  <img src="./mascot/it-robot.png" alt="" draggable="false" loading="lazy"
+                    onerror="this.closest('.mascot')&&this.closest('.mascot').classList.add('mascot-broken')" />
+                </div>
+                <div class="hero-mascot-say">
+                  <b>ITTest Robot</b>
+                  <span>Sizning yordamchingiz — bugun ham birga o'rganamiz! 🚀</span>
+                </div>
+              </div>
+            </div>
+
+            <div class="hero-right">
+              <div class="hero-image-wrap">
+                <div class="hero-ring-glow" aria-hidden="true"></div>
+                <img class="hero-main-image" alt="IT va AI mavzusidagi grafik logotip" src="/assets/hero-ai-CzW6aM1I.jpg" />
+
+                <div class="hero-code-badge hero-code-html" aria-hidden="true">
+                  <span class="hcb-icon">{<span>/</span>}</span>
+                  <span class="hcb-label">HTML</span>
+                </div>
+                <div class="hero-code-badge hero-code-py" aria-hidden="true">
+                  <span class="hcb-icon">🐍</span>
+                  <span class="hcb-label">Python</span>
+                </div>
+                <div class="hero-code-badge hero-code-js" aria-hidden="true">
+                  <span class="hcb-icon">JS</span>
+                  <span class="hcb-label">JavaScript</span>
+                </div>
+                <div class="hero-code-badge hero-code-java" aria-hidden="true">
+                  <span class="hcb-icon">☕</span>
+                  <span class="hcb-label">Java</span>
+                </div>
+                <div class="hero-code-badge hero-code-sql" aria-hidden="true">
+                  <span class="hcb-icon">🗄</span>
+                  <span class="hcb-label">SQL</span>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="stats-grid">
+            <div class="stat-card">
+              <div class="stat-icon xp-icon" aria-hidden="true">⭐</div>
+              <div class="stat-info"><span class="stat-value" id="statXp">0</span><span class="stat-label">Umumiy
+                  ball</span></div>
+            </div>
+            <div class="stat-card">
+              <div class="stat-icon test-icon" aria-hidden="true">📝</div>
+              <div class="stat-info"><span class="stat-value" id="statTests">0</span><span class="stat-label">Ishlangan
+                  testlar</span></div>
+            </div>
+            <div class="stat-card">
+              <div class="stat-icon avg-icon" aria-hidden="true">📈</div>
+              <div class="stat-info"><span class="stat-value" id="statAvg">0%</span><span class="stat-label">O'rtacha
+                  natija</span></div>
+            </div>
+            <div class="stat-card">
+              <div class="stat-icon streak-icon" aria-hidden="true">🔥</div>
+              <div class="stat-info"><span class="stat-value" id="statStreak">0</span><span class="stat-label">Streak
+                  (kun)</span></div>
+            </div>
+            <div class="stat-card duel-stat-card">
+              <div class="stat-icon duel-icon" aria-hidden="true">⚔️</div>
+              <div class="stat-info stat-info-compact">
+                <div class="stat-row"><span class="stat-row-label">🏆 G‘alabalar</span> <span class="stat-row-val"
+                    id="statDuelWins">0</span></div>
+                <div class="stat-row"><span class="stat-row-label">❌ Yutqazishlar</span> <span class="stat-row-val"
+                    id="statDuelLosses">0</span></div>
+                <div class="stat-row stat-row-sub"><span class="stat-row-label">🎮 Jami duel</span> <span
+                    class="stat-row-val" id="statDuelTotal">0</span></div>
+              </div>
+            </div>
+          </div>
+
+          <!-- ============ MOBILE-ONLY DASHBOARD (Android redesign) ============ -->
+          <div class="m-dash" id="mDash">
+            <div class="m-hero" id="mHero">
+              <div class="m-hero-content">
+                <span class="m-hero-flame">🔥 Davom eting</span>
+                <h2 class="m-hero-course" id="mHeroCourse">Darslar</h2>
+                <p class="m-hero-lesson" id="mHeroLesson">Birinchi darsni tanlang</p>
+                <div class="m-hero-progress" role="progressbar" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0" aria-label="Dars progressi"><div class="m-hero-progress-fill" id="mHeroFill"></div></div>
+                <span class="m-hero-pct" id="mHeroPct">0%</span>
+                <button class="m-hero-btn" id="mHeroBtn" type="button">Davom ettirish →</button>
+              </div>
+              <div class="m-hero-art" aria-hidden="true">
+                <span class="m-hero-art-code">&lt;/&gt;</span>
+              </div>
+            </div>
+
+            <div class="m-stats">
+              <div class="m-stat"><span class="m-stat-ico" aria-hidden="true">📚</span><span class="m-stat-val" id="mStatLessons">0</span><span class="m-stat-lbl">Jami darslar</span></div>
+              <div class="m-stat"><span class="m-stat-ico" aria-hidden="true">✅</span><span class="m-stat-val" id="mStatDone">0</span><span class="m-stat-lbl">Tugallangan</span></div>
+              <div class="m-stat"><span class="m-stat-ico" aria-hidden="true">🔥</span><span class="m-stat-val" id="mStatStreak">0</span><span class="m-stat-lbl">Kundalik seriya</span></div>
+              <div class="m-stat"><span class="m-stat-ico" aria-hidden="true">⭐</span><span class="m-stat-val" id="mStatXp">0</span><span class="m-stat-lbl">Jami XP</span></div>
+            </div>
+
+            <div class="m-section-head">
+              <h3>🚀 Dasturlash yo‘nalishlari</h3>
+              <button class="m-link" id="mAllCourses" type="button">Barchasini ko‘rish →</button>
+            </div>
+
+            <div class="m-chips" id="mChips" role="tablist" aria-label="Kurslarni saralash">
+              <button class="m-chip active" data-cat="all" type="button" role="tab" aria-selected="true">Barchasi</button>
+              <button class="m-chip" data-cat="frontend" type="button" role="tab" aria-selected="false">Web dasturlash</button>
+              <button class="m-chip" data-cat="backend" type="button" role="tab" aria-selected="false">Backend</button>
+              <button class="m-chip" data-cat="dasturlash" type="button" role="tab" aria-selected="false">Dasturlash</button>
+              <button class="m-chip" data-cat="ai" type="button" role="tab" aria-selected="false">AI</button>
+              <button class="m-chip" data-cat="boshqa" type="button" role="tab" aria-selected="false">Boshqalar</button>
+            </div>
+
+            <div class="m-courses" id="mCourses"></div>
+          </div>
+          <!-- ============ /MOBILE-ONLY DASHBOARD ============ -->
+
+          <div class="dash-grid">
+            <div class="card">
+              <div class="card-header">
+                <h3>Fanlar bo'yicha progress</h3>
+              </div>
+              <div class="card-body" id="subjectProgress"></div>
+            </div>
+            <div class="card">
+              <div class="card-header">
+                <h3>So'nggi natijalar</h3>
+                <a href="#results" class="link-btn">Barchasi</a>
+              </div>
+              <div class="card-body" id="recentResults"></div>
+            </div>
+          </div>
+
+          <div class="dash-grid dash-grid-charts">
+            <div class="card chart-card">
+              <div class="card-header">
+                <h3>📈 Progress grafigi</h3>
+                <span class="muted" id="chartSubtitle">Oxirgi 10 ta test</span>
+              </div>
+              <div class="card-body chart-body">
+                <div id="lineChartContainer" class="line-chart-wrap" role="img" aria-label="Oxirgi testlar bo'yicha ball grafigi"></div>
+                <div class="chart-legend">
+                  <div class="legend-item"><span class="legend-dot legend-dot-primary" aria-hidden="true"></span> Ball (%)</div>
+                  <div class="legend-item"><span class="legend-dot legend-dot-pass" aria-hidden="true"></span> Passed chegarasi (50%)</div>
+                </div>
+              </div>
+            </div>
+            <div class="card chart-card">
+              <div class="card-header">
+                <h3>🎯 Javoblar statistikasi</h3>
+              </div>
+              <div class="card-body chart-body donut-body">
+                <div id="donutChart" class="donut-chart-wrap" role="img" aria-label="To'g'ri, noto'g'ri va o'tkazilgan javoblar diagrammasi"></div>
+                <div class="chart-stats">
+                  <div class="chart-stat chart-stat-correct"><span class="cs-val" id="csCorrect">0</span><span
+                      class="cs-lbl">To'g'ri</span></div>
+                  <div class="chart-stat chart-stat-wrong"><span class="cs-val" id="csWrong">0</span><span
+                      class="cs-lbl">Noto'g'ri</span></div>
+                  <div class="chart-stat chart-stat-skipped"><span class="cs-val" id="csSkipped">0</span><span
+                      class="cs-lbl">O'tkazilgan</span></div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <!-- TESTS PAGE -->
+        <section id="page-tests" class="page">
+          <div class="page-toolbar">
+            <div class="search-box">
+              <span class="search-icon" aria-hidden="true">🔍</span>
+              <label for="testSearch" class="visually-hidden">Fan qidirish</label>
+              <input type="text" id="testSearch" placeholder="Fan qidirish..." />
+            </div>
+            <div class="filter-chips" id="diffFilter" role="tablist" aria-label="Qiyinlik darajasi bo'yicha filtr">
+              <button class="chip active" data-diff="all" type="button" role="tab" aria-selected="true">Barchasi</button>
+              <button class="chip" data-diff="beginner" type="button" role="tab" aria-selected="false">Beginner</button>
+              <button class="chip" data-diff="intermediate" type="button" role="tab" aria-selected="false">Intermediate</button>
+              <button class="chip" data-diff="advanced" type="button" role="tab" aria-selected="false">Advanced</button>
+            </div>
+          </div>
+          <div class="subject-cards" id="testsGrid"></div>
+        </section>
+
+        <!-- TEST LIST (for a selected subject) -->
+        <section id="page-testlist" class="page">
+          <div class="page-head">
+            <button class="btn btn-ghost back-btn" data-back="tests" type="button">← Orqaga</button>
+            <h2 id="testListTitle">Testlar</h2>
+          </div>
+          <div class="test-list" id="testListContainer"></div>
+        </section>
+
+        <!-- TEST TAKING PAGE -->
+        <section id="page-test" class="page">
+          <div class="test-header">
+            <div class="test-header-info">
+              <h2 id="testTitle">Test</h2>
+              <span id="testSubtitle" class="muted"></span>
+            </div>
+            <div class="test-timer" id="testTimer" role="timer" aria-live="polite">15:00</div>
+          </div>
+          <div class="test-progress">
+            <div class="test-progress-text" id="testProgressText">Savol 1 / 20</div>
+            <div class="progress-bar" role="progressbar" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0" aria-label="Test progressi">
+              <div class="progress-fill" id="testProgressFill"></div>
+            </div>
+          </div>
+          <div class="test-mini-stats" id="testMiniStats"></div>
+          <div class="test-body">
+            <div class="question-area" id="questionArea"></div>
+            <div class="navigator-area">
+              <div class="navigator-header">
+                <span>Savollar</span>
+                <span class="navigator-legend">
+                  <span class="legend-dot legend-correct" aria-hidden="true"></span> To'g'ri
+                  <span class="legend-dot legend-wrong" aria-hidden="true"></span> Noto'g'ri
+                  <span class="legend-dot legend-marked" aria-hidden="true"></span> Belgilangan
+                </span>
+              </div>
+              <div class="question-nav" id="questionNav"></div>
+              <button class="btn btn-danger btn-block" id="finishTestBtn" type="button">Testni yakunlash</button>
+            </div>
+          </div>
+          <div class="test-nav-buttons">
+            <button class="btn btn-ghost" id="prevBtn" type="button">← Oldingi</button>
+            <div class="test-nav-center">
+              <button class="btn btn-ghost btn-sm" id="clearAnswerBtn" type="button" title="Javobni tozalash">✕ Tozalash</button>
+              <button class="btn btn-ghost btn-sm" id="markReviewBtn" type="button" title="Ko'rib chiqish uchun belgilash">⚑
+                Belgilash</button>
+            </div>
+            <button class="btn btn-primary" id="nextBtn" type="button">Keyingi →</button>
+          </div>
+        </section>
+
+        <!-- RESULT PAGE -->
+        <section id="page-result" class="page">
+          <div class="result-hero" id="resultHero">
+            <div class="mascot mascot--idle" id="resultMascot" aria-hidden="true">
+              <img src="./mascot/it-robot.png" alt="" draggable="false" loading="lazy"
+                onerror="this.closest('.mascot')&&this.closest('.mascot').classList.add('mascot-broken')" />
+            </div>
+            <div class="result-emoji" id="resultEmoji" aria-hidden="true">🎉</div>
+            <h1 id="resultScore">0 / 0</h1>
+            <div class="result-percent" id="resultPercent">0%</div>
+            <div class="result-status" id="resultStatus">PASSED</div>
+          </div>
+          <div class="result-stats" id="resultStats"></div>
+          <div class="result-actions">
+            <button class="btn btn-primary" id="reviewBtn" type="button">Natijani ko'rish</button>
+            <button class="btn btn-ghost" id="retakeBtn" type="button">Qayta ishlash</button>
+            <button class="btn btn-ghost" data-nav="dashboard" type="button">Dashboardga qaytish</button>
+          </div>
+          <div class="card review-card" id="reviewCard">
+            <div class="card-header">
+              <h3>Javoblarni ko'rish</h3>
+            </div>
+            <div class="card-body" id="reviewBody"></div>
+          </div>
+        </section>
+
+        <!-- RESULTS HISTORY PAGE -->
+        <section id="page-results" class="page">
+          <div class="page-head">
+            <h2>Natijalar tarixi</h2>
+          </div>
+          <div id="resultsTableWrap"></div>
+        </section>
+
+        <!-- RANKING PAGE -->
+        <section id="page-ranking" class="page">
+          <div class="page-head">
+            <h2>Reyting</h2>
+            <div class="filter-chips" id="rankFilter" role="tablist" aria-label="Reyting davri bo'yicha filtr">
+              <button class="chip active" data-period="all" type="button" role="tab" aria-selected="true">Umumiy</button>
+              <button class="chip" data-period="week" type="button" role="tab" aria-selected="false">Haftalik</button>
+              <button class="chip" data-period="month" type="button" role="tab" aria-selected="false">Oylik</button>
+            </div>
+          </div>
+          <div class="leaderboard" id="leaderboard"></div>
+        </section>
+
+        <!-- ACHIEVEMENTS PAGE -->
+        <section id="page-achievements" class="page">
+          <div class="page-head">
+            <h2>Yutuqlar</h2>
+          </div>
+          <div class="achievement-grid" id="achievementGrid"></div>
+        </section>
+
+        <!-- PROFILE PAGE -->
+        <section id="page-profile" class="page">
+          <div class="profile-header" id="profileHeader"></div>
+          <div class="profile-stats" id="profileStats"></div>
+          <div class="profile-actions">
+            <button class="btn btn-primary" id="editProfileBtn" type="button">Profilni tahrirlash</button>
+          </div>
+        </section>
+
+        <!-- SETTINGS PAGE -->
+        <section id="page-settings" class="page">
+          <div class="page-head">
+            <h2>Sozlamalar</h2>
+          </div>
+          <div class="card">
+            <div class="card-header">
+              <h3>Ko'rinish</h3>
+            </div>
+            <div class="card-body">
+              <div class="setting-row">
+                <span>Mavzu</span>
+                <button class="btn btn-ghost" id="settingsThemeBtn" type="button">🌙 Dark</button>
+              </div>
+            </div>
+          </div>
+          <div class="card">
+            <div class="card-header">
+              <h3>Ma'lumotlar</h3>
+            </div>
+            <div class="card-body">
+              <div class="setting-row">
+                <span>Barcha test natijalarini o'chirish</span>
+                <button class="btn btn-danger" id="clearResultsBtn" type="button">O'chirish</button>
+              </div>
+              <div class="setting-row">
+                <span>Hisobni o'chirish</span>
+                <button class="btn btn-danger" id="deleteAccountBtn" type="button">O'chirish</button>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <!-- DUEL PAGE -->
+        <section id="page-duel" class="page">
+          <!-- Screen 1: Lobby / Setup -->
+          <div id="duelLobby" class="duel-lobby">
+            <div class="welcome-banner duel-welcome">
+              <div>
+                <h1>IT Duel Rejimi ⚔️</h1>
+                <p>Boshqa bir o'yinchi bilan IT va AI savollari bo'yicha kuch sinashing!</p>
+              </div>
+            </div>
+
+            <div class="card duel-setup-card">
+              <div class="card-header">
+                <h3>Duel Sozlamalari</h3>
+              </div>
+              <div class="card-body">
+                <div class="form-group">
+                  <label for="duelSubjectSelect">Fanni tanlang:</label>
+                  <select id="duelSubjectSelect" class="form-control">
+                    <option value="all">🌐 Barcha fanlar</option>
+                    <option value="Python">🐍 Python</option>
+                    <option value="JavaScript">⚡ JavaScript</option>
+                    <option value="Java">☕ Java</option>
+                    <option value="C++">🔧 C++</option>
+                    <option value="HTML">🌐 HTML</option>
+                    <option value="CSS">🎨 CSS</option>
+                    <option value="SQL">🗄 SQL</option>
+                    <option value="AI">🤖 AI</option>
+                  </select>
+                </div>
+
+                <!-- Duel Mode Choice -->
+                <div class="form-group">
+                  <label id="duelModeLabel">Raqibni tanlang (Rejim):</label>
+                  <div class="duel-mode-chips" id="duelModeSelector" role="radiogroup" aria-labelledby="duelModeLabel">
+                    <button type="button" class="duel-chip active" data-mode="bot" role="radio" aria-checked="true">🤖 Bot bilan</button>
+                    <button type="button" class="duel-chip" data-mode="player" role="radio" aria-checked="false">👥 Real Player</button>
+                  </div>
+                </div>
+
+                <!-- Bot Difficulty choice -->
+                <div class="form-group" id="botDifficultyGroup">
+                  <label id="duelDiffLabel">Bot qiyinchilik darajasi:</label>
+                  <div class="duel-diff-chips" id="duelDiffSelector" role="radiogroup" aria-labelledby="duelDiffLabel">
+                    <button type="button" class="duel-chip active" data-diff="easy" role="radio" aria-checked="true">Oson</button>
+                    <button type="button" class="duel-chip" data-diff="medium" role="radio" aria-checked="false">O'rtacha</button>
+                    <button type="button" class="duel-chip" data-diff="hard" role="radio" aria-checked="false">Qiyin</button>
+                  </div>
+                </div>
+
+                <button class="btn btn-primary btn-block btn-lg" id="duelStartSearchBtn" type="button">DUELNI BOSHLASH</button>
+              </div>
+            </div>
+
+            <!-- Duel History -->
+            <div class="card duel-history-card">
+              <div class="card-header">
+                <h3>⚔️ Duel tarixi</h3>
+              </div>
+              <div class="card-body" id="duelHistoryLog">
+                <!-- Rendered dynamically -->
+              </div>
+            </div>
+          </div>
+
+          <!-- Screen 2: Matchmaking / Loading Opponent -->
+          <div id="duelMatchmaking" class="duel-matchmaking hidden" aria-live="polite">
+            <div class="matchmaking-container">
+              <div class="matchmaking-status" id="duelMatchmakingStatus">Raqib qidirilmoqda...</div>
+              <div class="matchmaking-players">
+                <div class="m-player p1-loader">
+                  <div class="m-avatar" id="mmP1Avatar" aria-hidden="true">🦊</div>
+                  <div class="m-name" id="mmP1Name">Siz</div>
+                  <div class="m-status text-success">Tayyor ✓</div>
+                </div>
+                <div class="matchmaking-vs" aria-hidden="true">VS</div>
+                <div class="m-player p2-loader">
+                  <div class="m-avatar pulse-avatar" id="mmP2Avatar" aria-hidden="true">❓</div>
+                  <div class="m-name" id="mmP2Name">Qidirilmoqda...</div>
+                  <div class="m-status text-warning" id="mmP2Status">Kutilmoqda...</div>
+                </div>
+              </div>
+              <div class="matchmaking-progress-bar" role="progressbar" aria-valuemin="0" aria-valuemax="100" aria-label="Raqib qidirish jarayoni">
+                <div class="mm-progress-fill" id="mmProgressFill"></div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Screen 3: Gameplay (Tug of War & Question) -->
+          <div id="duelGameplay" class="duel-gameplay hidden">
+            <!-- Tug of War Rope Visualizer -->
+            <div class="tow-visualizer">
+              <div class="tow-player tow-p1" id="towP1Card">
+                <div class="tow-avatar" id="towP1Avatar" aria-hidden="true">🦊</div>
+                <div class="tow-info">
+                  <div class="tow-username" id="towP1Name">Siz</div>
+                  <div class="tow-score" id="towP1Score">0</div>
+                </div>
+              </div>
+
+              <div class="tow-rope-container" aria-hidden="true">
+                <div class="tow-rope-line"></div>
+                <div class="tow-rope-marker" id="towRopeMarker">🪢</div>
+              </div>
+
+              <div class="tow-player tow-p2" id="towP2Card">
+                <div class="tow-avatar" id="towP2Avatar" aria-hidden="true">🦊</div>
+                <div class="tow-info">
+                  <div class="tow-username" id="towP2Name">Demo</div>
+                  <div class="tow-score" id="towP2Score">0</div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Quiz Card -->
+            <div class="card duel-quiz-card">
+              <div class="card-header duel-quiz-header">
+                <span id="duelQuestionNum">SAVOL 1 / 6</span>
+                <span class="duel-timer-badge" id="duelTimerBadge" role="timer" aria-live="polite">10</span>
+              </div>
+              <!-- Visual Timer Progress Bar -->
+              <div class="duel-timer-progress" role="progressbar" aria-valuemin="0" aria-valuemax="100" aria-label="Savol vaqti">
+                <div class="duel-timer-fill" id="duelTimerFill"></div>
+              </div>
+              <div class="card-body">
+                <div class="duel-q-text" id="duelQText">Savol matni shu yerda bo'ladi...</div>
+
+                <!-- Single Player / Bot Options Grid -->
+                <div id="duelSingleOptionsArea">
+                  <div class="duel-options" id="duelOptionsContainer">
+                    <!-- A, B, C, D option buttons -->
+                  </div>
+                </div>
+
+                <!-- Real 2 Player Simultaneous Options Grid -->
+                <div id="duelDoubleOptionsArea" class="hidden">
+                  <div class="duel-double-grid">
+                    <div class="duel-player-panel" id="duelP1Panel">
+                      <div class="panel-header">
+                        <span class="panel-player-name" id="duelP1PanelName">Player 1</span>
+                        <span class="panel-player-keys">Keys: A, S, D, F</span>
+                      </div>
+                      <div class="duel-options" id="duelP1OptionsContainer">
+                        <!-- P1 option buttons -->
+                      </div>
+                    </div>
+                    <div class="duel-player-panel" id="duelP2Panel">
+                      <div class="panel-header">
+                        <span class="panel-player-name" id="duelP2PanelName">Player 2</span>
+                        <span class="panel-player-keys">Keys: H, J, K, L</span>
+                      </div>
+                      <div class="duel-options" id="duelP2OptionsContainer">
+                        <!-- P2 option buttons -->
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+              </div>
+            </div>
+
+            <!-- Indicator/Status Banner -->
+            <div class="duel-status-banner" id="duelStatusBanner" aria-live="polite"></div>
+          </div>
+
+          <!-- Screen 4: Result Screen -->
+          <div id="duelResult" class="duel-result hidden">
+            <div class="result-hero" id="duelResultHero">
+              <div class="result-emoji" id="duelResultEmoji" aria-hidden="true">🏆</div>
+              <h1 id="duelResultTitle">G'ALABA!</h1>
+              <p class="muted" id="duelResultOpponentText">Siz Sardorni mag'lub etdingiz</p>
+
+              <!-- Premium Duel Result Layout -->
+              <div class="duel-result-players-scores">
+                <div class="duel-res-player p1-card">
+                  <div class="duel-res-avatar" id="duelResP1Avatar" aria-hidden="true">🦊</div>
+                  <div class="duel-res-name" id="duelResP1Name">Siz</div>
+                  <div class="duel-res-score-num" id="duelResP1Score">0</div>
+                </div>
+                <div class="duel-res-vs">
+                  <span id="duelResultScoreText">0 — 0</span>
+                </div>
+                <div class="duel-res-player p2-card">
+                  <div class="duel-res-avatar" id="duelResP2Avatar" aria-hidden="true">🐼</div>
+                  <div class="duel-res-name" id="duelResP2Name">Raqib</div>
+                  <div class="duel-res-score-num" id="duelResP2Score">0</div>
+                </div>
+              </div>
+            </div>
+
+            <div class="card duel-rewards-card" id="duelRewardsCard">
+              <div class="card-header">
+                <h3>Duel bonuslari</h3>
+              </div>
+              <div class="card-body">
+                <div class="rewards-grid">
+                  <div class="reward-item">
+                    <span class="r-icon" aria-hidden="true">⭐</span>
+                    <span class="r-val" id="rewardXpVal">+50 XP</span>
+                  </div>
+                  <div class="reward-item">
+                    <span class="r-icon" aria-hidden="true">🏆</span>
+                    <span class="r-val" id="rewardPointsVal">+25 ball</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div class="result-actions">
+              <button class="btn btn-primary" id="duelBackToLobbyBtn" type="button">Duel Bosh Sahifasiga Qaytish</button>
+              <button class="btn btn-ghost" data-nav="dashboard" type="button">Dashboardga qaytish</button>
+            </div>
+          </div>
+        </section>
+
+        <!-- STORE PAGE -->
+        <section id="page-store" class="page">
+          <div class="store-hero">
+            <div>
+              <span class="store-kicker">PLAYER MARKET</span>
+              <h1>🛍️ Do'kon</h1>
+              <p>Ballaringizni noyob avatar buyumlariga almashtiring.</p>
+            </div>
+            <div class="store-balance" aria-live="polite">
+              <span>💰 BALL</span>
+              <strong id="storeBalanceValue">350</strong>
+            </div>
+          </div>
+          <div class="store-layout">
+            <aside class="store-preview card">
+              <div class="store-card-heading"><span>AVATAR LOADOUT</span><span class="store-live">● LIVE</span></div>
+              <div class="store-avatar-stage" id="storeAvatarPreview" aria-label="Avatar preview">
+                <span class="store-avatar-base" aria-hidden="true">🦊</span>
+                <span class="store-avatar-item store-avatar-hat" aria-hidden="true"></span>
+                <span class="store-avatar-item store-avatar-glasses" aria-hidden="true"></span>
+                <span class="store-avatar-item store-avatar-clothes" aria-hidden="true"></span>
+                <span class="store-avatar-item store-avatar-badge" aria-hidden="true"></span>
+              </div>
+              <h2 id="storeAvatarName">Player</h2>
+              <p class="muted">Sotib olingan buyumlarni shu yerda taqing.</p>
+              <div class="store-equipped" id="storeEquippedList"></div>
+              <div class="store-inventory-title"><span>INVENTAR</span><span id="storeInventoryCount">0 / 0</span></div>
+              <div class="store-inventory" id="storeInventory"></div>
+            </aside>
+            <div class="store-catalog">
+              <div class="store-toolbar">
+                <div class="store-tabs" id="storeFilters" role="tablist" aria-label="Do'kon kategoriyalari">
+                  <button class="store-tab active" data-category="all" type="button" role="tab" aria-selected="true">Barchasi</button>
+                  <button class="store-tab" data-category="avatar" type="button" role="tab" aria-selected="false">👤 Avatar</button>
+                  <button class="store-tab" data-category="hat" type="button" role="tab" aria-selected="false">🎩 Bosh kiyim</button>
+                  <button class="store-tab" data-category="glasses" type="button" role="tab" aria-selected="false">🕶️ Ko'zoynak</button>
+                  <button class="store-tab" data-category="clothes" type="button" role="tab" aria-selected="false">👕 Kiyim</button>
+                  <button class="store-tab" data-category="frame" type="button" role="tab" aria-selected="false">🔥 Ramka</button>
+                  <button class="store-tab" data-category="effect" type="button" role="tab" aria-selected="false">🌈 Effekt</button>
+                  <button class="store-tab" data-category="gift" type="button" role="tab" aria-selected="false">🎁 Sovg'alar</button>
+                </div>
+                <span class="store-catalog-count" id="storeCatalogCount"></span>
+              </div>
+              <div class="store-grid" id="storeGrid"></div>
+            </div>
+          </div>
+        </section>
+
+        <!-- CODING / PLAYGROUND PAGE (PROFESSIONAL IDE) -->
+        <section id="page-coding" class="page">
+          <div class="coding-header card">
+            <div class="project-context-bar" id="projectContextBar">
+              <button type="button" class="btn btn-ghost btn-sm" id="projectBackToProjectsBtn" hidden>← Loyihalarim</button>
+              <span class="project-current-name" id="projectCurrentName" hidden></span>
+              <span class="project-choose-hint" id="projectChooseHint" hidden>Loyiha tanlanmagan</span>
+              <div class="project-choose-actions" id="projectChooseActions" hidden>
+                <button type="button" class="btn btn-primary btn-sm" id="projectQuickNewBtn">＋ Yangi loyiha</button>
+                <button type="button" class="btn btn-ghost btn-sm" id="projectQuickOpenBtn">📁 Loyihalarimdan ochish</button>
+              </div>
+            </div>
+            <div class="coding-header-left">
+              <div class="coding-editor-tabs" id="editorTabs" role="tablist" aria-label="Fayl tablari">
+                <button type="button" class="coding-tab" data-tab="html" role="tab" aria-selected="true">🌐 HTML</button>
+                <button type="button" class="coding-tab" data-tab="css" role="tab" aria-selected="false">🎨 CSS</button>
+                <button type="button" class="coding-tab" data-tab="js" role="tab" aria-selected="false">⚡ JavaScript</button>
+              </div>
+
+              <div class="coding-select-wrap">
+                <label for="codingLangSelect" class="visually-hidden">Dasturlash tilini tanlash</label>
+                <select id="codingLangSelect" class="form-control form-control-sm">
+                  <option value="web">🌐 Web Stack (HTML + CSS + JS)</option>
+                  <option value="python">🐍 Python</option>
+                  <option value="java">☕ Java</option>
+                  <option value="cpp">🔧 C++</option>
+                  <option value="csharp">🔷 C#</option>
+                  <option value="sql">🗄 SQL</option>
+                </select>
+              </div>
+            </div>
+
+            <div class="coding-toolbar-controls">
+              <label class="auto-run-switch" title="Kod o'zgarganda avtomatik preview yangilash">
+                <input type="checkbox" id="autoRunToggle">
+                <span class="slider"></span>
+                <span class="switch-label">Auto Run</span>
+              </label>
+
+              <div class="coding-actions">
+                <button type="button" class="btn btn-ghost btn-sm ai-panel-toggle" id="aiPanelToggle"
+                  title="AI Coding Assistant" aria-expanded="false">🤖 AI Assistant</button>
+                <button type="button" class="btn btn-success btn-sm" id="codingRunBtn"
+                  title="Kodni ishga tushirish (Ctrl+Enter)">▶ Run</button>
+                <button type="button" class="btn btn-ghost btn-sm" id="codingOpenBrowserBtn" title="Brauzerda ochish">🌐
+                  Brauzerda ochish</button>
+                <button type="button" class="btn btn-ghost btn-sm" id="codingDownloadBtn"
+                  title="HTML faylni yuklab olish">⬇️ HTML faylni yuklab olish</button>
+                <button type="button" class="btn btn-ghost btn-sm" id="codingSaveBtn" title="Loyihani saqlash">💾
+                  Loyihani saqlash</button>
+                <button type="button" class="btn btn-ghost btn-sm" id="codingProjectsBtn" title="Loyihalarim">📁
+                  Loyihalarim</button>
+                <button type="button" class="btn btn-ghost btn-sm" id="codingResetBtn" title="Kodni tiklash">🔄
+                  Reset</button>
+              </div>
+            </div>
+          </div>
+
+          <!-- Split Workspace -->
+          <div class="coding-workspace">
+            <!-- VS Code uslubidagi fayl explorer -->
+            <aside class="coding-explorer card" aria-label="Loyiha fayllari">
+              <div class="coding-explorer-head"><span>EXPLORER</span><span class="muted">⌄</span></div>
+              <div class="coding-project-tree">
+                <div class="coding-tree-root">▾ 📁 ITTEST-PROJECT</div>
+                <button type="button" class="coding-file active" data-coding-file="html" aria-selected="true"><span>🌐</span> index.html</button>
+                <button type="button" class="coding-file" data-coding-file="css" aria-selected="false"><span>🎨</span> style.css</button>
+                <button type="button" class="coding-file" data-coding-file="js" aria-selected="false"><span>⚡</span> script.js</button>
+                <div class="coding-tree-folder">▸ 📁 assets</div>
+              </div>
+              <div class="coding-explorer-footer muted">UTF-8 · Web Stack</div>
+            </aside>
+
+            <!-- AI Coding Assistant panel (drawer) -->
+            <aside id="aiPanel" class="ai-panel hidden" aria-label="AI Coding Assistant panel">
+              <div class="ai-panel-head">
+                <div class="mascot mascot--idle mascot-ai" aria-hidden="true">
+                  <img src="./mascot/it-robot.png" alt="" draggable="false" loading="lazy"
+                    onerror="this.closest('.mascot')&&this.closest('.mascot').classList.add('mascot-broken')" />
+                </div>
+                <span id="aiPanelLang">🤖 AI Coding Assistant</span>
+                <button type="button" class="ai-panel-close" aria-label="Panelni yopish" title="Yopish">✕</button>
+              </div>
+              <div class="ai-panel-actions">
+                <button type="button" class="btn btn-ghost btn-xs" data-ai-act="hint">💡 Hint</button>
+                <button type="button" class="btn btn-ghost btn-xs" data-ai-act="explain">🔍 Tushuntir</button>
+                <button type="button" class="btn btn-ghost btn-xs" data-ai-act="errors">🔧 Xatoni top</button>
+                <button type="button" class="btn btn-ghost btn-xs" data-ai-act="improve">✨ Yaxshilash</button>
+              </div>
+              <div class="ai-panel-out"></div>
+            </aside>
+
+            <!-- Left: Editor Panel -->
+            <div class="coding-editor-panel card">
+              <div class="editor-header">
+                <span class="editor-title" id="editorLangLabel">🌐 HTML5 Editor</span>
+                <span class="editor-shortcuts muted">Ctrl + Enter: Run | Ctrl + S: Save | Tab: Indent</span>
+              </div>
+
+              <div class="editor-body">
+                <!-- HTML Editor -->
+                <div class="editor-view active" id="editor-view-html">
+                  <div class="editor-container">
+                    <div class="line-numbers" id="htmlLineNumbers" aria-hidden="true">1</div>
+                    <div class="editor-surface">
+                      <pre id="htmlHighlight" class="editor-highlight" aria-hidden="true"></pre>
+                      <label for="htmlEditor" class="visually-hidden">HTML kod muharriri</label>
+                      <textarea id="htmlEditor" class="code-textarea" spellcheck="false" wrap="off"
+                        placeholder="HTML5 kodingizni yozing..."></textarea>
+                    </div>
+                  </div>
+                </div>
+
+                <!-- CSS Editor -->
+                <div class="editor-view" id="editor-view-css">
+                  <div class="editor-container">
+                    <div class="line-numbers" id="cssLineNumbers" aria-hidden="true">1</div>
+                    <div class="editor-surface">
+                      <pre id="cssHighlight" class="editor-highlight" aria-hidden="true"></pre>
+                      <label for="cssEditor" class="visually-hidden">CSS kod muharriri</label>
+                      <textarea id="cssEditor" class="code-textarea" spellcheck="false" wrap="off"
+                        placeholder="CSS3 stilingizni yozing..."></textarea>
+                    </div>
+                  </div>
+                </div>
+
+                <!-- JS Editor -->
+                <div class="editor-view" id="editor-view-js">
+                  <div class="editor-container">
+                    <div class="line-numbers" id="jsLineNumbers" aria-hidden="true">1</div>
+                    <div class="editor-surface">
+                      <pre id="jsHighlight" class="editor-highlight" aria-hidden="true"></pre>
+                      <label for="jsEditor" class="visually-hidden">JavaScript kod muharriri</label>
+                      <textarea id="jsEditor" class="code-textarea" spellcheck="false" wrap="off"
+                        placeholder="JavaScript kodingizni yozing..."></textarea>
+                    </div>
+                  </div>
+                </div>
+
+                <!-- Python Editor -->
+                <div class="editor-view" id="editor-view-python">
+                  <div class="editor-container">
+                    <div class="line-numbers" id="pythonLineNumbers" aria-hidden="true">1</div>
+                    <div class="editor-surface">
+                      <pre id="pythonHighlight" class="editor-highlight" aria-hidden="true"></pre>
+                      <label for="pythonEditor" class="visually-hidden">Python kod muharriri</label>
+                      <textarea id="pythonEditor" class="code-textarea" spellcheck="false" wrap="off"
+                        placeholder="Python kodingizni yozing..."></textarea>
+                    </div>
+                  </div>
+                </div>
+
+                <!-- Java Editor -->
+                <div class="editor-view" id="editor-view-java">
+                  <div class="editor-container">
+                    <div class="line-numbers" id="javaLineNumbers" aria-hidden="true">1</div>
+                    <div class="editor-surface">
+                      <pre id="javaHighlight" class="editor-highlight" aria-hidden="true"></pre>
+                      <label for="javaEditor" class="visually-hidden">Java kod muharriri</label>
+                      <textarea id="javaEditor" class="code-textarea" spellcheck="false" wrap="off"
+                        placeholder="Java kodingizni yozing..."></textarea>
+                    </div>
+                  </div>
+                </div>
+
+                <!-- C++ Editor -->
+                <div class="editor-view" id="editor-view-cpp">
+                  <div class="editor-container">
+                    <div class="line-numbers" id="cppLineNumbers" aria-hidden="true">1</div>
+                    <div class="editor-surface">
+                      <pre id="cppHighlight" class="editor-highlight" aria-hidden="true"></pre>
+                      <label for="cppEditor" class="visually-hidden">C++ kod muharriri</label>
+                      <textarea id="cppEditor" class="code-textarea" spellcheck="false" wrap="off"
+                        placeholder="C++ kodingizni yozing..."></textarea>
+                    </div>
+                  </div>
+                </div>
+
+                <!-- C# Editor -->
+                <div class="editor-view" id="editor-view-csharp">
+                  <div class="editor-container">
+                    <div class="line-numbers" id="csharpLineNumbers" aria-hidden="true">1</div>
+                    <div class="editor-surface">
+                      <pre id="csharpHighlight" class="editor-highlight" aria-hidden="true"></pre>
+                      <label for="csharpEditor" class="visually-hidden">C# kod muharriri</label>
+                      <textarea id="csharpEditor" class="code-textarea" spellcheck="false" wrap="off"
+                        placeholder="C# kodingizni yozing..."></textarea>
+                    </div>
+                  </div>
+                </div>
+
+                <!-- SQL Editor -->
+                <div class="editor-view" id="editor-view-sql">
+                  <div class="editor-container">
+                    <div class="line-numbers" id="sqlLineNumbers" aria-hidden="true">1</div>
+                    <div class="editor-surface">
+                      <pre id="sqlHighlight" class="editor-highlight" aria-hidden="true"></pre>
+                      <label for="sqlEditor" class="visually-hidden">SQL kod muharriri</label>
+                      <textarea id="sqlEditor" class="code-textarea" spellcheck="false" wrap="off"
+                        placeholder="SQL so'rovingizni yozing..."></textarea>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Right: Output Panel -->
+            <div class="coding-output-panel card">
+              <div class="output-tabs" id="outputTabs" role="tablist" aria-label="Natija tablari">
+                <button type="button" class="output-tab active" data-tab="preview" role="tab" aria-selected="true">👁️ Live Preview</button>
+                <button type="button" class="output-tab" data-tab="console" role="tab" aria-selected="false">🖥️ Konsol <span
+                    class="badge badge-sm hidden" id="consoleBadge">0</span></button>
+                <button type="button" class="output-tab" data-tab="errors" role="tab" aria-selected="false">❌ Xatolar <span
+                    class="badge badge-danger badge-sm hidden" id="errorBadge">0</span></button>
+              </div>
+
+              <div class="output-body">
+                <!-- Preview Iframe -->
+                <div class="output-view active" id="view-preview">
+                  <iframe id="codingIframe" title="Live Output"
+                    sandbox="allow-scripts allow-modals allow-forms"></iframe>
+                </div>
+
+                <!-- Console View -->
+                <div class="output-view" id="view-console">
+                  <div class="console-toolbar">
+                    <span>Console Log (DevTools)</span>
+                    <button type="button" class="btn btn-ghost btn-xs" id="stdinToggleBtn"
+                      title="stdin — Python input() / C++ cin uchun">⌨️ Input</button>
+                    <button type="button" class="btn btn-ghost btn-xs" id="clearConsoleBtn">🧹 Tozalash</button>
+                  </div>
+                  <div id="stdinPanel" class="stdin-panel hidden">
+                    <label for="codingStdin" class="visually-hidden">stdin qiymatlari</label>
+                    <textarea id="codingStdin" class="stdin-textarea" spellcheck="false"
+                      placeholder="stdin — har bir qator bitta input()/cin o'qishiga to'g'ri keladi..."></textarea>
+                  </div>
+                  <div id="codingConsole" class="console-logs" aria-live="polite">
+                    <div class="console-line muted">// Executed console logs will appear here</div>
+                  </div>
+                </div>
+
+                <!-- Errors View -->
+                <div class="output-view" id="view-errors">
+                  <div class="console-toolbar">
+                    <span>JavaScript Runtime Errors</span>
+                    <button type="button" class="btn btn-ghost btn-xs" id="clearErrorsBtn">🧹 Tozalash</button>
+                  </div>
+                  <div id="codingErrors" class="console-logs" aria-live="polite">
+                    <div class="console-line muted">// Runtime & syntax errors will appear here</div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <!-- ====================== LOYIHALARIM PAGE ====================== -->
+        <section id="page-projects" class="page">
+          <div class="projects-head">
+            <div class="projects-head-text">
+              <h3>📁 Loyihalarim</h3>
+              <p>Loyihalaringiz shu yerda saqlanadi.</p>
+            </div>
+            <button type="button" class="btn btn-primary" id="projectsNewBtn">＋ Yangi loyiha</button>
+          </div>
+          <div class="projects-grid" id="projectsGrid"></div>
+          <div class="projects-empty card" id="projectsEmpty" hidden>
+            <div class="projects-empty-emoji" aria-hidden="true">📁</div>
+            <h4>Hali loyiha yo'q</h4>
+            <p>Coding bo'limida birinchi loyihangizni yarating 😎</p>
+            <button type="button" class="btn btn-primary" id="projectsEmptyNewBtn">＋ Yangi loyiha</button>
+          </div>
+        </section>
+
+        <!-- ====================== DARSLAR PAGE (kurslar grid) ====================== -->
+        <section id="page-lessons" class="page">
+          <div id="lsContinueSlot"></div>
+          <div class="ls-section-head">
+            <h3>🎓 Dasturlash yo‘nalishlari</h3>
+            <p>O‘zingizga yoqqan tilni tanlang va bosqichma-bosqich o‘rganishni boshlang.</p>
+          </div>
+          <div class="ls-courses-grid" id="lsCoursesGrid"></div>
+        </section>
+
+        <!-- ====================== KURS DARSLARI PAGE ====================== -->
+        <section id="page-lessonCourse" class="page">
+          <div id="lsCourseContainer"></div>
+        </section>
+
+        <!-- ====================== DARS KO'RISH PAGE ====================== -->
+        <section id="page-lessonView" class="page">
+          <div id="lsLessonContainer"></div>
+        </section>
+
+      </div>
+    </main>
+  </div>
+
+  <!-- ====================== MODALS ====================== -->
+
+  <!-- Start Test Modal -->
+  <div class="modal-overlay" id="startTestModal" role="dialog" aria-modal="true" aria-labelledby="startTestName">
+    <div class="modal">
+      <div class="modal-header">
+        <h3 id="startTestName">Test</h3>
+        <button class="modal-close" data-close aria-label="Yopish" type="button">✕</button>
+      </div>
+      <div class="modal-body" id="startTestBody"></div>
+      <div class="modal-footer">
+        <button class="btn btn-ghost" data-close type="button">Bekor qilish</button>
+        <button class="btn btn-primary" id="startTestConfirm" type="button">TESTNI BOSHLASH</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Finish Test Confirm Modal -->
+  <div class="modal-overlay" id="finishTestModal" role="dialog" aria-modal="true" aria-labelledby="finishTestModalTitle">
+    <div class="modal modal-sm">
+      <div class="modal-header">
+        <h3 id="finishTestModalTitle">Testni yakunlamoqchimisiz?</h3>
+        <button class="modal-close" data-close aria-label="Yopish" type="button">✕</button>
+      </div>
+      <div class="modal-body">
+        <p id="finishTestSummary"></p>
+      </div>
+      <div class="modal-footer">
+        <button class="btn btn-ghost" data-close type="button">Bekor qilish</button>
+        <button class="btn btn-primary" id="finishTestConfirm" type="button">Yakunlash</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Edit Profile Modal -->
+  <div class="modal-overlay" id="editProfileModal" role="dialog" aria-modal="true" aria-labelledby="editProfileModalTitle">
+    <div class="modal">
+      <div class="modal-header">
+        <h3 id="editProfileModalTitle">Profilni tahrirlash</h3>
+        <button class="modal-close" data-close aria-label="Yopish" type="button">✕</button>
+      </div>
+      <div class="modal-body">
+        <form id="editProfileForm">
+          <div class="form-row">
+            <div class="form-group">
+              <label for="editFirstname">Ism</label>
+              <input type="text" id="editFirstname" name="editFirstname" autocomplete="given-name" required />
+            </div>
+            <div class="form-group">
+              <label for="editLastname">Familiya</label>
+              <input type="text" id="editLastname" name="editLastname" autocomplete="family-name" required />
+            </div>
+          </div>
+          <div class="form-group">
+            <label for="editUsername">Username</label>
+            <input type="text" id="editUsername" name="editUsername" autocomplete="username" required />
+          </div>
+          <div class="form-group">
+            <label for="editEmail">Email</label>
+            <input type="email" id="editEmail" name="editEmail" autocomplete="email" required />
+          </div>
+        </form>
+      </div>
+      <div class="modal-footer">
+        <button class="btn btn-ghost" data-close type="button">Bekor qilish</button>
+        <button class="btn btn-primary" id="editProfileSave" type="button">Saqlash</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Loyihani saqlash / nomini o'zgartirish Modal -->
+  <div class="modal-overlay" id="projectSaveModal" role="dialog" aria-modal="true" aria-labelledby="projectSaveTitle">
+    <div class="modal modal-sm">
+      <div class="modal-header">
+        <h3 id="projectSaveTitle">💾 Loyihani saqlash</h3>
+        <button class="modal-close" data-close aria-label="Yopish" type="button">✕</button>
+      </div>
+      <div class="modal-body">
+        <div class="form-group">
+          <label for="projectSaveNameInput">Loyiha nomi</label>
+          <input type="text" id="projectSaveNameInput" maxlength="60" placeholder="Mening birinchi saytim" />
+        </div>
+        <div class="form-group">
+          <label for="projectSaveTechSelect">Texnologiya</label>
+          <select id="projectSaveTechSelect" class="form-control">
+            <option value="web">🌐 HTML + CSS + JS</option>
+          </select>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button class="btn btn-ghost" data-close type="button">Bekor qilish</button>
+        <button class="btn btn-primary" id="projectSaveConfirm" type="button">💾 Saqlash</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Yangi loyiha Modal -->
+  <div class="modal-overlay" id="projectNewModal" role="dialog" aria-modal="true" aria-labelledby="projectNewModalTitle">
+    <div class="modal modal-sm">
+      <div class="modal-header">
+        <h3 id="projectNewModalTitle">＋ Yangi loyiha</h3>
+        <button class="modal-close" data-close aria-label="Yopish" type="button">✕</button>
+      </div>
+      <div class="modal-body">
+        <div class="form-group">
+          <label for="projectNewNameInput">Loyiha nomi</label>
+          <input type="text" id="projectNewNameInput" maxlength="60" placeholder="Mening birinchi saytim" />
+        </div>
+        <div class="form-group">
+          <label for="projectNewTechSelect">Texnologiya</label>
+          <select id="projectNewTechSelect" class="form-control">
+            <option value="web">🌐 HTML + CSS + JS</option>
+          </select>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button class="btn btn-ghost" data-close type="button">Bekor qilish</button>
+        <button class="btn btn-primary" id="projectNewConfirm" type="button">🚀 Loyihani yaratish</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Loyihani o'chirish tasdiq Modal -->
+  <div class="modal-overlay" id="projectDeleteModal" role="dialog" aria-modal="true" aria-labelledby="projectDeleteModalTitle">
+    <div class="modal modal-sm">
+      <div class="modal-header">
+        <h3 id="projectDeleteModalTitle">🗑️ O'chirish</h3>
+        <button class="modal-close" data-close aria-label="Yopish" type="button">✕</button>
+      </div>
+      <div class="modal-body">
+        <p id="projectDeleteText">Bu loyihani o'chirishni xohlaysizmi?</p>
+      </div>
+      <div class="modal-footer">
+        <button class="btn btn-ghost" data-close type="button">Bekor qilish</button>
+        <button class="btn btn-danger" id="projectDeleteConfirm" type="button">🗑️ O'chirish</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Loyiha ⋮ menyusi (bottom sheet) -->
+  <div class="modal-overlay project-sheet-overlay" id="projectMenuModal" role="dialog" aria-modal="true" aria-labelledby="projectMenuTitle">
+    <div class="modal modal-sm project-sheet">
+      <div class="modal-body project-sheet-body">
+        <div class="project-sheet-title" id="projectMenuTitle">Loyiha</div>
+        <button type="button" class="project-sheet-item" id="projectMenuRename">✏️ Nomini o'zgartirish</button>
+        <button type="button" class="project-sheet-item" id="projectMenuDuplicate">📋 Nusxa olish</button>
+        <button type="button" class="project-sheet-item danger" id="projectMenuDelete">🗑️ O'chirish</button>
+      </div>
+      <div class="modal-footer">
+        <button class="btn btn-ghost" data-close type="button">Bekor qilish</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Achievement Modal -->
+  <div class="modal-overlay" id="achievementModal" role="dialog" aria-modal="true">
+    <div class="modal modal-sm">
+      <div class="modal-body achievement-modal-body" id="achievementModalBody"></div>
+      <div class="modal-footer">
+        <button class="btn btn-primary" data-close type="button">Davom etish</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Store gift confirmation modal -->
+  <div class="modal-overlay" id="giftModal" role="dialog" aria-modal="true" aria-labelledby="giftModalTitle">
+    <div class="modal modal-sm">
+      <div class="modal-header">
+        <h3 id="giftModalTitle">Sovg'ani olish</h3>
+        <button class="modal-close" data-close aria-label="Yopish" type="button">✕</button>
+      </div>
+      <div class="modal-body">
+        <div class="purchase-confirm-content">
+          <div class="purchase-item-preview">
+            <div class="purchase-icon" id="purchaseItemIcon" aria-hidden="true">🎩</div>
+            <div class="purchase-name" id="purchaseItemName">Premium Hat</div>
+          </div>
+          <div class="purchase-details">
+            <div class="purchase-row">
+              <span>Narx:</span>
+              <span class="purchase-price" id="purchaseItemPrice">100 ball</span>
+            </div>
+            <div class="purchase-row">
+              <span>Hozirgi balans:</span>
+              <span id="purchaseCurrentBalance">0 ball</span>
+            </div>
+            <div class="purchase-row purchase-after">
+              <span>Sotib olishdan keyin:</span>
+              <span class="purchase-after-balance" id="purchaseAfterBalance">0 ball</span>
+            </div>
+          </div>
+          <p class="purchase-question">Ushbu sovg'ani olishni tasdiqlaysizmi?</p>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button class="btn btn-ghost" data-close type="button">Bekor qilish</button>
+        <button class="btn btn-primary" id="confirmGiftBtn" type="button">Olish</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Send Gift Modal -->
+  <div class="modal-overlay" id="sendGiftModal" role="dialog" aria-modal="true" aria-labelledby="sendGiftModalTitle">
+    <div class="modal modal-sm">
+      <div class="modal-header">
+        <h3 id="sendGiftModalTitle">🎁 Sovg'a yuborish</h3>
+        <button class="modal-close" data-close aria-label="Yopish" type="button">✕</button>
+      </div>
+      <div class="modal-body">
+        <div class="form-group">
+          <label for="giftRecipient">Do'stni tanlang</label>
+          <select id="giftRecipient" class="form-control"></select>
+        </div>
+        <div class="form-group">
+          <label for="giftChoice">Gift</label>
+          <select id="giftChoice" class="form-control"></select>
+        </div>
+        <div class="purchase-row"><span>Narx:</span><strong id="giftSendPrice">0 ball</strong></div>
+      </div>
+      <div class="modal-footer">
+        <button class="btn btn-ghost" data-close type="button">Bekor qilish</button>
+        <button class="btn btn-primary" id="sendGiftConfirm" type="button">Sovg'a yuborish</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ====================== DARSLAR MODALLARI ====================== -->
+
+  <!-- Bilim darajasi modal -->
+  <div class="modal-overlay" id="lessonLevelModal" role="dialog" aria-modal="true" aria-labelledby="lessonLevelTitle">
+    <div class="modal">
+      <div class="modal-header">
+        <h3><span aria-hidden="true">🧠</span> <span id="lessonLevelTitle">Bilim darajangiz qanday?</span></h3>
+        <button class="modal-close" data-close id="lessonLevelClose" aria-label="Yopish" type="button">✕</button>
+      </div>
+      <div class="modal-body" id="lessonLevelBody"></div>
+      <div class="modal-footer">
+        <button class="btn btn-ghost" data-close type="button">Keyinroq</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Qulflangan dars modal -->
+  <div class="modal-overlay" id="lessonLockedModal" role="dialog" aria-modal="true">
+    <div class="modal modal-sm">
+      <div class="modal-body" id="lessonLockedBody"></div>
+      <div class="modal-footer" id="lessonLockedFooter"></div>
+    </div>
+  </div>
+
+  <!-- O'rganish sozlamalari modal -->
+  <div class="modal-overlay" id="lessonSettingsModal" role="dialog" aria-modal="true" aria-labelledby="lessonSettingsModalTitle">
+    <div class="modal">
+      <div class="modal-header">
+        <h3 id="lessonSettingsModalTitle">⚙️ O‘rganish sozlamalari</h3>
+        <button class="modal-close" data-close aria-label="Yopish" type="button">✕</button>
+      </div>
+      <div class="modal-body" id="lessonSettingsBody"></div>
+      <div class="modal-footer">
+        <button class="btn btn-primary" data-close type="button">Tayyor</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Chiqish tasdiqlash modal -->
+  <div class="modal-overlay" id="logoutConfirmModal" role="dialog" aria-modal="true" aria-labelledby="logoutConfirmModalTitle">
+    <div class="modal modal-sm">
+      <div class="modal-header">
+        <h3 id="logoutConfirmModalTitle">🚪 Chiqish</h3>
+        <button class="modal-close" data-close aria-label="Yopish" type="button">✕</button>
+      </div>
+      <div class="modal-body">
+        <p class="ux-logout-question">Hisobdan chiqmoqchimisiz?</p>
+        <p class="ux-logout-note">Progressingiz, darslaringiz va barcha ma'lumotlaringiz saqlanib qoladi.</p>
+      </div>
+      <div class="modal-footer">
+        <button class="btn btn-ghost" data-close type="button">Bekor qilish</button>
+        <button class="btn btn-danger" id="logoutConfirmBtn" type="button">Chiqish</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ====================== TOAST ====================== -->
+  <div class="toast-container" id="toastContainer" aria-live="polite"></div>
+
+  <!-- Duel logs/history are stored inside page-duel dynamically -->
+
+  <!-- ====================== LOADING ====================== -->
+  <div class="loading-overlay" id="loadingOverlay" role="status" aria-live="polite">
+    <div class="loader" aria-hidden="true"></div>
+    <p>Yuklanmoqda...</p>
+  </div>
+
+</body>
+
+</html>

@@ -1,0 +1,41 @@
+{
+  "name": "C#",
+  "icon": "🔷",
+  "description": ".NET ekotizimi — OOP, LINQ, Async/Await va Xotira boshqaruvi",
+  "beginner": [
+    { "q": "C# dasturlash tili qaysi kompaniya tomonidan yaratilgan?", "o": ["Microsoft", "Oracle", "Google", "Apple"], "c": 0, "e": "Anders Hejlsberg boshchiligidagi Microsoft jamoasi C# ni yaratgan." },
+    { "q": "C# kodi qaysi ekotizimda ishlaydi?", "o": [".NET Framework / .NET Core", "JVM", "Node.js", "Python VM"], "c": 0, "e": "C# kodi .NET CLR (Common Language Runtime) tomonidan bajariladi." },
+    { "q": "C# da konsolga matn chiqarish uchun qaysi metod ishlatiladi?", "o": ["Console.WriteLine()", "System.out.println()", "printf()", "print()"], "c": 0, "e": "Console.WriteLine() yangi qator bilan konsolga yozadi." },
+    { "q": "C# da o'zgaruvchi turini avtomatik aniqlash so'zi:", "o": ["var", "auto", "let", "def"], "c": 0, "e": "var kompilyatsiya vaqtida o'zgaruvchi turini avto-tayinlaydi." },
+    { "q": "C# dasturi qaysi metoddan ishga tushadi?", "o": ["static void Main(string[] args)", "void start()", "function main()", "public init()"], "c": 0, "e": "Main metodi dastur kirish nuqtasidir." },
+    { "q": "C# da bir qatorli izoh yozish:", "o": ["// izoh", "# izoh", "/* izoh */", "-- izoh"], "c": 0, "e": "// belgisi bir qatorli izoh hisoblanadi." },
+    { "q": "C# da o'zgarmas qiymat e'lon qilish so'zi:", "o": ["const", "readonly", "final", "static"], "c": 0, "e": "const kompilyatsiya vaqtida belgilangan o'zgarmasdir." },
+    { "q": "C# da matn (string) qanday yoziladi?", "o": ["\"Matn\"", "'Matn'", "`Matn`", "<Matn>"], "c": 0, "e": "C# da String qo'shtirnoq (\"...\") ichida yoziladi." },
+    { "q": "Mantiqiy 'va' (AND) operatori:", "o": ["&&", "and", "&", "AND"], "c": 0, "e": "&& — mantiqiy AND operatori." },
+    { "q": "Mantiqiy 'yoki' (OR) operatori:", "o": ["||", "or", "|", "OR"], "c": 0, "e": "|| — mantiqiy OR operatori." }
+  ],
+  "intermediate": [
+    { "q": "LINQ (Language Integrated Query) maqsadi nima?", "o": ["Kolleksiyalar va bazalar ustida deklarativ so'rovlar bajarish", "UI chizish", "Fayllarni o'chirish", "Kodni kompilyatsiya qilish"], "c": 0, "e": "LINQ ma'lumotlar to'plamini filtrlash va tartiblash uchun juda qulay." },
+    { "q": "C# da Property (Property get/set) nima beradi?", "o": ["Private maydonlarga xavfsiz kirish va boshqarish (Encapsulation)", "Global o'zgaruvchi", "Fayl yo'li", "Event handler"], "c": 0, "e": "public int Age { get; set; } qisqa sintaksisli property yaratadi." },
+    { "q": "Class va Struct o'rtasidagi asosiy farq nima?", "o": ["Class - Reference type (Heap), Struct - Value type (Stack)", "Farqi yo'q", "Struct meros ola oladi", "Class stackda joylashadi"], "c": 0, "e": "Struct value type bo'lib xotiradan stack'da joy oladi, Class reference type." },
+    { "q": "C# da Nullable types (int?) nima?", "o": ["Value type larga null qiymat berish imkoniyati", "Faqat string uchun", "Xatolik ko'rsatkichi", "Bo'sh massiv"], "c": 0, "e": "int? a = null; qiymat mavjud emasligini bildira oladi." },
+    { "q": "Garbage Collector (GC) C# da qanday ishlaydi?", "o": ["Boshqariladigan Heap (Managed Heap) xotirasidagi keraksiz obyektlarni tozalaydi", "Kodni o'chiradi", "Fayllarni arxivlaydi", "UI ning muzlashini oldini oladi"], "c": 0, "e": "GC 0, 1, 2 avlodlar (generations) bo'yicha xotirani tozalaydi." },
+    { "q": "async va await kalit so'zlari maqsadi nima?", "o": ["Asinxron operatsiyalarni UI va oqimni muzlatmasdan (non-blocking) bajarish", "Loop yaratish", "Klasslarni ulash", "SQL so'rov tayyorlash"], "c": 0, "e": "async/await Task bilan birga asinxron kodni toza va oson yozishga yordam beradi." },
+    { "q": "Delegate C# da nima?", "o": ["Metodlarga ishora qiluvchi va ularni chaqiruvchi xavfsiz ko'rsatkich (type-safe function pointer)", "Fayl nomi", "Klass nomi", "Baza jadvali"], "c": 0, "e": "Delegate metod imzolarini qadoqlaydi." },
+    { "q": "Interface va Abstract Class farqi nima?", "o": ["Interface faqat shartnoma (mult-inheritance), Abstract Class deyarli to'liq mantiq saqlashi mumkin", "Bir xil", "Interface constructor saqlaydi", "Abstract Class ko'p meros beradi"], "c": 0, "e": "C# da bir nechta interfeysni implement qilish mumkin." },
+    { "q": "C# da Exception handling bloki sintaksisi:", "o": ["try { } catch (Exception ex) { } finally { }", "try-except-finally", "do-catch-finally", "try-catch-end"], "c": 0, "e": "finally bloki har qanday holatda ham (xato bo'lsa-bo'lmasa) bajariladi." },
+    { "q": "Extension Method nima?", "o": ["Mavjud tiplarga uning kodini o'zgartirmasdan yangi metod qo'shish usuli", "Meros olish", "Private metod", "Kompilyator bayrog'i"], "c": 0, "e": "this kalit so me'yori orqali statik metod tipga biriktiriladi." }
+  ],
+  "advanced": [
+    { "q": "C# 9.0 dagi Record turi nimasi bilan ajralib turadi?", "o": ["Data-oriented va immuatble (o'zgarmas) qiymat obyektlari uchun mo'ljallangan va positional syntax ga ega", "UI komponenti", "Faqat raqam saqlaydi", "GC ga ta'sir qilmaydi"], "c": 0, "e": "Record qiymatlar bo'yicha tenglikni (value equality) avtomatik ta'minlaydi." },
+    { "q": "Span<T> va Memory<T> nima uchun ishlatiladi?", "o": ["Xotirani nusxalamasdan (zero-allocation) va yuqori unumdorlik bilan manipulyatsiya qilish uchun", "DB bog'lanish uchun", "JSON o'qish uchun", "File yuklash uchun"], "c": 0, "e": "Span<T> stack va heap xotiradagi uzluksiz segmentlar ustida tez ishlaydi." },
+    { "q": "C# Yield return (Yield Break) kalit so'zi nimani yaratadi?", "o": ["IEnumerable (Iterator/Generator) tartibini bosqichma-bosqich (lazy evaluation) qaytaradi", "Loopni tugatadi", "Xato tashlaydi", "Thread ni to'xtatadi"], "c": 0, "e": "yield return elementlarni talab qilinganda (on-demand) beradi." },
+    { "q": "Reflection in .NET nima beradi?", "o": ["Runtime vaqtida assembly, tur, metodlar metadata sini o'qish va ularni dinamik chaqirish", "Ekranni tasvirlash", "CSS ni o'zgarih", "Memory clean"], "c": 0, "e": "Reflection orqali attribute larni o'qish va DI konteynerlar tuziladi." },
+    { "q": "Dependency Injection (DI) namunasi nimaga erishadi?", "o": ["Komponentlar orasidagi qattiq bog'liqlikni (Tight Coupling) kamaytirish va testlanuvchanlikni oshirish", "Kodni sekinlashtirish", "Baza o'chirish", "UI ni yangilash"], "c": 0, "e": "DI orqali obyekt bog'liqliklari tashqaridan uzatiladi (Inversion of Control)." },
+    { "q": "ValueTask<T> va Task<T> o'rtasidagi farq nima?", "o": ["ValueTask bu struct bo'lib, natija darhol tayyor bo'lganda Heap allocation qilmaydi", "Farqi yo'q", "Task sekinroq", "ValueTask faqat string beradi"], "c": 0, "e": "ValueTask sinxron yakunlanadigan asinxron metodlarda unumdorlikni oshiradi." },
+    { "q": "C# Memory Leak (xotira sizib chiqishi) qanday sodir bo'lishi mumkin?", "o": ["Event subscription larni yechmaslik (unsubscribing qilinmagan eventlar) va IDisposable resurslarni yopmaslik tufayli", "const ishlatganda", "int elon qilganda", "Console.Write da"], "c": 0, "e": "Hodisa tinglovchilari (event subscriber) obyektni GC tomonidan tozalashga yo'l qo meydi." },
+    { "q": "C# Pattern Matching (switch expression) afzalligi nima?", "o": ["O'zgaruvchi turi va qiymatlarini ixcham va kuchli shaklda tekshirish hamda filtrlash", "Faqat int u-n", "Dasturni to'xtatadi", "Hech narsa"], "c": 0, "e": "C# 8+ pattern matching kod o'qilishini keskin yaxshilaydi." },
+    { "q": "IDisposable interfeysi va 'using' bloki maqsadi nima?", "o": ["Unmanaged resurslarni (fayl, socket, DB connection) o'z vaqtida va kafolatli yopish", "Faqat namespace import qilish", "Memory oshirish", "Loop yaratish"], "c": 0, "e": "using bloki oxirida Dispose() metodi avtomatik chaqiriladi." },
+    { "q": "CIL (Common Intermediate Language) va JIT (Just-In-Time) kompilyator roli nima?", "o": ["C# CIL ga o'tadi, JIT esa bajarilish vaqtida CIL ni kompyuterning native mashina kodiga o'giradi", "Kodni o'chiradi", "UI render qiladi", "Faqat Linux uchun"], "c": 0, "e": "JIT protsessor arxitekturasiga moslashtirilgan mashina kodini ishlab chiqadi." }
+  ]
+}

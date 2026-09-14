@@ -1,0 +1,41 @@
+{
+  "name": "HTML",
+  "icon": "🌐",
+  "description": "Web sahifa tuzilishi — Semantic HTML, Forms va Accessibility",
+  "beginner": [
+    { "q": "HTML nimaning qisqartmasi?", "o": ["HyperText Markup Language", "HighText Machine Language", "HyperTransfer Mark Language", "Home Tool Markup Language"], "c": 0, "e": "HTML — veb sahifalarni tuzish uchun belgilash tili." },
+    { "q": "HTML hujjatining eng birinchi qatorida nima yozilishi kerak?", "o": ["<!DOCTYPE html>", "<html>", "<head>", "<meta>"], "c": 0, "e": "<!DOCTYPE html> HTML5 standartini brauzerga ko'rsatadi." },
+    { "q": "Eng katta o'lchamdagi sarlavha tegi qaysi?", "o": ["<h1>", "<h6>", "<head>", "<header>"], "c": 0, "e": "<h1> eng yuqori darajali va katta sarlavha tegidir." },
+    { "q": "Veb sahifaga gipermurojaat (link) qo'shish uchun qaysi teg ishlatiladi?", "o": ["<a>", "<link>", "<url>", "<href>"], "c": 0, "e": "<a href=\"...\"> link yaratish uchun teg." },
+    { "q": "Rasm qo'shish uchun qaysi teg ishlatiladi?", "o": ["<img>", "<image>", "<picture>", "<src>"], "c": 0, "e": "<img src=\"...\" alt=\"...\"> rasmlarni ko'rsatadi." },
+    { "q": "Tartiblangan (nomrerlangan 1, 2, 3) ro'yxat yaratuvchi teg:", "o": ["<ol>", "<ul>", "<li>", "<dl>"], "c": 0, "e": "<ol> — Ordered List." },
+    { "q": "Tartiblanmagan (nuqtali) ro'yxat yaratuvchi teg:", "o": ["<ul>", "<ol>", "<li>", "<list>"], "c": 0, "e": "<ul> — Unordered List." },
+    { "q": "Yangi qatorga o'tish (line break) uchun ishlatiladigan teg:", "o": ["<br>", "<hr>", "<p>", "<lb>"], "c": 0, "e": "<br> yopilmaydigan self-closing teg hisoblanadi." },
+    { "q": "Jadval yaratishda qator (row) yaratuvchi teg qaysi?", "o": ["<tr>", "<td>", "<th>", "<table>"], "c": 0, "e": "<tr> — Table Row." },
+    { "q": "Jadvaldagi oddiy katakcha (data cell) qaysi teg bilan yoziladi?", "o": ["<td>", "<th>", "<tr>", "<cell>"], "c": 0, "e": "<td> — Table Data." }
+  ],
+  "intermediate": [
+    { "q": "Semantic HTML elementlariga qaysilar kiradi?", "o": ["<header>, <nav>, <main>, <section>, <footer>", "<div>, <span>, <b>, <i>", "<color>, <font>, <style>", "<script>, <style>, <link>"], "c": 0, "e": "Semantic teglar brauzer va qidiruv botlariga sahifa strukturasini tushuntiradi." },
+    { "q": "Foydalanuvchidan matn yoki ma'lumot olish formasi teglar to'plami:", "o": ["<form>", "<input>", "<select>", "<form> va uning ichki teglari"], "c": 3, "e": "<form> elementi input, select, textarea larni birlashtiradi." },
+    { "q": "Input turini parolni yashirish rejimidga o'tkazish atributi:", "o": ["type=\"password\"", "type=\"hidden\"", "type=\"secret\"", "mode=\"private\""], "c": 0, "e": "type=\"password\" kiritilgan belgilarni nuqtalar bilan yashiradi." },
+    { "q": "Rasm yuklanmay qolganda uning o'rniga chiqadigan muqobil matn atributi:", "o": ["alt", "title", "src", "description"], "c": 0, "e": "alt atributi ekranni o'qiydigan vositalar va yuklanmagan rasmlar uchun." },
+    { "q": "Yangi oynada (tab) havolani ochish atributi:", "o": ["target=\"_blank\"", "target=\"_self\"", "target=\"_new\"", "open=\"new\""], "c": 0, "e": "target=\"_blank\" yangi brauzer vkladkasida ochadi." },
+    { "q": "HTML canvas tegi nima uchun ishlatiladi?", "o": ["JavaScript orqali 2D/3D grafika va o'yinlar chizish uchun", "Faqat matn yozish uchun", "Fayl yuklash uchun", "CSS stil berish uchun"], "c": 0, "e": "<canvas> dinamik piksel chizish maydonidir." },
+    { "q": "HTML5 audio va video teglarining asosiy afzalligi nima?", "o": ["Uchinchi tomon plaginlarisiz (Flash) mediayni ijro etish", "Faqat mp3 uchun", "Tezlikni oshirish", "Rang berish"], "c": 0, "e": "<audio> va <video> HTML5 ning uzviy qismi." },
+    { "q": "Formadagi kiritish majburiy ekanligini bildiruvchi atribut:", "o": ["required", "validate", "must", "important"], "c": 0, "e": "required atributi kiritmasdan submit qilishga yo'l qo'ymaydi." },
+    { "q": "<meta name=\"viewport\" ...> tegi nima uchun kerak?", "o": ["Mobil va turli ekranlarda sahifani moslashuvchan (Responsive) ko'rsatish uchun", "Ranglarni o'zgarih uchun", "SEO uchun emas", "Kodni yashirish uchun"], "c": 0, "e": "viewport ekran masshtabini mobil qurilmaga moslashtiradi." },
+    { "q": "HTML da inline elementlar va block elementlar farqi nima?", "o": ["Block element yangi qatordan boshlanadi va to'liq kenglikni oladi, Inline esa faqat o'z mazmunicha joy oladi", "Farqi yo'q", "Inline katttaroq", "Block teglar yopilmaydi"], "c": 0, "e": "div, p, h1 block; span, a, b inline elementlardir." }
+  ],
+  "advanced": [
+    { "q": "Accessibility (A11y) va ARIA (Accessible Rich Internet Applications) rollari maqsadi nima?", "o": ["Nogironligi bor shaxslar va Screen Reader lar uchun veb ilovani to'liq foydali qilish", "SEO ni yomonlashtirish", "Kodni siqish", "Dizaynni o'zgarih"], "c": 0, "e": "aria-label, role=\"button\" kabi atributlar qulaylikni ta'minlaydi." },
+    { "q": "Shadow DOM nima va u qayerda ishlatiladi?", "o": ["Web Components larda stillar va DOM ni tashqi sahifadan izolyatsiya qilish uchun", "Server render uchun", "Baza uchun", "CSS animations uchun"], "c": 0, "e": "Shadow DOM ichki elementlar va stillarning tashqariga ta'sirini to'sadi." },
+    { "q": "HTML5 Web Storage API (localStorage vs sessionStorage) farqi nima?", "o": ["localStorage ma'lumotni brauzer yopilsa ham saqlaydi, sessionStorage esa faqat vkladka ochiqligida", "Farqi yo'q", "sessionStorage doimiy", "localStorage faqat 10 bayt"], "c": 0, "e": "localStorage ~5MB doimiy kesh, sessionStorage sessiya tugagach o'chadi." },
+    { "q": "<picture> tegi va <img srcset=\"...\"> maqsadi nima?", "o": ["Ekran o'lchami va piksellar zichligiga qarab mos rasmlarni (Responsive Images) yuklash", "Faqat gif ko'rsatish", "Rasmni o'chirish", "SVG chizish"], "c": 0, "e": "srcset brauzerga mos rasmlarni tanlash imkonini beradi." },
+    { "q": "<script async> va <script defer> o'rtasidagi farq nima?", "o": ["defer HTML yuklanib bo'lgach tartib bilan bajariladi, async esa yuklanishi bilan darhol bajariladi", "Farqi yo'q", "async sekinroq", "defer ishlamaydi"], "c": 0, "e": "defer DOM parsing ni to'xtatmaydi va skriptlar ketma-ketligini saqlaydi." },
+    { "q": "Custom Elements (Web Components) qanday e'lon qilinadi?", "o": ["customElements.define('my-element', MyClass)", "document.createElement('my-element')", "HTML.add('my-element')", "new Element('my-element')"], "c": 0, "e": "customElements.define orqali yangi xususiy teg yaratiladi." },
+    { "q": "<template> va <slot> teglari vazifasi nima?", "o": ["Render qilinmaydigan shablon saqlash va Web Component ga kontent joylash (slotting)", "Fayl yuklash", "CSS ulash", "Audio pleyer"], "c": 0, "e": "<template> dom ga qo'shilmaguncha ko'rinmaydi." },
+    { "q": "Microdata va Schema.org (rich snippets) HTML da nima beradi?", "o": ["Qidiruv tizimlariga (Google bot) sahifa kontenti haqida strukturani (Semantic Rich Data) tushuntirish", "Dizayn stili", "JS funksiyasi", "Brauzer o'yini"], "c": 0, "e": "schema.org ma'lumotlari Google qidiruvida tavsiflarni boyitadi." },
+    { "q": "Content Security Policy (CSP) meta tegi maqsadi nima?", "o": ["XSS va kod in'yeksiyasi hujumlaridan sahifani himoya qilish", "Faqat HTTPS ga o'tkazish", "Keshni o'chirish", "Rang berish"], "c": 0, "e": "CSP ruxsat berilgan manbalarni belgilaydi." },
+    { "q": "rel=\"noopener noreferrer\" atributi <a> tegida nima uchun shart?", "o": ["Yangi oynada ochilgan sahifaga window.opener orqali xavfsizlik tahdidi (Tabnabbing) solishining oldini olish", "Linkni tezlashtirish", "Google indlekslash", "Rang berish"], "c": 0, "e": "noopener window.opener ni null qiladi va xavfsizlikni oshiradi." }
+  ]
+}

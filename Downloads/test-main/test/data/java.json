@@ -1,0 +1,41 @@
+{
+  "name": "Java",
+  "icon": "☕",
+  "description": "Universal OOP tili — Collections, JVM, Multithreading",
+  "beginner": [
+    { "q": "Java dasturlash tilining asosiy tamoyili qaysi?", "o": ["Write Once, Run Anywhere", "Write Once, Compile Anywhere", "Compile Once, Debug Everywhere", "Script Only"], "c": 0, "e": "Java Bytecode orqali JVM bor har qanday platformada bir xil ishlaydi." },
+    { "q": "Java kodi qaysi fayl kengaytmasida saqlanadi?", "o": [".class", ".java", ".jar", ".exe"], "c": 1, "e": "Java manba kodi .java kengaytmali faylda saqlanadi." },
+    { "q": "Java dasturida asosiy kirish metodi sintaksisi qanday?", "o": ["public static void main(String[] args)", "void main(String args)", "static void start()", "public main(args)"], "c": 0, "e": "public static void main(String[] args) Java dasturi ishga tushadigan asosiy nuqtadir." },
+    { "q": "Java'da matnli o'zgaruvchi qaysi turda e'lon qilinadi?", "o": ["string", "String", "char", "Text"], "c": 1, "e": "Java'da String klassi bosh harf bilan yoziladi." },
+    { "q": "Java'da primitiv ma'lumot turini ko'rsating:", "o": ["String", "int", "ArrayList", "Scanner"], "c": 1, "e": "int, double, boolean, char kabi turlar primitiv hisoblanadi." },
+    { "q": "Konsolga matn chiqarish uchun qaysi buyruq ishlatiladi?", "o": ["Console.WriteLine()", "System.out.println()", "print()", "fmt.Println()"], "c": 1, "e": "System.out.println() standart chiqarish oqimi." },
+    { "q": "Java'da bir qatorli izoh (comment) qanday yoziladi?", "o": ["# izoh", "// izoh", "/* izoh */", "-- izoh"], "c": 1, "e": "// belgisi bir qatorli izoh uchun ishlatiladi." },
+    { "q": "Java'da konstanta (o'zgarmas) yaratish uchun qaysi kalit so'z ishlatiladi?", "o": ["const", "final", "static", "val"], "c": 1, "e": "final kalit so'zi o'zgaruvchi qiymatini qayta o'zgartirishni taqiqlaydi." },
+    { "q": "Mantiqiy 'va' (AND) operatori qaysi?", "o": ["&", "&&", "AND", "||"], "c": 1, "e": "&& — mantiqiy AND operatori (short-circuit)." },
+    { "q": "Mantiqiy 'yoki' (OR) operatori qaysi?", "o": ["|", "||", "OR", "&&"], "c": 1, "e": "|| — mantiqiy OR operatori." }
+  ],
+  "intermediate": [
+    { "q": "Java'da ob'ekt yaratish uchun qaysi kalit so'z ishlatiladi?", "o": ["create", "new", "make", "build"], "c": 1, "e": "new kalit so'zi konstruktorni chaqirib yangi obyekt yaratadi." },
+    { "q": "Opa-singil klasslardan meros olish uchun qaysi so'z ishlatiladi?", "o": ["implements", "extends", "inherits", "super"], "c": 1, "e": "extends klassdan meros olish uchun ishlatiladi." },
+    { "q": "Interfeysni amalga oshirish (implement qilish) uchun qaysi so'z ishlatiladi?", "o": ["extends", "implements", "using", "interface"], "c": 1, "e": "implements interfeysdagi metodlarni yaratishni talab qiladi." },
+    { "q": "ArrayList va LinkedList o'rtasidagi asosiy farq nima?", "o": ["ArrayList dinamik massiv, LinkedList esa bog'langan tugunlar ro'yxatidir", "Hech qanday farq yo'q", "LinkedList tezroq indekslanadi", "ArrayList element qo'shishda doim tezroq"], "c": 0, "e": "ArrayList indeks bo'yicha tez (O(1)), LinkedList qo'shish/o'chirishda qulay." },
+    { "q": "Java'da Exception (xatolik)larni ushlash bloki qaysi?", "o": ["try-catch", "try-except", "do-catch", "try-finally"], "c": 0, "e": "try { ... } catch (Exception e) { ... } xatolarni tutadi." },
+    { "q": "Garbage Collector (GC) vazifasi nima?", "o": ["Fayllarni o'chirish", "Xotirada ishlatilmayotgan obyektlarni avtomatik tozalash", "Kodni kompilyatsiya qilish", "Keshni yangilash"], "c": 1, "e": "GC xotirani samarali boshqarish uchun ishlatilmagan obyektlarni o'chiradi." },
+    { "q": "Method Overloading nima?", "o": ["Bir xil nomli metodlarning har xil parametrlar bilan yozilishi", "Ota klass metodini qayta yozish", "Metodni o'chirish", "Private qilish"], "c": 0, "e": "Overloading bir klass ichida bir nomli lekin parametrli metodlar." },
+    { "q": "Method Overriding nima?", "o": ["Ota klassdagi metodni voris klassda qayta belgilash (@Override)", "Parametrlarni o'zgartirish", "Yangi metod qo'shish", "Kompilyatsiya xatosi"], "c": 0, "e": "Overriding voris klassda ota klass metodini o'zgartirib amalga oshirish." },
+    { "q": "HashMap'da kalit va qiymat qanday saqlanadi?", "o": ["Indexed array", "Key-Value (Kalit-Qiymat) juftligi sifatida", "Faqat Set", "Binary tree"], "c": 1, "e": "HashMap kalit va qiymatlarni hash table tuzilmasida saqlaydi." },
+    { "q": "Java'da 'this' kalit so'zi nima beradi?", "o": ["Joriy obyektga ishora qiladi", "Ota klassga ishora qiladi", "Statik obyekt", "Nul qiymat"], "c": 0, "e": "this joriy klass nusxasi (instance)ga ishora qiladi." }
+  ],
+  "advanced": [
+    { "q": "Java'da Volatile kalit so'zi nima beradi?", "o": ["O'zgaruvchini keshlashni taqiqlaydi va barcha thread'lar uchun ko'rinuvchan qiladi", "O'zgaruvchini o'zgarmas qiladi", "Faqat bir marta o'qish imkonini beradi", "Kompilyatsiyani tezlashtiradi"], "c": 0, "e": "volatile qiymat har doim asosiy xotiradan (Main Memory) o'qilishini ta'minlaydi." },
+    { "q": "Synchronized bloki yoki metodi nima uchun ishlatiladi?", "o": ["Thread-safety (ko'p oqimli xavfsizlik) uchun", "Tezlikni oshirish uchun", "Xotirani tejash uchun", "Faylga yozish uchun"], "c": 0, "e": "synchronized bir vaqtning o'zida faqat bitta thread blokka kirishini ta'minlaydi." },
+    { "q": "Java JVM xotira tuzilmasida Heap va Stack farqi nima?", "o": ["Heap obyektlarni saqlaydi, Stack esa metod chaqiruvlari va lokal o'zgaruvchilarni", "Stack obyektlarni saqlaydi, Heap esa primitivlarni", "Ikkalasi ham bir xil", "Heap faqat static o'zgaruvchilar uchun"], "c": 0, "e": "Heap'da obyektlar, Stack'da bajarilish freymlari va lokal primitivlar joylashadi." },
+    { "q": "Java Stream API dagi map() va flatMap() farqi nima?", "o": ["map 1:1 o'zgartiradi, flatMap esa streamlar streamini bitta streamga tekislaydi (1:N)", "Farqi yo'q", "map sekinroq", "flatMap faqat sonlar uchun"], "c": 0, "e": "flatMap har bir elementni streamga o'girib, so'ngra bitta umumiy streamga birlashtiradi." },
+    { "q": "Java'da CompletableFuture nima uchun ishlatiladi?", "o": ["Asinxron va non-blocking dasturlash uchun", "Fayl o'qish uchun", "Klasslarni yuklash uchun", "UI dizayn uchun"], "c": 0, "e": "CompletableFuture asinxron vazifalarni zanjirsimon bajarish imkonini beradi." },
+    { "q": "Reflection API nima qiladi?", "o": ["Ishlash vaqtida (runtime) klasslar, metodlar va maydonlar haqida ma'lumot olish va ularni boshqarish", "Kod grafikasini chizadi", "Kompilyatorni almashtiradi", "SQL so'rovlarini optimallashtiradi"], "c": 0, "e": "Reflection orqali runtime'da private metodlarga ham kirish mumkin." },
+    { "q": "Java 8 dagi Optional klassining maqsadi nima?", "o": ["NullPointerException xatolarining oldini olish", "Kodni sekinlashtirish", "Massivni qisqartirish", "String yaratish"], "c": 0, "e": "Optional qiymat mavjud yoki yo'qligini xavfsiz boshqarish imkonini beradi." },
+    { "q": "JVM ClassLoader vazifasi nima?", "o": [".class fayllarni xotiraga yuklash", "Kodni o'chirish", "HTML faylni render qilish", "Internetga ulanish"], "c": 0, "e": "ClassLoader byte-kodni dinamik ravishda JVM xotirasiga yuklaydi." },
+    { "q": "Java Custom Annotations yaratishda @Retention(RetentionPolicy.RUNTIME) nimani bildiradi?", "o": ["Annotatsiya runtime vaqtida ham Reflection orqali mavjud bo'ladi", "Faqat source kodda qoladi", "Kompilyatsiyada o'chiriladi", "Faqat IDE da ko'rinadi"], "c": 0, "e": "RUNTIME retention annotatsiyani dastur bajarilayotganda ham o'qishga ruxsat beradi." },
+    { "q": "Java Deadlock holati qachon yuzaga keladi?", "o": ["Ikki yoki undan ortiq thread bir-birining resurs bo'shatishini cheksiz kutganda", "Xotira to'lganda", "Fayl topilmaganda", "Stack overflow bo'lganda"], "c": 0, "e": "Deadlock oqimlarning o'zaro bir-birini kutib qolishi natijasida kelib chiqadi." }
+  ]
+}

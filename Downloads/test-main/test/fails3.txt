@@ -1,0 +1,173 @@
+  тЬЕ CoursesAPI mavjud
+  тЬЕ 10 ta kurs bor (10)
+  тЭМ HTML kursi 30 dars (31)
+  тЬЕ JavaScript kursi 40 dars (40)
+  тЬЕ CSS kursi 25 dars
+  тЬЕ findLesson ishlaydi
+  тЬЕ nextLesson ishlaydi
+  тЬЕ Noto'g'ri id -> null
+  тЭМ Data'ga 1 qator qo'shilib yangi dars paydo bo'ldi (31)
+  тЭМ Qayta o'chirildi (30)
+  тЬЕ 10 ta kurs karta chiqdi (10)
+  тЬЕ Davom ettirish banneri chiqdi
+  тЬЕ Birinchi karta HTML
+  тЭМ Kartada darslar soni bor
+  тЬЕ Kartada progress 0%
+  тЬЕ Kartada "Boshlash" tugmasi
+  тЬЕ Kurs sahifasiga o'tildi
+  тЬЕ Level modal ochildi (birinchi kirish)
+  тЬЕ 3 ta daraja varianti chiqdi
+  тЬЕ 1-daraja: Umuman bilmayman
+  тЬЕ 2-daraja: Asoslarini bilaman
+  тЬЕ 3-daraja: Yaxshi bilaman
+  тЬЕ Tanlangach modal yopildi
+  тЭМ 30 ta dars kartasi chiqdi (31)
+  тЬЕ 1-dars = joriy (ochiq)
+  тЬЕ 2-dars qulflangan
+  тЬЕ 30-dars ham qulflangan
+  тЬЕ Kartada davomiylik bor
+  тЬЕ Kartada daraja matni bor
+  тЬЕ Qulflangan dars sahifani o'zgartirmadi
+  тЬЕ ЁЯФТ Qulf modal chiqdi
+  тЬЕ Modal matni to'g'ri
+  тЬЕ Modalda 'Oldingi darsga o'tish' tugmasi bor
+  тЬЕ Oldingi darsga o'tish tugmasi mavjud
+  тЬЕ Tugma bosilgach modal yopildi
+  тЬЕ Oldingi (1-) darsga o'tildi
+  тЬЕ Dars sarlavhasi chiqdi
+  тЬЕ Davomiylik korsatildi
+  тЬЕ Kontent bo'limlari chiqdi (7)
+  тЬЕ Nazariyada HyperText Markup Language bor
+  тЬЕ Nazariyada "Belgilash tili" bor
+  тЬЕ Kod namunalari bor (5)
+  тЬЕ Natija bloklari bor
+  тЬЕ Muhim eslatmalar bloki bor
+  тЬЕ Eslatmalar soni (9)
+  тЬЕ Test tugmasi o'qishdan OLDIN mavjud emas тЬЕ
+  тЬЕ O'qish uchun ko'rsatma bor
+  тЬЕ Eski "Darsni tugallash" tugmasi olib tashlandi тЬЕ
+  тЬЕ Keyingi dars tugmasida qulf belgisi (2-dars yopiq)
+  тЬЕ "O'qidim" belgilangach Testni boshlash tugmasi paydo bo'ldi тЬЕ
+  тЬЕ Yopiq keyingi darsga bosilganda qulf modali chiqdi
+  тЬЕ Sahifa o'zgarmadi
+  тЬЕ 3-dars ochildi (advanced)
+  тЭМ "Dars tayyorlanmoqda" placeholder chiqdi (kontent yo'q)
+  тЬЕ Test ham hali yo'q тАФ eslatma bor
+  тЬЕ Savollar banki 15 ta (15)
+  тЬЕ passingScore = 80%
+  тЬЕ Qayta kirganda o'qilgan darsda test tugmasi DARHOL bor (read saqlangan) тЬЕ
+  тЬЕ Test bosqichi ochildi
+  тЬЕ 1-savol bankdan: <!DOCTYPE html> yozuvi nima vazifani...
+  тЬЕ 1-savolda 4 variant
+  тЬЕ 1-savol variantlari takrorlanmaydi
+  тЬЕ 1-savol: to'g'ri javob yashil belgilandi
+  тЬЕ 1-savoldan keyin davom tugmasi chiqdi
+  тЬЕ 2-savol bankdan: <head> ichiga qaysi element joylasht...
+  тЬЕ 2-savolda 4 variant
+  тЬЕ 2-savol variantlari takrorlanmaydi
+  тЬЕ 2-savol: to'g'ri javob yashil belgilandi
+  тЬЕ 2-savoldan keyin davom tugmasi chiqdi
+  тЬЕ 3-savol bankdan: <p>Salom</p> kodida yopiluvchi teg (...
+  тЬЕ 3-savolda 4 variant
+  тЬЕ 3-savol variantlari takrorlanmaydi
+  тЬЕ 3-savol: to'g'ri javob yashil belgilandi
+  тЬЕ 3-savoldan keyin davom tugmasi chiqdi
+  тЬЕ 4-savol bankdan: Sarlavhalar (h1тАУh6) orasida ENG KATT...
+  тЬЕ 4-savolda 4 variant
+  тЬЕ 4-savol variantlari takrorlanmaydi
+  тЬЕ 4-savol: to'g'ri javob yashil belgilandi
+  тЬЕ 4-savoldan keyin davom tugmasi chiqdi
+  тЬЕ 5-savol bankdan: HTML nomining "HyperText" qismi nima...
+  тЬЕ 5-savolda 4 variant
+  тЬЕ 5-savol variantlari takrorlanmaydi
+  тЬЕ 5-savol: to'g'ri javob yashil belgilandi
+  тЬЕ 5-savoldan keyin davom tugmasi chiqdi
+  тЬЕ Natija ekrani: PASS holati
+  тЬЕ ЁЯОЙ Ajoyib! matni bor
+  тЬЕ Ball 5/5
+  тЬЕ Foiz 100%
+  тЬЕ тЬЕ Testdan o'tdingiz belgisi
+  тЬЕ +10 XP chipi
+  тЬЕ +20 Coin chipi
+  тЬЕ ЁЯФУ 2-dars ochildi banneri
+  тЬЕ Tahlil: 5 ta savol ko'rsatildi
+  тЬЕ Har bir savolda izoh bor
+  тЬЕ Keyingi dars tugmasi bor
+  тЬЕ Kurs sahifasiga qaytdi
+  тЬЕ 1-dars = тЬЕ tugallangan
+  тЬЕ 1-dars kartasida тЬЕ ikonkasi
+  тЬЕ 2-dars = joriy (ochiq bo'ldi)
+  тЬЕ 2-dars kartasida ЁЯзк test ikonkasi
+  тЬЕ 3-dars hali yopiq
+  тЬЕ Progress 3% (1/30) тАФ faqat testdan keyin oshdi
+  тЬЕ Bilim darajasi chipda ko'rinadi
+  тЬЕ Sozlamalar modali ochildi
+  тЬЕ Joriy daraja korsatildi
+  тЬЕ Intermediate: barcha darslar ochiq (30-dars ham)
+  тЬЕ Tanlangan daraja belgilangan
+  тЬЕ Advanced: hammasi ochiq
+  тЬЕ Banner matni bor
+  тЬЕ Oxirgi faol kurs (HTML) korinadi
+  тЬЕ Oxirgi dars (2-dars) korinadi
+  тЬЕ Bannerda progress bor
+  тЬЕ Davom ettirish tugmasi kurs sahifasini ochdi
+  тЬЕ Progress saqlangan (3%)
+  тЬЕ 1-dars tugallangan holati saqlangan
+  тЬЕ 2-dars joriy holati saqlangan
+  тЬЕ Daraja modal qayta so'ralmadi (saqlangan)
+  тЬЕ Boshqa foydalanuvchi -> progress 0%
+  тЬЕ Profil dropdown DOMda mavjud
+  тЬЕ 6 ta menyu elementi (6)
+  тЬЕ Menyu elementi: Profilim
+  тЬЕ Menyu elementi: Sozlamalar
+  тЬЕ Menyu elementi: Til
+  тЬЕ Menyu elementi: Mavzu
+  тЬЕ Menyu elementi: Yordam
+  тЬЕ Menyu elementi: Chiqish
+  тЬЕ Chiqish xavfsiz uslubda (ux-menu-danger)
+  тЬЕ Chiqish tasdiqlash modali DOMda
+  тЬЕ Modal savoli: Hisobdan chiqmoqchimisiz?
+  тЬЕ Bekor qilish / Chiqish tugmalari bor
+  тЬЕ Modalda ma'lumotlar saqlanadi izohi bor
+  тЬЕ Tasdiqlash tugmasi (#logoutConfirmBtn) bor
+  тЬЕ Davom ettirish tugmasida arrow span bor
+  тЬЕ Kurs sahifasi Davom ettirish tugmasida arrow bor
+  тЬЕ Bilim darajasi badge chiqdi
+  тЬЕ Qulflangan karta shake animatsiya oladi
+  тЬЕ Toast: Bu dars hozircha yopiq
+  тЬЕ Qulf modal ham ochiladi (eski funksiya saqlangan)
+  тЬЕ Hook info: xp=10, coins=20 (+10 XP / +20 Coin)
+  тЬЕ Toastda XP va Coin bor
+  тЬЕ LessonsEffects.celebrate mavjud
+  тЬЕ celebrate xatosiz chaqirildi
+  тЬЕ Progress bar 0% dan boshlanadi (animatsiya rejimi)
+  тЬЕ Progress bar 3% ga smooth toтАШldi (1/30, rAF dan keyin)
+  тЬЕ 4-savol: noto'g'ri javob qizil belgilandi
+  тЬЕ 4-savol: to'g'ri javob ham ko'rsatildi
+  тЬЕ 5-savol: noto'g'ri javob qizil belgilandi
+  тЬЕ 5-savol: to'g'ri javob ham ko'rsatildi
+  тЬЕ Natija: FAIL holati
+  тЬЕ ЁЯШФ Xato matni bor
+  тЬЕ Ball 3/5
+  тЬЕ Foiz 60%
+  тЬЕ тЭМ Testdan o'tmadingiz
+  тЬЕ Minimal ball eslatmasi (80%) bor
+  тЬЕ ЁЯФД Qayta topshirish tugmasi bor
+  тЬЕ ЁЯУЪ Darsni qayta ko'rish tugmasi bor
+  тЬЕ Keyingi dars tugmasi YO'Q (o'tmadi)
+  тЬЕ 2 ta noto'g'ri javob tahlilda belgilangan
+  тЬЕ Noto'g'ri javoblar uchun to'g'ri javob ko'rsatilgan
+  тЬЕ Testdan o'tmagach 2-dars HAMON yopiq
+  тЬЕ Progress 0% тАФ o'tmagan dars hisobga olinmadi
+  тЬЕ Qayta kirganda test tugmasi mavjud (o'qilgan saqlangan)
+  тЬЕ Qayta topshirishda o'tdi (100%)
+  тЬЕ Qayta topshirib o'tgach 1-dars tugallandi
+  тЬЕ Endi 2-dars ochildi
+  тЬЕ Progress 3% bo'ldi
+  тЬЕ Random: ikki urinishda savollar to'plami farq qiladi
+  тЬЕ Random savol bankdan: HTML тАФ qanday til?...
+  тЬЕ Random savol bankdan: HTML nomining "HyperText" qismi ...
+  тЬЕ Random savol bankdan: Quyidagi kod natijasida nima chi...
+  тЬЕ Random savol bankdan: <html> va <body> teglari orasida...
+  тЬЕ Random savol bankdan: Qaysi kod brauzer tabida "Mening...
+  NATIJA: 166 otdi, 6 xato

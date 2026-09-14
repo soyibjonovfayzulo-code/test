@@ -1,0 +1,41 @@
+{
+  "name": "CSS",
+  "icon": "🎨",
+  "description": "Web sahifa stillari — Flexbox, CSS Grid, Animatsiyalar va Responsive",
+  "beginner": [
+    { "q": "CSS nimaning qisqartmasi?", "o": ["Cascading Style Sheets", "Creative Style System", "Computer Style Sheets", "Colorful Style Sheets"], "c": 0, "e": "CSS — veb sahifa ko'rinishi va stillarini boshqaruvchi til." },
+    { "q": "HTML elementining matn rangini o'zgartiruvchi CSS xossasi:", "o": ["color", "font-color", "text-color", "background-color"], "c": 0, "e": "color xossasi matn rangini belgilaydi." },
+    { "q": "Orqa fon rangini belgilovchi CSS xossasi:", "o": ["background-color", "color", "bg-color", "surface-color"], "c": 0, "e": "background-color orqa fon rangini belgilaydi." },
+    { "q": "CSS class selector qaysi belgi bilan boshlanadi?", "o": [". (nuqta)", "# (reshetka)", "* (yulduzcha)", "@"], "c": 0, "e": ".my-class nusxadagi klasslarga stilingizni qo'llaydi." },
+    { "q": "CSS id selector qaysi belgi bilan boshlanadi?", "o": ["# (reshetka)", ". (nuqta)", "&", "!"], "c": 0, "e": "#my-id yagona id ga ega elementni tanlaydi." },
+    { "q": "Elementning shrift o'lchamini belgilovchi xossa:", "o": ["font-size", "text-size", "font-weight", "size"], "c": 0, "e": "font-size: 16px; matn hajmini belgilaydi." },
+    { "q": "Elementning tashqi bo'shlig'i (margin) va ichki bo'shlig'i (padding) farqi:", "o": ["Margin chegara tashqarisidagi, Padding esa chegara ichidagi bo'shliq", "Farqi yo'q", "Padding kattaroq", "Margin faqat matn uchun"], "c": 0, "e": "Margin elementlar orasidagi, Padding element ichidagi bo'shliq." },
+    { "q": "Shrift oilasini (shrift turini) belgilash xossasi:", "o": ["font-family", "font-style", "font-type", "text-family"], "c": 0, "e": "font-family: 'Inter', sans-serif; shriftni tanlaydi." },
+    { "q": "Element chegarasini (border) belgilash sintaksisi:", "o": ["border: 1px solid red;", "border-width: 1px red;", "outline: solid 1px;", "frame: 1px;"], "c": 0, "e": "border: [kenglik] [stil] [rang]; tartibida beriladi." },
+    { "q": "Matnni gorizontal markazlashtirish xossasi:", "o": ["text-align: center;", "align: center;", "margin: auto;", "float: center;"], "c": 0, "e": "text-align: center matnni markazga suradi." }
+  ],
+  "intermediate": [
+    { "q": "Flexbox layout da elementlarni gorizontal o'q bo'yicha joylashtirish xossasi:", "o": ["justify-content", "align-items", "flex-direction", "grid-template"], "c": 0, "e": "justify-content (flex-row holatida) gorizontal tekislaydi." },
+    { "q": "Flexbox layout da elementlarni vertikal o'q bo'yicha joylashtirish xossasi:", "o": ["align-items", "justify-content", "align-content", "flex-wrap"], "c": 0, "e": "align-items vertikal tekislash uchun ishlatiladi." },
+    { "q": "CSS Grid 2D layout tizimida ustunlarni belgilash xossasi:", "o": ["grid-template-columns", "grid-columns-template", "grid-auto-flow", "flex-columns"], "c": 0, "e": "grid-template-columns: repeat(3, 1fr); 3 ta ustun yaratadi." },
+    { "q": "Media Query (@media) nima uchun ishlatiladi?", "o": ["Har xil ekran o'lchamlari (Responsive Design) uchun stillar berishga", "Animatsiya yaratishga", "CSS ni yuklashga", "Ranglarni hisoblashga"], "c": 0, "e": "@media (max-width: 768px) { ... } mobil stillar beradi." },
+    { "q": "position: absolute bo'lgan element qaysi ota elementga nisbatan joylashadi?", "o": ["position: relative (yoki absolute/fixed) bo'lgan eng yaqin ota elementga nisbatan", "Har doim body ga", "Viewport ga", "HTML tegiga"], "c": 0, "e": "Absolute pozitsiya relative ota konteynerga bog'liq bo'ladi." },
+    { "q": "position: fixed va position: fixed farqi nima?", "o": ["fixed doim ekran joyida qoladi, fixed esa skroll ma'lum nuqtaga yetguncha normal, so'ngra qotib qoladi", "Farqi yo'q", "fixed siljiydi", "fixed faqat mobilda"], "c": 0, "e": "fixed skroll bilan birga ma'lum joygacha harakatlanadi." },
+    { "q": "box-sizing: border-box xossasi nima qiladi?", "o": ["Element kengligi (width) ichiga padding va border ni ham kiritadi", "Elementni o'chiradi", "Margin ni nolga tushiradi", "Border ni yashiradi"], "c": 0, "e": "border-box layout hisoblashini juda osonlashtiradi va buzilishini oldini oladi." },
+    { "q": "z-index xossasi nimani boshqaradi?", "o": ["Elementlarning qatlamlar bo'yicha ustma-ust tushish tartibini (stacking order)", "Shrift hajmini", "Shaffoflikni", "Skroll tezligini"], "c": 0, "e": "Yuqori z-index ga ega element ustki qatlamda ko'rinadi." },
+    { "q": "CSS variables (Custom Properties) qanday e'lon qilinadi?", "o": ["--main-color: #6366f1;", "$main-color: #6366f1;", "@main-color: #6366f1;", "var-color: #6366f1;"], "c": 0, "e": "CSS o'zgaruvchilari ikki chiziq (--) bilan boshlanadi va var(--main-color) deb ishlatiladi." },
+    { "q": "opacity: 0.5 va rgba(0,0,0,0.5) o'rtasidagi farq nima?", "o": ["opacity butun element va uning ichki bolalarini shaffof qiladi, rgba esa faqat fon rangini", "Farqi yo'q", "rgba butun elementni shaffof qiladi", "opacity faqat matn uchun"], "c": 0, "e": "opacity barcha child elementlarga ham ta'sir o'tkazadi." }
+  ],
+  "advanced": [
+    { "q": "CSS Specificity (Uslublar ustunligi) tartibida qaysi biri eng yuqori ustunlikka ega?", "o": ["!important (so'ng Inline style, ID, Class, Element)", "ID Selector", "Class Selector", "Element Selector"], "c": 0, "e": "!important va inline style lar eng yuqori ustunlik beradi." },
+    { "q": "Block Formatting Context (BFC) nima va u qanday hosil bo'ladi?", "o": ["Elementlarning ichki layout hisoblash va margin collapsing larni ajratuvchi mustaqil zona (display: flow-root, overflow: hidden)", "Fayl nomi", "Grid ustuni", "Animatsiya turi"], "c": 0, "e": "BFC suzuvchi (float) elementlarni o'rab olish va margin yutilishini to'xtatadi." },
+    { "q": "CSS Container Queries (@container) Media Queries dan nimasi bilan farq qiladi?", "o": ["Media Queries ekran hajmini tekshirsa, Container Queries ota konteyner hajmini tekshiradi", "Farqi yo'q", "Media Queries yangiroq", "Container Queries ishlamaydi"], "c": 0, "e": "Container Queries komponentga asoslangan komponentlar uchun inqilobiy xususiyatdir." },
+    { "q": "CSS grid-template-areas nima ta'minlaydi?", "o": ["Layout sahifalarini matnli vizual nomlar (header nav main footer) orqali chizish", "Ranglar ro'yxati", "Animatsiya zanjiri", "Fayllar ro'yxati"], "c": 0, "e": "grid-template-areas orqali CSS da tartibli 2D struktura hosil qilinadi." },
+    { "q": "CSS Transitions va CSS Keyframe Animations farqi nima?", "o": ["Transitions faqat 2 holat o'rtasida trigger bo'ladi, Keyframes esa ko'p bosqichli kompleks animatsiyalarni ta'minlaydi", "Farqi yo'q", "Transitions qiyinroq", "Keyframes faqat hoversiz"], "c": 0, "e": "@keyframes orqali 0% dan 100% gacha istalgancha oraliq nuqtalar berish mumkin." },
+    { "q": "CSS transform: translate3d(0,0,0) va will-change xossasi maqsadi nima?", "o": ["GPU (Hardware Acceleration) ni faollashtirib unumdorlik va kadrlarni (FPS) oshirish", "Rangni o'zgarih", "Xotirani tozalash", "Kodni siqish"], "c": 0, "e": "will-change brauzerni kelgusi animatsiyaga tayyorlab GPU optimizatsiyasini yoqadi." },
+    { "q": "CSS Subgrid nima beradi?", "o": ["Ichki grid elementiga ota gridning ustun va qator kataklarini meros qilib ishlatish imkoni", "Forma tegi", "Flexbox moduli", "Font yuklash"], "c": 0, "e": "grid-template-columns: subgrid; ichki kartochkalar tekisligini saqlaydi." },
+    { "q": "CSS clamp(min, val, max) funksiyasi nima qiladi?", "o": ["Qiymatni minimal va maksimal chegaralar orasida dinamik (fluid typography) ushlab turadi", "Color beradi", "Grid yaratadi", "Kodni o'chiradi"], "c": 0, "e": "font-size: clamp(1rem, 2.5vw, 2rem); responsive matn uchun ajoyib yechim." },
+    { "q": "Pseudo-class :has() (Parent selector) nima qiladi?", "o": ["Ichida ma'lum element saqlagan ota elementni tanlash imkonini beradi", "Faqat hover uchun", "Forma tekshiradi", "Rang o'zgartiradi"], "c": 0, "e": "card:has(img) — ichida img bor kartochkani tanlaydi." },
+    { "q": "CSS Logical Properties (margin-inline, padding-block) nimaga xizmat qiladi?", "o": ["Matn yo'nalishiga (LTR / RTL) moslashuvchan ko'p tilli layoutlar yaratishga", "Faqat ingliz tili u-n", "Animatsiyaga", "Baza bog'lanishiga"], "c": 0, "e": "margin-inline-start chap/o'ng tushunchasini yozuv yo'nalishiga bog'laydi." }
+  ]
+}
