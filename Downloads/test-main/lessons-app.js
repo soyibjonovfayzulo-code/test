@@ -291,7 +291,13 @@
   /* Namuna: window.LessonsHooks.onLessonComplete.push(function (info) { ... });
      info = { courseId, course, lesson, xp, coins, totalCompleted, courseCompleted } */
   const Hooks = {
-    onLessonComplete: [],
+    onLessonComplete: [
+      function (info) {
+        if (window.DailyStreak && typeof window.DailyStreak.onLessonCompleted === 'function') {
+          try { window.DailyStreak.onLessonCompleted(info); } catch (e) { /* noop */ }
+        }
+      }
+    ],
     onLevelChange: []
     // TODO: XP, Coin, Streak, Achievement, Leaderboard integratsiyalari
     // shu hook'lar orqali qo'shiladi — asosiy logikani o'zgartirmasdan.
@@ -545,6 +551,10 @@
     prog.lastVisit = Date.now();
     store.progress[courseId] = prog;
     saveStore();
+
+    if (window.DailyStreak && typeof window.DailyStreak.onLessonOpened === 'function') {
+      try { window.DailyStreak.onLessonOpened(courseId, lessonId); } catch (e) { /* noop */ }
+    }
 
     renderLessonView();
     page('lessonView');
@@ -2744,6 +2754,7 @@
       ? (next
           ? '<button type="button" class="btn btn-primary ls-btn-test" id="lsGoNextBtn">Keyingi dars →</button>'
           : '<button type="button" class="btn btn-primary ls-btn-test" id="lsGoCourseBtn">🏆 Kurs sahifasiga qaytish</button>') +
+        '<button type="button" class="btn btn-secondary ls-btn-test" id="lsGoTestBridgeBtn">📝 Fan testini ishlash →</button>' +
         '<button type="button" class="btn btn-ghost" id="lsReviewLessonBtn">📚 Darsga qaytish</button>'
       : '<button type="button" class="btn btn-primary" id="lsRetakeBtn">🔄 Qayta topshirish</button>' +
         '<button type="button" class="btn btn-ghost" id="lsReviewLessonBtn">📚 Darsni qayta ko‘rish</button>';
@@ -2777,6 +2788,16 @@
       state.lessonPhase = 'read';
       renderCoursePage();
       page('lessonCourse');
+    });
+    const bridgeBtn = $('#lsGoTestBridgeBtn');
+    if (bridgeBtn) bridgeBtn.addEventListener('click', function () {
+      state.quiz = null;
+      state.lessonPhase = 'read';
+      if (window.DailyStreak && typeof window.DailyStreak.openTestForCourse === 'function') {
+        window.DailyStreak.openTestForCourse(course.id);
+      } else if (typeof window.__itShowPage === 'function') {
+        window.__itShowPage('tests');
+      }
     });
     const nextBtn = $('#lsGoNextBtn');
     if (nextBtn && next) nextBtn.addEventListener('click', function () {

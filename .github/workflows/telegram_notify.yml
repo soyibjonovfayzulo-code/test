@@ -1,0 +1,82 @@
+name: Telegram Notification
+
+on:
+  push:
+    branches:
+      - main
+      - develop
+  pull_request:
+    branches:
+      - main
+      - develop
+  release:
+    types: [published]
+  workflow_run:
+    workflows: ["*"]
+    types:
+      - completed
+
+jobs:
+  notify:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Send Telegram notification
+        run: |
+          # Kalitlarni siz boya saqlagan nomlar bilan bog'laymiz
+          TELEGRAM_BOT_TOKEN="${{ secrets.TELEGRAM_TOKEN }}"
+          TELEGRAM_CHAT_ID="${{ secrets.TELEGRAM_TO }}"
+          
+          # Hodisaga qarab o'zbekcha matn tayyorlash (HTML formatida)
+          if [ "${{ github.event_name }}" == "push" ]; then
+            MESSAGE="🚀 <b>YANGI KOD YUKLANDI (PUSH)</b>"$'\n'
+            MESSAGE="${MESSAGE}📁 <b>Loyiha:</b> ${{ github.repository }}"$'\n'
+            MESSAGE="${MESSAGE}🌿 <b>Tarmoq (Branch):</b> ${{ github.ref_name }}"$'\n'
+            MESSAGE="${MESSAGE}👤 <b>Dasturchi:</b> ${{ github.actor }}"$'\n'
+            MESSAGE="${MESSAGE}💬 <b>Izoh (Commit):</b> ${{ github.event.head_commit.message }}"$'\n'
+            MESSAGE="${MESSAGE}✅ <b>git pull qiling</b>"$'\n'
+            MESSAGE="${MESSAGE}🔗 <a href='${{ github.server_url }}/${{ github.repository }}/commit/${{ github.sha }}'>O'zgarishlarni ko'rish</a>"
+          elif [ "${{ github.event_name }}" == "pull_request" ]; then
+            MESSAGE="🔀 <b>KOD TEKSHIRUVIGA SO'ROV (PULL REQUEST)</b>"$'\n'
+            MESSAGE="${MESSAGE}📁 <b>Loyiha:</b> ${{ github.repository }}"$'\n'
+            MESSAGE="${MESSAGE}📌 <b>Sarlavha:</b> ${{ github.event.pull_request.title }}"$'\n'
+            MESSAGE="${MESSAGE}👤 <b>Kim tomonidan:</b> ${{ github.event.pull_request.user.login }}"$'\n'
+            MESSAGE="${MESSAGE}✅ <b>git pull qiling</b>"$'\n'
+            MESSAGE="${MESSAGE}🔗 <a href='${{ github.event.pull_request.html_url }}'>Tekshirish oynasiga o'tish</a>"
+          elif [ "${{ github.event_name }}" == "release" ]; then
+            MESSAGE="🎉 <b>YANGI VERSIYA CHIQTID (RELEASE)</b>"$'\n'
+            MESSAGE="${MESSAGE}📁 <b>Loyiha:</b> ${{ github.repository }}"$'\n'
+            MESSAGE="${MESSAGE}📦 <b>Versiya (Tag):</b> ${{ github.event.release.tag_name }}"$'\n'
+            MESSAGE="${MESSAGE}✅ <b>git pull qiling</b>"$'\n'
+            MESSAGE="${MESSAGE}🔗 <a href='${{ github.event.release.html_url }}'>Dasturni yuklab olish</a>"
+          fi
+          
+          # Telegram API orqali xabarni xavfsiz yuborish
+          curl -X POST \
+            -H 'Content-Type: application/json' \
+            -d "{\"chat_id\": \"${TELEGRAM_CHAT_ID}\", \"text\": \"$(echo "$MESSAGE" | sed 's/"/\\"/g')\", \"parse_mode\": \"HTML\"}" \
+            "https://api.telegram.org/bot${TELEGRAM_BOT_TOKEN}/sendMessage"
+
+  # Agarda yuqoridagi amallarda yoki loyihani yig'ishda xatolik bo'lsa, ushbu qism ishga tushadi
+  notify_on_failure:
+    runs-on: ubuntu-latest
+    if: failure()
+    needs: notify
+    steps:
+      - name: Xatolik haqida Telegramga xabar berish
+        run: |
+          TELEGRAM_BOT_TOKEN="${{ secrets.TELEGRAM_TOKEN }}"
+          TELEGRAM_CHAT_ID="${{ secrets.TELEGRAM_TO }}"
+          
+          ERROR_MESSAGE="❌ <b>WORKFLOW'DA XATOLIK ANIQLANDI!</b>"$'\n'
+          ERROR_MESSAGE="${ERROR_MESSAGE}📁 <b>Loyiha:</b> ${{ github.repository }}"$'\n'
+          ERROR_MESSAGE="${ERROR_MESSAGE}👤 <b>Mas'ul dasturchi:</b> ${{ github.actor }}"$'\n'
+          ERROR_MESSAGE="${ERROR_MESSAGE}⚠️ <b>Holat:</b> Tizimni yig'ish (build/test) jarayoni to'xtab qoldi."$'\n'
+          ERROR_MESSAGE="${ERROR_MESSAGE}🔗 <a href='${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}'>Xatolik terminalini GitHub'da ko'rish</a>"
+          
+          curl -X POST \
+            -H 'Content-Type: application/json' \
+            -d "{\"chat_id\": \"${TELEGRAM_CHAT_ID}\", \"text\": \"$(echo "$ERROR_MESSAGE" | sed 's/"/\\"/g')\", \"parse_mode\": \"HTML\"}" \
+            "https://api.telegram.org/bot${TELEGRAM_BOT_TOKEN}/sendMessage"

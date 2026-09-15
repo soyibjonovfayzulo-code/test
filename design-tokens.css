@@ -1,0 +1,808 @@
+/* ============================================================
+   ITTEST — YAGONA PREMIUM DESIGN SYSTEM (SINGLE SOURCE OF TRUTH)
+   Bu fayl oxirida yuklanadi va butun platformani qamrab oladi:
+   Login, Onboarding, Darslar, Lesson, Testlar, Coding, Duel,
+   Do'kon, Loyihalarim, Reyting, Yutuqlar, Profil, Sozlamalar,
+   Dashboard, Daily/Streak, Mobile, Android APK.
+   BRAND: BLUE #2563EB | SUCCESS: GREEN | FREEZE: ICE BLUE
+   STREAK FIRE: BLUE/CYAN | XP: GOLD | PURPLE: faqat secondary
+   ============================================================ */
+
+/* ---------- 1. BRAND TOKENS (DARK — default) ---------- */
+:root {
+  /* Primary brand blue */
+  --itt-primary: #2563EB;
+  --itt-primary-hover: #3B82F6;
+  --itt-primary-dark: #1D4ED8;
+  --itt-primary-bright: #60A5FA;
+  --itt-cyan: #38BDF8;
+  --itt-primary-soft: rgba(37, 99, 235, 0.14);
+  --itt-primary-soft-2: rgba(37, 99, 235, 0.08);
+
+  /* Surfaces — deep navy, no neon */
+  --itt-bg: #050816;
+  --itt-bg-alt: #08111F;
+  --itt-surface: #0F172A;
+  --itt-surface-2: #111C31;
+  --itt-surface-3: #16233D;
+  --itt-input-bg: #0B1628;
+  --itt-sidebar-bg: rgba(8, 17, 31, 0.94);
+  --itt-topbar-bg: rgba(8, 17, 31, 0.88);
+
+  /* Text */
+  --itt-text: #F8FAFC;
+  --itt-muted: #94A3B8;
+  --itt-faint: #64748B;
+
+  /* Borders */
+  --itt-border: #23314B;
+  --itt-border-soft: #1B2740;
+  --itt-border-strong: #2E4066;
+  --itt-border-focus: rgba(59, 130, 246, 0.45);
+
+  /* Functional colors */
+  --itt-success: #22C55E;
+  --itt-success-soft: rgba(34, 197, 94, 0.14);
+  --itt-danger: #EF4444;
+  --itt-danger-soft: rgba(239, 68, 68, 0.14);
+  --itt-warning: #F59E0B;
+  --itt-warning-soft: rgba(245, 158, 11, 0.14);
+
+  /* Gamification */
+  --itt-streak: #38BDF8;          /* BLUE/CYAN fire */
+  --itt-streak-hot: #F97316;      /* faqat attention accent */
+  --itt-streak-soft: rgba(56, 189, 248, 0.16);
+  --itt-freeze: #7DD3FC;          /* ice blue */
+  --itt-freeze-soft: rgba(125, 211, 252, 0.16);
+  --itt-xp: #FACC15;              /* gold */
+  --itt-xp-soft: rgba(250, 204, 21, 0.14);
+  --itt-purple: #8B5CF6;          /* secondary accent — juda oz */
+  --itt-purple-soft: rgba(139, 92, 246, 0.12);
+
+  /* Elevation — soft, not heavy */
+  --itt-shadow-xs: 0 1px 3px rgba(2, 6, 23, 0.35);
+  --itt-shadow-sm: 0 4px 16px rgba(2, 6, 23, 0.28);
+  --itt-shadow-md: 0 8px 30px rgba(2, 6, 23, 0.42);
+  --itt-shadow-lg: 0 20px 50px rgba(2, 6, 23, 0.55);
+  --itt-shadow-primary: 0 6px 20px rgba(37, 99, 235, 0.32);
+  --itt-shadow-primary-hover: 0 10px 28px rgba(37, 99, 235, 0.42);
+
+  /* Radius system */
+  --itt-radius-xs: 8px;
+  --itt-radius-sm: 12px;
+  --itt-radius-md: 14px;
+  --itt-radius-lg: 16px;
+  --itt-radius-xl: 20px;
+  --itt-radius-2xl: 24px;
+  --itt-radius-hero: 32px;
+  --itt-radius-pill: 999px;
+
+  /* Spacing scale — 4/8/12/16/20/24/32/40/48 */
+  --itt-sp-1: 4px;
+  --itt-sp-2: 8px;
+  --itt-sp-3: 12px;
+  --itt-sp-4: 16px;
+  --itt-sp-5: 20px;
+  --itt-sp-6: 24px;
+  --itt-sp-8: 32px;
+  --itt-sp-10: 40px;
+  --itt-sp-12: 48px;
+
+  /* Motion */
+  --itt-dur-fast: 180ms;
+  --itt-dur: 300ms;
+  --itt-dur-slow: 500ms;
+  --itt-ease: cubic-bezier(0.4, 0, 0.2, 1);
+  --itt-ease-spring: cubic-bezier(0.16, 1, 0.3, 1);
+
+  /* Typography scale */
+  --itt-h1: clamp(26px, 2.6vw, 38px);
+  --itt-h2: clamp(20px, 2vw, 27px);
+  --itt-h3: clamp(17px, 1.6vw, 21px);
+  --itt-body: 15px;
+  --itt-small: 13px;
+
+  /* ---------- 2. LEGACY OVERRIDES (style.css uchun) ---------- */
+  --bg: #08111F;
+  --bg-alt: #0B1628;
+  --card: #0F172A;
+  --card-hover: #111C31;
+  --border: #23314B;
+  --border-focus: rgba(59, 130, 246, 0.45);
+  --primary: #2563EB;
+  --primary-hover: #3B82F6;
+  --primary-dark: #1D4ED8;
+  --primary-soft: rgba(37, 99, 235, 0.14);
+  --secondary: #38BDF8;
+  --secondary-hover: #7DD3FC;
+  --success: #22C55E;
+  --danger: #EF4444;
+  --warning: #F59E0B;
+  --text: #F8FAFC;
+  --muted: #94A3B8;
+  --sidebar: rgba(8, 17, 31, 0.94);
+  --shadow: 0 8px 30px rgba(2, 6, 23, 0.42);
+  --shadow-soft: 0 4px 16px rgba(2, 6, 23, 0.28);
+  --glow: 0 8px 30px rgba(37, 99, 235, 0.18);
+  --glow-cyan: 0 8px 30px rgba(56, 189, 248, 0.16);
+  --radius: 16px;
+  --radius-sm: 12px;
+  --transition: 0.25s ease;
+  --glass: blur(12px) saturate(150%);
+}
+
+/* ---------- 3. LIGHT THEME TOKENS ---------- */
+[data-theme="light"] {
+  --itt-primary: #2563EB;
+  --itt-primary-hover: #1D4ED8;
+  --itt-primary-dark: #1E40AF;
+  --itt-primary-bright: #3B82F6;
+  --itt-cyan: #0EA5E9;
+  --itt-primary-soft: rgba(37, 99, 235, 0.09);
+  --itt-primary-soft-2: rgba(37, 99, 235, 0.05);
+
+  --itt-bg: #F8FAFC;
+  --itt-bg-alt: #F4F8FF;
+  --itt-surface: #FFFFFF;
+  --itt-surface-2: #F1F6FF;
+  --itt-surface-3: #E8F0FC;
+  --itt-input-bg: #FFFFFF;
+  --itt-sidebar-bg: rgba(255, 255, 255, 0.94);
+  --itt-topbar-bg: rgba(255, 255, 255, 0.88);
+
+  --itt-text: #0F172A;
+  --itt-muted: #64748B;
+  --itt-faint: #94A3B8;
+
+  --itt-border: #DCE8F7;
+  --itt-border-soft: #E2E8F0;
+  --itt-border-strong: #B9CCED;
+  --itt-border-focus: rgba(37, 99, 235, 0.35);
+
+  --itt-success: #16A34A;
+  --itt-success-soft: rgba(22, 163, 74, 0.1);
+  --itt-danger: #DC2626;
+  --itt-danger-soft: rgba(220, 38, 38, 0.08);
+  --itt-warning: #D97706;
+  --itt-warning-soft: rgba(217, 119, 6, 0.1);
+
+  --itt-streak: #0EA5E9;
+  --itt-streak-hot: #EA580C;
+  --itt-streak-soft: rgba(14, 165, 233, 0.12);
+  --itt-freeze: #38BDF8;
+  --itt-freeze-soft: rgba(56, 189, 248, 0.14);
+  --itt-xp: #CA8A04;
+  --itt-xp-soft: rgba(202, 138, 4, 0.12);
+  --itt-purple: #7C3AED;
+  --itt-purple-soft: rgba(124, 58, 237, 0.08);
+
+  --itt-shadow-xs: 0 1px 3px rgba(15, 23, 42, 0.06);
+  --itt-shadow-sm: 0 4px 16px rgba(15, 23, 42, 0.05);
+  --itt-shadow-md: 0 8px 30px rgba(15, 23, 42, 0.08);
+  --itt-shadow-lg: 0 20px 50px rgba(15, 23, 42, 0.12);
+  --itt-shadow-primary: 0 6px 20px rgba(37, 99, 235, 0.22);
+  --itt-shadow-primary-hover: 0 10px 28px rgba(37, 99, 235, 0.3);
+
+  /* Light legacy overrides */
+  --bg: #F8FAFC;
+  --bg-alt: #F4F8FF;
+  --card: #FFFFFF;
+  --card-hover: #F1F6FF;
+  --border: #DCE8F7;
+  --border-focus: rgba(37, 99, 235, 0.35);
+  --primary: #2563EB;
+  --primary-hover: #1D4ED8;
+  --primary-dark: #1E40AF;
+  --primary-soft: rgba(37, 99, 235, 0.09);
+  --secondary: #0EA5E9;
+  --secondary-hover: #38BDF8;
+  --success: #16A34A;
+  --danger: #DC2626;
+  --warning: #D97706;
+  --text: #0F172A;
+  --muted: #64748B;
+  --sidebar: rgba(255, 255, 255, 0.94);
+  --shadow: 0 8px 30px rgba(15, 23, 42, 0.08);
+  --shadow-soft: 0 4px 16px rgba(15, 23, 42, 0.05);
+  --glow: 0 8px 30px rgba(37, 99, 235, 0.1);
+  --glow-cyan: 0 8px 30px rgba(14, 165, 233, 0.1);
+}
+
+/* ---------- 4. MOBILE.CSS OVERRIDES (purple accent → brand blue) ---------- */
+:root {
+  --m-accent: #2563EB;
+  --m-accent-2: #38BDF8;
+  --m-glass: rgba(8, 17, 31, 0.92);
+  --m-glass-2: rgba(15, 23, 42, 0.85);
+  --m-border: rgba(37, 99, 235, 0.24);
+}
+
+[data-theme="light"] {
+  --m-accent: #2563EB;
+  --m-accent-2: #0EA5E9;
+  --m-glass: rgba(255, 255, 255, 0.94);
+  --m-glass-2: rgba(241, 246, 255, 0.9);
+  --m-border: rgba(37, 99, 235, 0.18);
+}
+
+/* ---------- 5. TYPOGRAPHY ---------- */
+body {
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  letter-spacing: 0.01em;
+}
+
+h1, h2, h3, h4 {
+  font-weight: 700;
+  letter-spacing: -0.02em;
+  line-height: 1.2;
+}
+
+::selection {
+  background: rgba(37, 99, 235, 0.35);
+  color: #fff;
+}
+
+/* ============================================================
+   6. UNIFIED BUTTON SYSTEM
+   Primary: blue | Secondary: surface + blue border | Ghost
+   Danger: red | Height 46px+ (52px mobile) | Radius 14px
+   ============================================================ */
+.btn {
+  min-height: 46px;
+  padding: 12px 22px;
+  border-radius: var(--itt-radius-md);
+  font-weight: 600;
+  font-size: 15px;
+  letter-spacing: 0.01em;
+  transition: background var(--itt-dur) var(--itt-ease),
+    color var(--itt-dur) var(--itt-ease),
+    border-color var(--itt-dur) var(--itt-ease),
+    box-shadow var(--itt-dur) var(--itt-ease),
+    transform var(--itt-dur-fast) var(--itt-ease);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  position: relative;
+  overflow: hidden;
+  -webkit-tap-highlight-color: transparent;
+}
+
+.btn:active {
+  transform: scale(0.97) !important;
+  transition: transform 0.1s !important;
+}
+
+.btn:focus-visible {
+  outline: 2px solid var(--itt-primary-bright);
+  outline-offset: 2px;
+}
+
+.btn:disabled,
+.btn[disabled] {
+  opacity: 0.5;
+  cursor: not-allowed;
+  transform: none !important;
+}
+
+/* PRIMARY — flat brand blue, no plastic gradient */
+.btn-primary {
+  background: var(--itt-primary);
+  color: #fff;
+  box-shadow: var(--itt-shadow-primary);
+}
+
+.btn-primary:hover {
+  background: var(--itt-primary-hover);
+  box-shadow: var(--itt-shadow-primary-hover);
+  transform: translateY(-1px);
+}
+
+/* SECONDARY — surface + blue border/text */
+.btn-ghost {
+  background: var(--itt-surface);
+  border: 1px solid var(--itt-border-strong);
+  color: var(--itt-primary);
+  font-weight: 600;
+}
+
+.btn-ghost:hover {
+  background: var(--itt-surface-2);
+  border-color: var(--itt-primary);
+  color: var(--itt-primary-hover);
+  transform: translateY(-1px);
+  box-shadow: var(--itt-shadow-sm);
+}
+
+/* DANGER — flat red */
+.btn-danger {
+  background: var(--itt-danger);
+  color: #fff;
+  box-shadow: 0 6px 20px rgba(239, 68, 68, 0.28);
+}
+
+.btn-danger:hover {
+  background: #F87171;
+  box-shadow: 0 10px 28px rgba(239, 68, 68, 0.38);
+  transform: translateY(-1px);
+}
+
+.btn-lg {
+  min-height: 52px;
+  padding: 14px 30px;
+  font-size: 16px;
+  border-radius: var(--itt-radius-lg);
+}
+
+.btn-sm {
+  min-height: 36px;
+  padding: 7px 14px;
+  font-size: 13px;
+  border-radius: var(--itt-radius-xs);
+}
+
+/* Shop / equip buttons — same button language */
+.btn-buy {
+  background: var(--itt-primary);
+  color: #fff;
+  border-radius: var(--itt-radius-md);
+  font-weight: 600;
+  box-shadow: var(--itt-shadow-primary);
+}
+
+.btn-buy:hover:not(:disabled) {
+  background: var(--itt-primary-hover);
+  transform: translateY(-1px);
+  box-shadow: var(--itt-shadow-primary-hover);
+}
+
+.btn-buy.owned {
+  background: var(--itt-success);
+  box-shadow: 0 6px 20px rgba(34, 197, 94, 0.25);
+}
+
+.btn-equip {
+  background: var(--itt-primary);
+  color: #fff;
+  border-radius: var(--itt-radius-pill);
+  font-weight: 600;
+}
+
+.btn-equip.equipped {
+  background: var(--itt-success);
+}
+
+.btn-unequip {
+  background: var(--itt-surface-2);
+  border: 1px solid var(--itt-border);
+  color: var(--itt-muted);
+  border-radius: var(--itt-radius-pill);
+}
+
+.btn-unequip:hover {
+  border-color: var(--itt-danger);
+  color: var(--itt-danger);
+}
+
+/* Lessons success/continue buttons */
+.btn-success {
+  background: var(--itt-success) !important;
+  color: #fff !important;
+  border-radius: var(--itt-radius-md);
+}
+
+.btn-success:hover:not(:disabled) {
+  background: var(--itt-success) !important;
+  filter: brightness(1.08);
+}
+
+.link-btn {
+  color: var(--itt-primary);
+  font-weight: 600;
+}
+
+/* Touch targets on mobile */
+@media (max-width: 768px) {
+  .btn {
+    min-height: 50px;
+    padding: 13px 22px;
+  }
+
+  .btn-sm {
+    min-height: 40px;
+  }
+}
+
+/* ============================================================
+   7. UNIFIED INPUT SYSTEM
+   Height 50px+ | Radius 14px | Focus: blue ring | Error/Success
+   ============================================================ */
+.form-group input,
+.form-group select,
+.form-group textarea {
+  min-height: 50px;
+  padding: 12px 16px;
+  background: var(--itt-input-bg);
+  border: 1px solid var(--itt-border);
+  border-radius: var(--itt-radius-md);
+  color: var(--itt-text);
+  font-size: 15px;
+  transition: border-color var(--itt-dur) var(--itt-ease),
+    box-shadow var(--itt-dur) var(--itt-ease),
+    background var(--itt-dur) var(--itt-ease);
+}
+
+.form-group input:focus,
+.form-group select:focus,
+.form-group textarea:focus {
+  outline: none;
+  border-color: var(--itt-primary);
+  box-shadow: 0 0 0 4px var(--itt-primary-soft);
+  background: var(--itt-surface);
+}
+
+.form-group input::placeholder,
+.form-group textarea::placeholder {
+  color: var(--itt-faint);
+}
+
+/* Error / success input states */
+.form-group.error input,
+.form-group input.input-error,
+.form-group input.is-invalid {
+  border-color: var(--itt-danger);
+  box-shadow: 0 0 0 4px var(--itt-danger-soft);
+}
+
+.form-group input.input-success,
+.form-group input.is-valid {
+  border-color: var(--itt-success);
+  box-shadow: 0 0 0 4px var(--itt-success-soft);
+}
+
+/* Generic focus-visible language for interactive elements */
+a:focus-visible,
+.nav-item:focus-visible,
+select:focus-visible,
+textarea:focus-visible {
+  outline: 2px solid var(--itt-primary-bright);
+  outline-offset: 2px;
+}
+
+/* ============================================================
+   8. UNIFIED CARD SYSTEM
+   Solid surface | thin border | radius 20px | soft shadow
+   ============================================================ */
+.card {
+  background: var(--itt-surface);
+  border: 1px solid var(--itt-border);
+  border-radius: var(--itt-radius-xl);
+  box-shadow: var(--itt-shadow-sm);
+  transition: border-color var(--itt-dur) var(--itt-ease),
+    box-shadow var(--itt-dur) var(--itt-ease),
+    transform var(--itt-dur) var(--itt-ease);
+}
+
+.card:hover {
+  border-color: rgba(37, 99, 235, 0.35);
+  box-shadow: var(--itt-shadow-md);
+  transform: translateY(-2px);
+}
+
+.card-header {
+  border-bottom: 1px solid var(--itt-border-soft);
+}
+
+.card-header h3 {
+  font-size: 16px;
+  font-weight: 700;
+}
+
+/* ============================================================
+   9. UNIFIED MODAL SYSTEM — radius 24px, soft backdrop
+   ============================================================ */
+.modal-overlay {
+  background: rgba(3, 6, 18, 0.62);
+  backdrop-filter: blur(6px);
+  -webkit-backdrop-filter: blur(6px);
+}
+
+[data-theme="light"] .modal-overlay {
+  background: rgba(15, 23, 42, 0.38);
+}
+
+.modal {
+  background: var(--itt-surface);
+  border: 1px solid var(--itt-border);
+  border-radius: var(--itt-radius-2xl);
+  box-shadow: var(--itt-shadow-lg);
+  animation: slideUp 0.35s var(--itt-ease-spring);
+}
+
+.modal-header {
+  border-bottom: 1px solid var(--itt-border-soft);
+}
+
+.modal-footer {
+  border-top: 1px solid var(--itt-border-soft);
+}
+
+.modal-close {
+  border-radius: var(--itt-radius-xs);
+}
+
+.modal-close:hover {
+  background: var(--itt-surface-2);
+  transform: rotate(90deg);
+}
+
+/* ============================================================
+   10. UNIFIED TOAST SYSTEM
+   Success: green | Error: red | Info: blue | Freeze: cyan
+   Streak: blue fire + orange accent
+   ============================================================ */
+.toast {
+  background: var(--itt-surface);
+  border: 1px solid var(--itt-border);
+  border-radius: var(--itt-radius-md);
+  box-shadow: var(--itt-shadow-md);
+  font-weight: 500;
+  animation: toastIn 0.3s var(--itt-ease-spring);
+}
+
+.toast.success {
+  border-left: 4px solid var(--itt-success);
+  background: linear-gradient(135deg, var(--itt-success-soft), var(--itt-surface));
+  box-shadow: 0 8px 24px rgba(34, 197, 94, 0.18);
+}
+
+.toast.error {
+  border-left: 4px solid var(--itt-danger);
+  background: linear-gradient(135deg, var(--itt-danger-soft), var(--itt-surface));
+  box-shadow: 0 8px 24px rgba(239, 68, 68, 0.18);
+}
+
+.toast.info {
+  border-left: 4px solid var(--itt-primary);
+  background: linear-gradient(135deg, var(--itt-primary-soft), var(--itt-surface));
+  box-shadow: var(--itt-shadow-md);
+}
+
+.toast.freeze {
+  border-left: 4px solid var(--itt-freeze);
+  background: linear-gradient(135deg, var(--itt-freeze-soft), var(--itt-surface));
+}
+
+.toast.streak {
+  border-left: 4px solid var(--itt-streak);
+  background: linear-gradient(135deg, var(--itt-streak-soft), var(--itt-surface));
+}
+
+/* ============================================================
+   11. UNIFIED NAVIGATION — same active/hover language
+   ============================================================ */
+.nav-item {
+  border-radius: var(--itt-radius-sm);
+  transition: background var(--itt-dur-fast) var(--itt-ease),
+    color var(--itt-dur-fast) var(--itt-ease);
+}
+
+.nav-item:hover {
+  background: var(--itt-primary-soft-2);
+  color: var(--itt-text);
+}
+
+.nav-item.active {
+  background: var(--itt-primary-soft);
+  color: var(--itt-primary-bright);
+  font-weight: 600;
+}
+
+[data-theme="light"] .nav-item.active {
+  color: var(--itt-primary);
+}
+
+.sidebar {
+  background: var(--itt-sidebar-bg);
+}
+
+/* ============================================================
+   12. EMPTY STATE — icon + explanation + action
+   ============================================================ */
+.empty-state {
+  background: var(--itt-surface);
+  border: 1px dashed var(--itt-border-strong);
+  border-radius: var(--itt-radius-xl);
+  padding: var(--itt-sp-8) var(--itt-sp-5);
+}
+
+.empty-state-icon {
+  opacity: 0.9;
+}
+
+.empty-state h3 {
+  font-size: 17px;
+  font-weight: 700;
+}
+
+/* ============================================================
+   13. SKELETON LOADING — one global shimmer
+   ============================================================ */
+.skeleton {
+  background: linear-gradient(90deg, var(--itt-surface-2) 25%, var(--itt-surface-3) 50%, var(--itt-surface-2) 75%);
+  background-size: 200% 100%;
+  animation: skeleton-loading 1.5s infinite;
+  border-radius: var(--itt-radius-xs);
+}
+
+/* ============================================================
+   14. SHARED ANIMATIONS + REDUCED MOTION
+   ============================================================ */
+@keyframes ittFloat {
+
+  0%,
+  100% {
+    transform: translateY(0);
+  }
+
+  50% {
+    transform: translateY(-10px);
+  }
+}
+
+@keyframes ittPulseSoft {
+
+  0%,
+  100% {
+    opacity: 1;
+  }
+
+  50% {
+    opacity: 0.65;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
+
+/* ============================================================
+   15. PAGE CONTAINER — wide but controlled
+   ============================================================ */
+.itt-container {
+  max-width: 1440px;
+  margin: 0 auto;
+  padding: var(--itt-sp-4);
+}
+
+@media (min-width: 768px) {
+  .itt-container {
+    padding: var(--itt-sp-5) var(--itt-sp-6);
+  }
+}
+
+@media (min-width: 1280px) {
+  .itt-container {
+    padding: var(--itt-sp-6) var(--itt-sp-10);
+  }
+}
+
+/* Horizontal scroll guard on small screens */
+@media (max-width: 768px) {
+  html, body, .app, .main, .content, .page { overflow-x: hidden; }
+}
+
+/* ============================================================
+   16. PERFORMANCE LAYER — login→savol jank/qotishini yo'q qilish
+   Android WebView + desktop compositing xarajatini kamaytirish.
+   LOGIC O'ZGARMAYDI — faqat render xarajati tushiriladi.
+   ============================================================ */
+
+/* a) Solid surface'lar ortida blur foydasiz — GPU'dan olib tashlanadi */
+.card,
+.modal,
+.toast,
+.sidebar {
+  backdrop-filter: none;
+  -webkit-backdrop-filter: none;
+}
+
+/* b) Dashboard welcome-banner: blur(40px) filter + 8s float — har frame
+   rasterization. Radial-gradient soft edge = bir xil ko'rinish, 0 filter */
+.welcome-banner::before {
+  filter: none;
+  background: radial-gradient(circle at center, rgba(255, 255, 255, 0.1) 0%, transparent 68%);
+}
+
+/* c) pulse-glow: box-shadow animatsiya (qimmat) → opacity (compositor) */
+.pulse-glow {
+  animation: ittPulseSoft 2s ease-in-out infinite;
+}
+
+/* d) Touch qurilmalar: sticky hover transform'i o'chirish —
+   Android'da har tap'da layout/paint spike bo'lmasin */
+@media (hover: none) {
+
+  .option:hover,
+  .card:hover,
+  .card.glow-hover:hover,
+  .btn-primary:hover,
+  .btn-ghost:hover,
+  .btn-danger:hover,
+  .btn-buy:hover:not(:disabled),
+  .btn-lg:hover,
+  .nav-item:hover {
+    transform: none !important;
+  }
+
+  .card.glow-hover:hover {
+    animation: none !important;
+  }
+}
+
+/* e) COARSE POINTER (Android APK / mobil) — blur qatlamlarini yopish.
+   mobile.css'dagi blur(18-24px) header/sidebar/sheet qatlamlari ham shu yerda yopiladi */
+@media (pointer: coarse) {
+
+  *,
+  *::before,
+  *::after {
+    backdrop-filter: none !important;
+    -webkit-backdrop-filter: none !important;
+  }
+
+  /* Login premium ko'rinishi saqlanadi — yengil 8px blur */
+  #authScreen,
+  #authScreen * {
+    backdrop-filter: blur(8px) !important;
+    -webkit-backdrop-filter: blur(8px) !important;
+  }
+
+  /* blur(100px) + infinite float orb — filter'siz, animatsiyasiz decoration */
+  .orb {
+    filter: none !important;
+    opacity: 0.08 !important;
+    animation: none !important;
+  }
+
+  /* Lessons path blob: blur(46px) → soft gradient (bir xil vizual, filter yo'q) */
+  .ls-cpath-blob,
+  .ls-cpath-blob--a,
+  .ls-cpath-blob--b {
+    filter: none !important;
+  }
+
+  .ls-cpath-blob--a {
+    background: radial-gradient(circle at center, rgba(37, 99, 235, 0.14) 0%, transparent 70%) !important;
+  }
+
+  .ls-cpath-blob--b {
+    background: radial-gradient(circle at center, rgba(56, 189, 248, 0.12) 0%, transparent 70%) !important;
+  }
+}
+
+/* f) Desktop ham: ulkan blur(100px) orb arzonlashtiriladi */
+.orb {
+  filter: blur(60px);
+  will-change: auto;
+}
+
+/* g) Jank-safe scroll: question/options containerida repaint kamaytirish */
+.question-area .options {
+  contain: layout style;
+}
+
+/* h) Katta filter blur elementlariga GPU layer yuklamasini kamaytirish */
+.hero-ring-glow {
+  filter: blur(8px);
+}
+
+/* ==ITTEST-END== */

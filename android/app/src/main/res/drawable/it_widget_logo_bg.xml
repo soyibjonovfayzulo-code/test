@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- ITTest logo: blue rounded square (TextView "</>" bilan ishlatiladi) -->
+<shape xmlns:android="http://schemas.android.com/apk/res/android"
+    android:shape="rectangle">
+    <solid android:color="@color/it_widget_brand" />
+    <corners android:radius="10dp" />
+</shape>

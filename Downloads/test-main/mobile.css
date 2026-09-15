@@ -70,7 +70,7 @@
     width: 100% !important;
     max-width: 100% !important;
     min-width: 0 !important;
-    padding: 12px 12px 32px !important;
+    padding: 12px 12px calc(32px + env(safe-area-inset-bottom, 0px)) !important;
     margin: 0 !important;
     box-sizing: border-box !important;
   }
@@ -93,7 +93,7 @@
     padding: 8px 12px !important;
     padding-top: calc(8px + env(safe-area-inset-top, 0px)) !important;
     margin: 0 !important;
-    background: rgba(11, 15, 30, 0.88) !important;
+    background: var(--itt-topbar-bg, rgba(11, 15, 30, 0.88)) !important;
     backdrop-filter: blur(18px) saturate(180%) !important;
     -webkit-backdrop-filter: blur(18px) saturate(180%) !important;
     border-bottom: 1px solid var(--m-border) !important;
@@ -128,7 +128,7 @@
     width: 18px !important;
     height: 2px !important;
     border-radius: 2px !important;
-    background: #e6e9ff !important;
+    background: var(--itt-text, #e6e9ff) !important;
   }
 
   .topbar-left h2,
@@ -136,7 +136,7 @@
     font-size: 17px !important;
     font-weight: 700 !important;
     letter-spacing: -0.2px !important;
-    color: #f8fafc !important;
+    color: var(--itt-text, #f8fafc) !important;
     white-space: nowrap !important;
     overflow: hidden !important;
     text-overflow: ellipsis !important;
@@ -152,17 +152,18 @@
   }
 
   .topbar .icon-btn {
-    width: 38px !important;
-    height: 38px !important;
-    min-width: 38px !important;
-    flex: 0 0 38px !important;
-    border-radius: 11px !important;
+    width: 44px !important;
+    height: 44px !important;
+    min-width: 44px !important;
+    min-height: 44px !important;
+    flex: 0 0 44px !important;
+    border-radius: 12px !important;
     background: var(--m-glass-2) !important;
     border: 1px solid var(--m-border) !important;
     display: inline-flex !important;
     align-items: center !important;
     justify-content: center !important;
-    font-size: 15px !important;
+    font-size: 16px !important;
     cursor: pointer !important;
   }
 
