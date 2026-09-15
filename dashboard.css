@@ -167,66 +167,71 @@
 }
 .nd-hero-robot .mascot { transform: scale(.92); transform-origin: center; }
 
-/* ---------- Bugungi progress ---------- */
-.nd-today {
+/* ---------- Keyingi qadam ---------- */
+.nd-card--next {
+  background:
+    linear-gradient(135deg, var(--primary-soft), transparent 55%),
+    var(--card);
+  border-color: var(--border-focus);
+}
+.nd-next {
   display: flex;
   align-items: center;
-  gap: 26px;
+  gap: 18px;
   flex-wrap: wrap;
 }
-.nd-ring-wrap {
-  position: relative;
-  width: 132px;
-  height: 132px;
-  flex: 0 0 132px;
-}
-.nd-ring { width: 100%; height: 100%; transform: rotate(-90deg); }
-.nd-ring-track {
-  fill: none;
-  stroke: var(--primary-soft);
-  stroke-width: 11;
-}
-.nd-ring-fill {
-  fill: none;
-  stroke: var(--primary);
-  stroke-width: 11;
-  stroke-linecap: round;
-  transition: stroke-dashoffset 1s cubic-bezier(.16, 1, .3, 1);
-}
-.nd-ring-caption {
-  position: absolute;
-  inset: 0;
-  display: flex;
-  flex-direction: column;
+.nd-next-icon {
+  width: 56px;
+  height: 56px;
+  flex: 0 0 56px;
+  display: inline-flex;
   align-items: center;
   justify-content: center;
-  gap: 0;
+  font-size: 1.6rem;
+  border-radius: 18px;
+  background: var(--primary-soft);
+  border: 1px solid var(--border-focus);
 }
-.nd-ring-caption b { font-size: 1.7rem; line-height: 1.1; }
-.nd-ring-caption span { font-size: .75rem; color: var(--muted); }
-.nd-today-side { flex: 1; min-width: 200px; }
-.nd-facts {
-  display: grid;
-  grid-template-columns: repeat(2, minmax(0, 1fr));
-  gap: 8px;
-  margin: 0 0 10px;
-  padding: 0;
-  list-style: none;
+.nd-next-info { flex: 1; min-width: 200px; }
+.nd-next-course {
+  font-size: .78rem;
+  font-weight: 600;
+  color: var(--secondary);
+  text-transform: uppercase;
+  letter-spacing: .06em;
 }
-.nd-facts li {
+.nd-next-title {
+  margin: 4px 0 8px;
+  font-size: 1.08rem;
+  font-weight: 700;
+  color: var(--primary);
+}
+.nd-next-meta {
   display: flex;
   align-items: center;
-  gap: 8px;
+  gap: 12px;
+  font-size: .82rem;
+  color: var(--muted);
+  margin-bottom: 10px;
+  flex-wrap: wrap;
+}
+.nd-next-progress {
+  height: 8px;
+  border-radius: 999px;
   background: var(--primary-soft);
   border: 1px solid var(--border);
-  border-radius: 14px;
-  padding: 9px 12px;
-  font-size: .85rem;
-  min-width: 0;
+  overflow: hidden;
 }
-.nd-fact-ico { flex: 0 0 auto; }
-.nd-fact-t { color: var(--muted); flex: 1; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
-.nd-fact-v { font-weight: 700; white-space: nowrap; }
+.nd-next-progress span {
+  display: block;
+  height: 100%;
+  border-radius: inherit;
+  background: linear-gradient(90deg, var(--primary), var(--secondary));
+  transition: width .8s cubic-bezier(.16, 1, .3, 1);
+}
+.nd-next-pct { font-size: .78rem; color: var(--muted); }
+.nd-next-cta { flex: 0 0 auto; }
+.nd-next-sub { margin: 0; color: var(--muted); font-size: .9rem; }
 .nd-hint {
   color: var(--muted);
   font-size: .84rem;
@@ -236,6 +241,12 @@
 
 /* ---------- Streak ---------- */
 .nd-streak-body { display: grid; gap: 14px; }
+.nd-streak-top-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+}
 .nd-streak-num {
   display: flex;
   align-items: baseline;
@@ -244,6 +255,20 @@
 .nd-streak-num b { font-size: 2.3rem; line-height: 1; }
 .nd-streak-num span:last-child { color: var(--muted); font-size: .9rem; }
 .nd-streak-flame { font-size: 1.5rem; align-self: center; }
+.nd-freeze-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  font-size: .78rem;
+  font-weight: 700;
+  color: #0284c7;
+  background: rgba(14, 165, 233, .12);
+  border: 1px solid rgba(14, 165, 233, .28);
+  border-radius: 999px;
+  padding: 4px 10px;
+  white-space: nowrap;
+}
+.nd-freeze-badge i { font-style: normal; }
 .nd-week {
   display: grid;
   grid-template-columns: repeat(7, minmax(0, 1fr));
@@ -267,48 +292,13 @@
   color: #fff;
   border-color: transparent;
 }
+.nd-day--freeze {
+  background: rgba(14, 165, 233, .2);
+  color: #0284c7;
+  border-color: rgba(14, 165, 233, .45);
+}
 
-/* ---------- Current lesson ---------- */
-.nd-lesson {
-  display: flex;
-  align-items: center;
-  gap: 18px;
-  flex-wrap: wrap;
-}
-.nd-lesson-icon {
-  width: 56px;
-  height: 56px;
-  flex: 0 0 56px;
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  font-size: 1.6rem;
-  border-radius: 18px;
-  background: var(--primary-soft);
-  border: 1px solid var(--border);
-}
-.nd-lesson-info { flex: 1; min-width: 220px; }
-.nd-lesson-course {
-  font-size: .78rem;
-  font-weight: 600;
-  color: var(--secondary);
-  text-transform: uppercase;
-  letter-spacing: .06em;
-}
-.nd-lesson-title {
-  margin: 4px 0 8px;
-  font-size: 1.08rem;
-  font-weight: 700;
-}
-.nd-lesson-meta {
-  display: flex;
-  align-items: center;
-  gap: 12px;
-  font-size: .82rem;
-  color: var(--muted);
-  margin-bottom: 10px;
-  flex-wrap: wrap;
-}
+/* XP chip — Keyingi qadam / Challenge kartalarida */
 .nd-xp-chip {
   display: inline-flex;
   align-items: center;
@@ -320,63 +310,6 @@
   border-radius: 999px;
   padding: 3px 10px;
 }
-.nd-lesson-progress {
-  height: 8px;
-  border-radius: 999px;
-  background: var(--primary-soft);
-  border: 1px solid var(--border);
-  overflow: hidden;
-}
-.nd-lesson-progress span {
-  display: block;
-  height: 100%;
-  border-radius: inherit;
-  background: linear-gradient(90deg, var(--primary), var(--secondary));
-  transition: width .8s cubic-bezier(.16, 1, .3, 1);
-}
-.nd-lesson-pct { font-size: .78rem; color: var(--muted); }
-.nd-lesson-cta { flex: 0 0 auto; }
-.nd-lesson-done {
-  display: flex;
-  flex-direction: column;
-  align-items: flex-start;
-  gap: 8px;
-}
-.nd-lesson-done h3 { margin: 0; }
-.nd-lesson-done p { margin: 0; color: var(--muted); font-size: .9rem; }
-
-/* ---------- Quick actions ---------- */
-.nd-quick {
-  display: grid;
-  grid-template-columns: repeat(6, minmax(0, 1fr));
-  gap: 12px;
-}
-.nd-quick-btn {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  gap: 6px;
-  min-height: 88px;
-  padding: 12px 8px;
-  border-radius: 20px;
-  border: 1px solid var(--border);
-  background: var(--card);
-  color: var(--text);
-  box-shadow: var(--shadow-soft);
-  cursor: pointer;
-  transition: transform .18s ease, border-color .18s ease, background .18s ease;
-  min-width: 0;
-  font: inherit;
-}
-.nd-quick-btn:hover {
-  transform: translateY(-3px);
-  border-color: var(--border-focus);
-  background: var(--card-hover);
-}
-.nd-quick-btn:active { transform: translateY(-1px) scale(.98); }
-.nd-quick-ico { font-size: 1.4rem; }
-.nd-quick-t { font-size: .8rem; font-weight: 600; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 100%; }
 
 /* ---------- Kichik KV ro'yxatlar (Test / Duel) ---------- */
 .nd-kv {
@@ -622,8 +555,8 @@
 /* Desktop kichik (<1280): 3 kolonka → 2 + challenge to'liq kenglik */
 @media (max-width: 1279px) {
   .nd-row-3 { grid-template-columns: repeat(2, minmax(0, 1fr)); }
-  .nd-card--challenge { grid-column: 1 / -1; }
-  .nd-quick { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+  .nd-card--challenge,
+  .nd-card--goal { grid-column: 1 / -1; }
 }
 
 /* Tablet: 768–1024 adaptiv 2 kolonka */
@@ -648,11 +581,8 @@
   .nd-hero-robot .mascot { transform: scale(.68); }
   .nd-hero-sub { max-width: 100%; }
   .nd-card { padding: 18px; border-radius: 22px; }
-  .nd-quick { grid-template-columns: repeat(2, minmax(0, 1fr)); }
-  .nd-quick-btn { min-height: 84px; }
-  .nd-facts { grid-template-columns: 1fr 1fr; }
-  .nd-today { gap: 18px; }
-  .nd-lesson-cta { width: 100%; }
+  .nd-next { gap: 14px; }
+  .nd-next-cta { width: 100%; }
   .nd-btn--lg { min-width: 0; width: 100%; }
   .nd-stats-body { justify-content: flex-start; }
 }
@@ -660,7 +590,6 @@
 /* Juda tor mobil (≤360): text kesilmasin */
 @media (max-width: 360px) {
   .nd-hero { padding: 18px 16px; }
-  .nd-facts { grid-template-columns: 1fr; }
   .nd-week { gap: 4px; }
   .nd-day { font-size: .66rem; }
   .nd-hero-xp { width: 110px; }
@@ -677,5 +606,4 @@
     transition: none !important;
   }
   .nd-reveal { opacity: 1; transform: none; }
-  .nd-ring-fill { transition: none !important; }
 }

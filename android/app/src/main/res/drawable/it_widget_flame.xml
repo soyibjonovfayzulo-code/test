@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- ITTest BLUE FLAME (streak) — gradient blue->cyan, green fire YO'Q -->
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:aapt="http://schemas.android.com/aapt"
+    android:width="@dimen/it_widget_flame_size"
+    android:height="@dimen/it_widget_flame_size"
+    android:viewportWidth="40"
+    android:viewportHeight="48">
+    <path android:pathData="M20 2 C23 9, 31 15, 34 23 C39 31, 35 42, 24 46 C32 40, 31 30, 26 25 C24 33, 19 36, 17 44 C8 39, 4 30, 8 20 C10 15, 16 11, 17 6 C17 12, 19 13, 20 2 Z">
+        <aapt:attr name="android:fillColor">
+            <gradient
+                android:type="linear"
+                android:startX="20"
+                android:startY="48"
+                android:endX="20"
+                android:endY="2">
+                <item android:offset="0" android:color="#1D4ED8" />
+                <item android:offset="0.45" android:color="#2563EB" />
+                <item android:offset="0.78" android:color="#38BDF8" />
+                <item android:offset="1" android:color="#E0F2FE" />
+            </gradient>
+        </aapt:attr>
+    </path>
+    <!-- ichki yorqin olov -->
+    <path
+        android:pathData="M20 18 C22 23, 27 27, 26 34 C25 38, 22 42, 19 43 C22 39, 21 34, 18 31 C17 35, 14 37, 14 41 C11 38, 10 32, 12 28 C13 25, 17 23, 18 21 C18 24, 19 25, 20 18 Z"
+        android:fillColor="#FFFFFF"
+        android:fillAlpha="0.92" />
+</vector>

@@ -51,6 +51,7 @@ window.eval(code);
 window.ITDashboard.render();
 
 const $ = (s) => window.document.querySelector(s);
+const htmlSecIncludes = (t) => sec[0].includes(t);
 let fails = 0;
 function ok(cond, msg) {
   if (cond) console.log('  ✅ ' + msg);
@@ -65,25 +66,32 @@ ok($('#ndHeroRobot').innerHTML.includes('mascot'), 'Hero robot inject');
 ok($('#ndStreakBody').textContent.includes('3'), 'Streak: 3 kun (real)');
 ok($('#ndWeek') || window.document.querySelector('.nd-week'), 'Hafta kunlari Du/Se/Ch render');
 ok(window.document.querySelectorAll('.nd-day').length === 7, '7 ta hafta kuni');
-ok($('#ndLessonBody').textContent.includes('3-dars'), 'Current lesson: 3-dars (1-dars hardcode EMAS)');
-ok($('#ndLessonBody').textContent.includes('Davom ettirish'), 'Continue tugmasi');
-ok($('#ndTodayBody').textContent.length > 50, 'Bugungi progress render (bugun: 1 dars + 1 test)');
-ok($('#ndTodayBody').textContent.includes('daqiqa'), 'Bugungi daqiqalar (real durationSec)');
+// ESKI "Bugungi progress" bloki BUTUNLAY olib tashlangan bo'lishi kerak
+ok(!window.document.querySelector('#ndTodayBody') && !window.document.querySelector('.nd-ring') &&
+   !window.document.querySelector('.nd-card--progress'),
+   'Eski Bugungi progress card / 0% ring OLIB TASHLANGAN');
+ok(!htmlSecIncludes('Bugungi progress') && !htmlSecIncludes('Bugungi maqsad'), '"Bugungi progress" / "Bugungi maqsad" texti YO\'Q');
+// YANGI "Keyingi qadam" card — real current lesson
+ok($('#ndNextBody') && window.document.querySelector('#ndNextTitle').textContent.includes('Keyingi qadam'), '"Keyingi qadam" card bor');
+ok($('#ndNextBody').textContent.includes('3-dars'), 'Keyingi qadam: 3-dars (real current lesson, 1-dars hardcode EMAS)');
+ok($('#ndNextBody').textContent.includes('Davom ettirish'), 'Continue tugmasi');
+ok($('#ndNextBody').textContent.includes('daqiqa'), 'Duration real (lesson.duration)');
 ok($('#ndTestsBody').textContent.includes('Bugun') && $('#ndTestsBody').textContent.includes('1 ta test'), 'Testlar: bugun 1 ta (real)');
 ok($('#ndDuelBody').textContent.includes('2'), 'Duel g\'alabalar: 2 (real)');
 ok($('#ndStatsBody').textContent.includes('320'), 'Stats XP: 320 (real)');
 ok($('#ndStatsBody').textContent.includes('1'), 'Stats yutuq: 1 (real)');
 ok($('#ndGoalBody').textContent.includes('Level 4') && $('#ndGoalBody').textContent.includes('80'), 'Next goal: Level 5 gacha 80 XP');
 ok($('#ndActivityBody').textContent.includes('Test bajarildi') || $('#ndActivityBody').textContent.includes('tugatildi'), 'Activity feed (real eventlar)');
-ok(window.document.querySelectorAll('[data-goto]').length >= 6, 'Quick actionlar (dead button yo\'q)');
+ok(window.document.querySelectorAll('[data-goto]').length >= 4, 'Card ichidagi data-goto tugmalar ishlaydi (dead button yo\'q)');
+ok(!window.document.querySelector('.nd-quick'), 'Quick actions bo\'limi OLIB TASHLANGAN');
 
-// Quick action navigation
-const testsBtn = window.document.querySelector('[data-goto="tests"]');
+// Navigation (Testlar card ichidagi "Testlarga o'tish →" tugmasi)
+const testsBtn = window.document.querySelector('#ndTestsBody [data-goto="tests"]');
 testsBtn.click();
 ok(window.__lastPage === 'tests', 'Quick action → tests sahifasi');
 
 // Continue lesson button
-const contBtn = window.document.querySelector('#ndLessonBody [data-open-lesson]');
+const contBtn = window.document.querySelector('#ndNextBody [data-open-lesson]');
 contBtn.click();
 ok(window.__lastLesson === 'html/html-d3', 'Continue → openLesson(html, 3-dars)');
 
@@ -94,9 +102,18 @@ ok($('#ndChallengeBody').textContent.includes('darsni yakunlang'), 'Challenge ca
 window.__itGetCurrentUser = () => ({ firstname: 'Yangi', username: 'new', xp: 0, points: 0, level: 1, streak: 0, lastActiveDay: null, testResults: [], duelHistory: [], duelWins: 0, duelTotal: 0, achievements: [] });
 window.localStorage.setItem('darslar_state_v1::new', JSON.stringify({ levels: {}, progress: {} }));
 window.ITDashboard.render();
-ok($('#ndTodayBody').textContent.includes('ajoyib kun'), 'Yangi user empty state');
+ok($('#ndNextBody').textContent.includes('Birinchi darsni boshlang'), 'Yangi user: "Birinchi darsni boshlang" holati');
+ok($('#ndNextBody').textContent.includes('1-dars'), 'Yangi user: 1-dars (real birinchi lesson)');
+ok($('#ndNextBody').textContent.includes('Boshlash'), 'Yangi user: "🚀 Boshlash" tugmasi');
 ok($('#ndActivityBody').textContent.includes('Hali faoliyat yo‘q'), 'Activity empty state');
-ok($('#ndLessonBody').textContent.includes('Boshlash'), 'Yangi user: 1-dars "Boshlash"');
+
+// Completed state (barcha darslar tugallangan)
+const doneMap = {};
+course.lessons.forEach(l => { doneMap[l.id] = { at: Date.now(), score: 10 }; });
+window.localStorage.setItem('darslar_state_v1::new', JSON.stringify({ levels: { html: 'intermediate' }, progress: { html: { completed: doneMap, lastVisit: Date.now() } } }));
+window.ITDashboard.render();
+ok($('#ndNextBody').textContent.includes('tugatdingiz'), 'Completed user: "Siz barcha darslarni tugatdingiz!"');
+ok($('#ndNextBody').textContent.includes('Yangi yo‘nalish'), 'Completed user: "🚀 Yangi yo‘nalish tanlash" tugmasi');
 
 console.log(fails === 0 ? '\nALL CHECKS PASSED ✅' : '\n' + fails + ' CHECK(S) FAILED ❌');
 process.exit(fails === 0 ? 0 : 1);

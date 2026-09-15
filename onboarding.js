@@ -454,13 +454,31 @@
     completeUserFlag();
     hide();
 
-    /* 🎯 DARHOL tanlangan kursning Lesson Path sahifasiga o'tamiz */
     const courseId = resolveCourse(S.answers.track);
-    if (courseId && window.Lessons && typeof window.Lessons.openCourse === 'function') {
-      try { window.Lessons.openCourse(courseId); return; }
-      catch (e) { console.warn('openCourse xatosi:', e); }
+    const proceedToLessons = function () {
+      if (courseId && window.Lessons) {
+        const course = window.CoursesAPI ? window.CoursesAPI.getCourse(courseId) : null;
+        const firstLesson = (course && course.lessons && course.lessons[0]) ? course.lessons[0].id : null;
+        if (firstLesson && typeof window.Lessons.openLesson === 'function') {
+          try { window.Lessons.openLesson(courseId, firstLesson); return; }
+          catch (e) { console.warn('openLesson xatosi:', e); }
+        }
+        if (typeof window.Lessons.openCourse === 'function') {
+          try { window.Lessons.openCourse(courseId); return; }
+          catch (e) { console.warn('openCourse xatosi:', e); }
+        }
+      }
+      if (window.__itShowPage) window.__itShowPage('lessons');
+    };
+
+    /* 📱 MOBILE: Daily/Streak Intro → Notification Permission → First Lesson */
+    if (window.DailyStreak && typeof window.DailyStreak.showMobileIntro === 'function' && window.DailyStreak.isMobile()) {
+      window.DailyStreak.showMobileIntro({ onDone: proceedToLessons });
+      return;
     }
-    if (window.__itShowPage) window.__itShowPage('lessons');
+
+    /* 💻 DESKTOP: to'g'ridan-to'g'ri Lesson Path sahifasi */
+    proceedToLessons();
   }
 
   function completeUserFlag() {

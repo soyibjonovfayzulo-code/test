@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- ITTest Widget — DARK (system dark theme) colors: complete LARGE widget tokenlari bilan -->
+<resources>
+    <color name="it_widget_bg">#0E1729</color>
+    <color name="it_widget_text_primary">#F2F7FF</color>
+    <color name="it_widget_text_secondary">#9AAACB</color>
+    <color name="it_widget_brand">#4D8DFF</color>
+    <color name="it_widget_accent">#33E0F2</color>
+    <color name="it_widget_track">#1D2B46</color>
+    <color name="it_widget_divider">#1C2944</color>
+    <color name="it_widget_cta_text">#FFFFFF</color>
+
+    <!-- LARGE widget (reference design) dark tokens -->
+    <color name="it_widget_tile">#15223C</color>
+    <color name="it_widget_tile_stroke">#1E2F50</color>
+    <color name="it_widget_pill_bg">#1B2D55</color>
+    <color name="it_widget_cyan">#38BDF8</color>
+    <color name="it_widget_ring_track">#1E2F50</color>
+    <color name="it_widget_day_future">#1C2A47</color>
+    <color name="it_widget_day_missed">#273553</color>
+    <color name="it_widget_day_ice">#183A56</color>
+    <color name="it_widget_soft_green">#34C77B</color>
+</resources>

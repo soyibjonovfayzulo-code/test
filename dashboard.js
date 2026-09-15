@@ -15,8 +15,6 @@
 
   var DAY_MS = 86400000;
   var STORE_PREFIX = 'darslar_state_v1';
-  var DAILY_GOAL_ACTIONS = 3;   // bugungi maqsad: 3 ta faoliyat (dars/test/duel)
-  var DAILY_GOAL_MINUTES = 15;  // bugungi vaqt maqsadi (faqat real durationSec'lardan)
 
   var WEEK_LABELS = ['Du', 'Se', 'Ch', 'Pa', 'Ju', 'Sh', 'Ya']; // Dushanba → Yakshanba
 
@@ -62,11 +60,6 @@
   function completedCountOf(store, courseId) {
     return Object.keys(completedMap(store, courseId)).length;
   }
-  function completedCountOfTotal(store) {
-    var n = 0;
-    Object.keys(store.progress).forEach(function (cid) { n += completedCountOf(store, cid); });
-    return n;
-  }
 
   /* Joriy kurs: oxirgi ochilgan tugallanmagan kurs, aks holda boshlanmagan birinchi kurs */
   function pickCurrentCourse(store) {
@@ -108,43 +101,21 @@
     return null; // barchasi tugallangan
   }
 
-  /* ---------- Bugungi real faoliyat ---------- */
-  function todayStats(u, store) {
-    var tests = (u.testResults || []).filter(function (r) { return isToday(r.timestamp); });
-    var duels = (u.duelHistory || []).filter(function (d) { return isToday(d.timestamp); });
-    var lessons = [];
-    Object.keys(store.progress).forEach(function (cid) {
-      var course = window.CoursesAPI ? window.CoursesAPI.getCourse(cid) : null;
-      if (!course) return;
-      var completed = completedMap(store, cid);
-      Object.keys(completed).forEach(function (lid) {
-        var rec = completed[lid];
-        if (rec && rec.at && isToday(rec.at)) {
-          var found = window.CoursesAPI.findLesson(cid, lid);
-          lessons.push({
-            courseId: cid,
-            lesson: found ? found.lesson : null,
-            courseName: course.name,
-            score: rec.score || 0
-          });
-        }
-      });
-    });
-    var minutes = 0;
-    tests.forEach(function (r) { minutes += (r.durationSec || 0) / 60; });
-    duels.forEach(function (d) { minutes += (d.durationSec || 0) / 60; });
-    minutes = Math.round(minutes);
-    var xp = tests.reduce(function (s, r) { return s + (r.score || 0); }, 0);
-    var actions = tests.length + duels.length + lessons.length;
-    return {
-      tests: tests, duels: duels, lessons: lessons,
-      minutes: minutes, xp: xp, actions: actions,
-      pct: Math.min(100, Math.round((actions / DAILY_GOAL_ACTIONS) * 100))
-    };
-  }
-
-  /* ---------- Streak hafta ko'rinishi (real streak + lastActiveDay) ---------- */
+  /* ---------- Streak hafta ko'rinishi (real streak + lastActiveDay + freeze) ---------- */
   function streakWeek(u) {
+    if (window.DailyStreak && typeof window.DailyStreak.getWeekDaysData === 'function') {
+      try {
+        var weekData = window.DailyStreak.getWeekDaysData(u);
+        return weekData.map(function (w) {
+          return {
+            label: w.label,
+            active: w.status === 'completed' || w.status === 'freeze',
+            freeze: w.status === 'freeze',
+            today: w.isToday
+          };
+        });
+      } catch (e) { /* fallback */ }
+    }
     var today = new Date();
     today.setHours(12, 0, 0, 0);
     var monday = new Date(today);
@@ -273,117 +244,87 @@
     }
   }
 
-  function renderToday(u, store) {
-    var body = $('#ndTodayBody');
-    if (!body) return;
-    var t = todayStats(u, store);
-
-    if (t.actions === 0) {
-      var fresh = (u.testResults || []).length === 0 && (u.duelHistory || []).length === 0 &&
-        completedCountOfTotal(store) === 0;
-      body.innerHTML =
-        '<div class="nd-empty">' +
-          '<div class="nd-empty-ico" aria-hidden="true">🌅</div>' +
-          '<h3>' + (fresh ? 'Bugun boshlash uchun ajoyib kun!' : 'Bugun hali faoliyat yo‘q') + '</h3>' +
-          '<p>' + (fresh ? 'Birinchi dars bilan boshlang — hammasi yaxshi bo‘ladi!' : 'Birinchi qadamni tashlang, qolgani o‘z-o‘zidan keladi.') + '</p>' +
-          '<button type="button" class="nd-btn nd-btn--primary" data-goto="lessons">📚 Birinchi darsni boshlash</button>' +
-        '</div>';
-      return;
-    }
-
-    var rows =
-      '<ul class="nd-facts">' +
-        '<li><span class="nd-fact-ico" aria-hidden="true">📚</span><span class="nd-fact-t">Dars</span><span class="nd-fact-v">' + t.lessons.length + ' ta</span></li>' +
-        '<li><span class="nd-fact-ico" aria-hidden="true">🧠</span><span class="nd-fact-t">Test</span><span class="nd-fact-v">' + t.tests.length + ' ta</span></li>' +
-        '<li><span class="nd-fact-ico" aria-hidden="true">⚔️</span><span class="nd-fact-t">Duel</span><span class="nd-fact-v">' + t.duels.length + ' ta</span></li>' +
-        '<li><span class="nd-fact-ico" aria-hidden="true">⭐</span><span class="nd-fact-t">XP (bugun)</span><span class="nd-fact-v">+' + t.xp + ' XP</span></li>' +
-      '</ul>';
-
-    var hint;
-    if (t.pct >= 100 && t.minutes >= DAILY_GOAL_MINUTES) hint = '🎉 Zo‘r! Bugungi maqsad bajarildi.';
-    else if (t.pct >= 100) hint = '✅ Bugungi faoliyat bajarildi — istasangiz 15 daqiqa ham oshiring.';
-    else hint = 'Maqsad: ' + DAILY_GOAL_ACTIONS + ' ta faoliyat — ' + t.actions + ' ta bajarildi.';
-
-    body.innerHTML =
-      '<div class="nd-today">' +
-        '<div class="nd-ring-wrap">' + ringSVG(t.pct) +
-          '<div class="nd-ring-caption"><b>' + t.minutes + '</b><span>daqiqa</span></div>' +
-        '</div>' +
-        '<div class="nd-today-side">' + rows +
-          '<p class="nd-hint" id="ndProgressHint">' + esc(hint) + '</p>' +
-        '</div>' +
-      '</div>';
-  }
-
-  function ringSVG(pct) {
-    var r = 52, c = 2 * Math.PI * r;
-    var off = c * (1 - Math.max(0, Math.min(100, pct)) / 100);
-    return '<svg class="nd-ring" viewBox="0 0 120 120" role="progressbar" aria-valuemin="0" aria-valuemax="100" aria-valuenow="' + pct + '" aria-label="Bugungi progress">' +
-      '<circle class="nd-ring-track" cx="60" cy="60" r="' + r + '"/>' +
-      '<circle class="nd-ring-fill" cx="60" cy="60" r="' + r + '" data-off="' + off.toFixed(1) + '" stroke-dasharray="' + c.toFixed(1) + '" stroke-dashoffset="' + c.toFixed(1) + '"/>' +
-      '</svg>';
-  }
-
   function renderStreak(u) {
     var body = $('#ndStreakBody');
     if (!body) return;
     var s = u.streak || 0;
+    var freezes = (window.DailyStreak && typeof window.DailyStreak.ensureUserFreezes === 'function')
+      ? window.DailyStreak.ensureUserFreezes(u)
+      : (u.freezes !== undefined ? u.freezes : 2);
     var week = streakWeek(u);
     var dots = week.map(function (d) {
-      var cls = 'nd-day' + (d.active ? ' nd-day--on' : '') + (d.today ? ' nd-day--today' : '');
-      return '<span class="' + cls + '"><i aria-hidden="true">' + d.label + '</i></span>';
+      var cls = 'nd-day' + (d.active ? (d.freeze ? ' nd-day--freeze' : ' nd-day--on') : '') + (d.today ? ' nd-day--today' : '');
+      var inner = d.freeze ? '<i aria-hidden="true" title="Freeze">🧊</i>' : '<i aria-hidden="true">' + d.label + '</i>';
+      return '<span class="' + cls + '">' + inner + '</span>';
     }).join('');
     var hint = s === 0
       ? 'Bugun shug‘ullaning — streakni yoqib yuboring!'
       : (u.lastActiveDay === dayKey() ? 'Bugun belgilandi ✅ Streak davom etmoqda.' : 'Bugun shug‘ullaning — streak saqlanadi!');
     body.innerHTML =
-      '<div class="nd-streak-num"><span class="nd-streak-flame" aria-hidden="true">🔥</span><b>' + s + '</b><span>kun</span></div>' +
+      '<div class="nd-streak-top-row">' +
+        '<div class="nd-streak-num"><span class="nd-streak-flame" aria-hidden="true">🔥</span><b>' + s + '</b><span>kun</span></div>' +
+        '<span class="nd-freeze-badge" title="Streak Freeze"><i aria-hidden="true">🧊</i> <b>' + freezes + '</b> freeze</span>' +
+      '</div>' +
       '<div class="nd-week" aria-label="Haftalik streak">' + dots + '</div>' +
       '<p class="nd-hint">' + esc(hint) + '</p>';
   }
 
-  function renderLesson(u, store) {
-    var body = $('#ndLessonBody');
+  /* ---------- KEYINGI QADAM — real current lesson (yangi / boshlagan / tugallangan) ---------- */
+  function renderNextStep(u, store) {
+    var body = $('#ndNextBody');
     if (!body) return;
+    var emoji = $('#ndNextEmoji');
     var course = pickCurrentCourse(store);
+
     if (!course) {
-      body.innerHTML = '<div class="nd-empty"><div class="nd-empty-ico" aria-hidden="true">📚</div><h3>Darslar hali tayyor emas</h3><p>Keyinroq qayta kiring.</p></div>';
+      if (emoji) emoji.textContent = '🎯';
+      body.innerHTML = '<div class="nd-empty nd-empty--row"><div class="nd-empty-ico" aria-hidden="true">📚</div><div><h3>Darslar hali tayyor emas</h3><p>Keyinroq qayta kiring.</p></div></div>';
       return;
     }
+
     var lesson = currentLessonOf(store, course);
     var done = completedCountOf(store, course.id);
     var total = course.lessonCount || course.lessons.length || 0;
-    var pct = total ? Math.round((done / total) * 100) : 0;
 
+    /* Barcha darslar tugallangan holati */
     if (!lesson) {
+      if (emoji) emoji.textContent = '🎉';
       body.innerHTML =
-        '<div class="nd-lesson-done">' +
-          '<div class="nd-empty-ico" aria-hidden="true">🎉</div>' +
-          '<h3>' + esc(course.name) + ' kursi tugallangan!</h3>' +
-          '<p>' + total + ' ta darsning barchasi yakunlandi. Zo‘r ish!</p>' +
-          '<button type="button" class="nd-btn nd-btn--primary" data-goto="lessons">Keyingi kursni boshlash →</button>' +
+        '<div class="nd-next nd-next--done">' +
+          '<div class="nd-next-icon" aria-hidden="true">🎉</div>' +
+          '<div class="nd-next-info">' +
+            '<span class="nd-next-course">' + esc(course.name) + '</span>' +
+            '<h3 class="nd-next-title">Siz barcha darslarni tugatdingiz!</h3>' +
+            '<p class="nd-next-sub">' + total + ' ta darsning barchasi yakunlandi. Zo‘r ish — davomi kelajakda!</p>' +
+          '</div>' +
+          '<div class="nd-next-cta">' +
+            '<button type="button" class="nd-btn nd-btn--primary" data-goto="lessons">🚀 Yangi yo‘nalish tanlash →</button>' +
+          '</div>' +
         '</div>';
       return;
     }
 
-    var started = done > 0;
+    var pct = total ? Math.round((done / total) * 100) : 0;
+    var started = done > 0; // real progress state (yangi user → Boshlash, boshlagan → Davom ettirish)
+
+    if (emoji) emoji.textContent = '🎯';
     body.innerHTML =
-      '<div class="nd-lesson">' +
-        '<div class="nd-lesson-icon" aria-hidden="true">' + esc(course.icon || '📘') + '</div>' +
-        '<div class="nd-lesson-info">' +
-          '<span class="nd-lesson-course">' + esc(course.name) + '</span>' +
-          '<h3 class="nd-lesson-title">' + lesson.number + '-dars: ' + esc(lesson.title) + '</h3>' +
-          '<div class="nd-lesson-meta">' +
+      '<div class="nd-next">' +
+        '<div class="nd-next-icon" aria-hidden="true">' + esc(course.icon || '📘') + '</div>' +
+        '<div class="nd-next-info">' +
+          '<span class="nd-next-course">' + esc(course.name) + ' · ' + lesson.number + '-dars</span>' +
+          '<h3 class="nd-next-title">' + (started ? '“' + esc(lesson.title) + '”' : 'Birinchi darsni boshlang') + '</h3>' +
+          '<div class="nd-next-meta">' +
             '<span>⏱ ' + (lesson.duration || 10) + ' daqiqa</span>' +
             '<span class="nd-xp-chip">⭐ +' + (lesson.xp || 10) + ' XP</span>' +
           '</div>' +
-          '<div class="nd-lesson-progress" role="progressbar" aria-valuemin="0" aria-valuemax="100" aria-valuenow="' + pct + '" aria-label="' + esc(course.name) + ' kurs progressi">' +
+          '<div class="nd-next-progress" role="progressbar" aria-valuemin="0" aria-valuemax="100" aria-valuenow="' + pct + '" aria-label="' + esc(course.name) + ' kurs progressi">' +
             '<span style="width:' + pct + '%"></span>' +
           '</div>' +
-          '<span class="nd-lesson-pct">' + pct + '% · ' + done + '/' + total + ' dars</span>' +
+          '<span class="nd-next-pct">' + pct + '% · ' + done + '/' + total + ' dars</span>' +
         '</div>' +
-        '<div class="nd-lesson-cta">' +
-          '<button type="button" class="nd-btn nd-btn--primary nd-btn--lg nd-pulse" data-open-lesson data-course="' + esc(course.id) + '" data-lesson="' + esc(lesson.id) + '">' + (started ? '▶ Davom ettirish' : '▶ Boshlash') + '</button>' +
+        '<div class="nd-next-cta">' +
+          '<button type="button" class="nd-btn nd-btn--primary nd-btn--lg nd-pulse" data-open-lesson data-course="' + esc(course.id) + '" data-lesson="' + esc(lesson.id) + '">' + (started ? '▶ Davom ettirish →' : '🚀 Boshlash →') + '</button>' +
         '</div>' +
       '</div>';
   }
@@ -576,16 +517,6 @@
     els.forEach(function (el, i) {
       el.classList.remove('nd-in');
       el.style.transitionDelay = (i * 55) + 'ms';
-      var ring = el.querySelector ? el.querySelector('.nd-ring-fill') : null;
-      if (ring) {
-        var target = ring.getAttribute('data-off');
-        ring.style.strokeDashoffset = '';
-        nextFrame(function () {
-          nextFrame(function () {
-            ring.style.strokeDashoffset = target;
-          });
-        });
-      }
     });
     nextFrame(function () {
       nextFrame(function () {
@@ -601,9 +532,8 @@
     var store = lessonsStore();
     renderHero(u);
     renderHeroRobot();
-    renderToday(u, store);
+    renderNextStep(u, store);
     renderStreak(u);
-    renderLesson(u, store);
     renderTests(u);
     renderDuel(u);
     renderChallenge(u, store);

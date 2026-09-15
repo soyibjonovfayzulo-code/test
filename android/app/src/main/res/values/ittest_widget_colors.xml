@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- ITTest Widget — LIGHT colors (source: values-night uchun dark versiya) -->
+<resources>
+    <color name="it_widget_bg">#F7FAFF</color>
+    <color name="it_widget_text_primary">#101B2E</color>
+    <color name="it_widget_text_secondary">#5D6E8C</color>
+    <color name="it_widget_brand">#2563EB</color>
+    <color name="it_widget_accent">#22D3EE</color>
+    <color name="it_widget_track">#E2ECFA</color>
+    <color name="it_widget_divider">#E3ECF9</color>
+    <color name="it_widget_cta_text">#FFFFFF</color>
+
+    <!-- LARGE widget (reference design) -->
+    <color name="it_widget_tile">#FFFFFF</color>
+    <color name="it_widget_tile_stroke">#DCEBFA</color>
+    <color name="it_widget_pill_bg">#E8F1FE</color>
+    <color name="it_widget_cyan">#38BDF8</color>
+    <color name="it_widget_ring_track">#DBEAFE</color>
+    <color name="it_widget_day_future">#E2ECFA</color>
+    <color name="it_widget_day_missed">#C7D3E4</color>
+    <color name="it_widget_day_ice">#BEE9FF</color>
+    <color name="it_widget_soft_green">#34C77B</color>
+</resources>

@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- ITTest Widget strings (UZ) -->
+<resources>
+    <string name="widget_label_small">ITTest — Kunlik progress</string>
+    <string name="widget_label_medium">ITTest — Kunlik progress</string>
+    <string name="widget_description_small">Streak va bugungi progressni tez ko‘ring</string>
+    <string name="widget_description_medium">Streak, bugungi progress va joriy darsni ko‘ring</string>
+    <string name="widget_brand">ITTest</string>
+    <string name="widget_header_sub">Kunlik progress</string>
+    <string name="widget_streak_fmt">🔥 %1$d kun</string>
+    <string name="widget_streak_empty">🔥 —</string>
+    <string name="widget_progress_fmt">🎯 Bugun %1$d%%</string>
+    <string name="widget_progress_min_fmt">🎯 %1$d / %2$d min</string>
+    <string name="widget_progress_empty">🎯 Bugun —</string>
+    <string name="widget_lesson_fmt">📚 %1$s — %2$d-dars</string>
+    <string name="widget_freeze_fmt">🧊 %1$d</string>
+    <string name="widget_all_done">🎉 Barcha darslar tugallangan.</string>
+    <string name="widget_no_lesson">Keyingi darsni tanlang.</string>
+    <string name="widget_empty_state">Bugungi maqsadni boshlang</string>
+    <string name="widget_cta">Davom ettirish →</string>
+    <string name="widget_streak_a11y">Joriy streak kuni</string>
+    <string name="widget_progress_a11y">Bugungi kunlik progress</string>
+    <string name="widget_lesson_a11y">Joriy dars</string>
+    <string name="widget_cta_a11y">Ilovani ochib, joriy darsda davom ettirish</string>
+
+    <!-- LARGE widget -->
+    <string name="widget_label_large">ITTest</string>
+    <string name="widget_description_large">Streak, bugungi maqsad, dars va testlar — barchasi bitta joyda</string>
+    <string name="widget_tagline">Bugun yanada kuchliroq!</string>
+    <string name="widget_goal_title">Bugungi maqsad</string>
+    <string name="widget_minutes_fmt">%1$d / %2$d daqiqa</string>
+    <string name="widget_goal_done">🎉 Maqsad bajarildi!</string>
+    <string name="widget_login_hint">ITTest’ga kiring</string>
+    <string name="widget_kun">kun</string>
+    <string name="widget_streak_pill">Streak</string>
+    <string name="widget_freeze_used">🧊 Freeze ishlatildi</string>
+    <string name="widget_stat_lessons_fmt">%1$d dars</string>
+    <string name="widget_stat_tests_fmt">%1$d test</string>
+    <string name="widget_stat_xp_fmt">+%1$d XP</string>
+    <string name="widget_stat_sub_lessons">Tugatildi</string>
+    <string name="widget_stat_sub_tests">Tugatildi</string>
+    <string name="widget_stat_sub_xp">Olingan</string>
+    <string name="widget_day_du">Du</string>
+    <string name="widget_day_se">Se</string>
+    <string name="widget_day_ch">Ch</string>
+    <string name="widget_day_pa">Pa</string>
+    <string name="widget_day_ju">Ju</string>
+    <string name="widget_day_sh">Sh</string>
+    <string name="widget_day_ya">Ya</string>
+    <string name="widget_ring_a11y_fmt">Bugungi maqsad %1$d foiz</string>
+    <string name="widget_streak_a11y_fmt">%1$d kunlik streak</string>
+</resources>

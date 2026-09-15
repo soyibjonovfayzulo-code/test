@@ -1,0 +1,419 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- ITTest LARGE widget (4x3) — reference design: logo + tagline, goal ring,
+     streak card, robot, 3 stat tile, weekly row. Runtime: REAL data. -->
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/widget_root"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:background="@drawable/ittest_widget_bg"
+    android:paddingStart="13dp"
+    android:paddingEnd="13dp"
+    android:paddingTop="11dp"
+    android:paddingBottom="11dp">
+
+    <!-- HEADER: logo + brand + tagline | GOAL RING -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:gravity="center_vertical">
+
+        <LinearLayout
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:orientation="horizontal"
+            android:gravity="center_vertical">
+
+            <TextView
+                android:id="@+id/widget_logo"
+                android:layout_width="34dp"
+                android:layout_height="34dp"
+                android:background="@drawable/it_widget_logo_bg"
+                android:gravity="center"
+                android:text="&lt;/&gt;"
+                android:textColor="#FFFFFF"
+                android:textSize="13sp"
+                android:textStyle="bold"
+                android:importantForAccessibility="no" />
+
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="8dp"
+                android:orientation="vertical">
+
+                <TextView
+                    android:id="@+id/widget_brand"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/widget_brand"
+                    android:textColor="@color/it_widget_text_primary"
+                    android:textSize="17sp"
+                    android:textStyle="bold"
+                    android:contentDescription="@string/widget_brand" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/widget_tagline"
+                    android:textColor="@color/it_widget_text_secondary"
+                    android:textSize="10sp" />
+            </LinearLayout>
+        </LinearLayout>
+
+        <!-- Goal card: ring + title + minutes + bar -->
+        <LinearLayout
+            android:id="@+id/widget_goal_card"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:gravity="center_vertical"
+            android:background="@drawable/it_widget_tile"
+            android:paddingStart="8dp"
+            android:paddingEnd="10dp"
+            android:paddingTop="7dp"
+            android:paddingBottom="7dp">
+
+            <FrameLayout
+                android:layout_width="@dimen/it_widget_ring_size"
+                android:layout_height="@dimen/it_widget_ring_size">
+
+                <ImageView
+                    android:id="@+id/widget_ring"
+                    android:layout_width="@dimen/it_widget_ring_size"
+                    android:layout_height="@dimen/it_widget_ring_size"
+                    android:importantForAccessibility="no" />
+
+                <TextView
+                    android:id="@+id/widget_ring_pct"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:text="0%"
+                    android:textColor="@color/it_widget_brand"
+                    android:textSize="14sp"
+                    android:textStyle="bold"
+                    android:contentDescription="@string/widget_progress_a11y" />
+            </FrameLayout>
+
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="8dp"
+                android:orientation="vertical">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/widget_goal_title"
+                    android:textColor="@color/it_widget_text_primary"
+                    android:textSize="12sp"
+                    android:textStyle="bold" />
+
+                <TextView
+                    android:id="@+id/widget_goal_min"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="1dp"
+                    android:text=""
+                    android:textColor="@color/it_widget_text_secondary"
+                    android:textSize="10sp" />
+
+                <ProgressBar
+                    android:id="@+id/widget_goal_bar"
+                    style="?android:attr/progressBarStyleHorizontal"
+                    android:layout_width="88dp"
+                    android:layout_height="5dp"
+                    android:layout_marginTop="4dp"
+                    android:max="100"
+                    android:progress="0"
+                    android:progressDrawable="@drawable/ittest_widget_progress"
+                    android:importantForAccessibility="no" />
+            </LinearLayout>
+        </LinearLayout>
+    </LinearLayout>
+
+
+    <!-- MIDDLE: streak | robot | 3 stats -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:layout_marginTop="7dp"
+        android:orientation="horizontal"
+        android:gravity="center_vertical">
+
+        <!-- Streak card -->
+        <LinearLayout
+            android:id="@+id/widget_streak_card"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:minWidth="86dp"
+            android:orientation="vertical"
+            android:gravity="center"
+            android:background="@drawable/it_widget_tile"
+            android:paddingStart="10dp"
+            android:paddingEnd="10dp"
+            android:paddingTop="9dp"
+            android:paddingBottom="8dp">
+
+            <ImageView
+                android:layout_width="@dimen/it_widget_flame_size"
+                android:layout_height="46dp"
+                android:scaleType="fitCenter"
+                android:src="@drawable/it_widget_flame"
+                android:importantForAccessibility="no" />
+
+            <TextView
+                android:id="@+id/widget_streak_num"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="2dp"
+                android:text="0"
+                android:textColor="@color/it_widget_text_primary"
+                android:textSize="27sp"
+                android:textStyle="bold"
+                android:contentDescription="@string/widget_streak_a11y" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/widget_kun"
+                android:textColor="@color/it_widget_text_secondary"
+                android:textSize="12sp" />
+
+            <TextView
+                android:id="@+id/widget_streak_pill"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="5dp"
+                android:background="@drawable/it_widget_pill"
+                android:paddingStart="12dp"
+                android:paddingEnd="12dp"
+                android:paddingTop="3dp"
+                android:paddingBottom="3dp"
+                android:text="@string/widget_streak_pill"
+                android:textColor="@color/it_widget_brand"
+                android:textSize="11sp"
+                android:textStyle="bold" />
+
+            <TextView
+                android:id="@+id/widget_freeze_note"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="3dp"
+                android:text="@string/widget_freeze_used"
+                android:textColor="@color/it_widget_brand"
+                android:textSize="8sp"
+                android:visibility="gone"
+                tools:visibility="visible" />
+        </LinearLayout>
+
+
+        <!-- Robot mascot (mavjud ITTest asset) -->
+        <FrameLayout
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1">
+
+            <ImageView
+                android:id="@+id/widget_robot"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_gravity="center"
+                android:scaleType="fitCenter"
+                android:src="@drawable/it_widget_robot"
+                android:importantForAccessibility="no" />
+        </FrameLayout>
+
+        <!-- 3 stat tiles -->
+        <LinearLayout
+            android:id="@+id/widget_stats_row"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:gravity="center">
+
+            <LinearLayout
+                android:id="@+id/widget_stat_lessons_card"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:minWidth="54dp"
+                android:orientation="vertical"
+                android:gravity="center"
+                android:background="@drawable/it_widget_tile"
+                android:paddingStart="7dp"
+                android:paddingEnd="7dp"
+                android:paddingTop="9dp"
+                android:paddingBottom="9dp">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="📚"
+                    android:textSize="14sp"
+                    android:importantForAccessibility="no" />
+
+                <TextView
+                    android:id="@+id/widget_stat_lessons"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="3dp"
+                    android:text=""
+                    android:textColor="@color/it_widget_text_primary"
+                    android:textSize="12sp"
+                    android:textStyle="bold" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/widget_stat_sub_lessons"
+                    android:textColor="@color/it_widget_text_secondary"
+                    android:textSize="9sp" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/widget_stat_tests_card"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="5dp"
+                android:minWidth="54dp"
+                android:orientation="vertical"
+                android:gravity="center"
+                android:background="@drawable/it_widget_tile"
+                android:paddingStart="7dp"
+                android:paddingEnd="7dp"
+                android:paddingTop="9dp"
+                android:paddingBottom="9dp">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="🧠"
+                    android:textSize="14sp"
+                    android:importantForAccessibility="no" />
+
+                <TextView
+                    android:id="@+id/widget_stat_tests"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="3dp"
+                    android:text=""
+                    android:textColor="@color/it_widget_text_primary"
+                    android:textSize="12sp"
+                    android:textStyle="bold" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/widget_stat_sub_tests"
+                    android:textColor="@color/it_widget_text_secondary"
+                    android:textSize="9sp" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/widget_stat_xp_card"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="5dp"
+                android:minWidth="54dp"
+                android:orientation="vertical"
+                android:gravity="center"
+                android:background="@drawable/it_widget_tile"
+                android:paddingStart="7dp"
+                android:paddingEnd="7dp"
+                android:paddingTop="9dp"
+                android:paddingBottom="9dp">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="⭐"
+                    android:textSize="14sp"
+                    android:importantForAccessibility="no" />
+
+                <TextView
+                    android:id="@+id/widget_stat_xp"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="3dp"
+                    android:text=""
+                    android:textColor="@color/it_widget_text_primary"
+                    android:textSize="12sp"
+                    android:textStyle="bold" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/widget_stat_sub_xp"
+                    android:textColor="@color/it_widget_text_secondary"
+                    android:textSize="9sp" />
+            </LinearLayout>
+        </LinearLayout>
+    </LinearLayout>
+
+
+    <!-- WEEKLY ROW: Du..Ya -->
+    <LinearLayout
+        android:id="@+id/widget_week_row"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="7dp"
+        android:orientation="horizontal"
+        android:gravity="center_vertical"
+        android:background="@drawable/it_widget_tile"
+        android:paddingStart="10dp"
+        android:paddingEnd="6dp"
+        android:paddingTop="8dp"
+        android:paddingBottom="8dp">
+
+        <LinearLayout android:layout_width="0dp" android:layout_height="wrap_content" android:layout_weight="1" android:orientation="vertical" android:gravity="center">
+            <TextView android:id="@+id/widget_day_lbl_1" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="@string/widget_day_du" android:textColor="@color/it_widget_text_secondary" android:textSize="10sp" />
+            <ImageView android:id="@+id/widget_day_dot_1" android:layout_width="17dp" android:layout_height="17dp" android:layout_marginTop="4dp" android:src="@drawable/it_widget_day_future" android:importantForAccessibility="no" />
+        </LinearLayout>
+
+        <LinearLayout android:layout_width="0dp" android:layout_height="wrap_content" android:layout_weight="1" android:orientation="vertical" android:gravity="center">
+            <TextView android:id="@+id/widget_day_lbl_2" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="@string/widget_day_se" android:textColor="@color/it_widget_text_secondary" android:textSize="10sp" />
+            <ImageView android:id="@+id/widget_day_dot_2" android:layout_width="17dp" android:layout_height="17dp" android:layout_marginTop="4dp" android:src="@drawable/it_widget_day_future" android:importantForAccessibility="no" />
+        </LinearLayout>
+
+        <LinearLayout android:layout_width="0dp" android:layout_height="wrap_content" android:layout_weight="1" android:orientation="vertical" android:gravity="center">
+            <TextView android:id="@+id/widget_day_lbl_3" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="@string/widget_day_ch" android:textColor="@color/it_widget_text_secondary" android:textSize="10sp" />
+            <ImageView android:id="@+id/widget_day_dot_3" android:layout_width="17dp" android:layout_height="17dp" android:layout_marginTop="4dp" android:src="@drawable/it_widget_day_future" android:importantForAccessibility="no" />
+        </LinearLayout>
+
+        <LinearLayout android:layout_width="0dp" android:layout_height="wrap_content" android:layout_weight="1" android:orientation="vertical" android:gravity="center">
+            <TextView android:id="@+id/widget_day_lbl_4" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="@string/widget_day_pa" android:textColor="@color/it_widget_text_secondary" android:textSize="10sp" />
+            <ImageView android:id="@+id/widget_day_dot_4" android:layout_width="17dp" android:layout_height="17dp" android:layout_marginTop="4dp" android:src="@drawable/it_widget_day_future" android:importantForAccessibility="no" />
+        </LinearLayout>
+
+        <LinearLayout android:layout_width="0dp" android:layout_height="wrap_content" android:layout_weight="1" android:orientation="vertical" android:gravity="center">
+            <TextView android:id="@+id/widget_day_lbl_5" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="@string/widget_day_ju" android:textColor="@color/it_widget_text_secondary" android:textSize="10sp" />
+            <ImageView android:id="@+id/widget_day_dot_5" android:layout_width="17dp" android:layout_height="17dp" android:layout_marginTop="4dp" android:src="@drawable/it_widget_day_future" android:importantForAccessibility="no" />
+        </LinearLayout>
+
+        <LinearLayout android:layout_width="0dp" android:layout_height="wrap_content" android:layout_weight="1" android:orientation="vertical" android:gravity="center">
+            <TextView android:id="@+id/widget_day_lbl_6" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="@string/widget_day_sh" android:textColor="@color/it_widget_text_secondary" android:textSize="10sp" />
+            <ImageView android:id="@+id/widget_day_dot_6" android:layout_width="17dp" android:layout_height="17dp" android:layout_marginTop="4dp" android:src="@drawable/it_widget_day_future" android:importantForAccessibility="no" />
+        </LinearLayout>
+
+        <LinearLayout android:layout_width="0dp" android:layout_height="wrap_content" android:layout_weight="1" android:orientation="vertical" android:gravity="center">
+            <TextView android:id="@+id/widget_day_lbl_7" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="@string/widget_day_ya" android:textColor="@color/it_widget_text_secondary" android:textSize="10sp" />
+            <ImageView android:id="@+id/widget_day_dot_7" android:layout_width="17dp" android:layout_height="17dp" android:layout_marginTop="4dp" android:src="@drawable/it_widget_day_future" android:importantForAccessibility="no" />
+        </LinearLayout>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="4dp"
+            android:text="›"
+            android:textColor="@color/it_widget_brand"
+            android:textSize="16sp"
+            android:textStyle="bold"
+            android:importantForAccessibility="no" />
+    </LinearLayout>
+</LinearLayout>
+

@@ -20,6 +20,7 @@
     "@capacitor/core": "^8.5.0",
     "JSCPP": "^2.0.9",
     "pyodide": "^314.0.6",
+    "qrcode-generator": "^2.0.4",
     "sql.js": "^1.14.2"
   }
 }

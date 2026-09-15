@@ -1,4 +1,4 @@
-/* ==========================================================
+﻿/* ==========================================================
    IT/AI TEST PLATFORM — Vanilla JavaScript
    ========================================================== */
 
@@ -331,14 +331,36 @@ function rebuildAllTests() {
 Object.assign(Q_BANK, FALLBACK_Q_BANK);
 
 /* ====================== JSON LOADER ====================== */
+let ALL_TESTS = {};
+const QBANK_LOADING = { loaded: false, promise: null };
+
 async function loadQuestionBank() {
   try {
     const subjects = ['python', 'javascript', 'java', 'cpp', 'csharp', 'html', 'css', 'sql', 'ai'];
 
     for (const subject of subjects) {
       try {
-        const response = await fetch(`./data/${subject}.json`);
-        if (!response.ok) continue;
+        let response = null;
+        const baseDir = (location.href || '').includes('file:///')
+          ? (location.href.includes('android_asset')
+              ? 'file:///android_asset/public/data/'
+              : new URL('./data/', location.href).href)
+          : './data/';
+        const candidatePaths = [
+          `${baseDir}${subject}.json`,
+          `./data/${subject}.json`,
+          `data/${subject}.json`,
+          `./public/data/${subject}.json`,
+          `public/data/${subject}.json`,
+          new URL(`./data/${subject}.json`, location.href).href
+        ];
+        for (const p of candidatePaths) {
+          try {
+            const res = await fetch(p);
+            if (res && res.ok) { response = res; break; }
+          } catch (_) {}
+        }
+        if (!response) continue;
 
         const data = await response.json();
 
@@ -346,8 +368,8 @@ async function loadQuestionBank() {
           'python': 'Python',
           'javascript': 'JavaScript',
           'java': 'Java',
-          'cpp': 'CPlusPlus',
-          'csharp': 'CSharp',
+          'cpp': 'C++',
+          'csharp': 'C#',
           'html': 'HTML',
           'css': 'CSS',
           'sql': 'SQL',
@@ -362,7 +384,6 @@ async function loadQuestionBank() {
             advanced: data.advanced || []
           };
           const current = Q_BANK[key] || { beginner: [], intermediate: [], advanced: [] };
-          /* JSON data has priority — dedupe so no duplicate questions can enter pools */
           const seen = new Set();
           const mergeLevel = (fallbackArr, jsonArr) => {
             const out = [];
@@ -379,6 +400,8 @@ async function loadQuestionBank() {
             intermediate: mergeLevel(current.intermediate, merged.intermediate),
             advanced: mergeLevel(current.advanced, merged.advanced)
           };
+          if (key === 'C++') Q_BANK['CPlusPlus'] = Q_BANK['C++'];
+          if (key === 'C#') Q_BANK['CSharp'] = Q_BANK['C#'];
         }
       } catch (e) {
         console.debug(`Failed to load ${subject}.json (using fallback):`, e.message);
@@ -392,21 +415,25 @@ async function loadQuestionBank() {
 
     console.log('Question bank loaded:', Object.keys(Q_BANK));
 
+    const rebuilt = rebuildAllTests();
+    for (const k of Object.keys(rebuilt)) ALL_TESTS[k] = rebuilt[k];
+    console.log('ALL_TESTS rebuilt after JSON load.');
+    QBANK_LOADING.loaded = true;
+    // Agar hozir tests/testlist sahifalarida bo'lsa, JSON yuklangandan keyin qayta render qil (APKda ko'rinmagan testlarni ko'rinishi uchun).
     try {
-      if (typeof ALL_TESTS !== 'undefined') {
-        const rebuilt = rebuildAllTests();
-        for (const k of Object.keys(rebuilt)) ALL_TESTS[k] = rebuilt[k];
-        console.log('ALL_TESTS rebuilt after JSON load.');
+      const active = document.querySelector('.page.active');
+      if (active) {
+        const id = active.id || '';
+        if (id === 'page-tests') renderTestsPage();
+        else if (id === 'page-testlist' && currentSubject) openSubjectTests(currentSubject);
       }
-    } catch (e) {
-      console.warn('ALL_TESTS rebuild skipped:', e);
-    }
+    } catch (_) {}
   } catch (error) {
     console.error('Error loading question bank:', error);
   }
 }
 
-loadQuestionBank();
+QBANK_LOADING.promise = loadQuestionBank();
 
 /* Question banks are loaded from JSON files and custom banks below. */
 
@@ -625,7 +652,6 @@ function createTestsForSubject(subjectName) {
   return tests;
 }
 
-const ALL_TESTS = {};
 Object.assign(ALL_TESTS, rebuildAllTests());
 
 function findTestById(id) {
@@ -766,8 +792,8 @@ const RARITY_LABELS = {
 
 const LS = {
   get(key, def = null) { try { const v = localStorage.getItem(key); return v ? JSON.parse(v) : def; } catch (e) { return def; } },
-  set(key, val) { localStorage.setItem(key, JSON.stringify(val)); },
-  del(key) { localStorage.removeItem(key); },
+  set(key, val) { try { localStorage.setItem(key, JSON.stringify(val)); return true; } catch (e) { console.warn('LS.set failed:', key, e?.message || e); return false; } },
+  del(key) { try { localStorage.removeItem(key); return true; } catch (e) { console.warn('LS.del failed:', key, e?.message || e); return false; } },
 };
 
 /* ====================== AUTH & USER ====================== */
@@ -839,6 +865,7 @@ function saveUsersAndCurrent() {
     userStatsMemo.delete(currentUser);
   }
   else LS.del("currentUser");
+  try { if (window.ITWidgetSync && typeof window.ITWidgetSync.schedule === 'function') window.ITWidgetSync.schedule(); } catch (_) {}
 }
 
 function migrateLegacyKeys() {
@@ -865,10 +892,14 @@ function dayKey(ts = Date.now()) {
   return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`;
 }
 function updateStreakOnTest(user) {
+  if (window.DailyStreak && typeof window.DailyStreak.syncStreakAndFreezes === "function") {
+    try { window.DailyStreak.syncStreakAndFreezes(user); } catch (e) { /* noop */ }
+  }
   const today = dayKey();
   const yest = dayKey(Date.now() - 86400000);
   if (user.lastActiveDay === today) return;
   if (user.lastActiveDay === yest) user.streak = (user.streak || 0) + 1;
+  else if (user.streak > 0 && user.lastActiveDay) user.streak = (user.streak || 0) + 1;
   else user.streak = 1;
   user.lastActiveDay = today;
 }
@@ -901,6 +932,7 @@ function applyTheme(theme) {
   LS.set("theme", theme);
   const b = $("#settingsThemeBtn");
   if (b) b.textContent = theme === "dark" ? "🌙 Dark" : "☀️ Light";
+  try { if (window.ITWidgetSync && typeof window.ITWidgetSync.push === 'function') window.ITWidgetSync.push(); } catch (_) {}
 }
 function loadTheme() { applyTheme(LS.get("theme", "dark")); }
 
@@ -911,13 +943,21 @@ const PAGE_TITLES = {
   ranking: "Reyting", achievements: "Yutuqlar", profile: "Profil", settings: "Sozlamalar",
   duel: "Duel", store: "Do'kon", coding: "Code Playground", projects: "Loyihalarim",
   lessons: "Darslar", lessonCourse: "Kurs darslari", lessonView: "Dars",
+  certificate: "Sertifikatlar",
 };
-const PROTECTED_PAGES = ["dashboard", "tests", "testlist", "test", "result", "ranking", "achievements", "profile", "duel", "store", "coding", "projects", "lessons", "lessonCourse", "lessonView"];
+const PROTECTED_PAGES = ["dashboard", "tests", "testlist", "test", "result", "ranking", "achievements", "profile", "duel", "store", "coding", "projects", "lessons", "lessonCourse", "lessonView", "certificate"];
 
-/* Darslar tizimi (lessons-app.js) bilan integratsiya uchun expose */
+/* Darslar va Daily Streak tizimlari bilan integratsiya uchun expose */
 window.__itShowPage = showPage;
 window.__itGetCurrentUser = () => currentUser;
 window.__itConfetti = triggerConfetti;
+window.__itStartQuiz = startQuiz;
+window.__itOpenSubjectTests = openSubjectTests;
+window.__itFindTestById = findTestById;
+window.__itGetAllTests = () => ALL_TESTS;
+window.__itGetSubjects = () => SUBJECTS;
+/* Sertifikat tizimi (certificates.js) ismni user state'ga mirror qilishi uchun */
+window.__itSaveUserState = saveUsersAndCurrent;
 
 function showPage(name) {
   /* "Natijalar" bo'limi olib tashlangan — eski /#results link/dashboard havolalari
@@ -944,11 +984,20 @@ function showPage(name) {
   else if (name === "store") renderStore();
   else if (name === "coding") renderCodingPage();
   else if (name === "projects") { if (typeof renderProjectsPage === "function") renderProjectsPage(); }
+  else if (name === "certificate") renderCertificatePage();
   else if (name === "lessons" || name === "lessonCourse" || name === "lessonView") {
     if (window.Lessons) window.Lessons.handlePage(name);
   }
   window.scrollTo({ top: 0, behavior: "instant" });
 }
+
+function showAuthScreen() {
+  $("#app").classList.add("hidden");
+  $("#authScreen").classList.remove("hidden");
+  const loginTab = $(".auth-tab[data-tab='login']");
+  if (loginTab) loginTab.click();
+}
+
 function bindNav() {
   const app = $("#app");
   const sidebar = $("#sidebar");
@@ -1108,12 +1157,6 @@ function bindNav() {
     logoutUser();
   });
 
-function showAuthScreen() {
-  $("#app").classList.add("hidden");
-  $("#authScreen").classList.remove("hidden");
-  const loginTab = $(".auth-tab[data-tab='login']");
-  if (loginTab) loginTab.click();
-}
   syncSidebarState();
 }
 
@@ -1149,13 +1192,6 @@ function refreshUserMenu() {
   if (a) a.textContent = getActiveAvatar(u);
 }
 
-function showAuthScreen() {
-  $("#app").classList.add("hidden");
-  $("#authScreen").classList.remove("hidden");
-  const loginTab = $(".auth-tab[data-tab='login']");
-  if (loginTab) loginTab.click();
-}
-
 function showAuth() {
   showAuthScreen();
 }
@@ -1171,6 +1207,7 @@ function logoutUser() {
   if (window.ITOnboarding) {
     try { window.ITOnboarding.hide(); } catch (e) { /* noop */ }
   }
+  try { if (window.ITWidgetSync && typeof window.ITWidgetSync.push === 'function') window.ITWidgetSync.push(); } catch (_) {}
   showToast("🚪 Hisobdan chiqdingiz. Yana ko'rishguncha!", "info");
   showAuthScreen();
 }
@@ -1201,6 +1238,7 @@ window.__itOnboardingFinish = function () {
   delete currentUser.onboardingPending;
   currentUser.onboardingCompleted = true;
   saveUsersAndCurrent();
+  try { if (window.ITWidgetSync && typeof window.ITWidgetSync.push === 'function') window.ITWidgetSync.push(); } catch (_) {}
   return true;
 };
 
@@ -1319,8 +1357,8 @@ function updateDuelStatsUI() {
 
 function renderDashboard() {
   /* YANGI DASHBOARD (0 dan qayta qurilgan) — window.ITDashboard.render()
-     real user data bilan render qiladi: hero, bugungi progress, streak,
-     current lesson, quick actions, test/duel/challenge, XP/goal, activity.
+     real user data bilan render qiladi: hero, keyingi qadam, streak,
+     quick actions, test/duel/challenge, XP/goal, activity.
      Eski giant hero, stats-grid, fanlar progressi, chartlar va
      "So'nggi natijalar" paneli Dashboarddan butunlay olib tashlandi. */
   if (window.ITDashboard && typeof window.ITDashboard.render === "function") {
@@ -1382,7 +1420,10 @@ function renderTestsPage() {
   }
 
   for (const s of list) grid.appendChild(subjectCard(s));
-  if (!list.length) grid.innerHTML = `<div class="empty-state">Fan topilmadi</div>`;
+  if (!list.length) {
+    if (!QBANK_LOADING.loaded) grid.innerHTML = `<div class="empty-state"><div class="spinner" style="display:inline-block;vertical-align:middle;margin-right:8px;border:2px solid var(--itt-muted, #94A3B8);border-top-color:var(--itt-primary,#2563EB);border-radius:50%;width:18px;height:18px;animation:spin 0.9s linear infinite;"></div>Testlar yuklanmoqda...</div>`;
+    else grid.innerHTML = `<div class="empty-state">Fan topilmadi</div>`;
+  }
 }
 
 function bindTestsPage() {
@@ -1418,7 +1459,10 @@ function openSubjectTests(name) {
   const list = ALL_TESTS[name] || [];
   const container = $("#testListContainer");
   container.innerHTML = "";
-  if (!list.length) container.innerHTML = `<div class="empty-state">Testlar mavjud emas</div>`;
+  if (!list.length) {
+    if (!QBANK_LOADING.loaded) container.innerHTML = `<div class="empty-state" style="padding:48px 16px;text-align:center;"><div class="spinner" style="display:inline-block;vertical-align:middle;margin-right:10px;border:3px solid var(--itt-muted,#94A3B8);border-top-color:var(--itt-primary,#2563EB);border-radius:50%;width:22px;height:22px;animation:spin 0.9s linear infinite;"></div>${name} testlari yuklanmoqda... Iltimos kuting.</div>`;
+    else container.innerHTML = `<div class="empty-state">Testlar mavjud emas</div>`;
+  }
 
   ensureUserTestProgress(currentUser);
 
@@ -1594,7 +1638,7 @@ function renderQuestionNav() {
     }
     if (quiz.marked[i]) btn.classList.add("marked");
     btn.textContent = String(i + 1);
-    btn.addEventListener("click", () => { quiz.currentIndex = i; renderQuestion(); renderProgress(); });
+    btn.addEventListener("click", () => { if (quiz.autoNavTimeout) { clearTimeout(quiz.autoNavTimeout); quiz.autoNavTimeout = null; } quiz.currentIndex = i; renderQuestion(); renderProgress(); });
     nav.appendChild(btn);
   }
 }
@@ -1674,7 +1718,7 @@ function renderQuestion() {
   });
 
   $("#prevBtn").disabled = idx === 0;
-  $("#nextBtn").disabled = hasAnswer;
+  $("#nextBtn").disabled = false;
   $("#clearAnswerBtn").disabled = !hasAnswer;
   $("#nextBtn").textContent = idx === quiz.test.questions.length - 1 ? "Yakunlash →" : "Keyingi →";
 
@@ -1823,6 +1867,17 @@ function finishTest({ silent = false } = {}) {
     updateStreakOnTest(currentUser);
     awardXPAndPoints(currentUser, score);
     saveUsersAndCurrent();
+  }
+
+  if (window.DailyStreak && typeof window.DailyStreak.onTestFinished === "function") {
+    try {
+      window.DailyStreak.onTestFinished({
+        subject: test.subject,
+        testId: test.id,
+        score: score,
+        passed: passed
+      });
+    } catch (e) { console.warn("DailyStreak test hook xatosi:", e); }
   }
 
   if (!silent) showToast(passed ? "Test yakunlandi ✓" : "Test yakunlandi", passed ? "success" : "warning");
@@ -2081,6 +2136,10 @@ function renderProfile() {
       </div>
     </div>
   `);
+  /* Sertifikatlar umumiy ko'rsatkichi (certificates.js) */
+  if (window.ITCertificates && typeof window.ITCertificates.renderProfileSummary === "function") {
+    try { window.ITCertificates.renderProfileSummary(); } catch (e) { /* noop */ }
+  }
 }
 
 /* ====================== PROFILE EDIT MODAL ====================== */
@@ -2172,6 +2231,7 @@ finishTest = function (opts) {
       openModal("#achievementModal");
     }
   }
+  try { if (window.ITWidgetSync && typeof window.ITWidgetSync.push === 'function') window.ITWidgetSync.push(); } catch (_) {}
 };
 
 /* ====================== DUEL ENGINE ====================== */
@@ -3025,7 +3085,7 @@ document.addEventListener("DOMContentLoaded", () => {
   loadTheme();
   loadSidebarState();
   bindAuth();
-  bindNav();
+  bindNav(); bindCertificateActions();
   bindTestsPage();
   bindQuizUI();
   bindResultActions();
@@ -4852,3 +4912,20 @@ function downloadCleanHtml() {
   URL.revokeObjectURL(url);
   showToast("⬇️ index.html yuklab olindi", "success");
 }
+
+/* ====================== CERTIFICATE PAGE (per-lesson tizimga delegatsiya) ======================
+   To'liq implementatsiya: certificates.js (window.ITCertificates)  */
+function renderCertificatePage() {
+  if (window.ITCertificates && typeof window.ITCertificates.renderPage === "function") {
+    try { window.ITCertificates.renderPage(); return; }
+    catch (e) { console.warn("ITCertificates.renderPage xatosi:", e); }
+  }
+  const host = $("#certGrid");
+  if (host) host.innerHTML = '<p class="muted">Sertifikatlar moduli yuklanmadi.</p>';
+}
+
+function bindCertificateActions() {
+  /* Eski single-certificate UI olib tashlandi.
+     Name edit / PDF / Share / Verify — barchasi certificates.js ichida boshqariladi. */
+}
+
