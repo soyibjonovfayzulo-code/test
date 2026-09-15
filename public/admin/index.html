@@ -1,0 +1,231 @@
+<!DOCTYPE html>
+<html lang="uz">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Admin Dashboard — IT Test Platform</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="admin.css">
+</head>
+<body>
+
+<!-- SIDEBAR -->
+<aside class="sidebar" id="sidebar">
+  <div class="sidebar-header">
+    <span class="sidebar-logo">⚙️</span>
+    <div>
+      <div class="sidebar-title">Admin Panel</div>
+      <div class="sidebar-sub">IT Test Platform</div>
+    </div>
+  </div>
+  <nav class="sidebar-nav">
+    <button class="nav-item active" data-tab="dashboard" onclick="showTab('dashboard',this)">
+      <span class="nav-icon">📊</span><span>Dashboard</span>
+    </button>
+    <button class="nav-item" data-tab="courses" onclick="showTab('courses',this)">
+      <span class="nav-icon">📚</span><span>Kurslar</span>
+    </button>
+    <button class="nav-item" data-tab="lessons" onclick="showTab('lessons',this)">
+      <span class="nav-icon">🎓</span><span>Darslar</span>
+    </button>
+  </nav>
+  <div class="sidebar-footer">
+    <button class="logout-btn" onclick="logout()">🚪 Chiqish</button>
+  </div>
+</aside>
+
+<!-- MAIN -->
+<main class="main" id="main">
+
+  <!-- HEADER -->
+  <header class="topbar">
+    <button class="menu-toggle" onclick="toggleSidebar()">☰</button>
+    <div class="topbar-title" id="pageTitle">Dashboard</div>
+    <div class="topbar-right">
+      <span class="admin-badge">👤 admin</span>
+    </div>
+  </header>
+
+  <!-- TAB: DASHBOARD -->
+  <section class="tab-content" id="tab-dashboard">
+    <div class="page-header">
+      <h2>Dashboard</h2>
+      <p>Platformaning umumiy ko'rinishi</p>
+    </div>
+    <div class="stats-grid" id="statsGrid">
+      <div class="stat-card"><div class="stat-icon">📚</div><div class="stat-val" id="statCourses">–</div><div class="stat-label">Kurslar</div></div>
+      <div class="stat-card"><div class="stat-icon">🎓</div><div class="stat-val" id="statLessons">–</div><div class="stat-label">Darslar</div></div>
+      <div class="stat-card"><div class="stat-icon">📝</div><div class="stat-val" id="statQuizzes">–</div><div class="stat-label">Quizlar</div></div>
+    </div>
+    <div class="card mt-24">
+      <div class="card-header">
+        <h3>Kurslar ro'yxati</h3>
+      </div>
+      <div class="courses-overview" id="coursesOverview">Yuklanmoqda...</div>
+    </div>
+  </section>
+
+  <!-- TAB: COURSES -->
+  <section class="tab-content hidden" id="tab-courses">
+    <div class="page-header">
+      <h2>Kurslarni boshqarish</h2>
+      <p>Yangi kurs qo'shish, mavjudlarni tahrirlash</p>
+    </div>
+    <div class="toolbar">
+      <button class="btn btn-primary" onclick="openCourseModal()">➕ Yangi Kurs</button>
+    </div>
+    <div class="card mt-16">
+      <table class="data-table" id="coursesTable">
+        <thead><tr><th>ID</th><th>Nom</th><th>Icon</th><th>Rang</th><th>Darslar</th><th>Amallar</th></tr></thead>
+        <tbody id="coursesTableBody"><tr><td colspan="6" class="loading">Yuklanmoqda...</td></tr></tbody>
+      </table>
+    </div>
+  </section>
+
+  <!-- TAB: LESSONS -->
+  <section class="tab-content hidden" id="tab-lessons">
+    <div class="page-header">
+      <h2>Darslarni boshqarish</h2>
+      <p>Darslar qo'shish, tahrirlash, o'chirish</p>
+    </div>
+    <div class="toolbar">
+      <select class="form-select" id="lessonCourseFilter" onchange="filterLessons()">
+        <option value="">Barcha kurslar</option>
+      </select>
+      <button class="btn btn-primary" onclick="openLessonModal()">➕ Yangi Dars</button>
+    </div>
+    <div class="card mt-16">
+      <table class="data-table" id="lessonsTable">
+        <thead><tr><th>#</th><th>Dars nomi</th><th>Kurs</th><th>Davomiylik</th><th>XP</th><th>Amallar</th></tr></thead>
+        <tbody id="lessonsTableBody"><tr><td colspan="6" class="loading">Yuklanmoqda...</td></tr></tbody>
+      </table>
+    </div>
+  </section>
+
+</main>
+
+<!-- MODAL: Course -->
+<div class="modal-overlay" id="courseModal">
+  <div class="modal">
+    <div class="modal-header">
+      <h3 id="courseModalTitle">Yangi Kurs</h3>
+      <button class="modal-close" onclick="closeCourseModal()">✕</button>
+    </div>
+    <div class="modal-body">
+      <div class="form-row">
+        <div class="form-group">
+          <label>ID (lotin, tire)</label>
+          <input type="text" id="courseId" placeholder="html, css, javascript">
+        </div>
+        <div class="form-group">
+          <label>Icon (emoji)</label>
+          <input type="text" id="courseIcon" placeholder="🌐" style="font-size:20px">
+        </div>
+      </div>
+      <div class="form-group">
+        <label>Kurs nomi</label>
+        <input type="text" id="courseName" placeholder="HTML Asoslari">
+      </div>
+      <div class="form-group">
+        <label>Rang (hex yoki rgb)</label>
+        <div style="display:flex;gap:8px;align-items:center">
+          <input type="color" id="courseColorPicker" value="#2563eb" oninput="document.getElementById('courseColor').value=this.value" style="width:48px;height:40px;padding:2px;border-radius:8px;border:1px solid var(--border);background:var(--surface2);cursor:pointer">
+          <input type="text" id="courseColor" placeholder="#e34f26" style="flex:1" oninput="document.getElementById('courseColorPicker').value=this.value">
+        </div>
+      </div>
+      <div class="form-group">
+        <label>Tagline (qisqa ta'rif)</label>
+        <input type="text" id="courseTagline" placeholder="Web sahifalar yaratishni o'rganing.">
+      </div>
+      <div class="form-group">
+        <label>To'liq tavsif</label>
+        <textarea id="courseDescription" rows="3" placeholder="Kurs haqida to'liq ma'lumot..."></textarea>
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn btn-ghost" onclick="closeCourseModal()">Bekor qilish</button>
+      <button class="btn btn-primary" id="saveCourseBtn" onclick="saveCourse()">Saqlash</button>
+    </div>
+  </div>
+</div>
+
+<!-- MODAL: Lesson -->
+<div class="modal-overlay" id="lessonModal">
+  <div class="modal modal-xl">
+    <div class="modal-header">
+      <h3 id="lessonModalTitle">Yangi Dars</h3>
+      <button class="modal-close" onclick="closeLessonModal()">✕</button>
+    </div>
+    <div class="modal-body">
+      <div class="form-row">
+        <div class="form-group" style="flex:2">
+          <label>Dars nomi</label>
+          <input type="text" id="lessonTitle" placeholder="HTML nima?">
+        </div>
+        <div class="form-group">
+          <label>Kurs</label>
+          <select class="form-select" id="lessonCourseId">
+            <option value="">— tanlang —</option>
+          </select>
+        </div>
+      </div>
+      <div class="form-row">
+        <div class="form-group">
+          <label>Davomiylik (daqiqa)</label>
+          <input type="number" id="lessonDuration" placeholder="15" min="1">
+        </div>
+        <div class="form-group">
+          <label>XP mukofot</label>
+          <input type="number" id="lessonXp" placeholder="20" min="0">
+        </div>
+      </div>
+
+      <div class="tabs-mini">
+        <button class="tab-mini-btn active" onclick="switchLessonTab('content', this)">📄 Kontent</button>
+        <button class="tab-mini-btn" onclick="switchLessonTab('quiz', this)">❓ Quiz</button>
+      </div>
+
+      <!-- Lesson Content -->
+      <div id="lessonTabContent" class="lesson-tab-panel">
+        <div class="form-group">
+          <label>Kirish matni (intro)</label>
+          <textarea id="lessonIntro" rows="3" placeholder="Bu darsda nima o'rganamiz..."></textarea>
+        </div>
+        <div class="form-group">
+          <label>Asosiy bo'limlar (sections) — JSON</label>
+          <textarea id="lessonSections" rows="8" placeholder='[{"title":"Bo\u02bclim 1","text":"Matn...","code":"<h1>Salom</h1>"}]'></textarea>
+          <div class="field-hint">Har bir bo'lim: <code>{"title","text","code","codeNote","note","result"}</code></div>
+        </div>
+        <div class="form-group">
+          <label>Key Points — JSON massiv</label>
+          <textarea id="lessonKeyPoints" rows="4" placeholder='["Birinchi muhim fikr","Ikkinchi fikr"]'></textarea>
+        </div>
+      </div>
+
+      <!-- Quiz -->
+      <div id="lessonTabQuiz" class="lesson-tab-panel hidden">
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px">
+          <label style="margin:0;font-size:13px;font-weight:600;color:var(--text-muted);text-transform:uppercase;letter-spacing:.5px">Savollar</label>
+          <button class="btn btn-sm btn-primary" onclick="addQuizQuestion()">➕ Savol qo'shish</button>
+        </div>
+        <div class="quiz-questions" id="quizQuestions"></div>
+        <div class="form-group mt-16">
+          <label>O'tish bali (passingScore, %)</label>
+          <input type="number" id="quizPassingScore" placeholder="80" min="0" max="100">
+        </div>
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn btn-ghost" onclick="closeLessonModal()">Bekor qilish</button>
+      <button class="btn btn-primary" id="saveLessonBtn" onclick="saveLesson()">Saqlash</button>
+    </div>
+  </div>
+</div>
+
+<!-- TOAST -->
+<div class="toast-container" id="toastContainer"></div>
+
+<script src="admin.js"></script>
+</body>
+</html>

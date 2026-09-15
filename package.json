@@ -8,7 +8,9 @@
     "build": "vite build",
     "preview": "vite preview",
     "audit": "node audit-tests.cjs",
-    "ai:server": "node server/ai-backend.mjs"
+    "ai:server": "node server/ai-backend.mjs",
+    "server": "node server/server.cjs",
+    "migrate": "node server/migrate.cjs"
   },
   "devDependencies": {
     "jsdom": "^30.0.1",
@@ -18,8 +20,13 @@
     "@capacitor/android": "^8.5.0",
     "@capacitor/cli": "^8.5.0",
     "@capacitor/core": "^8.5.0",
+    "bcrypt": "^6.0.0",
+    "cors": "^2.8.6",
+    "express": "^5.2.1",
     "JSCPP": "^2.0.9",
+    "jsonwebtoken": "^9.0.3",
     "pyodide": "^314.0.6",
-    "sql.js": "^1.14.2"
+    "sql.js": "^1.14.2",
+    "sqlite3": "^6.0.1"
   }
 }
