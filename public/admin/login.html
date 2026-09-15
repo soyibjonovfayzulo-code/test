@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="uz">
+
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -7,103 +8,218 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
   <style>
-    *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
-    :root{
-      --bg:#0d1117;--surface:#161b22;--surface2:#21262d;--border:#30363d;
-      --accent:#2563eb;--accent-hover:#1d4ed8;--danger:#ef4444;--success:#22c55e;
-      --text:#e6edf3;--text-muted:#8b949e;--text-dim:#484f58;
-      --radius:12px;--radius-sm:8px;
+    *,
+    *::before,
+    *::after {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0
     }
-    body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--text);min-height:100vh;display:flex;align-items:center;justify-content:center}
 
-    .login-wrap{width:100%;max-width:400px;padding:24px}
-    .login-card{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:40px;box-shadow:0 24px 80px rgba(0,0,0,.5)}
-    .login-logo{text-align:center;margin-bottom:32px}
-    .login-logo .icon{font-size:48px;display:block;margin-bottom:12px}
-    .login-logo h1{font-size:22px;font-weight:700;letter-spacing:-.5px}
-    .login-logo p{color:var(--text-muted);font-size:13px;margin-top:4px}
+    :root {
+      --bg: #0d1117;
+      --surface: #161b22;
+      --surface2: #21262d;
+      --border: #30363d;
+      --accent: #2563eb;
+      --accent-hover: #1d4ed8;
+      --danger: #ef4444;
+      --success: #22c55e;
+      --text: #e6edf3;
+      --text-muted: #8b949e;
+      --text-dim: #484f58;
+      --radius: 12px;
+      --radius-sm: 8px;
+    }
 
-    .form-group{margin-bottom:18px}
-    label{display:block;font-size:13px;font-weight:500;color:var(--text-muted);margin-bottom:6px;text-transform:uppercase;letter-spacing:.5px}
-    input{width:100%;background:var(--surface2);border:1px solid var(--border);border-radius:var(--radius-sm);color:var(--text);padding:11px 14px;font-size:14px;font-family:inherit;outline:none;transition:border-color .2s}
-    input:focus{border-color:var(--accent)}
-    .btn-primary{width:100%;background:var(--accent);color:#fff;border:none;border-radius:var(--radius-sm);padding:13px;font-size:15px;font-weight:600;font-family:inherit;cursor:pointer;transition:background .2s,transform .1s}
-    .btn-primary:hover{background:var(--accent-hover)}
-    .btn-primary:active{transform:scale(.98)}
-    .error-msg{background:rgba(239,68,68,.1);border:1px solid rgba(239,68,68,.3);color:#f87171;padding:10px 14px;border-radius:var(--radius-sm);font-size:13px;margin-bottom:16px;display:none}
-    .error-msg.show{display:block}
+    body {
+      font-family: 'Inter', sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center
+    }
+
+    .login-wrap {
+      width: 100%;
+      max-width: 400px;
+      padding: 24px
+    }
+
+    .login-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 40px;
+      box-shadow: 0 24px 80px rgba(0, 0, 0, .5)
+    }
+
+    .login-logo {
+      text-align: center;
+      margin-bottom: 32px
+    }
+
+    .login-logo .icon {
+      font-size: 48px;
+      display: block;
+      margin-bottom: 12px
+    }
+
+    .login-logo h1 {
+      font-size: 22px;
+      font-weight: 700;
+      letter-spacing: -.5px
+    }
+
+    .login-logo p {
+      color: var(--text-muted);
+      font-size: 13px;
+      margin-top: 4px
+    }
+
+    .form-group {
+      margin-bottom: 18px
+    }
+
+    label {
+      display: block;
+      font-size: 13px;
+      font-weight: 500;
+      color: var(--text-muted);
+      margin-bottom: 6px;
+      text-transform: uppercase;
+      letter-spacing: .5px
+    }
+
+    input {
+      width: 100%;
+      background: var(--surface2);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-sm);
+      color: var(--text);
+      padding: 11px 14px;
+      font-size: 14px;
+      font-family: inherit;
+      outline: none;
+      transition: border-color .2s
+    }
+
+    input:focus {
+      border-color: var(--accent)
+    }
+
+    .btn-primary {
+      width: 100%;
+      background: var(--accent);
+      color: #fff;
+      border: none;
+      border-radius: var(--radius-sm);
+      padding: 13px;
+      font-size: 15px;
+      font-weight: 600;
+      font-family: inherit;
+      cursor: pointer;
+      transition: background .2s, transform .1s
+    }
+
+    .btn-primary:hover {
+      background: var(--accent-hover)
+    }
+
+    .btn-primary:active {
+      transform: scale(.98)
+    }
+
+    .error-msg {
+      background: rgba(239, 68, 68, .1);
+      border: 1px solid rgba(239, 68, 68, .3);
+      color: #f87171;
+      padding: 10px 14px;
+      border-radius: var(--radius-sm);
+      font-size: 13px;
+      margin-bottom: 16px;
+      display: none
+    }
+
+    .error-msg.show {
+      display: block
+    }
   </style>
 </head>
+
 <body>
-<div class="login-wrap">
-  <div class="login-card">
-    <div class="login-logo">
-      <span class="icon">🔐</span>
-      <h1>Admin Panel</h1>
-      <p>IT Test Platform boshqaruvi</p>
+  <div class="login-wrap">
+    <div class="login-card">
+      <div class="login-logo">
+        <span class="icon">🔐</span>
+        <h1>Admin Panel</h1>
+        <p>IT Test Platform boshqaruvi</p>
+      </div>
+      <div class="error-msg" id="errorMsg">Xato! Foydalanuvchi nomi yoki parol noto'g'ri.</div>
+      <div class="form-group">
+        <label for="username">Login</label>
+        <input type="text" id="username" placeholder="admin" autocomplete="username">
+      </div>
+      <div class="form-group">
+        <label for="password">Parol</label>
+        <input type="password" id="password" placeholder="••••••••" autocomplete="current-password">
+      </div>
+      <button class="btn-primary" id="loginBtn" onclick="doLogin()">Kirish</button>
     </div>
-    <div class="error-msg" id="errorMsg">Xato! Foydalanuvchi nomi yoki parol noto'g'ri.</div>
-    <div class="form-group">
-      <label for="username">Login</label>
-      <input type="text" id="username" placeholder="admin" autocomplete="username">
-    </div>
-    <div class="form-group">
-      <label for="password">Parol</label>
-      <input type="password" id="password" placeholder="••••••••" autocomplete="current-password">
-    </div>
-    <button class="btn-primary" id="loginBtn" onclick="doLogin()">Kirish</button>
   </div>
-</div>
 
-<script>
-  if (localStorage.getItem('admin_token')) {
-    window.location.href = '/admin/';
-  }
-
-  async function doLogin() {
-    const username = document.getElementById('username').value.trim();
-    const password = document.getElementById('password').value;
-    const err = document.getElementById('errorMsg');
-    const btn = document.getElementById('loginBtn');
-
-    if (!username || !password) {
-      err.textContent = 'Login va parolni kiriting.';
-      err.classList.add('show');
-      return;
+  <script>
+    if (localStorage.getItem('admin_token')) {
+      window.location.href = '/admin/';
     }
 
-    btn.textContent = 'Kirilmoqda...';
-    btn.disabled = true;
-    err.classList.remove('show');
+    async function doLogin() {
+      const username = document.getElementById('username').value.trim();
+      const password = document.getElementById('password').value;
+      const err = document.getElementById('errorMsg');
+      const btn = document.getElementById('loginBtn');
 
-    try {
-      const res = await fetch('/api/auth/login', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ username, password })
-      });
-      const data = await res.json();
+      if (!username || !password) {
+        err.textContent = 'Login va parolni kiriting.';
+        err.classList.add('show');
+        return;
+      }
 
-      if (res.ok && data.token) {
-        localStorage.setItem('admin_token', data.token);
-        window.location.href = '/admin/';
-      } else {
-        err.textContent = data.error || 'Kirish muvaffaqiyatsiz.';
+      btn.textContent = 'Kirilmoqda...';
+      btn.disabled = true;
+      err.classList.remove('show');
+
+      try {
+        const res = await fetch('/api/auth/login', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ username, password })
+        });
+        const data = await res.json();
+
+        if (res.ok && data.token) {
+          localStorage.setItem('admin_token', data.token);
+          window.location.href = '/admin/';
+        } else {
+          err.textContent = data.error || 'Kirish muvaffaqiyatsiz.';
+          err.classList.add('show');
+          btn.textContent = 'Kirish';
+          btn.disabled = false;
+        }
+      } catch (e) {
+        err.textContent = 'Server bilan aloqa yo\'q. `npm run server` ishlayaptimi?';
         err.classList.add('show');
         btn.textContent = 'Kirish';
         btn.disabled = false;
       }
-    } catch (e) {
-      err.textContent = 'Server bilan aloqa yo\'q. `npm run server` ishlayaptimi?';
-      err.classList.add('show');
-      btn.textContent = 'Kirish';
-      btn.disabled = false;
     }
-  }
 
-  document.addEventListener('keydown', e => {
-    if (e.key === 'Enter') doLogin();
-  });
-</script>
+    document.addEventListener('keydown', e => {
+      if (e.key === 'Enter') doLogin();
+    });
+  </script>
 </body>
+
 </html>

@@ -34,7 +34,7 @@
   (function () {
     'use strict';
 
-    const COURSES = [
+    let COURSES = [
       {
         id: 'html',
         name: 'HTML',
@@ -2870,8 +2870,28 @@
         if (!found || found.index <= 0) return null;
         return found.course.lessons[found.index - 1];
       },
-      raw: COURSES
+      raw: COURSES,
+      loadFromBackend: async function() {
+        try {
+          const res = await fetch('/api/courses');
+          if (!res.ok) return false;
+          const data = await res.json();
+          if (Array.isArray(data) && data.length > 0) {
+            COURSES = data;
+            window.CoursesAPI.raw = COURSES;
+            window.CoursesAPI.refresh();
+            if (typeof renderCoursesPage === 'function') { try { renderCoursesPage(); } catch (_) {} }
+            return true;
+          }
+        } catch (_) {}
+        return false;
+      }
     };
+    if (typeof window !== 'undefined') {
+      window.addEventListener('DOMContentLoaded', function() {
+        setTimeout(function() { window.CoursesAPI.loadFromBackend(); }, 80);
+      });
+    }
   })();
 
 
@@ -9157,7 +9177,47 @@
     }
   }
 
+  async function loadQuestionBankFromBackend() {
+    try {
+      const res = await fetch('/api/tests/questions');
+      if (!res.ok) return;
+      const questions = await res.json();
+      if (!Array.isArray(questions) || !questions.length) return;
+
+      for (const item of questions) {
+        const sbj = item.subject;
+        const diff = item.difficulty || 'beginner';
+        if (!Q_BANK[sbj]) {
+          Q_BANK[sbj] = { beginner: [], intermediate: [], advanced: [] };
+        }
+        if (!Q_BANK[sbj][diff]) Q_BANK[sbj][diff] = [];
+        
+        // Dublikat bo'lmasa qo'shamiz
+        const exists = Q_BANK[sbj][diff].some(x => (x.q || x.question) === (item.q || item.question));
+        if (!exists) {
+          Q_BANK[sbj][diff].push({
+            q: item.q || item.question,
+            o: item.o || item.options,
+            c: item.c !== undefined ? item.c : item.answer,
+            e: item.e || item.explanation
+          });
+        }
+      }
+
+      if (typeof rebuildAllTests === 'function' && typeof ALL_TESTS !== 'undefined') {
+        const rebuilt = rebuildAllTests();
+        for (const k of Object.keys(rebuilt)) ALL_TESTS[k] = rebuilt[k];
+        console.log('ALL_TESTS rebuilt after backend test questions sync.');
+      }
+    } catch (_) {}
+  }
+
   loadQuestionBank();
+  if (typeof window !== 'undefined') {
+    window.addEventListener('DOMContentLoaded', function() {
+      setTimeout(loadQuestionBankFromBackend, 120);
+    });
+  }
 
   /* Question banks are loaded from JSON files and custom banks below. */
 
@@ -13714,3 +13774,21 @@ ${safeJs}
 
 })();
 
+
+  // Admin button visibility check
+  async function checkAdminStatus() {
+    try {
+      const token = localStorage.getItem('admin_token');
+      if (!token) return;
+      const res = await fetch('/api/auth/me', {
+        headers: { 'Authorization': 'Bearer ' + token }
+      });
+      if (res.ok) {
+        const link = document.getElementById('adminPanelLink');
+        if (link) link.style.display = 'flex';
+      }
+    } catch (_) {}
+  }
+  if (typeof window !== 'undefined') {
+    window.addEventListener('DOMContentLoaded', checkAdminStatus);
+  }

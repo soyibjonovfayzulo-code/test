@@ -13,8 +13,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap"
-    rel="stylesheet" />
-  <script type="module" crossorigin src="/assets/index-Cu1ZHcHj.js"></script>
+    rel="stylesheet" />
   <link rel="stylesheet" crossorigin href="/assets/index-CIR5wzcF.css">
 </head>
 
@@ -273,6 +272,8 @@
             class="nav-label">Profil</span></a>
         <a href="#settings" class="nav-item" data-page="settings"><span class="nav-icon"
             aria-hidden="true">⚙️</span><span class="nav-label">Sozlamalar</span></a>
+        <a href="/admin/" class="nav-item" id="adminPanelLink" style="display:none;color:#60a5fa;border:1px dashed rgba(96,165,250,0.3);margin-top:6px"><span class="nav-icon"
+            aria-hidden="true">🛡️</span><span class="nav-label">Admin Panel</span></a>
       </nav>
       <div class="sidebar-footer">
         <button class="nav-item logout-btn" id="logoutBtn" type="button"><span class="nav-icon"
@@ -1525,7 +1526,7 @@
 
   <!-- ====================== ONBOARDING (yangi user uchun) ====================== -->
   <div id="onboardingRoot" hidden></div>
-
+  <script src="script.js"></script>
 </body>
 
 </html>
