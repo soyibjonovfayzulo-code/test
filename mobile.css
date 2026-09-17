@@ -45,6 +45,35 @@
     box-sizing: border-box;
   }
 
+  /* Android input zoom prevention & touch response */
+  input,
+  select,
+  textarea {
+    font-size: 16px !important;
+    touch-action: manipulation;
+  }
+
+  button,
+  a,
+  .btn,
+  .icon-btn,
+  .nav-item,
+  .m-chip,
+  .m-course-card,
+  .m-stat-card,
+  [role="button"] {
+    touch-action: manipulation;
+    -webkit-tap-highlight-color: transparent;
+  }
+
+  button:active,
+  .btn:active,
+  .m-course-card:active,
+  .m-chip:active {
+    transform: scale(0.98);
+    transition: transform 0.1s ease;
+  }
+
   #app,
   .app {
     width: 100% !important;

@@ -943,9 +943,9 @@ const PAGE_TITLES = {
   ranking: "Reyting", achievements: "Yutuqlar", profile: "Profil", settings: "Sozlamalar",
   duel: "Duel", store: "Do'kon", coding: "Code Playground", projects: "Loyihalarim",
   lessons: "Darslar", lessonCourse: "Kurs darslari", lessonView: "Dars",
-  certificate: "Sertifikatlar",
+  certificate: "Sertifikatlar", home: "Asosiy",
 };
-const PROTECTED_PAGES = ["dashboard", "tests", "testlist", "test", "result", "ranking", "achievements", "profile", "duel", "store", "coding", "projects", "lessons", "lessonCourse", "lessonView", "certificate"];
+const PROTECTED_PAGES = ["home", "dashboard", "tests", "testlist", "test", "result", "ranking", "achievements", "profile", "duel", "store", "coding", "projects", "lessons", "lessonCourse", "lessonView", "certificate"];
 
 /* Darslar va Daily Streak tizimlari bilan integratsiya uchun expose */
 window.__itShowPage = showPage;
@@ -963,6 +963,11 @@ function showPage(name) {
   /* "Natijalar" bo'limi olib tashlangan — eski /#results link/dashboard havolalari
      Bosh sahifaga yo'naltiriladi (broken page / bo'sh sahifa bo'lmaydi) */
   if (name === "results") { showToast("📊 Natijalar bo'limi olib tashlandi — Bosh sahifaga yo'naltirildi", "info"); name = "dashboard"; }
+  /* ANDROID NATIVE HOME — Capacitor APK muhitda dashboard o'rniga yangi bosh sahifa (#page-home).
+     Brauzerda ITHome.enabled() => false, xatti-harakat eski holicha qoladi. */
+  if (name === "dashboard" && window.ITHome && typeof window.ITHome.enabled === "function" && window.ITHome.enabled()) {
+    name = "home";
+  }
   if (PROTECTED_PAGES.includes(name) && !currentUser) {
     showToast("Avval tizimga kiring", "info");
     showAuthScreen();

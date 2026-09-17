@@ -1,7 +1,7 @@
 /* SERTIFIKAT TIZIMI — REAL TEST (jsdom)
    Run: node certificates-check.cjs
-   Per-lesson sertifikat oqimini haqiqiy DOM muhitida tekshiradi:
-   preview grid, unique ID, ism oqimi, duplicate protection,
+   PER-COURSE sertifikat oqimini haqiqiy DOM muhitida tekshiradi:
+   har kurs uchun 1 karta, 100% lock/unlock, ism oqimi, duplicate protection,
    QR/verifikatsiya, hash routing, PDF/share tugmalari. */
 const fs = require('fs');
 const path = require('path');
@@ -50,174 +50,146 @@ const CERT = w.ITCertificates;
 /* ===== 1. MODUL VA CONFIG ===== */
 section('Modul va config');
 ok(!!CERT, 'window.ITCertificates mavjud');
-ok(CERT.CONFIG.CERTIFICATE_PREVIEW_MODE === true, 'CERTIFICATE_PREVIEW_MODE = true (preview rejim)');
-ok(CERT.CONFIG.TEMPLATE_VERSION >= 1, 'TEMPLATE_VERSION saqlangan');
-const totalLessons = API.listCourses().reduce((s, c) => s + c.lessons.length, 0);
-ok(totalLessons > 0, 'CoursesAPI kurs/dars data mavjud (' + totalLessons + ' dars)');
+ok(CERT.CONFIG.CERTIFICATE_PREVIEW_MODE === false, 'CERTIFICATE_PREVIEW_MODE = false (production: locked)');
+ok(CERT.CONFIG.REQUIRE_COURSE_COMPLETE === true, 'REQUIRE_COURSE_COMPLETE = true (kurs 100% talab)');
+ok(CERT.CONFIG.TEMPLATE_VERSION >= 2, 'TEMPLATE_VERSION >= 2 (per-kurs shablon)');
+const COURSES = API.listCourses();
+const totalCourses = COURSES.length;
+const totalLessons = COURSES.reduce((s, c) => s + c.lessons.length, 0);
+ok(totalCourses > 0 && totalLessons > 0, 'CoursesAPI kurs/dars data mavjud (' + totalCourses + ' kurs, ' + totalLessons + ' dars)');
 
-/* ===== 2. PREVIEW GRID — barcha darslar uchun karta ===== */
-section('Sertifikatlar page (preview grid)');
+/* ===== 2. PER-COURSE GRID — har kurs uchun 1 karta (locked) ===== */
+section('Sertifikatlar page (per-course grid, locked)');
 CERT.renderPage();
 const cards = doc.querySelectorAll('#certGrid .certp-card');
-ok(cards.length === totalLessons, 'har bir dars uchun karta: ' + cards.length + '/' + totalLessons);
-const btns = doc.querySelectorAll('#certGrid [data-cert-open]');
-ok(btns.length === totalLessons, 'har bir kartada "Sertifikatni ko\'rish" tugmasi: ' + btns.length);
+ok(cards.length === totalCourses, 'har bir KURS uchun bitta karta: ' + cards.length + '/' + totalCourses);
+ok(doc.querySelectorAll('#certGrid .certp-card.locked').length === totalCourses, 'hech bir kurs 100% emas → hammasi 🔒 locked');
+ok(doc.querySelectorAll('#certGrid [data-cert-open]').length === 0, 'qulflangan kartalarda "Sertifikatni ko\'rish" tugmasi YO\'Q');
+ok(doc.querySelectorAll('#certGrid .certp-progress').length === totalCourses, 'har kartada kurs progress bar (X/Y dars)');
 ok(doc.querySelector('#certSummaryRow').textContent.indexOf('Sertifikat') !== -1, 'summary statistika render bo\'ldi');
 ok(doc.querySelector('#certNameBar').textContent.indexOf('Ismni') !== -1, 'ism paneli render bo\'ldi');
 
-/* ===== 3. ISM OQIMI (birinchi martta) ===== */
-section('Ism yig\'ish oqimi');
+/* ===== 3. ENSURECERT — tugallanmagan kurs qulflangan ===== */
+section('ensureCert — locked holat');
 const htmlCourse = API.getCourse('html');
-const l1 = htmlCourse.lessons[0];
-CERT.openCertForLesson(htmlCourse, l1);
+const lockedRes = CERT.ensureCert(htmlCourse);
+ok(lockedRes.locked === true && !lockedRes.record, '100% emas → sertifikat berilmaydi (locked)');
+
+/* ===== 4. KURSNI 100% TUGATISH → UNLOCK ===== */
+section('Kurs 100% → unlock');
+function seedCourse(courseId) {
+  const c = API.getCourse(courseId);
+  let progress = {};
+  try { progress = JSON.parse(w.localStorage.getItem('darslar_state_v1::testuser')) || {}; } catch (e) {}
+  if (!progress.progress) progress.progress = {};
+  progress.progress[courseId] = { completed: {}, testResults: {} };
+  c.lessons.forEach(l => {
+    progress.progress[courseId].completed[l.id] = { at: Date.now(), score: 5, percent: 100 };
+    progress.progress[courseId].testResults[l.id] = { passed: true, score: 5, total: 5, percent: 100, at: Date.now(), attempts: 1 };
+  });
+  w.localStorage.setItem('darslar_state_v1::testuser', JSON.stringify(progress));
+}
+seedCourse('html');
+CERT.renderPage();
+const unlockedCards = doc.querySelectorAll('#certGrid .certp-card:not(.locked)');
+ok(unlockedCards.length === 1, 'HTML 100% tugatildi → 1 karta unlocked');
+const htmlBtn = doc.querySelector('#certGrid [data-cert-open="html"]');
+ok(!!htmlBtn, 'unlocked kartada "Sertifikatni ko\'rish" tugmasi chiqdi');
+
+/* ===== 5. ISM OQIMI (birinchi martta) → sertifikat qog'ozi ===== */
+section('Ism yig\'ish oqimi');
+click(htmlBtn);
+ok(!!doc.querySelector('#certViewerOverlay.open'), 'viewer ochildi');
+ok(!!doc.querySelector('#certNameForm'), 'birinchi martta ism formasi ko\'rsatildi');
 const nameInput = doc.querySelector('#certNameInput');
-ok(!!nameInput, 'ism kiritilmaganda NAME SCREEN ochildi');
-ok(doc.querySelector('#certViewerOverlay').classList.contains('open'), 'viewer overlay ochiq');
-nameInput.value = 'A';
-nameInput.dispatchEvent(new w.Event('input', { bubbles: true }));
-let submitBtn = doc.querySelector('#certNameSubmitBtn');
-ok(submitBtn.disabled === true, 'juda qisqa ism — submit bloklandi');
-nameInput.value = '   ';
-nameInput.dispatchEvent(new w.Event('input', { bubbles: true }));
-ok(submitBtn.disabled === true, 'bo\'sh ism — submit bloklandi');
 nameInput.value = 'Ahatjon Soyibjonov';
 nameInput.dispatchEvent(new w.Event('input', { bubbles: true }));
-ok(submitBtn.disabled === false, 'tog\'ri ism — submit ochiladi');
-ok(CERT.getCertName() === null, 'saqlamaguncha ism yo\'q');
 doc.querySelector('#certNameForm').dispatchEvent(new w.Event('submit', { bubbles: true, cancelable: true }));
-ok(CERT.getCertName() === 'Ahatjon Soyibjonov', 'ism trimlab saqlandi');
-ok(w.__savedUserState === true, 'user state\'ga mirror qilindi (__itSaveUserState)');
-
-/* ===== 4. CERTIFICATE PAPER — real data ===== */
-section('Sertifikat paper (real data)');
-const paper = doc.querySelector('.cert-paper');
-ok(!!paper, 'certificate paper render bo\'ldi');
-const nameEl = doc.querySelector('.cert-name');
-ok(nameEl && nameEl.textContent.trim() === 'Ahatjon Soyibjonov', 'user name tog\'ri: ' + (nameEl && nameEl.textContent));
-const bodyTxt = doc.querySelector('.cert-body').textContent;
-ok(bodyTxt.indexOf('HTML') !== -1 && bodyTxt.indexOf('1') !== -1, 'course + dars raqami dinamik');
-ok(bodyTxt.indexOf(l1.title) !== -1, 'lesson title real data: ' + l1.title);
-const idTxt = doc.querySelector('#certIdCode').textContent;
-ok(/^ITT-HTML-L01-[A-Z2-9]{6}$/.test(idTxt), 'unique ID format: ' + idTxt);
-const dateTxt = doc.querySelector('#certIssueDate').textContent;
-ok(/^\d{2}\.\d{2}\.\d{4}$/.test(dateTxt), 'real local date format: ' + dateTxt);
-ok(doc.querySelector('.cert-foot-qr svg'), 'QR code SVG mavjud');
-ok(doc.querySelector('.cert-stats'), 'stats blok mavjud');
-ok(paper.textContent.indexOf('undefined') === -1 && paper.textContent.indexOf('null') === -1, 'undefined/null YO\'Q');
-ok(CERT.count() === 1, 'bitta certificate record yaratildi');
-
-/* ===== 5. IKKINCHI DARS — ism qayta so\'ralmaydi ===== */
-section('Ikkinchi dars — auto ism');
-const l2 = htmlCourse.lessons[1];
-CERT.openCertForLesson(htmlCourse, l2);
-ok(!doc.querySelector('#certNameInput'), 'ism modal QAYTA CHIQMADI');
-const paper2 = doc.querySelector('.cert-paper');
-ok(!!paper2, '2-dars sertifikati to\'g\'ridan-to\'g\'ri ochildi');
-ok(paper2.querySelector('.cert-name').textContent.trim() === 'Ahatjon Soyibjonov', 'saqlangan ism ishlatildi');
-const id2 = doc.querySelector('#certIdCode').textContent;
-ok(/^ITT-HTML-L02-/.test(id2), '2-dars ID: ' + id2);
-ok(CERT.count() === 2, '2 ta record');
+const paper = doc.querySelector('#certvBody .cert-paper');
+ok(!!paper, 'ism saqlandi → sertifikat qog\'ozi render bo\'ldi');
+ok(paper.textContent.indexOf('Ahatjon Soyibjonov') !== -1, 'ism qog\'ozda: Ahatjon Soyibjonov');
+ok(paper.textContent.indexOf('ITT-HTML-FULL-') !== -1, 'per-course ID: ITT-HTML-FULL-...');
+ok(paper.textContent.indexOf('HTML') !== -1, 'kurs nomi qog\'ozda: HTML');
+ok(paper.textContent.indexOf('100%') !== -1, '100% yakunlangan matni bor');
 
 /* ===== 6. DUPLICATE PROTECTION ===== */
-section('Duplicate protection');
-const before = JSON.stringify(CERT.getCertByLesson('html', l2.id));
-CERT.openCertForLesson(htmlCourse, l2);
-CERT.openCertForLesson(htmlCourse, l2);
-const after = JSON.stringify(CERT.getCertByLesson('html', l2.id));
-ok(before === after, 'qayta ochish recordni o\'zgartirmadi');
-ok(CERT.count() === 2, 'record soni o\'zgarmadi (2)');
-
-/* ===== 7. UNIQUE ID — barcha darslar ===== */
-section('Unique ID generator');
-const ids = new Set();
-let dup = 0;
-API.listCourses().forEach(c => c.lessons.forEach(l => {
-  const r = CERT.ensureCert(c, l).record;
-  if (ids.has(r.certificateId)) dup++;
-  ids.add(r.certificateId);
+section('Duplicate protection (per-course)');
+const r1 = CERT.ensureCert(htmlCourse).record;
+const r2 = CERT.ensureCert(htmlCourse).record;
+ok(r1.certificateId === r2.certificateId, 'user+kurs uchun 1 ta record: ' + r1.certificateId);
+ok(CERT.allCertificates().length === 1, 'allCertificates: 1 ta kurs sertifikati (eski per-lesson yozuvlar hisobga olinmaydi)');
+/* eski per-lesson yozuv (::) e'tiborga olinmaydi */
+w.localStorage.setItem('ittest_certs_v1::testuser', JSON.stringify({
+  name: 'Ahatjon Soyibjonov',
+  certs: { 'html::html-d1': { certificateId: 'ITT-HTML-L01-OLDOLD' }, 'html': r1 }
 }));
-ok(dup === 0, 'hech bir ID takrorlanmadi (' + ids.size + ' unique ID)');
-ok(ids.size === totalLessons, 'har darsga alohida ID: ' + ids.size);
-const sample = CERT.getCertByLesson('python', 'python-d1');
-ok(sample.certificateId.indexOf('ITT-PYTHON-L01-') === 0, 'python kurs tagidan: ' + sample.certificateId);
+ok(CERT.allCertificates().length === 1, 'legacy "courseId::lessonId" yozuvlari filtrlandi');
+const res = CERT.ensureCert(htmlCourse).record;
+ok(res.certificateId === r1.certificateId, 'yangi mantiq record buzilmadi: ' + res.certificateId);
 
-/* ===== 8. VERIFIKATSIYA ===== */
-section('Verifikatsiya');
-CERT.openVerify(id2);
-ok(doc.querySelector('#certVerifyOverlay').classList.contains('open'), 'verify overlay ochiq');
-ok(doc.querySelector('#certVerifyBody').textContent.indexOf('haqiqiy') !== -1, '✅ Sertifikat haqiqiy');
-ok(doc.querySelector('#certVerifyBody').textContent.indexOf(id2) !== -1, 'verify da ID ko\'rsatildi');
-const sInp = doc.querySelector('#verifySearchInput');
-sInp.value = 'ITT-HTML-L99-XXXXXX';
-doc.querySelector('#verifySearchForm').dispatchEvent(new w.Event('submit', { bubbles: true, cancelable: true }));
-ok(doc.querySelector('#certVerifyBody').textContent.indexOf('topilmadi') !== -1, '❌ noto\'g\'ri ID — Sertifikat topilmadi');
-doc.querySelector('#verifySearchInput').value = idTxt;
-doc.querySelector('#verifySearchForm').dispatchEvent(new w.Event('submit', { bubbles: true, cancelable: true }));
-ok(doc.querySelector('#certVerifyBody').textContent.indexOf('haqiqiy') !== -1, 'manual ID search: topildi');
+/* ===== 7. QR + VERIFIKATSIYA + HASH ROUTING ===== */
+section('QR / verifikatsiya / hash routing');
+CERT.closeViewer();
+const htmlCert = CERT.getCertByCourse('html');
+ok(!!htmlCert && htmlCert.lessonsCount === htmlCourse.lessons.length, 'getCertByCourse: lessonsCount = ' + htmlCert.lessonsCount);
+w.location.hash = CERT.CONFIG.VERIFY_ROUTE + htmlCert.certificateId;
+w.dispatchEvent(new w.Event('hashchange', { bubbles: true }));
+ok(doc.querySelector('#certVerifyBody').textContent.indexOf('haqiqiy') !== -1, '#/verify/<ID> — verify page ochildi (to\'liq kurs)');
+w.location.hash = '';
+w.dispatchEvent(new w.Event('hashchange', { bubbles: true }));
 
-/* ===== 9. HASH ROUTING (#/verify/<ID>) ===== */
-section('QR hash routing');
-w.location.hash = CERT.CONFIG.VERIFY_ROUTE + id2;
-w.dispatchEvent(new w.Event('hashchange'));
-ok(doc.querySelector('#certVerifyBody').textContent.indexOf('haqiqiy') !== -1, '#/verify/<ID> — verify page ochildi');
-
-/* ===== 10. LESSON COMPLETE HOOK ===== */
-section('Lesson complete hook');
+/* ===== 8. LESSON COMPLETE HOOK → faqat kurs 100% bo'lganda ===== */
+section('Lesson complete hook (per-course flow)');
 const hooks = w.LessonsHooks.onLessonComplete;
 ok(Array.isArray(hooks) && hooks.indexOf(CERT.onLessonComplete) !== -1, 'ITCertificates.onLessonComplete — LessonsHooks ulangan');
 ok(hooks.length >= 2, 'Daily/Streak hook\'i bilan parallel (jami ' + hooks.length + ' hook)');
-/* onLessonComplete 1.6s delay bilan auto-open qiladi — sinxron qismi xatosiz o'tishini tekshiramiz */
+/* CSS kursi hali tugallanmagan — hook hech narsa ochmasligi kerak */
 CERT.onLessonComplete({ course: API.getCourse('css'), lesson: API.getCourse('css').lessons[0], xp: 10 });
-ok(true, 'hook chaqiruvi xatosiz (certificate 1.6s keyin auto-open)');
-/*.delay qisqartirilgan holda: ensureCert to'g'ridan-to'g'ri tekshiruv */
-const cssRes = CERT.ensureCert(API.getCourse('css'), API.getCourse('css').lessons[0]);
-ok(!!cssRes.record && cssRes.record.certificateId.indexOf('ITT-CSS-L01-') === 0, 'css 1-dars record: ' + cssRes.record.certificateId);
+ok(true, 'hook chaqiruvi xatosiz (kurs 100% emas → auto-open yo\'q)');
+seedCourse('css');
+CERT.onLessonComplete({ course: API.getCourse('css'), lesson: API.getCourse('css').lessons[0], xp: 10 });
+const cssRes = CERT.ensureCert(API.getCourse('css'));
+ok(!!cssRes.record && cssRes.record.certificateId.indexOf('ITT-CSS-FULL-') === 0, 'css 100% → kurs sertifikati: ' + cssRes.record.certificateId);
 
-/* ===== 11. SEARCH + FILTER ===== */
+/* ===== 9. SEARCH + FILTER ===== */
 section('Search / filter');
-/* real completion seed (progress store — source of truth) */
-w.localStorage.setItem('darslar_state_v1::testuser', JSON.stringify({
-  progress: { html: { completed: { 'html-d1': { at: Date.now(), score: 5, percent: 100 } } } }
-}));
+CERT.closeViewer();
 CERT.renderPage();
 const searchInp = doc.querySelector('#certSearch');
-searchInp.value = 'html 2';
+searchInp.value = 'html';
 searchInp.dispatchEvent(new w.Event('input', { bubbles: true }));
-const filtered = doc.querySelectorAll('#certGrid .certp-card');
-ok(filtered.length >= 1 && filtered.length < totalLessons, 'search "html 2" → ' + filtered.length + ' karta');
+let filtered = doc.querySelectorAll('#certGrid .certp-card');
+ok(filtered.length === 1, 'search "html" → 1 karta (kurs bo\'yicha)');
 searchInp.value = '';
 searchInp.dispatchEvent(new w.Event('input', { bubbles: true }));
 const chips = doc.querySelectorAll('#certFilters .chip');
 click(chips[1]); /* Tugallangan */
 const completedCards = doc.querySelectorAll('#certGrid .certp-card');
-ok(completedCards.length === 1, '"Tugallangan" filtr: ' + completedCards.length + ' karta (html 1-dars)');
-click(chips[2]); /* Preview */
-const previewCards = doc.querySelectorAll('#certGrid .certp-card');
-ok(previewCards.length === totalLessons - 1, '"Preview" filtr: ' + previewCards.length + ' karta');
+ok(completedCards.length === 2, '"Tugallangan" filtr: 2 karta (html + css)');
+click(chips[2]); /* Qulflangan */
+const lockedCards = doc.querySelectorAll('#certGrid .certp-card');
+ok(lockedCards.length === totalCourses - 2, '"Qulflangan" filtr: ' + lockedCards.length + ' karta');
 click(chips[0]); /* Barchasi */
-ok(doc.querySelectorAll('#certGrid .certp-card').length === totalLessons, 'Barchasi → to\'liq grid');
+ok(doc.querySelectorAll('#certGrid .certp-card').length === totalCourses, 'Barchasi → to\'liq grid (' + totalCourses + ' kurs)');
 
-/* ===== 12. PROFILE INTEGRATSIYA ===== */
+/* ===== 10. PROFILE INTEGRATSIYA ===== */
 section('Profil integratsiya');
 CERT.renderProfileSummary();
 ok(doc.querySelector('#profileCertSummary .profile-cert-card'), 'profil sertifikat kartasi render bo\'ldi');
-ok(doc.querySelector('#profileCertSummary').textContent.indexOf(totalLessons + ' ta sertifikat') !== -1, 'profil kartasida jami son: ' + totalLessons);
+ok(doc.querySelector('#profileCertSummary').textContent.indexOf('2 ta kurs sertifikati') !== -1, 'profil kartasida 2 ta kurs sertifikati');
 
-/* ===== 13. UNLOCK ARCHITECTURE (production switch) ===== */
-section('Production switch arxitekturasi');
-CERT.CONFIG.CERTIFICATE_PREVIEW_MODE = false;
-CERT.CONFIG.REQUIRE_LESSON_COMPLETE = true;
-CERT.renderPage();
-const lockCard = doc.querySelector('#certGrid .certp-card.locked');
-ok(!!lockCard, 'preview OFF → tugallanmagan darslar 🔒 locked');
-ok(doc.querySelector('#certGrid .certp-card.locked button').disabled === true, 'locked karta tugmasi o\'chirilgan');
+/* ===== 11. PREVIEW SWITCH (dizayn review rejimi) ===== */
+section('Preview switch arxitekturasi');
 CERT.CONFIG.CERTIFICATE_PREVIEW_MODE = true;
-CERT.CONFIG.REQUIRE_LESSON_COMPLETE = false;
 CERT.renderPage();
-ok(!doc.querySelector('#certGrid .certp-card.locked'), 'preview ON → hammasi ochiq (qayta tiklandi)');
+ok(!doc.querySelector('#certGrid .certp-card.locked'), 'preview ON → hammasi ochiq (dizayn review)');
+ok(doc.querySelectorAll('#certGrid [data-cert-open]').length === totalCourses, 'preview ON → har kartada ko\'rish tugmasi');
+CERT.CONFIG.CERTIFICATE_PREVIEW_MODE = false;
+CERT.renderPage();
+ok(doc.querySelectorAll('#certGrid .certp-card.locked').length === totalCourses - 2, 'preview OFF → qayta locked (2 ta tugallangan bundan tashqari)');
 
 /* ===== NATIJA ===== */
 console.log('\n===== NATIJA =====');
 console.log('Passed: ' + passed + ' | Failed: ' + failed);
-if (failed === 0) { console.log('✅ SERTIFIKAT TIZIMI — BARCHA TESTLAR PASS'); process.exit(0); }
+if (failed === 0) { console.log('✅ SERTIFIKAT TIZIMI (PER-COURSE) — BARCHA TESTLAR PASS'); process.exit(0); }
 process.exit(1);

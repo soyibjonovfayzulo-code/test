@@ -1,0 +1,507 @@
+/* ============================================================
+   ITTest — ANDROID NATIVE HOME (home-android.css)
+   Faqat #page-home (Capacitor Android native bosh sahifa) uchun.
+   Brauzerda bu sahifa umuman DOMdan olib tashlanadi (home-android.js),
+   shuning uchun bu uslublar desktop/mobil brauzerga ta'sir qilmaydi.
+   BRAND: BLUE #2563EB | XP: GOLD | Tokens: design-tokens.css
+   ============================================================ */
+
+/* ---------- Umumiy: sahifa faqat .active bo'lganda ko'rinadi ---------- */
+#page-home {
+  display: none;
+  background: var(--itt-bg-alt, #F4F8FF);
+}
+
+#page-home.active {
+  display: block;
+  padding: 10px 14px calc(96px + env(safe-area-inset-bottom, 0px)) !important;
+  min-height: 100%;
+  overflow-x: hidden;
+}
+
+/* Home ochiq bo'lsa — eski topbar yashiriladi (o'z panelimiz bor) */
+body.ithome-active .topbar {
+  display: none !important;
+}
+
+/* ---------- 1. YUQORI PANEL ---------- */
+.ih-top {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  padding: 6px 2px 12px;
+}
+
+.ih-brand {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 1.05rem;
+  font-weight: 800;
+  color: var(--itt-text, #0F172A);
+  letter-spacing: -0.02em;
+}
+
+.ih-brand-logo {
+  width: 34px;
+  height: 34px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.05rem;
+  border-radius: 11px;
+  background: linear-gradient(135deg, var(--itt-primary, #2563EB), var(--itt-cyan, #38BDF8));
+  box-shadow: var(--itt-shadow-primary, 0 6px 20px rgba(37, 99, 235, 0.32));
+}
+
+.ih-topchips {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  min-width: 0;
+}
+
+.ih-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  border: 1px solid var(--itt-border, #DCE8F7);
+  background: var(--itt-surface, #FFFFFF);
+  color: var(--itt-text, #0F172A);
+  border-radius: 999px;
+  padding: 8px 12px;
+  font-size: .8rem;
+  font-weight: 600;
+  white-space: nowrap;
+  cursor: pointer;
+  box-shadow: var(--itt-shadow-xs, 0 1px 3px rgba(15, 23, 42, 0.06));
+}
+
+.ih-chip b {
+  font-weight: 800;
+}
+
+.ih-chip--streak b { color: var(--itt-streak, #0EA5E9); }
+.ih-chip--xp b { color: var(--itt-xp, #CA8A04); }
+
+/* ---------- 2. QIDIRUV ---------- */
+.ih-search {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  background: var(--itt-surface, #FFFFFF);
+  border: 1px solid var(--itt-border, #DCE8F7);
+  border-radius: 16px;
+  padding: 12px 14px;
+  margin-bottom: 14px;
+  box-shadow: var(--itt-shadow-xs, 0 1px 3px rgba(15, 23, 42, 0.06));
+}
+
+.ih-search span[aria-hidden] {
+  font-size: .95rem;
+  opacity: .7;
+}
+
+.ih-search input {
+  flex: 1;
+  min-width: 0;
+  border: none;
+  outline: none;
+  background: transparent;
+  color: var(--itt-text, #0F172A);
+  font-size: .92rem;
+  font-family: inherit;
+}
+
+.ih-search input::placeholder { color: var(--itt-faint, #94A3B8); }
+
+.ih-search-results {
+  margin: -8px 0 14px;
+  background: var(--itt-surface, #FFFFFF);
+  border: 1px solid var(--itt-border, #DCE8F7);
+  border-radius: 14px;
+  overflow: hidden;
+  box-shadow: var(--itt-shadow-sm, 0 4px 16px rgba(15, 23, 42, 0.05));
+}
+
+.ih-search-item {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  width: 100%;
+  padding: 11px 14px;
+  border: none;
+  border-bottom: 1px solid var(--itt-border-soft, #E2E8F0);
+  background: transparent;
+  color: var(--itt-text, #0F172A);
+  font-size: .88rem;
+  text-align: left;
+  cursor: pointer;
+}
+
+.ih-search-item:last-child { border-bottom: none; }
+.ih-search-item:active { background: var(--itt-primary-soft, rgba(37, 99, 235, 0.09)); }
+.ih-search-item small { color: var(--itt-muted, #64748B); font-size: .74rem; }
+
+.ih-search-empty {
+  padding: 12px 14px;
+  color: var(--itt-muted, #64748B);
+  font-size: .84rem;
+}
+
+
+/* ---------- 3. TEZ KARTALAR (2 kolonka) ---------- */
+.ih-quick {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+  margin-bottom: 14px;
+}
+
+.ih-quick-card {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 8px;
+  padding: 14px;
+  border: 1px solid var(--itt-border, #DCE8F7);
+  border-radius: 18px;
+  background: var(--itt-surface, #FFFFFF);
+  color: var(--itt-text, #0F172A);
+  text-align: left;
+  cursor: pointer;
+  box-shadow: var(--itt-shadow-xs, 0 1px 3px rgba(15, 23, 42, 0.06));
+  transition: transform var(--itt-dur-fast, 180ms) var(--itt-ease, ease);
+}
+
+.ih-quick-card:active { transform: scale(.97); }
+
+.ih-quick-ico {
+  width: 42px;
+  height: 42px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.25rem;
+  border-radius: 13px;
+  background: var(--itt-primary-soft, rgba(37, 99, 235, 0.09));
+  border: 1px solid var(--itt-border, #DCE8F7);
+}
+
+.ih-quick-name {
+  font-size: .95rem;
+  font-weight: 700;
+  line-height: 1.25;
+}
+
+.ih-quick-link {
+  font-size: .78rem;
+  font-weight: 600;
+  color: var(--itt-primary, #2563EB);
+}
+
+/* ---------- 4. LIGA BANNERI ---------- */
+.ih-banner {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 18px;
+  border-radius: 20px;
+  overflow: hidden;
+  margin-bottom: 14px;
+  color: #fff;
+  background:
+    radial-gradient(320px 160px at 92% 0%, rgba(56, 189, 248, 0.45), transparent 65%),
+    linear-gradient(120deg, #1D4ED8 0%, #2563EB 55%, #38BDF8 130%);
+  box-shadow: var(--itt-shadow-primary, 0 6px 20px rgba(37, 99, 235, 0.32));
+}
+
+.ih-banner h2 {
+  margin: 0 0 4px;
+  font-size: 1.12rem;
+  font-weight: 800;
+  letter-spacing: -0.01em;
+}
+
+.ih-banner p {
+  margin: 0 0 12px;
+  font-size: .8rem;
+  opacity: .92;
+  max-width: 21ch;
+}
+
+.ih-banner button {
+  border: none;
+  border-radius: 999px;
+  padding: 9px 16px;
+  font-size: .8rem;
+  font-weight: 700;
+  color: #1D4ED8;
+  background: #fff;
+  cursor: pointer;
+}
+
+.ih-banner button:active { transform: scale(.97); }
+
+.ih-banner-art {
+  flex: 0 0 auto;
+  width: 74px;
+  height: 74px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 2.4rem;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.16);
+  border: 1px solid rgba(255, 255, 255, 0.3);
+}
+
+
+/* ---------- 5. DAVOM ETTIRISH ---------- */
+.ih-continue {
+  padding: 16px;
+  border: 1px solid var(--itt-border-focus, rgba(37, 99, 235, 0.35));
+  border-radius: 18px;
+  background:
+    linear-gradient(135deg, var(--itt-primary-soft, rgba(37, 99, 235, 0.09)), transparent 60%),
+    var(--itt-surface, #FFFFFF);
+  margin-bottom: 18px;
+  box-shadow: var(--itt-shadow-xs, 0 1px 3px rgba(15, 23, 42, 0.06));
+}
+
+.ih-continue-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  margin-bottom: 10px;
+}
+
+.ih-continue-label {
+  font-size: .78rem;
+  font-weight: 700;
+  color: var(--itt-muted, #64748B);
+  letter-spacing: .04em;
+  text-transform: uppercase;
+}
+
+.ih-xp-badge {
+  font-size: .72rem;
+  font-weight: 800;
+  color: var(--itt-xp, #CA8A04);
+  background: var(--itt-xp-soft, rgba(202, 138, 4, 0.12));
+  border-radius: 999px;
+  padding: 4px 10px;
+  white-space: nowrap;
+}
+
+.ih-continue-title {
+  margin: 0 0 4px;
+  font-size: 1rem;
+  font-weight: 700;
+  color: var(--itt-text, #0F172A);
+}
+
+.ih-continue-sub {
+  margin: 0 0 10px;
+  font-size: .8rem;
+  color: var(--itt-muted, #64748B);
+}
+
+.ih-progress {
+  height: 8px;
+  border-radius: 999px;
+  background: var(--itt-primary-soft, rgba(37, 99, 235, 0.09));
+  border: 1px solid var(--itt-border, #DCE8F7);
+  overflow: hidden;
+  margin-bottom: 6px;
+}
+
+.ih-progress span {
+  display: block;
+  height: 100%;
+  width: 0%;
+  border-radius: inherit;
+  background: linear-gradient(90deg, var(--itt-primary, #2563EB), var(--itt-cyan, #38BDF8));
+  transition: width .8s var(--itt-ease-spring, cubic-bezier(0.16, 1, 0.3, 1));
+}
+
+.ih-progress-meta {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  font-size: .76rem;
+  color: var(--itt-muted, #64748B);
+  margin-bottom: 12px;
+}
+
+.ih-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  width: 100%;
+  padding: 13px 16px;
+  border: none;
+  border-radius: 14px;
+  font-size: .92rem;
+  font-weight: 700;
+  font-family: inherit;
+  color: #fff;
+  background: linear-gradient(135deg, var(--itt-primary, #2563EB), var(--itt-primary-hover, #3B82F6));
+  box-shadow: var(--itt-shadow-primary, 0 6px 20px rgba(37, 99, 235, 0.32));
+  cursor: pointer;
+}
+
+.ih-btn:active { transform: scale(.98); }
+
+.ih-continue-empty {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  color: var(--itt-muted, #64748B);
+  font-size: .86rem;
+}
+
+/* ---------- 6. TEZKOR BO'LIMLAR ---------- */
+.ih-section-title {
+  margin: 0 2px 10px;
+  font-size: .95rem;
+  font-weight: 800;
+  color: var(--itt-text, #0F172A);
+}
+
+.ih-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 10px;
+  margin-bottom: 18px;
+}
+
+.ih-grid-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 7px;
+  padding: 14px 6px 12px;
+  border: 1px solid var(--itt-border, #DCE8F7);
+  border-radius: 16px;
+  background: var(--itt-surface, #FFFFFF);
+  color: var(--itt-text, #0F172A);
+  font-size: .74rem;
+  font-weight: 600;
+  cursor: pointer;
+  box-shadow: var(--itt-shadow-xs, 0 1px 3px rgba(15, 23, 42, 0.06));
+  transition: transform var(--itt-dur-fast, 180ms) var(--itt-ease, ease);
+}
+
+.ih-grid-item:active { transform: scale(.95); }
+
+.ih-grid-ico { font-size: 1.35rem; line-height: 1; }
+
+/* ---------- 7. SHAXSIY PROGRESS KARTASI ---------- */
+.ih-me {
+  padding: 16px;
+  border: 1px solid var(--itt-border, #DCE8F7);
+  border-radius: 18px;
+  background: var(--itt-surface, #FFFFFF);
+  box-shadow: var(--itt-shadow-xs, 0 1px 3px rgba(15, 23, 42, 0.06));
+}
+
+.ih-me h3 {
+  margin: 0 0 4px;
+  font-size: 1.02rem;
+  font-weight: 800;
+  color: var(--itt-text, #0F172A);
+}
+
+.ih-me-sub {
+  margin: 0 0 12px;
+  font-size: .8rem;
+  color: var(--itt-muted, #64748B);
+}
+
+.ih-me-row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.ih-level-badge {
+  font-size: .74rem;
+  font-weight: 800;
+  color: var(--itt-primary, #2563EB);
+  background: var(--itt-primary-soft, rgba(37, 99, 235, 0.09));
+  border: 1px solid var(--itt-border-focus, rgba(37, 99, 235, 0.35));
+  border-radius: 999px;
+  padding: 5px 12px;
+  white-space: nowrap;
+}
+
+.ih-me-xp {
+  flex: 1;
+  min-width: 0;
+}
+
+.ih-me-xp-text {
+  display: block;
+  font-size: .74rem;
+  color: var(--itt-muted, #64748B);
+  margin-bottom: 5px;
+  white-space: nowrap;
+}
+
+.ih-me .ih-progress { margin-bottom: 0; }
+
+/* ---------- 8. PASTKI MENYU ---------- */
+.ih-bottomnav {
+  position: fixed;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  z-index: 70;
+  display: flex;
+  align-items: stretch;
+  justify-content: space-around;
+  gap: 2px;
+  padding: 8px 8px calc(8px + env(safe-area-inset-bottom, 0px));
+  background: var(--itt-topbar-bg, rgba(255, 255, 255, 0.88));
+  backdrop-filter: blur(18px) saturate(180%);
+  -webkit-backdrop-filter: blur(18px) saturate(180%);
+  border-top: 1px solid var(--itt-border, #DCE8F7);
+  box-shadow: 0 -4px 20px rgba(2, 6, 23, 0.08);
+}
+
+.ih-bottomnav button {
+  flex: 1 1 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 3px;
+  padding: 6px 2px;
+  border: none;
+  background: none;
+  color: var(--itt-faint, #94A3B8);
+  font-size: .66rem;
+  font-weight: 600;
+  font-family: inherit;
+  cursor: pointer;
+  border-radius: 12px;
+  min-height: 44px;
+}
+
+.ih-bottomnav button .ih-nav-ico { font-size: 1.25rem; line-height: 1; }
+.ih-bottomnav button.active { color: var(--itt-primary, #2563EB); font-weight: 800; }
+.ih-bottomnav button:active { transform: scale(.94); }
+
+/* ---------- 9. KICHIK EKRANLAR (320px) ---------- */
+@media (max-width: 340px) {
+  #page-home.active { padding-left: 10px; padding-right: 10px; }
+  .ih-quick { gap: 9px; }
+  .ih-grid { gap: 8px; }
+  .ih-chip { padding: 7px 9px; font-size: .74rem; }
+}

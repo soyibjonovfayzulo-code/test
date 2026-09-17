@@ -25,6 +25,7 @@
   <link rel="stylesheet" href="auth-premium.css" />
   <link rel="stylesheet" href="design-tokens.css" />
   <link rel="stylesheet" href="certificates.css" />
+  <link rel="stylesheet" href="home-android.css" />
 </head>
 
 <body>
@@ -453,6 +454,83 @@
               </article>
             </section>
           </div>
+        </section>
+
+        <!-- HOME PAGE — FAQAT ANDROID NATIVE (Capacitor APK). Brauzerda
+             home-android.js bu section'ni DOMdan olib tashlaydi. -->
+        <section id="page-home" class="page" aria-label="Asosiy">
+          <div class="ih-top">
+            <div class="ih-brand"><span class="ih-brand-logo" aria-hidden="true">🧠</span><b>ITTest</b></div>
+            <div class="ih-topchips">
+              <button type="button" class="ih-chip ih-chip--streak" data-ih-goto="achievements">🔥 <b
+                  id="ihStreakVal">0</b>&nbsp;kun</button>
+              <button type="button" class="ih-chip ih-chip--xp" data-ih-goto="achievements">⭐ <b id="ihXpVal">0</b>&nbsp;XP</button>
+            </div>
+          </div>
+
+          <form class="ih-search" role="search" onsubmit="return false;">
+            <span aria-hidden="true">🔍</span>
+            <label for="ihSearchInput" class="visually-hidden">Kurs yoki dars qidirish</label>
+            <input type="search" id="ihSearchInput" placeholder="Kurs yoki dars qidirish…" autocomplete="off" />
+          </form>
+          <div class="ih-search-results" id="ihSearchResults" hidden></div>
+
+          <div class="ih-quick">
+            <button type="button" class="ih-quick-card" data-ih-goto="lessons">
+              <span class="ih-quick-ico" aria-hidden="true">🤖</span>
+              <span class="ih-quick-name">Boshlang‘ich<br />kurslar</span>
+              <span class="ih-quick-link">Darslar ›</span>
+            </button>
+            <button type="button" class="ih-quick-card" data-ih-goto="tests">
+              <span class="ih-quick-ico" aria-hidden="true">👑</span>
+              <span class="ih-quick-name">Professional<br />testlar</span>
+              <span class="ih-quick-link">Sinash ›</span>
+            </button>
+          </div>
+
+          <div class="ih-banner">
+            <div class="ih-banner-text">
+              <h2>ITTest Ligasi</h2>
+              <p>Reytingda yuqoriga ko‘tariling va eng yaxshilar qatoriga qo‘shiling!</p>
+              <button type="button" data-ih-goto="ranking">Ligada qatnashish</button>
+            </div>
+            <div class="ih-banner-art" aria-hidden="true">🏆</div>
+          </div>
+
+          <div class="ih-continue">
+            <div class="ih-continue-head">
+              <span class="ih-continue-label">🎯 Davom ettirish</span>
+              <span class="ih-xp-badge">+XP har dars</span>
+            </div>
+            <div class="ih-continue-body" id="ihContinueBody"></div>
+          </div>
+
+          <h3 class="ih-section-title">Tezkor bo‘limlar</h3>
+          <div class="ih-grid">
+            <button type="button" class="ih-grid-item" data-ih-goto="duel"><span class="ih-grid-ico"
+                aria-hidden="true">⚔️</span>Duel</button>
+            <button type="button" class="ih-grid-item" data-ih-goto="coding"><span class="ih-grid-ico"
+                aria-hidden="true">💻</span>Coding</button>
+            <button type="button" class="ih-grid-item" data-ih-goto="achievements"><span class="ih-grid-ico"
+                aria-hidden="true">🎖</span>Yutuqlar</button>
+            <button type="button" class="ih-grid-item" data-ih-goto="certificate"><span class="ih-grid-ico"
+                aria-hidden="true">📜</span>Sertifikat</button>
+            <button type="button" class="ih-grid-item" data-ih-goto="store"><span class="ih-grid-ico"
+                aria-hidden="true">🛍️</span>Do‘kon</button>
+            <button type="button" class="ih-grid-item" data-ih-goto="profile"><span class="ih-grid-ico"
+                aria-hidden="true">👤</span>Profil</button>
+          </div>
+
+          <div class="ih-me" id="ihMe"></div>
+
+          <nav class="ih-bottomnav" aria-label="Asosiy navigatsiya">
+            <button type="button" class="active" data-ih-goto="home"><span class="ih-nav-ico"
+                aria-hidden="true">🏠</span><span>Asosiy</span></button>
+            <button type="button" data-ih-goto="lessons"><span class="ih-nav-ico" aria-hidden="true">📚</span><span>Darslar</span></button>
+            <button type="button" data-ih-goto="tests"><span class="ih-nav-ico" aria-hidden="true">📝</span><span>Testlar</span></button>
+            <button type="button" data-ih-goto="ranking"><span class="ih-nav-ico" aria-hidden="true">🏆</span><span>Reyting</span></button>
+            <button type="button" data-ih-goto="profile"><span class="ih-nav-ico" aria-hidden="true">👤</span><span>Profil</span></button>
+          </nav>
         </section>
 
         <!-- TESTS PAGE -->
@@ -1209,19 +1287,19 @@
         <section id="page-certificate" class="page">
           <div class="certp-head">
             <h3>🏆 Sertifikatlar</h3>
-            <p>Har bir dars uchun alohida sertifikat — ko&lsquo;ring, yuklab oling va ulashing.</p>
+            <p>To&lsquo;liq kurs/modul uchun premium sertifikat — kurs 100% tugagach qulfdan chiqadi.</p>
           </div>
           <div class="certp-summary" id="certSummaryRow" aria-live="polite"></div>
           <div class="certp-controls">
             <div class="search-box">
               <span class="search-icon" aria-hidden="true">🔍</span>
               <label for="certSearch" class="visually-hidden">Sertifikat qidirish</label>
-              <input type="text" id="certSearch" placeholder="Qidirish: HTML 2, Python 1..." />
+              <input type="text" id="certSearch" placeholder="Kurs qidirish: HTML, Python..." />
             </div>
             <div class="filter-chips certp-filters" id="certFilters" role="tablist" aria-label="Sertifikat filtrlari">
               <button class="chip active" data-cfilter="all" type="button" role="tab" aria-selected="true">Barchasi</button>
               <button class="chip" data-cfilter="completed" type="button" role="tab" aria-selected="false">Tugallangan</button>
-              <button class="chip" data-cfilter="preview" type="button" role="tab" aria-selected="false">Preview</button>
+              <button class="chip" data-cfilter="locked" type="button" role="tab" aria-selected="false">Qulflangan</button>
             </div>
           </div>
           <div class="certp-namebar" id="certNameBar"></div>
@@ -1543,6 +1621,7 @@
   <script type="module" src="certificates.js"></script>
   <script type="module" src="dashboard.js"></script>
   <script type="module" src="mobile.js"></script>
+  <script type="module" src="home-android.js"></script>
   <script type="module" src="ai-assistant.js"></script>
   <script type="module" src="onboarding.js"></script>
   <script type="module" src="daily-streak.js"></script>

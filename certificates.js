@@ -1,19 +1,24 @@
 /* ==========================================================
-   ITTest — PER-LESSON CERTIFICATE SYSTEM (certificates.js)
+   ITTest — PER-COURSE (KURS/MODUL) CERTIFICATE SYSTEM
    ==========================================================
-   HAR BIR DARS = ALOHIDA SERTIFIKAT.
+   HAR BIR TO'LIQ KURS = BITTA PREMIUM SERTIFIKAT.
 
-   • Har bir lesson uchun unique certificate ID (ITT-HTML-L02-7F3A9B)
+   • Sertifikat endi ALOHIDA DARS uchun EMAS — butun KURS/MODUL uchun
+     beriladi (HTML, CSS, JavaScript, Python, Java, C++, SQL, AI ...)
+   • Kursdagi BARCHA darslar va testlar 100% tugatilmaguncha
+     sertifikat 🔒 LOCKED (qulflangan) holatda turadi
+   • 100% tugatilganda: avtomatik ochiladi + QR kod bilan
+     yuklab olish / ulashish imkoniyati chiqadi
    • QR kod → verification page (#/verify/<ID>) — browser / APK
    • Birinchi martalik ism-familiya yig'ish (keyingilarda auto)
    • PDF (print), Share (Web Share API / clipboard)
-   • CERTIFICATE_PREVIEW_MODE — hozir barcha sertifikatlar ochiq
-   • Duplicate protection — user+lesson bo'yicha 1 ta record
+   • CERTIFICATE_PREVIEW_MODE — dizayn review rejimi (barchasi ochiq)
+   • Duplicate protection — user+course bo'yicha 1 ta record
 
    SOURCE OF TRUTH:
-   • Lesson data:    window.CoursesAPI  (lessons-data.js)
-   • Completion:     LessonsHooks.onLessonComplete (lessons-app.js)
-   • Score/percent:  darslar_state_v1::<user> progress store
+   • Course/lesson data: window.CoursesAPI  (lessons-data.js)
+   • Completion:         LessonsHooks.onLessonComplete (lessons-app.js)
+   • Score/percent:      darslar_state_v1::<user> progress store
    • Bu fayl PARALLEL data yaratmaydi — mavjud state'dan o'qiydi.
    ========================================================== */
 import qrcode from 'qrcode-generator';
@@ -23,15 +28,15 @@ import qrcode from 'qrcode-generator';
 
   /* ================= 1) CONFIG — PRODUCTION SWITCH ================= */
 
-  /* HOZIR: preview/demo rejim — barcha darslar sertifikatlari OCHIQ.
-     PRODUCTION: false qiling — lesson complete bo'lmagan sertifikatlar 🔒 bo'ladi. */
+  /* PRODUCTION (talab): sertifikat faqat KURS 100% tugatilganda ochiladi.
+     Dizaynni ko'rish uchun: CERTIFICATE_PREVIEW_MODE = true qiling. */
   const CONFIG = {
-    CERTIFICATE_PREVIEW_MODE: true,   // true = hammasi ochiq (dizayn review rejimi)
-    REQUIRE_LESSON_COMPLETE: false,   // kelajakda: true => faqat tugallangan darslar
-    TEMPLATE_VERSION: 1,              // sertifikat shabloni versiyasi
-    ID_PREFIX: 'ITT',                 // certificate ID prefiksi
-    VERIFY_ROUTE: '#/verify/',        // QR URL routing
-    AUTO_OPEN_DELAY: 1600             // dars tugagach certificate auto-open kechikishi (ms)
+    CERTIFICATE_PREVIEW_MODE: false,   // true = hammasi ochiq (dizayn review rejimi)
+    REQUIRE_COURSE_COMPLETE: true,     // true => faqat 100% tugallangan kursga sertifikat
+    TEMPLATE_VERSION: 2,               // sertifikat shabloni versiyasi (per-kurs)
+    ID_PREFIX: 'ITT',                  // certificate ID prefiksi
+    VERIFY_ROUTE: '#/verify/',         // QR URL routing
+    AUTO_OPEN_DELAY: 1600              // kurs tugagach certificate auto-open kechikishi (ms)
   };
 
   /* ================= 2) KICHIK HELPERS ================= */
@@ -73,6 +78,10 @@ import qrcode from 'qrcode-generator';
     try { return (window.CoursesAPI && window.CoursesAPI.listCourses()) || []; }
     catch (e) { return []; }
   }
+  function findCourse(courseId) {
+    try { return (window.CoursesAPI && window.CoursesAPI.getCourse(courseId)) || null; }
+    catch (e) { return null; }
+  }
   function findLesson(courseId, lessonId) {
     try { return window.CoursesAPI.findLesson(courseId, lessonId); }
     catch (e) { return null; }
@@ -94,7 +103,7 @@ import qrcode from 'qrcode-generator';
     try { localStorage.setItem(STORE_PREFIX + who(), JSON.stringify(store)); }
     catch (e) { console.warn('certificate store yozilmadi', e); }
   }
-  
+
   /* ---------- ISM (certificateName) ---------- */
   /* Birinchi martta user kiritadi → keyingi barcha sertifikatlarda avtomatik. */
   function getCertName() {
@@ -125,7 +134,7 @@ import qrcode from 'qrcode-generator';
     } catch (e) { /* noop */ }
   }
 
-  /* ================= 4) UNIQUE CERTIFICATE ID ================= */
+  /* ================= 4) UNIQUE CERTIFICATE ID (per-course) ================= */
 
   function fnv1a(str) {
     let h = 0x811c9dc5;
@@ -149,9 +158,10 @@ import qrcode from 'qrcode-generator';
     const t = String(courseId || '').toUpperCase().replace(/[^A-Z0-9]/g, '');
     return (t || 'GEN').slice(0, 6);
   }
-  function makeCertId(userId, courseId, lessonNumber, lessonId) {
-    return CONFIG.ID_PREFIX + '-' + courseTag(courseId) + '-L' + pad2(lessonNumber) +
-      '-' + hash6(userId + '|' + courseId + '|' + lessonId);
+  /* Kurs sertifikati ID: ITT-HTML-FULL-7F3A9B (alohida dars uchun EMAS) */
+  function makeCertId(userId, courseId) {
+    return CONFIG.ID_PREFIX + '-' + courseTag(courseId) + '-FULL-' +
+      hash6(userId + '|' + courseId + '|full-course');
   }
 
   /* ================= 5) REAL PROGRESS DATA (source of truth) ================= */
@@ -184,43 +194,85 @@ import qrcode from 'qrcode-generator';
       return null;
     } catch (e) { return null; }
   }
-  
+
+  /* ---------- KURS DARAJASIDAGI STATISTIKA (per-course sertifikat asosi) ---------- */
+  /* Kurs 100% = har bir dars completed (testdan o'tilgan) va
+     hech bir test "passed: false" holatda qolmagan. */
+  function courseStats(course) {
+    const lessons = (course && course.lessons) || [];
+    const p = readProgress();
+    const cp = p && p.progress && p.progress[course.id];
+    const completed = (cp && cp.completed) || {};
+    const tests = (cp && cp.testResults) || {};
+    let doneCount = 0, percentSum = 0, percentCount = 0, xp = 0, duration = 0;
+    let passedAllTests = true;
+    lessons.forEach(function (l) {
+      const done = completed[l.id];
+      const tr = tests[l.id];
+      if (done) {
+        doneCount++;
+        if (typeof l.xp === 'number') xp += l.xp;
+        if (typeof l.duration === 'number') duration += l.duration;
+      }
+      if (tr && typeof tr.percent === 'number') { percentSum += tr.percent; percentCount++; }
+      else if (done && typeof done.percent === 'number') { percentSum += done.percent; percentCount++; }
+      if (!done) passedAllTests = false;
+      else if (tr && tr.passed === false) passedAllTests = false;
+    });
+    const total = lessons.length;
+    const completedPct = total ? Math.round((doneCount / total) * 100) : 0;
+    const avgPercent = percentCount ? Math.round(percentSum / percentCount) : null;
+    const isComplete = total > 0 && doneCount === total && passedAllTests;
+    return { total: total, doneCount: doneCount, completedPct: completedPct, avgPercent: avgPercent, xp: xp, duration: duration, isComplete: isComplete };
+  }
+  function isCourseCompleted(courseId) {
+    const c = findCourse(courseId);
+    return !!(c && courseStats(c).isComplete);
+  }
+
   /* ================= 6) CERTIFICATE RECORD (duplicate protection) ================= */
 
-  function ensureCert(course, lesson) {
+  /* HAR BIR KURS uchun BITTA sertifikat — kalit: courseId (dars emas!) */
+  function ensureCert(course) {
     loadStore();
-    const key = course.id + '::' + lesson.id;
-    if (store.certs[key]) return { record: store.certs[key], created: false, needName: false };
+    const key = course.id;
+    if (store.certs[key]) return { record: store.certs[key], created: false, needName: false, locked: false };
+
+    const stats = courseStats(course);
+    /* 100% talab: kurs to'liq tugatilmagan bo'lsa sertifikat berilmaydi (🔒) */
+    const canIssue = stats.isComplete || !CONFIG.REQUIRE_COURSE_COMPLETE || CONFIG.CERTIFICATE_PREVIEW_MODE;
+    if (!canIssue) return { record: null, created: false, needName: false, locked: true };
 
     const name = getCertName();
-    if (!name) return { record: null, created: false, needName: true };
+    if (!name) return { record: null, created: false, needName: true, locked: false };
 
-    const res = realResult(course.id, lesson.id);
-    const completed = isLessonCompleted(course.id, lesson.id);
     const record = {
-      certificateId: makeCertId(userIdOf(), course.id, lesson.number, lesson.id),
+      certificateId: makeCertId(userIdOf(), course.id),
       userId: userIdOf(),
       userName: name,
       courseId: course.id,
       courseName: course.name,
-      lessonId: lesson.id,
-      lessonNumber: lesson.number,
-      lessonTitle: lesson.title,
+      courseIcon: course.icon || '📘',
+      courseColor: course.color || '#2563EB',
+      lessonsCount: stats.total,
+      avgPercent: stats.avgPercent,
       issuedAt: new Date().toISOString(),
-      completionStatus: completed ? 'completed' : 'preview',
-      score: res ? res.score : null,
-      percent: res ? res.percent : null,
-      xp: typeof lesson.xp === 'number' ? lesson.xp : 0,
-      duration: typeof lesson.duration === 'number' ? lesson.duration : null,
+      completionStatus: stats.isComplete ? 'completed' : 'preview',
+      xp: stats.xp,
+      duration: stats.duration,
       templateVersion: CONFIG.TEMPLATE_VERSION
     };
     store.certs[key] = record;
     saveStore();
-    return { record: record, created: true, needName: false };
+    return { record: record, created: true, needName: false, locked: false };
   }
-  function getCertByLesson(courseId, lessonId) {
+  function getCertByCourse(courseId) {
     loadStore();
-    return store.certs[courseId + '::' + lessonId] || null;
+    return store.certs[courseId] || null;
+  }
+  /* Eski (per-lesson) API mosligi — kurs sertifikatini qaytaradi */
+  function getCertByLesson(courseId, lessonId) {
+    return getCertByCourse(courseId);
   }
   function allCertificates() {
     const out = [];
@@ -231,7 +283,11 @@ import qrcode from 'qrcode-generator';
         try {
           const st = JSON.parse(localStorage.getItem(k));
           const certs = (st && st.certs) || {};
-          Object.keys(certs).forEach(function (key) { out.push(certs[key]); });
+          Object.keys(certs).forEach(function (key) {
+            /* eski per-lesson yozuvlar (::) o'tkazib yuboriladi */
+            if (key.indexOf('::') !== -1) return;
+            out.push(certs[key]);
+          });
         } catch (e) { /* skip broken */ }
       }
     } catch (e) { /* noop */ }
@@ -252,7 +308,7 @@ import qrcode from 'qrcode-generator';
       (location.origin + location.pathname);
     return base + CONFIG.VERIFY_ROUTE + certId;
   }
-  
+
   function qrSvg(text) {
     try {
       const qr = qrcode(0, 'M');
@@ -262,18 +318,18 @@ import qrcode from 'qrcode-generator';
     } catch (e) { return ''; }
   }
 
-  /* ================= 8) UNLOCK LOGIKA (preview vs production) ================= */
+  /* ================= 8) UNLOCK LOGIKA (kurs 100% => 🔓) ================= */
 
-  function isUnlocked(courseId, lessonId) {
+  function isUnlocked(course) {
     if (CONFIG.CERTIFICATE_PREVIEW_MODE) return true;
-    if (!CONFIG.REQUIRE_LESSON_COMPLETE) return true;
-    return isLessonCompleted(courseId, lessonId);
+    if (!CONFIG.REQUIRE_COURSE_COMPLETE) return true;
+    return !!(course && courseStats(course).isComplete);
   }
 
   /* ================= 9) OVERLAY YARATISH (bir martta) ================= */
 
   let viewerEl = null, verifyEl = null;
-  let pendingFlow = null; // { courseId, lessonId } — dars tugagach ism kutilmoqda
+  let pendingFlow = null; // { courseId } — kurs tugagach ism kutilmoqda
 
   function ensureViewer() {
     if (viewerEl) return viewerEl;
@@ -356,17 +412,17 @@ import qrcode from 'qrcode-generator';
     });
     setTimeout(function () { input.focus(); }, 120);
   }
-  
+
   /* ================= 10) CERTIFICATE PAPER (premium light dizayn) ================= */
 
   function paperHtml(r) {
-    const preview = !isLessonCompleted(r.courseId, r.lessonId);
+    const preview = r.completionStatus !== 'completed';
     const stats =
       '<div class="cert-stats">' +
-        '<div class="cert-stat"><span class="cert-stat-ico" aria-hidden="true">📚</span><span class="cert-stat-lbl">Dars</span><span class="cert-stat-val">' + esc(r.courseName) + ' · ' + r.lessonNumber + '-dars</span></div>' +
+        '<div class="cert-stat"><span class="cert-stat-ico" aria-hidden="true">📚</span><span class="cert-stat-lbl">Kurs</span><span class="cert-stat-val">' + esc(r.courseName) + ' · ' + r.lessonsCount + ' dars</span></div>' +
         (r.duration ? '<div class="cert-stat"><span class="cert-stat-ico" aria-hidden="true">⏱</span><span class="cert-stat-lbl">Davomiylik</span><span class="cert-stat-val">' + r.duration + ' daqiqa</span></div>' : '') +
         (r.xp ? '<div class="cert-stat"><span class="cert-stat-ico" aria-hidden="true">⭐</span><span class="cert-stat-lbl">XP</span><span class="cert-stat-val">+' + r.xp + ' XP</span></div>' : '') +
-        (r.percent != null ? '<div class="cert-stat"><span class="cert-stat-ico" aria-hidden="true">📊</span><span class="cert-stat-lbl">Natija</span><span class="cert-stat-val">' + r.percent + '%</span></div>' : '') +
+        (r.avgPercent != null ? '<div class="cert-stat"><span class="cert-stat-ico" aria-hidden="true">📊</span><span class="cert-stat-lbl">O&lsquo;rtacha natija</span><span class="cert-stat-val">' + r.avgPercent + '%</span></div>' : '') +
       '</div>';
 
     return (
@@ -389,9 +445,9 @@ import qrcode from 'qrcode-generator';
         '<h1 class="cert-title">SERTIFIKAT</h1>' +
         '<p class="cert-sub">Ushbu sertifikat</p>' +
         '<div class="cert-name">' + esc(r.userName) + '</div>' +
-        '<p class="cert-body">ITTest platformasida <strong>' + esc(r.courseName) + '</strong> fanining ' +
-          '<strong>' + r.lessonNumber + '</strong>-darsini («' + esc(r.lessonTitle) + '») ' +
-          'muvaffaqiyatli yakunlagani uchun berildi.</p>' +
+        '<p class="cert-body">ITTest platformasida <strong>' + esc(r.courseName) + '</strong> kursining barcha ' +
+          '<strong>' + r.lessonsCount + '</strong> ta dars va testlarini ' +
+          '100% muvaffaqiyatli yakunlagani uchun berildi.</p>' +
         stats +
         '<footer class="cert-foot">' +
           '<div class="cert-foot-col cert-foot-date">' +
@@ -407,7 +463,7 @@ import qrcode from 'qrcode-generator';
       '</article>'
     );
   }
-  
+
   function openViewer(record) {
     currentRecord = record;
     const el = ensureViewer();
@@ -423,25 +479,36 @@ import qrcode from 'qrcode-generator';
     if (viewerEl) viewerEl.classList.remove('open');
     document.body.classList.remove('cert-modal-open');
   }
-  function openCertForLesson(course, lesson) {
-    const res = ensureCert(course, lesson);
+  /* KURS uchun sertifikat ochish (per-course asosiy oqim) */
+  function openCertForCourse(course) {
+    const res = ensureCert(course);
+    if (res.locked) {
+      const st = courseStats(course);
+      toast('🔒 ' + (course.name || 'Kurs') + ' hali 100% tugatilmagan — ' +
+        st.doneCount + '/' + st.total + ' dars', 'warning');
+      return;
+    }
     if (res.needName) {
       const el = ensureViewer();
       const body = $('#certvBody');
       if (!body) return;
-      pendingFlow = { courseId: course.id, lessonId: lesson.id };
+      pendingFlow = { courseId: course.id };
       currentRecord = null;
       body.innerHTML = nameStepHtml(true);
       el.classList.add('open');
       document.body.classList.add('cert-modal-open');
       bindNameStep(function () {
-        const res2 = ensureCert(course, lesson);
+        const res2 = ensureCert(course);
         pendingFlow = null;
         if (res2.record) openViewer(res2.record);
       });
       return;
     }
     if (res.record) openViewer(res.record);
+  }
+  /* Eski (per-lesson) nom — endi ham kurs bo'yicha ochiladi (back-compat) */
+  function openCertForLesson(course, lesson) {
+    return openCertForCourse(course);
   }
 
   /* ================= 11) PDF + SHARE ================= */
@@ -460,9 +527,9 @@ import qrcode from 'qrcode-generator';
     const r = currentRecord;
     const url = verifyUrl(r.certificateId);
     const shareData = {
-      title: 'ITTest Sertifikati — ' + r.courseName + ' ' + r.lessonNumber + '-dars',
-      text: 'Men ITTest platformasida "' + r.courseName + '" fanining ' + r.lessonNumber +
-        '-darsini muvaffaqiyatli yakunladim! Sertifikat ID: ' + r.certificateId,
+      title: 'ITTest Sertifikati — ' + r.courseName + ' kursi',
+      text: 'Men ITTest platformasida "' + r.courseName + '" kursini (' + r.lessonsCount +
+        ' dars) 100% muvaffaqiyatli yakunladim! Sertifikat ID: ' + r.certificateId,
       url: url
     };
     if (navigator.share) {
@@ -486,7 +553,7 @@ import qrcode from 'qrcode-generator';
       toast('🔗 Sertifikat havolasi nusxalandi!', 'success');
     } catch (e) { toast('Sertifikat ID: ' + (currentRecord ? currentRecord.certificateId : ''), 'info'); }
   }
-  
+
   /* ================= 12) VERIFICATION PAGE (public — login shart emas) ================= */
 
   function ensureVerify() {
@@ -525,9 +592,9 @@ import qrcode from 'qrcode-generator';
         '</div>' +
         '<dl class="verify-grid">' +
           '<div><dt>Foydalanuvchi</dt><dd>' + esc(cert.userName) + '</dd></div>' +
-          '<div><dt>Fan</dt><dd>' + esc(cert.courseName) + '</dd></div>' +
-          '<div><dt>Dars</dt><dd>' + cert.lessonNumber + '-dars: ' + esc(cert.lessonTitle) + '</dd></div>' +
+          '<div><dt>Kurs</dt><dd>' + esc(cert.courseName) + ' — ' + cert.lessonsCount + ' dars (to&lsquo;liq kurs)</dd></div>' +
           '<div><dt>Berilgan sana</dt><dd>' + esc(fmtDate(cert.issuedAt)) + '</dd></div>' +
+          (cert.avgPercent != null ? '<div><dt>O&lsquo;rtacha natija</dt><dd>' + cert.avgPercent + '%</dd></div>' : '') +
           '<div class="verify-wide"><dt>Certificate ID</dt><dd class="cert-id-code">' + esc(cert.certificateId) + '</dd></div>' +
         '</dl>' +
         manualSearchHtml(cert.certificateId) +
@@ -539,7 +606,7 @@ import qrcode from 'qrcode-generator';
     return (
       '<form class="verify-search" id="verifySearchForm" novalidate>' +
         '<label class="visually-hidden" for="verifySearchInput">Certificate ID kiriting</label>' +
-        '<input type="text" id="verifySearchInput" class="input" placeholder="Certificate ID kiriting: ITT-HTML-L02-7F3A9B" ' +
+        '<input type="text" id="verifySearchInput" class="input" placeholder="Certificate ID kiriting: ITT-HTML-FULL-7F3A9B" ' +
           'value="' + esc(prefill || '') + '" spellcheck="false" />' +
         '<button type="submit" class="btn btn-primary">Tekshirish</button>' +
       '</form>'
@@ -589,7 +656,7 @@ import qrcode from 'qrcode-generator';
       try { history.replaceState(null, '', location.pathname + location.search); } catch (e) { /* noop */ }
     }
   }
-  
+
   /* ================= 13) HASH ROUTING: #/verify/<ID> ================= */
 
   function routeFromHash() {
@@ -607,7 +674,7 @@ import qrcode from 'qrcode-generator';
     }
   }
 
-  /* ================= 14) SERTIFIKATLAR PAGE ================= */
+  /* ================= 14) SERTIFIKATLAR PAGE (kurs kartalari) ================= */
 
   let pageFilter = 'all';
   let pageQuery = '';
@@ -627,17 +694,18 @@ import qrcode from 'qrcode-generator';
   function renderCertSummary() {
     const row = document.getElementById('certSummaryRow');
     if (!row) return;
-    let earned = 0;
-    Object.keys(store.certs).forEach(function (k) {
-      const parts = k.split('::');
-      if (parts.length === 2 && isLessonCompleted(parts[0], parts[1])) earned++;
+    const list = courses();
+    let earned = 0, locked = 0;
+    list.forEach(function (c) {
+      if (isUnlocked(c)) earned++;
+      else locked++;
     });
-    const total = Object.keys(store.certs).length;
+    const total = list.length;
     row.innerHTML =
-      '<div class="certp-stat"><span class="certp-stat-num">' + total + '</span><span class="certp-stat-lbl">🏆 Sertifikat</span></div>' +
-      '<div class="certp-stat"><span class="certp-stat-num">' + earned + '</span><span class="certp-stat-lbl">✅ Tugallangan</span></div>' +
-      '<div class="certp-stat"><span class="certp-stat-num">' + Math.max(0, total - earned) + '</span><span class="certp-stat-lbl">👁 Preview</span></div>' +
-      (CONFIG.CERTIFICATE_PREVIEW_MODE ? '<div class="certp-preview-note">Preview rejim: hozircha barcha dars sertifikatlari ochiq</div>' : '');
+      '<div class="certp-stat"><span class="certp-stat-num">' + total + '</span><span class="certp-stat-lbl">🎓 Kurs</span></div>' +
+      '<div class="certp-stat"><span class="certp-stat-num">' + earned + '</span><span class="certp-stat-lbl">🏆 Sertifikat tayyor</span></div>' +
+      '<div class="certp-stat"><span class="certp-stat-num">' + locked + '</span><span class="certp-stat-lbl">🔒 Qulflangan</span></div>' +
+      (CONFIG.CERTIFICATE_PREVIEW_MODE ? '<div class="certp-preview-note">Preview rejim: hozircha barcha kurs sertifikatlari ochiq</div>' : '');
   }
   function renderCertNameBar() {
     const bar = document.getElementById('certNameBar');
@@ -667,58 +735,65 @@ import qrcode from 'qrcode-generator';
       toast('Sertifikatdagi ism saqlandi! 🎉', 'success');
     });
   }
-  
-  function lessonMatches(course, lesson, q) {
+
+  function courseMatches(course, q) {
     if (!q) return true;
-    const s = (course.name + ' ' + lesson.number + ' ' + lesson.title + ' ' + course.name + ' ' + lesson.number + '-dars').toLowerCase();
+    const s = (course.name + ' ' + course.id + ' kurs').toLowerCase();
     return s.indexOf(q) !== -1;
   }
+  /* HAR BIR KURS/MODUL uchun BITTA premium sertifikat kartochkasi */
   function renderCertGrid() {
     const grid = document.getElementById('certGrid');
     if (!grid) return;
     const q = pageQuery.trim().toLowerCase();
     let html = '';
     courses().forEach(function (course) {
-      (course.lessons || []).forEach(function (lesson) {
-        if (!lessonMatches(course, lesson, q)) return;
-        const key = course.id + '::' + lesson.id;
-        const rec = store.certs[key] || null;
-        const completed = isLessonCompleted(course.id, lesson.id);
-        const unlocked = isUnlocked(course.id, lesson.id);
-        if (pageFilter === 'completed' && !completed) return;
-        if (pageFilter === 'preview' && completed) return;
-        const certId = rec ? rec.certificateId :
-          makeCertId(userIdOf(), course.id, lesson.number, lesson.id);
-        const badge = completed
-          ? '<span class="cert-status-badge earned">✅ Sertifikat mavjud</span>'
-          : (unlocked ? '<span class="cert-status-badge preview">👁 Preview</span>' : '<span class="cert-status-badge locked">🔒 Yopiq</span>');
-        html +=
-          '<div class="certp-card' + (completed ? ' earned' : '') + (unlocked ? '' : ' locked') + '">' +
-            '<div class="certp-card-top">' +
-              '<span class="certp-course-ico" style="background:' + esc(course.color || '#2563EB') + '1a;color:' + esc(course.color || '#2563EB') + '">' + esc(course.icon || '📘') + '</span>' +
-              '<span class="certp-course-name">' + esc(course.name) + '</span>' +
-              badge +
-            '</div>' +
-            '<div class="certp-lesson-num">' + lesson.number + '-dars</div>' +
-            '<div class="certp-lesson-title">' + esc(lesson.title) + '</div>' +
-            '<div class="certp-cert-id" title="Certificate ID">' + esc(certId) + '</div>' +
-            '<div class="certp-card-foot">' +
-              (unlocked
-                ? '<button type="button" class="btn btn-primary btn-sm" data-cert-open="' + esc(course.id) + '|' + esc(lesson.id) + '">Sertifikatni ko&lsquo;rish →</button>'
-                : '<button type="button" class="btn btn-ghost btn-sm" disabled>🔒 Darsni tugating</button>') +
-            '</div>' +
-          '</div>';
-      });
+      if (!courseMatches(course, q)) return;
+      const stats = courseStats(course);
+      const rec = store.certs[course.id] || null;
+      const unlocked = isUnlocked(course);
+      if (pageFilter === 'completed' && !stats.isComplete) return;
+      if (pageFilter === 'locked' && unlocked) return;
+      const certId = rec ? rec.certificateId : makeCertId(userIdOf(), course.id);
+      const badge = unlocked
+        ? (stats.isComplete
+            ? '<span class="cert-status-badge earned">✅ Sertifikat tayyor</span>'
+            : '<span class="cert-status-badge preview">👁 Preview</span>')
+        : '<span class="cert-status-badge locked">🔒 Qulflangan</span>';
+      const progressHtml =
+        '<div class="certp-progress">' +
+          '<div class="certp-progress-track"><span class="certp-progress-bar" style="width:' + stats.completedPct + '%"></span></div>' +
+          '<div class="certp-progress-meta">' +
+            '<span class="certp-progress-count">' + stats.doneCount + '/' + stats.total + ' dars</span>' +
+            '<span class="certp-progress-pct">' + stats.completedPct + '%</span>' +
+          '</div>' +
+        '</div>';
+      html +=
+        '<div class="certp-card' + (stats.isComplete ? ' earned' : '') + (unlocked ? '' : ' locked') + '">' +
+          '<div class="certp-card-top">' +
+            '<span class="certp-course-ico" style="background:' + esc(course.color || '#2563EB') + '1a;color:' + esc(course.color || '#2563EB') + '">' + esc(course.icon || '📘') + '</span>' +
+            '<span class="certp-course-name">' + esc(course.name) + '</span>' +
+            badge +
+          '</div>' +
+          '<div class="certp-lesson-num">To&lsquo;liq kurs sertifikati</div>' +
+          '<div class="certp-lesson-title">' + esc(course.name) + ' kursi — barcha dars va testlar</div>' +
+          progressHtml +
+          '<div class="certp-cert-id" title="Certificate ID">' + esc(certId) + '</div>' +
+          '<div class="certp-card-foot">' +
+            (unlocked
+              ? '<button type="button" class="btn btn-primary btn-sm" data-cert-open="' + esc(course.id) + '">Sertifikatni ko&lsquo;rish →</button>'
+              : '<button type="button" class="btn btn-ghost btn-sm" disabled>🔒 Kursni 100% tugating</button>') +
+          '</div>' +
+        '</div>';
     });
     if (!html) html = '<div class="certp-empty">🔍 Hech narsa topilmadi — boshqa so&lsquo;z bilan urinib ko&lsquo;ring.</div>';
     grid.innerHTML = html;
     grid.querySelectorAll('[data-cert-open]').forEach(function (btn) {
       btn.addEventListener('click', function () {
-        const parts = (btn.getAttribute('data-cert-open') || '').split('|');
-        if (parts.length !== 2) return;
-        const found = findLesson(parts[0], parts[1]);
-        if (!found) { toast('Dars topilmadi', 'error'); return; }
-        openCertForLesson(found.course, found.lesson);
+        const courseId = btn.getAttribute('data-cert-open') || '';
+        const course = findCourse(courseId);
+        if (!course) { toast('Kurs topilmadi', 'error'); return; }
+        openCertForCourse(course);
       });
     });
   }
@@ -748,21 +823,27 @@ import qrcode from 'qrcode-generator';
       });
     }
   }
-  
-  /* ================= 15) LESSON COMPLETE → CERTIFICATE FLOW ================= */
+
+  /* ================= 15) LESSON COMPLETE → COURSE CERTIFICATE FLOW ================= */
 
   /* Mavjud event: LessonsHooks.onLessonComplete (lessons-app.js) — SOURCE OF TRUTH.
-     Daily/Streak hook'i bilan parallel ishlaydi, uni BUZMAYDI. */
+     Daily/Streak hook'i bilan parallel ishlaydi, uni BUZMAYDI.
+     YANGI MANTIQ: sertifikat HAR DARSda emas — faqat KURS 100% tugaganda
+     (barcha darslar completed + testlar passed) bir martta ochiladi. */
   function onLessonComplete(info) {
     try {
-      if (!info || !info.course || !info.lesson) return;
+      if (!info || !info.course) return;
       if (!getUser()) return;
-      /* Celebration effekti ko'rinib turadi — keyin certificate auto-open */
+      const course = info.course;
+      /* Kurs hali to'liq tugamagan bo'lsa — hech narsa ochilmaydi */
+      const stats = courseStats(course);
+      if (!stats.isComplete && !CONFIG.CERTIFICATE_PREVIEW_MODE) return;
+      /* Celebration effekti ko'rinib turadi — keyin certificate auto-open (bir martta) */
       setTimeout(function () {
-        const found = findLesson(info.course.id, info.lesson.id);
-        const course = (found && found.course) || info.course;
-        const lesson = (found && found.lesson) || info.lesson;
-        openCertForLesson(course, lesson);
+        const found = findCourse(course.id);
+        if (!found) return;
+        /* Duplicate protection: ensureCert mavjud recordni qaytadi */
+        openCertForCourse(found);
       }, CONFIG.AUTO_OPEN_DELAY);
     } catch (e) { console.warn('certificate flow xatosi', e); }
   }
@@ -773,18 +854,15 @@ import qrcode from 'qrcode-generator';
     const host = document.getElementById('profileCertSummary');
     if (!host) return;
     loadStore();
+    const list = courses();
     let earned = 0;
-    Object.keys(store.certs).forEach(function (k) {
-      const parts = k.split('::');
-      if (parts.length === 2 && isLessonCompleted(parts[0], parts[1])) earned++;
-    });
-    const total = Object.keys(store.certs).length;
+    list.forEach(function (c) { if (store.certs[c.id]) earned++; });
     host.classList.remove('hidden');
     host.innerHTML =
       '<div class="card profile-cert-card">' +
         '<div class="card-header"><h3>🏆 Sertifikatlar</h3></div>' +
         '<div class="card-body">' +
-          '<p><strong>' + total + ' ta sertifikat</strong> · ' + earned + ' ta tugallangan dars sertifikati</p>' +
+          '<p><strong>' + earned + ' ta kurs sertifikati</strong> · ' + list.length + ' ta kursdan</p>' +
           '<button type="button" class="btn btn-primary btn-sm" id="profileCertGoBtn">Sertifikatlarni ko&lsquo;rish →</button>' +
         '</div>' +
       '</div>';
@@ -799,14 +877,17 @@ import qrcode from 'qrcode-generator';
   window.ITCertificates = {
     CONFIG: CONFIG,
     renderPage: renderPage,
+    openCertForCourse: openCertForCourse,
     openCertForLesson: openCertForLesson,
     openViewer: openViewer,
+    closeViewer: closeViewer,
     openVerify: openVerify,
     closeVerify: closeVerify,
     verify: findCertById,
     getCertName: getCertName,
     setCertName: setCertName,
     ensureCert: ensureCert,
+    getCertByCourse: getCertByCourse,
     getCertByLesson: getCertByLesson,
     allCertificates: allCertificates,
     count: certCount,
