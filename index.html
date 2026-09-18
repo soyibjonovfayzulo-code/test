@@ -26,6 +26,8 @@
   <link rel="stylesheet" href="design-tokens.css" />
   <link rel="stylesheet" href="certificates.css" />
   <link rel="stylesheet" href="home-android.css" />
+  <link rel="stylesheet" href="testlar-redesign.css" />
+  <link rel="stylesheet" href="tests-android.css" />
 </head>
 
 <body>
@@ -534,23 +536,35 @@
         </section>
 
         <!-- TESTS PAGE -->
-        <section id="page-tests" class="page">
-          <div class="page-toolbar">
-            <div class="search-box">
-              <span class="search-icon" aria-hidden="true">🔍</span>
-              <label for="testSearch" class="visually-hidden">Fan qidirish</label>
-              <input type="text" id="testSearch" placeholder="Fan qidirish..." />
+        <section id="page-tests" class="page" style="padding-top: 14px;">
+          <!-- Search hidden visually but kept for logic -->
+          <input type="hidden" id="testSearch" value="" />
+          
+          <!-- Hero Banner -->
+          <div class="hero-card">
+            <div class="hero-text">
+              <div class="hero-badge">
+                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="16 18 22 12 16 6"></polyline><polyline points="8 6 2 12 8 18"></polyline></svg>
+                Bilim darajasi
+              </div>
+              <h1 class="hero-heading">Bilimingizni sinab ko‘ring!</h1>
+              <p class="hero-subtext">Testlar orqali bilimlaringizni tekshiring va natijalaringizni yaxshilang.</p>
             </div>
-            <div class="filter-chips" id="diffFilter" role="tablist" aria-label="Qiyinlik darajasi bo'yicha filtr">
-              <button class="chip active" data-diff="all" type="button" role="tab"
-                aria-selected="true">Barchasi</button>
-              <button class="chip" data-diff="beginner" type="button" role="tab" aria-selected="false">Beginner</button>
-              <button class="chip" data-diff="intermediate" type="button" role="tab"
-                aria-selected="false">Intermediate</button>
-              <button class="chip" data-diff="advanced" type="button" role="tab" aria-selected="false">Advanced</button>
+            <div class="hero-mascot-wrapper">
+              <img src="mascot/it-robot.png" alt="ITTest Robot Mascot" class="hero-mascot-img" onerror="this.style.display='none'; this.nextElementSibling.style.display='block';" />
             </div>
           </div>
-          <div class="subject-cards" id="testsGrid"></div>
+
+          <!-- Category Filter Chips -->
+          <nav class="filter-scroll" id="diffFilter" aria-label="Kategoriyalar">
+            <button class="filter-chip active" data-diff="all" type="button">Barchasi</button>
+            <button class="filter-chip" data-diff="dev" type="button">Dasturlash</button>
+            <button class="filter-chip" data-diff="web" type="button">Web</button>
+            <button class="filter-chip" data-diff="it" type="button">IT</button>
+          </nav>
+
+          <!-- Test Cards List -->
+          <div class="test-list" id="testsGrid"></div>
         </section>
 
         <!-- TEST LIST (for a selected subject) -->
@@ -581,18 +595,20 @@
           <div class="test-mini-stats" id="testMiniStats"></div>
           <div class="test-body">
             <div class="question-area" id="questionArea"></div>
-            <div class="navigator-area">
-              <div class="navigator-header">
-                <span>Savollar</span>
-                <span class="navigator-legend">
-                  <span class="legend-dot legend-correct" aria-hidden="true"></span> To'g'ri
-                  <span class="legend-dot legend-wrong" aria-hidden="true"></span> Noto'g'ri
-                  <span class="legend-dot legend-marked" aria-hidden="true"></span> Belgilangan
-                </span>
+            <aside class="test-sidebar">
+              <div class="navigator-area">
+                <div class="navigator-header">
+                  <span>Savollar</span>
+                  <span class="navigator-legend">
+                    <span class="legend-dot legend-correct" aria-hidden="true"></span> To'g'ri
+                    <span class="legend-dot legend-wrong" aria-hidden="true"></span> Noto'g'ri
+                    <span class="legend-dot legend-marked" aria-hidden="true"></span> Belgilangan
+                  </span>
+                </div>
+                <div class="question-nav" id="questionNav"></div>
+                <button class="btn btn-danger btn-block" id="finishTestBtn" type="button">Testni yakunlash</button>
               </div>
-              <div class="question-nav" id="questionNav"></div>
-              <button class="btn btn-danger btn-block" id="finishTestBtn" type="button">Testni yakunlash</button>
-            </div>
+            </aside>
           </div>
           <div class="test-nav-buttons">
             <button class="btn btn-ghost" id="prevBtn" type="button">← Oldingi</button>
@@ -1622,6 +1638,7 @@
   <script type="module" src="dashboard.js"></script>
   <script type="module" src="mobile.js"></script>
   <script type="module" src="home-android.js"></script>
+<script type="module" src="tests-android.js"></script>
   <script type="module" src="ai-assistant.js"></script>
   <script type="module" src="onboarding.js"></script>
   <script type="module" src="daily-streak.js"></script>

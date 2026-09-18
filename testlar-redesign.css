@@ -1,0 +1,480 @@
+/* ==========================================================================
+   TESTLAR REDESIGN — PREMIUM EDTECH MOBILE UI
+   ========================================================================== */
+
+:root {
+  --test-bg-card: rgba(15, 23, 48, 0.75);
+  --test-bg-card-hover: rgba(22, 34, 68, 0.9);
+  --test-accent-blue: #2f7bff;
+  --test-accent-cyan: #38bdf8;
+  --test-accent-glow: rgba(47, 123, 255, 0.4);
+  --test-cyan-glow: rgba(56, 189, 248, 0.25);
+  --test-text-main: #f8fafc;
+  --test-text-sub: #94a3b8;
+  --test-text-muted: #64748b;
+  --test-border-blue: rgba(56, 189, 248, 0.25);
+  --test-border-soft: rgba(255, 255, 255, 0.08);
+  --test-state-green: #22c55e;
+  --test-state-gold: #f59e0b;
+}
+
+#page-tests {
+  padding: 10px 14px 24px !important;
+  background: transparent !important;
+}
+
+/* MUHIM: display faqat .active holatda beriladi — aks holda ID selektori (specificity)
+   .page { display:none } va .page.active qoidalarini yengib, sahifa doim ko'rinib qoladi
+   va barcha navigatsiya "Testlar sahifasi ochilyapti" bugini keltirib chiqaradi. */
+#page-tests.active {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+/* ==========================================================================
+   HERO SECTION
+   ========================================================================== */
+#page-tests .hero-card {
+  position: relative;
+  border-radius: 22px;
+  padding: 18px 16px;
+  background: linear-gradient(135deg, rgba(15, 26, 56, 0.9) 0%, rgba(10, 17, 40, 0.75) 100%);
+  border: 1px solid var(--test-border-blue);
+  box-shadow: 
+    0 12px 30px rgba(0, 0, 0, 0.5),
+    inset 0 1px 0 rgba(255, 255, 255, 0.15);
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  min-height: 120px;
+}
+
+#page-tests .hero-text {
+  position: relative;
+  z-index: 2;
+  max-width: 65%;
+}
+
+#page-tests .hero-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  font-size: 10px;
+  font-weight: 800;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  color: var(--test-accent-cyan);
+  margin-bottom: 6px;
+}
+
+#page-tests .hero-heading {
+  font-size: 18px;
+  font-weight: 800;
+  line-height: 1.25;
+  color: var(--test-text-main);
+  margin-bottom: 6px;
+  letter-spacing: -0.3px;
+}
+
+#page-tests .hero-subtext {
+  font-size: 11px;
+  line-height: 1.45;
+  color: var(--test-text-sub);
+}
+
+#page-tests .hero-mascot-wrapper {
+  position: absolute;
+  right: 6px;
+  bottom: -4px;
+  width: 110px;
+  height: 110px;
+  z-index: 1;
+  pointer-events: none;
+}
+
+#page-tests .hero-mascot-img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  filter: drop-shadow(0 10px 20px rgba(47, 123, 255, 0.55));
+  animation: testGentleFloat 4s ease-in-out infinite;
+}
+
+@keyframes testGentleFloat {
+  0%, 100% { transform: translateY(0) rotate(-1deg); }
+  50% { transform: translateY(-6px) rotate(2deg); }
+}
+
+/* ==========================================================================
+   CATEGORY FILTERS (Horizontal Scroll Chips)
+   ========================================================================== */
+#page-tests .filter-scroll {
+  display: flex;
+  gap: 8px;
+  overflow-x: auto;
+  scrollbar-width: none;
+  padding: 2px 0 4px;
+  margin: 0 -4px;
+}
+
+#page-tests .filter-scroll::-webkit-scrollbar {
+  display: none;
+}
+
+#page-tests .filter-chip {
+  flex: none;
+  font-family: inherit;
+  font-size: 12px;
+  font-weight: 700;
+  padding: 8px 18px;
+  border-radius: 30px;
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid var(--test-border-soft);
+  color: var(--test-text-sub);
+  cursor: pointer;
+  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+#page-tests .filter-chip.active {
+  background: linear-gradient(135deg, var(--test-accent-blue) 0%, #1d4ed8 100%);
+  border-color: var(--test-accent-cyan);
+  color: #ffffff;
+  box-shadow: 
+    0 4px 14px var(--test-accent-glow),
+    inset 0 1px 0 rgba(255, 255, 255, 0.3);
+}
+
+#page-tests .filter-chip:not(.active):hover {
+  background: rgba(255, 255, 255, 0.08);
+  color: var(--test-text-main);
+}
+
+#page-tests .filter-chip:active {
+  transform: scale(0.95);
+}
+
+/* ==========================================================================
+   TEST LIST & CARDS
+   ========================================================================== */
+#page-tests .test-list {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  width: 100%;
+}
+
+#page-tests .test-card {
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 14px 14px;
+  border-radius: 18px;
+  background: var(--test-bg-card);
+  border: 1px solid var(--test-border-soft);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  transition: all 0.2s ease;
+  cursor: pointer;
+  overflow: hidden;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.3);
+}
+
+#page-tests .test-card::before {
+  content: "";
+  position: absolute;
+  left: 0;
+  top: 15%;
+  bottom: 15%;
+  width: 3.5px;
+  border-top-right-radius: 4px;
+  border-bottom-right-radius: 4px;
+  background: linear-gradient(180deg, var(--test-accent-blue), var(--test-accent-cyan));
+  opacity: 0;
+  transition: opacity 0.2s;
+}
+
+#page-tests .test-card:hover {
+  background: var(--test-bg-card-hover);
+  border-color: var(--test-border-blue);
+  transform: translateY(-2px);
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.45);
+}
+
+#page-tests .test-card:hover::before {
+  opacity: 1;
+}
+
+#page-tests .test-card:active {
+  transform: scale(0.98);
+}
+
+/* Language Icon container */
+#page-tests .lang-box {
+  width: 44px;
+  height: 44px;
+  border-radius: 12px;
+  display: grid;
+  place-items: center;
+  flex: none;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  position: relative;
+}
+
+#page-tests .lang-box svg {
+  width: 24px;
+  height: 24px;
+}
+
+#page-tests .lang-box.python {
+  background: rgba(56, 189, 248, 0.12);
+  border-color: rgba(56, 189, 248, 0.35);
+  box-shadow: 0 0 14px rgba(56, 189, 248, 0.2);
+}
+
+#page-tests .lang-box.js {
+  background: rgba(245, 158, 11, 0.12);
+  border-color: rgba(245, 158, 11, 0.35);
+  box-shadow: 0 0 14px rgba(245, 158, 11, 0.2);
+}
+
+#page-tests .lang-box.web {
+  background: rgba(239, 68, 68, 0.12);
+  border-color: rgba(239, 68, 68, 0.35);
+  box-shadow: 0 0 14px rgba(239, 68, 68, 0.2);
+}
+
+#page-tests .lang-box.cpp {
+  background: rgba(99, 102, 241, 0.12);
+  border-color: rgba(99, 102, 241, 0.35);
+  box-shadow: 0 0 14px rgba(99, 102, 241, 0.2);
+}
+
+#page-tests .card-body {
+  flex: 1;
+  min-width: 0;
+}
+
+#page-tests .card-header-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 2px;
+}
+
+#page-tests .card-title {
+  font-size: 15px;
+  font-weight: 800;
+  color: var(--test-text-main);
+  letter-spacing: -0.2px;
+  margin: 0;
+}
+
+/* Difficulty Badges */
+#page-tests .badge-diff {
+  font-size: 9px;
+  font-weight: 800;
+  letter-spacing: 0.8px;
+  padding: 2.5px 7px;
+  border-radius: 6px;
+  text-transform: uppercase;
+}
+
+#page-tests .badge-diff.oson {
+  color: #38bdf8;
+  background: rgba(56, 189, 248, 0.15);
+  border: 1px solid rgba(56, 189, 248, 0.35);
+}
+
+#page-tests .badge-diff.orta {
+  color: #fbbf24;
+  background: rgba(251, 191, 36, 0.15);
+  border: 1px solid rgba(251, 191, 36, 0.35);
+}
+
+#page-tests .card-meta {
+  font-size: 11.5px;
+  color: var(--test-text-sub);
+  margin-bottom: 8px;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+#page-tests .card-meta .sep {
+  width: 3px;
+  height: 3px;
+  border-radius: 50%;
+  background: var(--test-text-muted);
+  display: inline-block;
+}
+
+/* Progress Bar */
+#page-tests .progress-bar-container {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+#page-tests .progress-track {
+  flex: 1;
+  height: 5px;
+  border-radius: 10px;
+  background: rgba(255, 255, 255, 0.08);
+  overflow: hidden;
+}
+
+#page-tests .progress-fill {
+  height: 100%;
+  border-radius: 10px;
+  background: linear-gradient(90deg, var(--test-accent-blue) 0%, var(--test-accent-cyan) 100%);
+  box-shadow: 0 0 10px var(--test-accent-glow);
+}
+
+#page-tests .progress-pct {
+  font-size: 10px;
+  font-weight: 700;
+  color: var(--test-text-muted);
+  font-variant-numeric: tabular-nums;
+  min-width: 26px;
+  text-align: right;
+}
+
+/* Action Button inside card */
+#page-tests .btn-action {
+  flex: none;
+  align-self: center;
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  font-family: inherit;
+  font-size: 12px;
+  font-weight: 700;
+  padding: 8px 14px;
+  border-radius: 10px;
+  border: 1px solid var(--test-border-blue);
+  background: linear-gradient(135deg, rgba(47, 123, 255, 0.22) 0%, rgba(56, 189, 248, 0.1) 100%);
+  color: #e0f2fe;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  white-space: nowrap;
+}
+
+#page-tests .btn-action:hover {
+  background: linear-gradient(135deg, rgba(47, 123, 255, 0.45) 0%, rgba(56, 189, 248, 0.25) 100%);
+  color: #ffffff;
+  box-shadow: 0 0 16px var(--test-accent-glow);
+}
+
+#page-tests .btn-action.resume {
+  border-color: rgba(251, 191, 36, 0.4);
+  background: linear-gradient(135deg, rgba(245, 158, 11, 0.22) 0%, rgba(251, 191, 36, 0.08) 100%);
+  color: #fef08a;
+}
+
+#page-tests .btn-action.resume:hover {
+  background: linear-gradient(135deg, rgba(245, 158, 11, 0.4) 0%, rgba(251, 191, 36, 0.2) 100%);
+  color: #ffffff;
+  box-shadow: 0 0 16px rgba(245, 158, 11, 0.35);
+}
+/* ==========================================================================
+   LIGHT THEME (oq rejim) OVERRIDE
+   Root-cause fix: yuqoridagi :root'dagi --test-* ranglar qattiq DARK
+   qiymatlar edi — oq rejimda ham kartalar qorong'u chiqardi.
+   Endi [data-theme="light"] html atributi bo'lganda barcha ranglar
+   oq rejimga moslashadi. DARK rejim hech qanday o'zgarmaydi.
+   ========================================================================== */
+
+[data-theme="light"] #page-tests {
+  --test-bg-card: #ffffff;
+  --test-bg-card-hover: #f8fafc;
+  --test-text-main: #0f172a;
+  --test-text-sub: #475569;
+  --test-text-muted: #64748b;
+  --test-border-soft: rgba(15, 23, 42, 0.1);
+  --test-border-blue: rgba(47, 123, 255, 0.28);
+  --test-accent-glow: rgba(47, 123, 255, 0.22);
+  --test-cyan-glow: rgba(56, 189, 248, 0.18);
+}
+
+/* Hero banner — oq rejimda och gradient, to'q matn */
+[data-theme="light"] #page-tests .hero-card {
+  background: linear-gradient(135deg, #eef4ff 0%, #ffffff 100%);
+  border-color: rgba(47, 123, 255, 0.25);
+  box-shadow: 0 12px 30px rgba(15, 23, 42, 0.08);
+}
+
+[data-theme="light"] #page-tests .hero-badge {
+  color: #0284c7;
+}
+
+/* Filtr chip'lari — oq fonda ko'rinadigan */
+[data-theme="light"] #page-tests .filter-chip {
+  background: #ffffff;
+  border-color: rgba(15, 23, 42, 0.12);
+  color: #475569;
+}
+
+[data-theme="light"] #page-tests .filter-chip:not(.active):hover {
+  background: #f1f5f9;
+  color: #0f172a;
+}
+
+/* Test kartalari — oq karta, engil soya */
+[data-theme="light"] #page-tests .test-card {
+  box-shadow: 0 4px 16px rgba(15, 23, 42, 0.06);
+}
+
+[data-theme="light"] #page-tests .test-card:hover {
+  box-shadow: 0 8px 24px rgba(15, 23, 42, 0.12);
+  border-color: rgba(47, 123, 255, 0.35);
+}
+
+[data-theme="light"] #page-tests .lang-box {
+  border-color: rgba(15, 23, 42, 0.1);
+}
+
+/* Qiyinlik belgilari — oq fonda kontrastli */
+[data-theme="light"] #page-tests .badge-diff.oson {
+  color: #0284c7;
+  background: rgba(2, 132, 199, 0.08);
+  border-color: rgba(2, 132, 199, 0.3);
+}
+
+[data-theme="light"] #page-tests .badge-diff.orta {
+  color: #b45309;
+  background: rgba(217, 119, 6, 0.1);
+  border-color: rgba(217, 119, 6, 0.35);
+}
+
+/* Progress trek — oq fonda ko'rinadigan */
+[data-theme="light"] #page-tests .progress-track {
+  background: rgba(15, 23, 42, 0.08);
+}
+
+/* Tugmalar — oq rejimda kontrastli ko'k */
+[data-theme="light"] #page-tests .btn-action {
+  border-color: rgba(47, 123, 255, 0.35);
+  background: linear-gradient(135deg, rgba(47, 123, 255, 0.12) 0%, rgba(56, 189, 248, 0.08) 100%);
+  color: #1d4ed8;
+}
+
+[data-theme="light"] #page-tests .btn-action:hover {
+  background: linear-gradient(135deg, rgba(47, 123, 255, 0.22) 0%, rgba(56, 189, 248, 0.15) 100%);
+  color: #1e40af;
+  box-shadow: 0 0 16px rgba(47, 123, 255, 0.2);
+}
+
+[data-theme="light"] #page-tests .btn-action.resume {
+  border-color: rgba(217, 119, 6, 0.4);
+  background: linear-gradient(135deg, rgba(245, 158, 11, 0.12) 0%, rgba(251, 191, 36, 0.08) 100%);
+  color: #b45309;
+}
+
+[data-theme="light"] #page-tests .btn-action.resume:hover {
+  background: linear-gradient(135deg, rgba(245, 158, 11, 0.22) 0%, rgba(251, 191, 36, 0.15) 100%);
+  color: #92400e;
+  box-shadow: 0 0 16px rgba(245, 158, 11, 0.2);
+}

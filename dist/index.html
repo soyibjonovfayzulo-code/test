@@ -13,9 +13,9 @@
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap"
-    rel="stylesheet" />
-  <script type="module" crossorigin src="/assets/index-DzqcAE9s.js"></script>
-  <link rel="stylesheet" crossorigin href="/assets/index-CSSAKbj6.css">
+    rel="stylesheet" />
+  <script type="module" crossorigin src="/assets/index-72fFqLE6.js"></script>
+  <link rel="stylesheet" crossorigin href="/assets/index-DgR4HnTb.css">
 </head>
 
 <body>
@@ -63,7 +63,7 @@
       <div class="auth-robot-halo"></div>
       <div class="auth-robot-inner">
         <div class="auth-robot-peeker">
-          <img class="auth-robot-img" src="./mascot/it-robot.png" alt="" draggable="false" loading="lazy"
+          <img class="auth-robot-img" src="/assets/it-robot-BLx0jrbI.png" alt="" draggable="false" loading="lazy"
             onerror="this.closest('.auth-robot')&&this.closest('.auth-robot').classList.add('auth-robot-broken')" />
           <span class="auth-robot-sweep"></span>
         </div>
@@ -524,23 +524,35 @@
         </section>
 
         <!-- TESTS PAGE -->
-        <section id="page-tests" class="page">
-          <div class="page-toolbar">
-            <div class="search-box">
-              <span class="search-icon" aria-hidden="true">🔍</span>
-              <label for="testSearch" class="visually-hidden">Fan qidirish</label>
-              <input type="text" id="testSearch" placeholder="Fan qidirish..." />
+        <section id="page-tests" class="page" style="padding-top: 14px;">
+          <!-- Search hidden visually but kept for logic -->
+          <input type="hidden" id="testSearch" value="" />
+          
+          <!-- Hero Banner -->
+          <div class="hero-card">
+            <div class="hero-text">
+              <div class="hero-badge">
+                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="16 18 22 12 16 6"></polyline><polyline points="8 6 2 12 8 18"></polyline></svg>
+                Bilim darajasi
+              </div>
+              <h1 class="hero-heading">Bilimingizni sinab ko‘ring!</h1>
+              <p class="hero-subtext">Testlar orqali bilimlaringizni tekshiring va natijalaringizni yaxshilang.</p>
             </div>
-            <div class="filter-chips" id="diffFilter" role="tablist" aria-label="Qiyinlik darajasi bo'yicha filtr">
-              <button class="chip active" data-diff="all" type="button" role="tab"
-                aria-selected="true">Barchasi</button>
-              <button class="chip" data-diff="beginner" type="button" role="tab" aria-selected="false">Beginner</button>
-              <button class="chip" data-diff="intermediate" type="button" role="tab"
-                aria-selected="false">Intermediate</button>
-              <button class="chip" data-diff="advanced" type="button" role="tab" aria-selected="false">Advanced</button>
+            <div class="hero-mascot-wrapper">
+              <img src="/assets/it-robot-BLx0jrbI.png" alt="ITTest Robot Mascot" class="hero-mascot-img" onerror="this.style.display='none'; this.nextElementSibling.style.display='block';" />
             </div>
           </div>
-          <div class="subject-cards" id="testsGrid"></div>
+
+          <!-- Category Filter Chips -->
+          <nav class="filter-scroll" id="diffFilter" aria-label="Kategoriyalar">
+            <button class="filter-chip active" data-diff="all" type="button">Barchasi</button>
+            <button class="filter-chip" data-diff="dev" type="button">Dasturlash</button>
+            <button class="filter-chip" data-diff="web" type="button">Web</button>
+            <button class="filter-chip" data-diff="it" type="button">IT</button>
+          </nav>
+
+          <!-- Test Cards List -->
+          <div class="test-list" id="testsGrid"></div>
         </section>
 
         <!-- TEST LIST (for a selected subject) -->
@@ -571,18 +583,20 @@
           <div class="test-mini-stats" id="testMiniStats"></div>
           <div class="test-body">
             <div class="question-area" id="questionArea"></div>
-            <div class="navigator-area">
-              <div class="navigator-header">
-                <span>Savollar</span>
-                <span class="navigator-legend">
-                  <span class="legend-dot legend-correct" aria-hidden="true"></span> To'g'ri
-                  <span class="legend-dot legend-wrong" aria-hidden="true"></span> Noto'g'ri
-                  <span class="legend-dot legend-marked" aria-hidden="true"></span> Belgilangan
-                </span>
+            <aside class="test-sidebar">
+              <div class="navigator-area">
+                <div class="navigator-header">
+                  <span>Savollar</span>
+                  <span class="navigator-legend">
+                    <span class="legend-dot legend-correct" aria-hidden="true"></span> To'g'ri
+                    <span class="legend-dot legend-wrong" aria-hidden="true"></span> Noto'g'ri
+                    <span class="legend-dot legend-marked" aria-hidden="true"></span> Belgilangan
+                  </span>
+                </div>
+                <div class="question-nav" id="questionNav"></div>
+                <button class="btn btn-danger btn-block" id="finishTestBtn" type="button">Testni yakunlash</button>
               </div>
-              <div class="question-nav" id="questionNav"></div>
-              <button class="btn btn-danger btn-block" id="finishTestBtn" type="button">Testni yakunlash</button>
-            </div>
+            </aside>
           </div>
           <div class="test-nav-buttons">
             <button class="btn btn-ghost" id="prevBtn" type="button">← Oldingi</button>
@@ -601,7 +615,7 @@
         <section id="page-result" class="page">
           <div class="result-hero" id="resultHero">
             <div class="mascot mascot--idle" id="resultMascot" aria-hidden="true">
-              <img src="./mascot/it-robot.png" alt="" draggable="false" loading="lazy"
+              <img src="/assets/it-robot-BLx0jrbI.png" alt="" draggable="false" loading="lazy"
                 onerror="this.closest('.mascot')&&this.closest('.mascot').classList.add('mascot-broken')" />
             </div>
             <div class="result-emoji" id="resultEmoji" aria-hidden="true">🎉</div>
@@ -1053,7 +1067,7 @@
             <aside id="aiPanel" class="ai-panel hidden" aria-label="AI Coding Assistant panel">
               <div class="ai-panel-head">
                 <div class="mascot mascot--idle mascot-ai" aria-hidden="true">
-                  <img src="./mascot/it-robot.png" alt="" draggable="false" loading="lazy"
+                  <img src="/assets/it-robot-BLx0jrbI.png" alt="" draggable="false" loading="lazy"
                     onerror="this.closest('.mascot')&&this.closest('.mascot').classList.add('mascot-broken')" />
                 </div>
                 <span id="aiPanelLang">🤖 AI Coding Assistant</span>
@@ -1277,19 +1291,19 @@
         <section id="page-certificate" class="page">
           <div class="certp-head">
             <h3>🏆 Sertifikatlar</h3>
-            <p>Har bir dars uchun alohida sertifikat — ko&lsquo;ring, yuklab oling va ulashing.</p>
+            <p>To&lsquo;liq kurs/modul uchun premium sertifikat — kurs 100% tugagach qulfdan chiqadi.</p>
           </div>
           <div class="certp-summary" id="certSummaryRow" aria-live="polite"></div>
           <div class="certp-controls">
             <div class="search-box">
               <span class="search-icon" aria-hidden="true">🔍</span>
               <label for="certSearch" class="visually-hidden">Sertifikat qidirish</label>
-              <input type="text" id="certSearch" placeholder="Qidirish: HTML 2, Python 1..." />
+              <input type="text" id="certSearch" placeholder="Kurs qidirish: HTML, Python..." />
             </div>
             <div class="filter-chips certp-filters" id="certFilters" role="tablist" aria-label="Sertifikat filtrlari">
               <button class="chip active" data-cfilter="all" type="button" role="tab" aria-selected="true">Barchasi</button>
               <button class="chip" data-cfilter="completed" type="button" role="tab" aria-selected="false">Tugallangan</button>
-              <button class="chip" data-cfilter="preview" type="button" role="tab" aria-selected="false">Preview</button>
+              <button class="chip" data-cfilter="locked" type="button" role="tab" aria-selected="false">Qulflangan</button>
             </div>
           </div>
           <div class="certp-namebar" id="certNameBar"></div>

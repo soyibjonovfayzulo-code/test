@@ -1050,6 +1050,16 @@
     gap: 8px !important;
   }
 
+  /* Timer (09:57) yuqori o'ng tomonda ixcham, hech narsani yopmaydi */
+  .test-timer {
+    padding: 6px 14px !important;
+    font-size: 16px !important;
+    flex-shrink: 0 !important;
+    position: static !important;
+  }
+
+  /* Test body: savol + navigator vertikal stack — navigator ODDIY OQIM
+     elementi, hech qachon savol matnini yopmaydi */
   .test-body {
     display: flex !important;
     flex-direction: column !important;
@@ -1060,15 +1070,59 @@
     width: 100% !important;
   }
 
+  /* Mobilda "Savollar" paneli — ixcham karta, savol OSTIDA */
   .navigator-area {
+    position: static !important;
     width: 100% !important;
-    margin-top: 10px !important;
+    max-height: none !important;
+    overflow: visible !important;
+    margin-top: 0 !important;
+    padding: 10px 12px 12px !important;
   }
 
+  .navigator-header {
+    margin-bottom: 8px !important;
+    gap: 4px !important;
+  }
+
+  .navigator-legend {
+    gap: 8px !important;
+    font-size: 10px !important;
+  }
+
+  /* Savol raqamlari: ixcham GORIZONTAL SCROLL qator (1 2 3 4 5 6 ...) */
   .question-nav {
-    display: grid !important;
-    grid-template-columns: repeat(5, 1fr) !important;
-    gap: 6px !important;
+    display: flex !important;
+    flex-wrap: nowrap !important;
+    overflow-x: auto !important;
+    gap: 7px !important;
+    margin-bottom: 10px !important;
+    padding-bottom: 2px !important;
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: none;
+  }
+
+  .question-nav::-webkit-scrollbar {
+    display: none;
+  }
+
+  .qn-btn {
+    flex: 0 0 auto !important;
+    width: 38px !important;
+    height: 38px !important;
+    aspect-ratio: auto !important;
+    border-radius: 10px !important;
+    font-size: 13px !important;
+    line-height: 1 !important;
+  }
+
+  .qn-btn:hover {
+    transform: none !important;
+  }
+
+  #finishTestBtn {
+    width: 100% !important;
+    margin-top: 2px !important;
   }
 
   .test-nav-buttons {

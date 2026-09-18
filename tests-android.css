@@ -1,0 +1,699 @@
+/* ============================================================
+   ITTest — ANDROID NATIVE TESTS (tests-android.css)
+   Testlar bo'limi (#page-tests, #page-testlist, #page-test,
+   #page-result) faqat Capacitor Android (native) muhitda.
+   body.itnative-tests class'i tests-android.js tomonidan
+   QO'YILADI — faqat native + testlar sahifasi ochiq bo'lsa.
+   Brauzerda bu class hech qachon qo'shilmaydi, shuning uchun
+   desktop/mobil brauzer ko'rinishi umuman o'zgarmaydi.
+   BRAND: BLUE #2563EB | Tokens: design-tokens.css (--itt-*)
+   Uslub home-android.css bilan bir xil native dizayn tilida.
+   ============================================================ */
+
+/* ---------- 0. ESKI WEB QOBIG'INI YASHIRISH ---------- */
+body.itnative-tests .topbar,
+body.itnative-tests .sidebar,
+body.itnative-tests .sidebar-overlay {
+  display: none !important;
+}
+
+/* App-bar ichidagi dubl — eski test sarlavha paneli yashiriladi */
+body.itnative-tests #page-test .test-header {
+  display: none !important;
+}
+
+/* ---------- 1. SAHIFA FONI VA PADDING ---------- */
+body.itnative-tests #page-tests,
+body.itnative-tests #page-testlist,
+body.itnative-tests #page-test,
+body.itnative-tests #page-result {
+  display: none;
+  background: var(--itt-bg-alt, #F4F8FF);
+}
+
+body.itnative-tests #page-tests.active,
+body.itnative-tests #page-testlist.active,
+body.itnative-tests #page-test.active,
+body.itnative-tests #page-result.active {
+  display: block;
+  padding: 8px 14px calc(96px + env(safe-area-inset-bottom, 0px)) !important;
+  min-height: 100%;
+  overflow-x: hidden;
+}
+
+/* ---------- 2. NATIVE APP-BAR (orqaga + sarlavha + taymer) ---------- */
+.ta-appbar {
+  position: sticky;
+  top: 0;
+  z-index: 40;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin: -8px -14px 12px;
+  padding: 10px 10px 10px 6px;
+  background: var(--itt-topbar-bg, rgba(255, 255, 255, 0.92));
+  backdrop-filter: blur(18px) saturate(180%);
+  -webkit-backdrop-filter: blur(18px) saturate(180%);
+  border-bottom: 1px solid var(--itt-border, #DCE8F7);
+}
+
+.ta-appbar .ta-back {
+  width: 40px;
+  height: 40px;
+  flex: none;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border: none;
+  border-radius: 12px;
+  background: transparent;
+  color: var(--itt-text, #0F172A);
+  cursor: pointer;
+  transition: transform var(--itt-dur-fast, 180ms) var(--itt-ease, ease);
+}
+
+.ta-appbar .ta-back:active { transform: scale(.9); }
+
+.ta-appbar .ta-back svg {
+  width: 22px;
+  height: 22px;
+  display: block;
+}
+
+.ta-appbar .ta-title {
+  flex: 1;
+  min-width: 0;
+  font-size: 1rem;
+  font-weight: 800;
+  color: var(--itt-text, #0F172A);
+  letter-spacing: -0.01em;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.ta-appbar .ta-timer {
+  display: none;
+  flex: none;
+  align-items: center;
+  gap: 5px;
+  font-size: .82rem;
+  font-weight: 800;
+  font-variant-numeric: tabular-nums;
+  color: var(--itt-primary, #2563EB);
+  background: var(--itt-primary-soft, rgba(37, 99, 235, 0.09));
+  border: 1px solid var(--itt-border-focus, rgba(37, 99, 235, 0.35));
+  border-radius: 999px;
+  padding: 6px 12px;
+}
+
+/* Taymer chip faqat test o'ynash sahifasida */
+body[data-ta-page="page-test"] .ta-appbar .ta-timer {
+  display: inline-flex;
+}
+
+/* ---------- 3. TESTS PAGE (#page-tests) — HERO ---------- */
+body.itnative-tests #page-tests .hero-card {
+  border: 1px solid var(--itt-border, #DCE8F7);
+  background: linear-gradient(120deg, var(--itt-primary, #2563EB), var(--itt-cyan, #38BDF8));
+  color: #FFFFFF;
+  box-shadow: var(--itt-shadow-primary, 0 6px 20px rgba(37, 99, 235, 0.32));
+}
+
+body.itnative-tests #page-tests .hero-badge {
+  color: #FFFFFF;
+  border-color: rgba(255, 255, 255, 0.55);
+}
+
+body.itnative-tests #page-tests .filter-chip {
+  background: var(--itt-surface, #FFFFFF);
+  color: var(--itt-muted, #64748B);
+  border: 1px solid var(--itt-border, #DCE8F7);
+  font-weight: 700;
+  min-height: 40px;
+  box-shadow: var(--itt-shadow-xs, 0 1px 3px rgba(15, 23, 42, 0.06));
+}
+
+body.itnative-tests #page-tests .filter-chip.active {
+  background: linear-gradient(135deg, var(--itt-primary, #2563EB), #1D4ED8);
+  color: #FFFFFF;
+  border-color: transparent;
+}
+
+/* ---------- 4. TESTS PAGE — FAN KARTALARI ---------- */
+body.itnative-tests #page-tests .test-card,
+body.itnative-tests #page-testlist .test-list-item {
+  border: 1px solid var(--itt-border, #DCE8F7) !important;
+  background: var(--itt-surface, #FFFFFF) !important;
+  box-shadow: var(--itt-shadow-xs, 0 1px 3px rgba(15, 23, 42, 0.06));
+  border-radius: 16px;
+}
+
+body.itnative-tests #page-tests .test-card .card-title,
+body.itnative-tests #page-testlist .tli-title {
+  color: var(--itt-text, #0F172A);
+}
+
+body.itnative-tests #page-tests .card-meta,
+body.itnative-tests #page-tests .card-meta .sep,
+body.itnative-tests #page-testlist .tli-meta {
+  color: var(--itt-muted, #64748B) !important;
+}
+
+body.itnative-tests #page-tests .lang-box {
+  background: var(--itt-primary-soft, rgba(37, 99, 235, 0.09));
+  border-color: var(--itt-border, #DCE8F7);
+}
+
+body.itnative-tests #page-tests .btn-action {
+  background: linear-gradient(135deg, var(--itt-primary, #2563EB), #1D4ED8);
+  color: #FFFFFF;
+  box-shadow: var(--itt-shadow-primary, 0 6px 20px rgba(37, 99, 235, 0.32));
+  min-height: 42px;
+  border-radius: 12px;
+}
+
+body.itnative-tests #page-tests .btn-action.resume {
+  background: linear-gradient(135deg, var(--itt-cyan, #38BDF8), #0284C7);
+}
+
+body.itnative-tests #page-tests .progress-track {
+  background: var(--itt-bg-alt, #F4F8FF);
+}
+
+body.itnative-tests #page-tests .progress-pct {
+  color: var(--itt-muted, #64748B);
+}
+
+body.itnative-tests #page-tests .badge-diff {
+  color: var(--itt-text, #0F172A);
+  border: 1px solid var(--itt-border, #DCE8F7);
+  background: var(--itt-bg-alt, #F4F8FF);
+}
+
+/* ---------- 5. TESTLIST PAGE (#page-testlist) ---------- */
+body.itnative-tests #page-testlist .page-head h2 {
+  color: var(--itt-text, #0F172A);
+}
+
+body.itnative-tests #page-testlist .page-head .back-btn {
+  display: none; /* app-bar orqaga tugmasi bor */
+}
+
+body.itnative-tests #page-testlist .test-list-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 14px 16px;
+  cursor: pointer;
+  transition: transform var(--itt-dur-fast, 180ms) var(--itt-ease, ease);
+}
+
+body.itnative-tests #page-testlist .test-list-item:active { transform: scale(.98); }
+
+body.itnative-tests #page-testlist .tli-meta,
+body.itnative-tests #page-testlist .tli-lock-hint {
+  color: var(--itt-muted, #64748B) !important;
+}
+
+body.itnative-tests #page-testlist .tli-best {
+  color: var(--itt-xp, #CA8A04);
+  font-weight: 700;
+}
+
+body.itnative-tests #page-testlist .tli-right .btn {
+  background: linear-gradient(135deg, var(--itt-primary, #2563EB), #1D4ED8);
+  color: #FFFFFF;
+  border: none;
+  border-radius: 12px;
+  min-height: 40px;
+  font-weight: 700;
+}
+
+body.itnative-tests #page-testlist .test-item-locked {
+  opacity: .62;
+}
+
+/* ---------- 6. TEST PAGE (#page-test) — O'YNASH ---------- */
+body.itnative-tests #page-test .test-progress {
+  background: var(--itt-surface, #FFFFFF);
+  border: 1px solid var(--itt-border, #DCE8F7);
+  border-radius: 14px;
+  padding: 12px 14px;
+  margin-bottom: 10px;
+  box-shadow: var(--itt-shadow-xs, 0 1px 3px rgba(15, 23, 42, 0.06));
+}
+
+body.itnative-tests #page-test .test-progress-text {
+  color: var(--itt-muted, #64748B);
+  font-size: .8rem;
+  font-weight: 700;
+}
+
+body.itnative-tests #page-test .progress-bar {
+  background: var(--itt-bg-alt, #F4F8FF);
+  border-radius: 999px;
+}
+
+body.itnative-tests #page-test .progress-fill {
+  background: linear-gradient(90deg, var(--itt-primary, #2563EB), var(--itt-cyan, #38BDF8));
+  border-radius: 999px;
+}
+
+body.itnative-tests #page-test .test-mini-stats {
+  display: flex;
+  gap: 6px;
+  margin-bottom: 12px;
+  overflow-x: auto;
+  scrollbar-width: none;
+}
+
+body.itnative-tests #page-test .test-mini-stats::-webkit-scrollbar { display: none; }
+
+body.itnative-tests #page-test .test-mini-stats span {
+  flex: none;
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  background: var(--itt-surface, #FFFFFF);
+  border: 1px solid var(--itt-border, #DCE8F7);
+  border-radius: 999px;
+  padding: 6px 11px;
+  font-size: .74rem;
+  color: var(--itt-muted, #64748B);
+  white-space: nowrap;
+}
+
+body.itnative-tests #page-test .test-mini-stats strong {
+  color: var(--itt-text, #0F172A);
+}
+
+/* Savol kartasi */
+body.itnative-tests #page-test .question {
+  background: var(--itt-surface, #FFFFFF);
+  border: 1px solid var(--itt-border, #DCE8F7);
+  border-radius: 18px;
+  padding: 16px;
+  box-shadow: var(--itt-shadow-xs, 0 1px 3px rgba(15, 23, 42, 0.06));
+}
+
+body.itnative-tests #page-test .question-number {
+  display: inline-flex;
+  font-size: .72rem;
+  font-weight: 800;
+  color: var(--itt-primary, #2563EB);
+  background: var(--itt-primary-soft, rgba(37, 99, 235, 0.09));
+  border: 1px solid var(--itt-border-focus, rgba(37, 99, 235, 0.35));
+  border-radius: 999px;
+  padding: 4px 11px;
+  margin-bottom: 10px;
+}
+
+body.itnative-tests #page-test .question-text {
+  color: var(--itt-text, #0F172A);
+  font-size: 1rem;
+  font-weight: 700;
+  line-height: 1.5;
+}
+
+/* Variantlar — katta touch target */
+body.itnative-tests #page-test .option {
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: 11px;
+  background: var(--itt-bg-alt, #F4F8FF);
+  border: 1.5px solid var(--itt-border, #DCE8F7);
+  border-radius: 14px;
+  padding: 12px 13px;
+  margin-top: 10px;
+  cursor: pointer;
+  transition: transform var(--itt-dur-fast, 180ms) var(--itt-ease, ease),
+              border-color var(--itt-dur-fast, 180ms) var(--itt-ease, ease);
+  min-height: 54px;
+}
+
+body.itnative-tests #page-test .option:active { transform: scale(.98); }
+
+body.itnative-tests #page-test .option input[type="radio"] {
+  position: absolute;
+  opacity: 0;
+  pointer-events: none;
+}
+
+body.itnative-tests #page-test .option-mark {
+  width: 30px;
+  height: 30px;
+  flex: none;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-size: .78rem;
+  font-weight: 800;
+  color: var(--itt-muted, #64748B);
+  background: var(--itt-surface, #FFFFFF);
+  border: 1.5px solid var(--itt-border, #DCE8F7);
+  border-radius: 10px;
+}
+
+body.itnative-tests #page-test .option-text {
+  color: var(--itt-text, #0F172A);
+  font-size: .88rem;
+  line-height: 1.4;
+  flex: 1;
+  min-width: 0;
+}
+
+body.itnative-tests #page-test .option.selected {
+  border-color: var(--itt-primary, #2563EB);
+  background: var(--itt-primary-soft, rgba(37, 99, 235, 0.09));
+}
+
+body.itnative-tests #page-test .option.selected .option-mark {
+  background: var(--itt-primary, #2563EB);
+  border-color: var(--itt-primary, #2563EB);
+  color: #FFFFFF;
+}
+
+body.itnative-tests #page-test .option.correct {
+  border-color: var(--itt-success, #16A34A);
+  background: rgba(22, 163, 74, 0.09);
+}
+
+body.itnative-tests #page-test .option.correct .option-mark {
+  background: var(--itt-success, #16A34A);
+  border-color: var(--itt-success, #16A34A);
+  color: #FFFFFF;
+}
+
+body.itnative-tests #page-test .option.wrong {
+  border-color: var(--itt-danger, #DC2626);
+  background: rgba(220, 38, 38, 0.08);
+}
+
+body.itnative-tests #page-test .option.wrong .option-mark {
+  background: var(--itt-danger, #DC2626);
+  border-color: var(--itt-danger, #DC2626);
+  color: #FFFFFF;
+}
+
+body.itnative-tests #page-test .option-disabled {
+  opacity: .55;
+  pointer-events: none;
+}
+
+body.itnative-tests #page-test .option-badge {
+  flex: none;
+  font-size: .68rem;
+  font-weight: 800;
+  border-radius: 999px;
+  padding: 4px 9px;
+  white-space: nowrap;
+}
+
+body.itnative-tests #page-test .option-badge.badge-correct {
+  color: var(--itt-success, #16A34A);
+  background: rgba(22, 163, 74, 0.12);
+}
+
+body.itnative-tests #page-test .option-badge.badge-wrong {
+  color: var(--itt-danger, #DC2626);
+  background: rgba(220, 38, 38, 0.1);
+}
+
+body.itnative-tests #page-test .question-flag {
+  margin-top: 12px;
+  font-size: .78rem;
+  font-weight: 700;
+  color: var(--itt-streak, #0EA5E9);
+  background: rgba(14, 165, 233, 0.1);
+  border: 1px solid rgba(14, 165, 233, 0.35);
+  border-radius: 10px;
+  padding: 8px 11px;
+}
+
+body.itnative-tests #page-test .question-flag:not(.show) { display: none; }
+
+/* Navigator (raqam katakchalari) */
+body.itnative-tests #page-test .test-sidebar .navigator-area {
+  background: var(--itt-surface, #FFFFFF);
+  border: 1px solid var(--itt-border, #DCE8F7);
+  border-radius: 18px;
+  padding: 14px;
+  margin-top: 12px;
+  box-shadow: var(--itt-shadow-xs, 0 1px 3px rgba(15, 23, 42, 0.06));
+}
+
+body.itnative-tests #page-test .navigator-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin-bottom: 10px;
+  color: var(--itt-text, #0F172A);
+  font-size: .82rem;
+  font-weight: 800;
+}
+
+body.itnative-tests #page-test .navigator-legend {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  font-size: .64rem;
+  font-weight: 600;
+  color: var(--itt-muted, #64748B);
+}
+
+body.itnative-tests #page-test .question-nav {
+  display: flex;
+  gap: 8px;
+  overflow-x: auto;
+  padding-bottom: 4px;
+  scrollbar-width: none;
+}
+
+body.itnative-tests #page-test .question-nav::-webkit-scrollbar { display: none; }
+
+body.itnative-tests #page-test .qn-btn {
+  position: relative;
+  flex: none;
+  width: 40px;
+  height: 40px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-size: .82rem;
+  font-weight: 800;
+  color: var(--itt-muted, #64748B);
+  background: var(--itt-bg-alt, #F4F8FF);
+  border: 1.5px solid var(--itt-border, #DCE8F7);
+  border-radius: 12px;
+  cursor: pointer;
+  transition: transform var(--itt-dur-fast, 180ms) var(--itt-ease, ease);
+}
+
+body.itnative-tests #page-test .qn-btn:active { transform: scale(.92); }
+
+body.itnative-tests #page-test .qn-btn.current {
+  color: #FFFFFF;
+  background: var(--itt-primary, #2563EB);
+  border-color: var(--itt-primary, #2563EB);
+  box-shadow: var(--itt-shadow-primary, 0 6px 20px rgba(37, 99, 235, 0.32));
+}
+
+body.itnative-tests #page-test .qn-btn.correct {
+  color: #FFFFFF;
+  background: var(--itt-success, #16A34A);
+  border-color: var(--itt-success, #16A34A);
+}
+
+body.itnative-tests #page-test .qn-btn.wrong {
+  color: #FFFFFF;
+  background: var(--itt-danger, #DC2626);
+  border-color: var(--itt-danger, #DC2626);
+}
+
+body.itnative-tests #page-test .qn-btn.marked::after {
+  content: "⚑";
+  position: absolute;
+  top: 1px;
+  right: 2px;
+  font-size: .5rem;
+  line-height: 1;
+}
+
+/* Yakunlash tugmasi */
+body.itnative-tests #page-test #finishTestBtn {
+  width: 100%;
+  margin-top: 12px;
+  background: linear-gradient(135deg, var(--itt-danger, #DC2626), #B91C1C);
+  color: #FFFFFF;
+  border: none;
+  border-radius: 14px;
+  min-height: 48px;
+  font-weight: 800;
+  box-shadow: 0 6px 20px rgba(220, 38, 38, 0.28);
+}
+
+/* PASTKI STICKY NAVIGATSIYA (Oldingi / Tozalash / Belgilash / Keyingi) */
+body.itnative-tests #page-test .test-nav-buttons {
+  position: fixed;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  z-index: 45;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  padding: 10px 12px calc(10px + env(safe-area-inset-bottom, 0px));
+  background: var(--itt-topbar-bg, rgba(255, 255, 255, 0.92));
+  backdrop-filter: blur(18px) saturate(180%);
+  -webkit-backdrop-filter: blur(18px) saturate(180%);
+  border-top: 1px solid var(--itt-border, #DCE8F7);
+  box-shadow: 0 -4px 20px rgba(2, 6, 23, 0.08);
+}
+
+body.itnative-tests #page-test .test-nav-buttons .btn {
+  border-radius: 13px;
+  min-height: 46px;
+  font-weight: 800;
+  border: 1.5px solid var(--itt-border, #DCE8F7);
+  background: var(--itt-surface, #FFFFFF);
+  color: var(--itt-text, #0F172A);
+  padding: 0 14px;
+}
+
+body.itnative-tests #page-test .test-nav-buttons .btn:disabled {
+  opacity: .45;
+}
+
+body.itnative-tests #page-test .test-nav-buttons .test-nav-center {
+  display: flex;
+  gap: 8px;
+}
+
+body.itnative-tests #page-test .test-nav-buttons .test-nav-center .btn {
+  padding: 0 11px;
+  font-size: .78rem;
+  min-height: 46px;
+}
+
+body.itnative-tests #page-test .test-nav-buttons #nextBtn {
+  background: linear-gradient(135deg, var(--itt-primary, #2563EB), #1D4ED8);
+  color: #FFFFFF;
+  border: none;
+  box-shadow: var(--itt-shadow-primary, 0 6px 20px rgba(37, 99, 235, 0.32));
+}
+
+/* ---------- 7. RESULT PAGE (#page-result) ---------- */
+body.itnative-tests #page-result .result-hero {
+  background: var(--itt-surface, #FFFFFF);
+  border: 1px solid var(--itt-border, #DCE8F7);
+  border-radius: 22px;
+  padding: 26px 18px;
+  text-align: center;
+  box-shadow: var(--itt-shadow-xs, 0 1px 3px rgba(15, 23, 42, 0.06));
+}
+
+body.itnative-tests #page-result .result-hero h1 {
+  color: var(--itt-text, #0F172A);
+}
+
+body.itnative-tests #page-result .result-percent {
+  color: var(--itt-primary, #2563EB);
+  font-weight: 800;
+}
+
+body.itnative-tests #page-result .result-status {
+  border-radius: 999px;
+  font-weight: 800;
+}
+
+body.itnative-tests #page-result .result-status.passed {
+  color: var(--itt-success, #16A34A);
+  background: rgba(22, 163, 74, 0.1);
+  border: 1px solid rgba(22, 163, 74, 0.35);
+}
+
+body.itnative-tests #page-result .result-status.failed {
+  color: var(--itt-danger, #DC2626);
+  background: rgba(220, 38, 38, 0.08);
+  border: 1px solid rgba(220, 38, 38, 0.35);
+}
+
+body.itnative-tests #page-result .result-stat-card {
+  background: var(--itt-surface, #FFFFFF);
+  border: 1px solid var(--itt-border, #DCE8F7);
+  border-radius: 16px;
+  box-shadow: var(--itt-shadow-xs, 0 1px 3px rgba(15, 23, 42, 0.06));
+}
+
+body.itnative-tests #page-result .result-stat-card .val {
+  color: var(--itt-text, #0F172A);
+}
+
+body.itnative-tests #page-result .result-stat-card .lbl {
+  color: var(--itt-muted, #64748B);
+}
+
+body.itnative-tests #page-result .result-actions .btn {
+  border-radius: 14px;
+  min-height: 48px;
+  font-weight: 800;
+}
+
+body.itnative-tests #page-result .result-actions .btn-primary {
+  background: linear-gradient(135deg, var(--itt-primary, #2563EB), #1D4ED8);
+  border: none;
+  color: #FFFFFF;
+  box-shadow: var(--itt-shadow-primary, 0 6px 20px rgba(37, 99, 235, 0.32));
+}
+
+body.itnative-tests #page-result .result-actions .btn-ghost {
+  background: var(--itt-surface, #FFFFFF);
+  border: 1.5px solid var(--itt-border, #DCE8F7);
+  color: var(--itt-text, #0F172A);
+}
+
+body.itnative-tests #page-result .review-card {
+  background: var(--itt-surface, #FFFFFF);
+  border: 1px solid var(--itt-border, #DCE8F7);
+  border-radius: 18px;
+  color: var(--itt-text, #0F172A);
+}
+
+body.itnative-tests #page-result .review-card .card-header h3 {
+  color: var(--itt-text, #0F172A);
+}
+
+body.itnative-tests #page-result .review-card .muted {
+  color: var(--itt-muted, #64748B);
+}
+
+/* ---------- 8. BO'SH HOLAT ---------- */
+body.itnative-tests .empty-state {
+  color: var(--itt-muted, #64748B) !important;
+}
+
+/* ---------- 9. KICHIK EKRANLAR (320px) ---------- */
+@media (max-width: 340px) {
+  body.itnative-tests #page-tests.active,
+  body.itnative-tests #page-testlist.active,
+  body.itnative-tests #page-test.active,
+  body.itnative-tests #page-result.active {
+    padding-left: 10px;
+    padding-right: 10px;
+  }
+
+  body.itnative-tests #page-test .test-nav-buttons .test-nav-center .btn {
+    padding: 0 8px;
+    font-size: .72rem;
+  }
+
+  body.itnative-tests #page-test .test-nav-buttons .btn {
+    padding: 0 10px;
+  }
+}

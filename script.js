@@ -1,4 +1,4 @@
-﻿/* ==========================================================
+/* ==========================================================
    IT/AI TEST PLATFORM — Vanilla JavaScript
    ========================================================== */
 
@@ -1385,24 +1385,69 @@ function renderDashboard() {
 let currentFilterDiff = "all";
 let currentSearch = "";
 
+function getSubjectIcon(name, defaultIcon) {
+  const lname = name.toLowerCase();
+  if (lname === 'python') {
+    return `<svg viewBox="0 0 24 24" fill="none"><path d="M11.9 2c-4.8 0-4.5 2.1-4.5 2.1v2.2h4.6v.7H5.6S2 6.6 2 11.4c0 4.8 3.1 4.6 3.1 4.6h1.8v-2.6s-.1-3.1 3.1-3.1h5.3s3 0 3-2.9V4.9S18.8 2 11.9 2zm-2.4 1.5c.5 0 .9.4.9.9s-.4.9-.9.9-.9-.4-.9-.9.4-.9.9-.9z" fill="#38bdf8"/><path d="M12.1 22c4.8 0 4.5-2.1 4.5-2.1v-2.2h-4.6v-.7h6.4s3.6.4 3.6-4.4c0-4.8-3.1-4.6-3.1-4.6h-1.8v2.6s.1 3.1-3.1 3.1h-5.3s-3 0-3 2.9v2.5s-.4 2.9 6.5 2.9zm2.4-1.5c-.5 0-.9-.4-.9-.9s.4-.9.9-.9.9.4.9.9-.4.9-.9.9z" fill="#f59e0b"/></svg>`;
+  }
+  if (lname === 'javascript') {
+    return `<svg viewBox="0 0 24 24"><rect width="24" height="24" rx="4" fill="#f59e0b"/><path d="M12 17.5c.8 0 1.5-.4 1.8-1l1.5.9c-.8 1.4-2.1 2.1-3.9 2.1-2.6 0-4.3-1.6-4.3-4.1 0-2.6 1.7-4.1 4.1-4.1 2.3 0 3.7 1.3 3.7 3.5v.7h-5.4c.1 1.2.9 2 2.5 2zm1.2-3.5c0-.9-.6-1.5-1.5-1.5s-1.5.6-1.6 1.5h3.1z" fill="#060a17"/><path d="M18.8 14.5c.6 0 1.1-.3 1.1-.9 0-1.4-3.5-.8-3.5-3.2 0-1.3 1.1-2.1 2.6-2.1 1.5 0 2.5.7 2.8 2l-1.4.7c-.2-.7-.7-1-1.4-1-.7 0-1.1.3-1.1.8 0 1.3 3.5.7 3.5 3.2 0 1.4-1.2 2.2-2.8 2.2-1.7 0-2.8-.8-3.1-2.2l1.4-.7c.3.8.9 1.2 1.9 1.2z" fill="#060a17"/></svg>`;
+  }
+  if (lname === 'html' || lname === 'css') {
+    return `<svg viewBox="0 0 24 24" fill="none" stroke="#ef4444" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="16 18 22 12 16 6"></polyline><polyline points="8 6 2 12 8 18"></polyline></svg>`;
+  }
+  if (lname === 'c++') {
+    return `<svg viewBox="0 0 24 24" fill="none"><path d="M12 2L2 7v10l10 5 10-5V7L12 2z" stroke="#6366f1" stroke-width="2" stroke-linejoin="round"/><text x="7" y="15" fill="#818cf8" font-family="'JetBrains Mono', monospace" font-size="9" font-weight="bold">C++</text></svg>`;
+  }
+  return `<span style="font-size: 22px;">${defaultIcon}</span>`;
+}
+
 function subjectCard(sbj) {
   const st = userStats(currentUser || {});
   const info = st.bySubject[sbj.name] || { count: 0 };
-  const card = document.createElement("div");
-  card.className = "subject-card";
+  
+  const lname = sbj.name.toLowerCase();
+  let boxClass = '';
+  if (lname === 'python') boxClass = 'python';
+  else if (lname === 'javascript') boxClass = 'js';
+  else if (lname === 'html' || lname === 'css') boxClass = 'web';
+  else if (lname === 'c++') boxClass = 'cpp';
+  
+  const isHard = ['javascript', 'c++', 'c#', 'java'].includes(lname);
+  const diffClass = isHard ? 'orta' : 'oson';
+  const diffText = isHard ? 'O‘RTA' : 'OSON';
+  
+  const pct = Math.min(100, Math.round((info.count / 10) * 100)) || 0;
+  const isCompleted = pct >= 100;
+
+  const card = document.createElement("article");
+  card.className = "test-card" + (isCompleted ? " completed" : "");
   card.innerHTML = `
-    <div class="subject-card-head">
-      <div class="subject-icon">${sbj.icon}</div>
-      <div class="subject-name">${sbj.name}</div>
+    <div class="lang-box ${boxClass}">
+      ${getSubjectIcon(sbj.name, sbj.icon)}
     </div>
-    <div class="subject-desc muted">${sbj.description}</div>
-    <div class="subject-meta">
-      <span>9 ta test</span>
-      <span>${info.count} ta ishlangan</span>
+    <div class="card-body">
+      <div class="card-header-row">
+        <h2 class="card-title">${sbj.name === 'HTML' ? 'HTML & CSS' : sbj.name}</h2>
+        <span class="badge-diff ${diffClass}">${diffText}</span>
+      </div>
+      <div class="card-meta">
+        ${sbj.name} asoslari <span class="sep"></span> 10 ta savol
+      </div>
+      <div class="progress-bar-container">
+        <div class="progress-track">
+          <div class="progress-fill" style="width: ${pct}%"></div>
+        </div>
+        <span class="progress-pct">${pct}%</span>
+      </div>
     </div>
-    <button class="btn btn-primary btn-block subject-btn" data-subject="${sbj.name}">Testlarni ko\'rish</button>
+    <button class="btn-action ${pct > 0 && !isCompleted ? 'resume' : ''}" type="button">
+      ${pct > 0 && !isCompleted ? 'Davom etish' : 'Boshlash'} <span style="font-family: sans-serif; margin-left: 2px;">→</span>
+    </button>
   `;
-  card.querySelector(".subject-btn").addEventListener("click", () => openSubjectTests(sbj.name));
+  card.addEventListener("click", (e) => {
+    openSubjectTests(sbj.name);
+  });
   return card;
 }
 
@@ -1418,25 +1463,31 @@ function renderTestsPage() {
   }
 
   if (currentFilterDiff && currentFilterDiff !== "all") {
-    list = list.filter(sbj => {
-      const tests = ALL_TESTS[sbj.name] || [];
-      return tests.some(test => test.difficulty === currentFilterDiff);
-    });
+    if (currentFilterDiff === 'dev') {
+      list = list.filter(s => ['python', 'c++', 'c#', 'java'].includes(s.name.toLowerCase()));
+    } else if (currentFilterDiff === 'web') {
+      list = list.filter(s => ['javascript', 'html', 'css'].includes(s.name.toLowerCase()));
+    } else if (currentFilterDiff === 'it') {
+      list = list.filter(s => ['sql', 'ai', 'c++'].includes(s.name.toLowerCase()));
+    }
   }
 
   for (const s of list) grid.appendChild(subjectCard(s));
   if (!list.length) {
     if (!QBANK_LOADING.loaded) grid.innerHTML = `<div class="empty-state"><div class="spinner" style="display:inline-block;vertical-align:middle;margin-right:8px;border:2px solid var(--itt-muted, #94A3B8);border-top-color:var(--itt-primary,#2563EB);border-radius:50%;width:18px;height:18px;animation:spin 0.9s linear infinite;"></div>Testlar yuklanmoqda...</div>`;
-    else grid.innerHTML = `<div class="empty-state">Fan topilmadi</div>`;
+    else grid.innerHTML = `<div class="empty-state" style="color:#94a3b8; text-align:center; padding:30px;">Fan topilmadi</div>`;
   }
 }
 
 function bindTestsPage() {
-  $("#testSearch").addEventListener("input", (e) => {
-    currentSearch = e.target.value; renderTestsPage();
-  });
-  $$("#diffFilter .chip").forEach(c => c.addEventListener("click", () => {
-    $$("#diffFilter .chip").forEach(x => x.classList.remove("active"));
+  const sInput = $("#testSearch");
+  if (sInput) {
+    sInput.addEventListener("input", (e) => {
+      currentSearch = e.target.value; renderTestsPage();
+    });
+  }
+  $$("#diffFilter .filter-chip").forEach(c => c.addEventListener("click", () => {
+    $$("#diffFilter .filter-chip").forEach(x => x.classList.remove("active"));
     c.classList.add("active");
     currentFilterDiff = c.getAttribute("data-diff");
     renderTestsPage();
@@ -1645,6 +1696,11 @@ function renderQuestionNav() {
     btn.textContent = String(i + 1);
     btn.addEventListener("click", () => { if (quiz.autoNavTimeout) { clearTimeout(quiz.autoNavTimeout); quiz.autoNavTimeout = null; } quiz.currentIndex = i; renderQuestion(); renderProgress(); });
     nav.appendChild(btn);
+  }
+  /* Layout-gina: mobilda scroll qatorida joriy raqam ko'rinadigan qilib suriladi */
+  const cur = nav.querySelector(".qn-btn.current");
+  if (cur && nav.scrollWidth > nav.clientWidth + 2) {
+    requestAnimationFrame(() => cur.scrollIntoView({ behavior: "smooth", inline: "center", block: "nearest" }));
   }
 }
 

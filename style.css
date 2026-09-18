@@ -2179,6 +2179,9 @@ ul {
   font-size: 22px;
   font-weight: 700;
   font-variant-numeric: tabular-nums;
+  position: static;
+  z-index: auto;
+  flex-shrink: 0;
 }
 
 .test-timer.warning {
@@ -2220,11 +2223,21 @@ ul {
   margin-bottom: 6px;
 }
 
+/* SAVOL + NAVIGATOR LAYOUT: chap — savol, o'ng — ixcham navigator paneli.
+   Panel oqim ichida (grid column), savol bilan overlap qilmaydi. */
 .test-body {
   display: grid;
-  grid-template-columns: 1fr 220px;
-  gap: 20px;
+  grid-template-columns: minmax(0, 1fr) 240px;
+  gap: 24px;
   margin-bottom: 20px;
+  align-items: start;
+}
+
+.test-sidebar {
+  position: sticky;
+  top: calc(var(--topbar-h, 64px) + 12px);
+  align-self: start;
+  min-width: 0;
 }
 
 .question-area {
@@ -2232,6 +2245,7 @@ ul {
   border: 1px solid var(--border);
   border-radius: var(--radius);
   padding: 28px;
+  min-width: 0;
 }
 
 .question-number {
@@ -2447,27 +2461,39 @@ ul {
   box-shadow: 0 4px 12px rgba(91, 124, 250, 0.3);
 }
 
+/* ------------------------------------------------------------------
+   SAVOLLAR NAVIGATORI (DESKTOP SIDEBAR)
+   Root-cause fix: oldin .navigator-area `position: fixed; top: 80px` edi —
+   navigator floating overlay bo'lib asosiy savol kontenti USTIDA turardi.
+   Endi u .test-body gridining o'ng ustunida ODDIY oqim elementi sifatida
+   turadi (sticky scroll effekt bilan), hech qachon savol ustiga chiqmaydi.
+   ------------------------------------------------------------------ */
 .navigator-area {
   background: var(--card);
   border: 1px solid var(--border);
   border-radius: var(--radius);
-  padding: 16px;
+  padding: 14px;
   align-self: start;
-  position: fixed;
-  top: 80px;
+  position: sticky;
+  top: calc(var(--topbar-h, 64px) + 12px);
+  z-index: 1;
+  min-width: 0;
+  max-height: calc(100vh - var(--topbar-h, 64px) - 24px);
+  overflow-y: auto;
+  overscroll-behavior: contain;
 }
 
 .navigator-header {
   font-weight: 600;
   font-size: 14px;
-  margin-bottom: 12px;
+  margin-bottom: 10px;
 }
 
 .question-nav {
   display: grid;
-  grid-template-columns: repeat(5, 1fr);
-  gap: 8px;
-  margin-bottom: 16px;
+  grid-template-columns: repeat(5, minmax(0, 1fr));
+  gap: 7px;
+  margin-bottom: 12px;
 }
 
 .qn-btn {
@@ -2477,6 +2503,7 @@ ul {
   border: 1px solid var(--border);
   font-size: 13px;
   font-weight: 600;
+  line-height: 1;
   transition: all 0.25s ease;
   display: flex;
   align-items: center;
@@ -4059,8 +4086,13 @@ textarea {
     grid-template-columns: 1fr;
   }
 
+  /* Kichik ekranlarda navigator panel OQIM ICHIDA (stack) bo'ladi —
+     floating overlay emas, savolni yopmaydi */
+  .test-sidebar,
   .navigator-area {
     position: static;
+    max-height: none;
+    overflow: visible;
   }
 }
 
@@ -4140,12 +4172,26 @@ textarea {
   }
 
   .test-header {
-    flex-direction: column;
-    align-items: stretch;
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 10px;
+  }
+
+  .test-header-info {
+    min-width: 0;
+  }
+
+  .test-header-info h2 {
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
   }
 
   .test-timer {
     text-align: center;
+    flex-shrink: 0;
   }
 
   .question-area {
@@ -4223,7 +4269,15 @@ textarea {
   }
 
   .question-nav {
-    grid-template-columns: repeat(5, 1fr);
+    grid-template-columns: repeat(5, minmax(0, 1fr));
+    gap: 6px;
+  }
+
+  /* Raqamlar (1,2,3...) har doim to'liq ko'rinsin */
+  .qn-btn {
+    min-width: 34px;
+    font-size: 13px;
+    line-height: 1;
   }
 
   .auth-card {
