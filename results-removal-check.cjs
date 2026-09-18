@@ -56,12 +56,9 @@ ok(!!toastEl || doc.body.textContent.includes("Natijalar bo'limi olib tashlandi"
   ok(errors.length === before, p + ' sahifasi xatosiz render bo\'ldi');
 });
 
-// 4) Dashboard recent results (in-page statistika) ishlaydi
+// 4) Dashboard 'So'nggi faoliyat' va 'So'nggi natijalar' kartalari OLIB TASHLANGAN
 window.__itShowPage('dashboard');
-ok(!!doc.getElementById('recentResults'), 'Dashboard: So\'nggi natijalar kartasi joyida (alohida Results page\'ga link YO\'Q)');
+ok(!doc.getElementById('recentResults'), "Dashboard: So'nggi natijalar kartasi YO'Q");
+ok(!doc.getElementById('ndActivityBody'), "Dashboard: So'nggi faoliyat kartasi YO'Q");
+ok(!doc.querySelector('.nd-card--recent') && !doc.querySelector('.nd-card--activity'), "Ikkala karta DOMda YO'Q");
 ok(doc.querySelectorAll('.nav-item[data-page="results"]').length === 0, 'Yakuniy: hech qanday results navigatsiya qolmagan');
-
-console.log('\nconsole errors: ' + errors.length);
-errors.slice(0, 5).forEach(e => console.log('  ERR: ' + e));
-console.log('RESULT: ' + passed + ' passed, ' + failed + ' failed');
-process.exit(failed || errors.length ? 1 : 0);

@@ -111,6 +111,7 @@ function case2() {
 
           if (failed) process.exit(1);
           console.log('\nTESTS ANDROID CHECK PASSED');
+    process.exit(0);
         }, 120);
       }, 120);
     }, 120);

@@ -414,62 +414,6 @@
       '<p class="nd-hint">' + (left > 0 ? 'Level ' + (lvl + 1) + ' gacha yana <b>' + left + ' XP</b>' : '🎉 Level ' + (lvl + 1) + ' juda yaqin — davom eting!') + '</p>';
   }
 
-  function renderActivity(u, store) {
-    var body = $('#ndActivityBody');
-    if (!body) return;
-    var items = activityFeed(u, store);
-    if (!items.length) {
-      body.innerHTML =
-        '<div class="nd-empty nd-empty--row">' +
-          '<div class="nd-empty-ico" aria-hidden="true">🌱</div>' +
-          '<div><h3>Hali faoliyat yo‘q.</h3><p>Birinchi darsni boshlang.</p></div>' +
-          '<button type="button" class="nd-btn nd-btn--primary" data-goto="lessons">📚 Darslarga o‘tish</button>' +
-        '</div>';
-      return;
-    }
-    body.innerHTML = '<ul class="nd-feed">' + items.map(function (it) {
-      var d = new Date(it.ts);
-      var hm = String(d.getHours()).padStart(2, '0') + ':' + String(d.getMinutes()).padStart(2, '0');
-      var dateStr = d.getDate() + '/' + (d.getMonth() + 1) + (isToday(it.ts) ? ' · bugun' : '');
-      return '<li class="nd-feed-item"><span class="nd-feed-ico" aria-hidden="true">' + it.ico + '</span>' +
-        '<span class="nd-feed-text"><b>' + esc(it.text) + '</b><span>' + esc(it.sub) + '</span></span>' +
-        '<span class="nd-feed-time">' + dateStr + ' ' + hm + '</span></li>';
-    }).join('') + '</ul>';
-  }
-
-  /* So'nggi natijalar — in-page statistika (oxirgi 5 real test natijasi).
-     Alovida Results page yo'q: faqat dashboard kartasi ko'rsatiladi. */
-  function renderRecent(u) {
-    var body = $('#recentResults');
-    if (!body) return;
-    var recent = (u.testResults || []).slice().sort(function (a, b) { return (b.timestamp || 0) - (a.timestamp || 0); }).slice(0, 5);
-    if (!recent.length) {
-      body.innerHTML =
-        '<div class="nd-empty">' +
-          '<div class="nd-empty-ico" aria-hidden="true">📝</div>' +
-          '<h3>Hali test ishlanmagan</h3>' +
-          '<p>Testlarni boshlash uchun Testlar sahifasiga o‘ting</p>' +
-          '<button type="button" class="nd-btn nd-btn--ghost" data-goto="tests">Testlarga o‘tish →</button>' +
-        '</div>';
-      return;
-    }
-    var subjects = (window.__itGetSubjects && typeof window.__itGetSubjects === 'function') ? window.__itGetSubjects() : [];
-    body.innerHTML = '<ul class="nd-feed">' + recent.map(function (r) {
-      var d = new Date(r.timestamp);
-      var dateStr = d.getDate() + '/' + (d.getMonth() + 1) + (isToday(r.timestamp) ? ' · bugun' : '');
-      var ico = '📝';
-      for (var i = 0; i < subjects.length; i++) {
-        if (subjects[i].name === r.subject && subjects[i].icon) { ico = subjects[i].icon; break; }
-      }
-      var state = r.passed ? '✅ O‘tdi' : '❌ O‘tmadi';
-      return '<li class="nd-feed-item">' +
-        '<span class="nd-feed-ico" aria-hidden="true">' + ico + '</span>' +
-        '<span class="nd-feed-text"><b>' + esc(r.subject) + ' · ' + esc(r.title || 'Test') + '</b>' +
-        '<span>' + esc(state) + ' · ' + (r.score || 0) + '/' + (r.total || 0) + ' · ' + (r.percent || 0) + '%</span></span>' +
-        '<span class="nd-feed-time">' + dateStr + '</span></li>';
-    }).join('') + '</ul>';
-  }
-
   /* ================== EVENTS / ANIMATSIYA / RENDER ================== */
 
   var bound = false;
@@ -538,9 +482,7 @@
     renderDuel(u);
     renderChallenge(u, store);
     renderStats(u);
-    renderNextGoal(u);
-    renderActivity(u, store);
-    renderRecent(u);
+    renderNextGoal(u);
     animateIn();
   }
 
