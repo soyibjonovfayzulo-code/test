@@ -149,13 +149,14 @@ body.itnative-tests #page-testlist .test-list-item {
   border-radius: 16px;
 }
 
-body.itnative-tests #page-tests .test-card .card-title,
+body.itnative-tests #page-tests .test-card__title,
 body.itnative-tests #page-testlist .tli-title {
   color: var(--itt-text, #0F172A);
 }
 
-body.itnative-tests #page-tests .card-meta,
-body.itnative-tests #page-tests .card-meta .sep,
+body.itnative-tests #page-tests .test-card__desc,
+body.itnative-tests #page-tests .test-card__meta,
+body.itnative-tests #page-tests .test-card__meta .sep,
 body.itnative-tests #page-testlist .tli-meta {
   color: var(--itt-muted, #64748B) !important;
 }

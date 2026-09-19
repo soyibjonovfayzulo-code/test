@@ -4,6 +4,18 @@
 
 'use strict';
 
+/* ====================== HAPTIC FEEDBACK (ITHaptics bridge) ====================== */
+/* haptics.js moduli bilan ishlaydi; brauzer/native tekshiruvi modul ichida.
+   Hech qanday hato chiqarmaydi — haptic ishlamasa ilova odatdagidek ishlaydi. */
+function itHaptic(kind) {
+  try {
+    var api = window.ITHaptics;
+    var fn = api && (api[kind] || api["haptic" + String(kind).charAt(0).toUpperCase() + String(kind).slice(1)]);
+    if (typeof fn === "function") fn();
+  } catch (e) { /* noop */ }
+}
+
+
 /* ====================== SUBJECTS META (9 FAN) ====================== */
 
 const SUBJECTS = [
@@ -330,9 +342,107 @@ function rebuildAllTests() {
 
 Object.assign(Q_BANK, FALLBACK_Q_BANK);
 
-/* ====================== JSON LOADER ====================== */
+/* ====================== BACKEND QUESTION BANK (SQLite) ====================== */
+/* Admin panel orqali qo'shilgan savollar SQLite `test_questions` jadvalida
+   saqlanadi va GET /api/tests/questions orqali qaytariladi. Bu blok ularni
+   Q_BANK'ga birlashtiradi (DB birinchi ustuvor, duplicate'lar olib tashlanadi)
+   — natijada bazaga qo'shilgan yangi testlar frontendda darhol paydo bo'ladi.
+   Offline/APK muhitida so'rov xato qilsa — statik JSON fallback ishlayveradi. */
+const QBANK_DIFFICULTIES = ['beginner', 'intermediate', 'advanced'];
+
 let ALL_TESTS = {};
-const QBANK_LOADING = { loaded: false, promise: null };
+const QBANK_LOADING = { loaded: false, promise: null, backend: { loaded: false, error: null } };
+
+function reloadQuestionBank() {
+  QBANK_LOADING.loaded = false;
+  QBANK_LOADING.promise = loadQuestionBank();
+  return QBANK_LOADING.promise;
+}
+
+async function fetchBackendQuestions() {
+  const controller = new AbortController();
+  const timeoutId = setTimeout(() => controller.abort(), 8000);
+  try {
+    const res = await fetch('/api/tests/questions', { signal: controller.signal, cache: 'no-store' });
+    if (!res.ok) throw new Error(`HTTP ${res.status}`);
+    const data = await res.json();
+    if (!Array.isArray(data)) throw new Error('API javobi massiv emas');
+    return data;
+  } finally {
+    clearTimeout(timeoutId);
+  }
+}
+
+/* DB qatorlarini Q_BANK formatiga (q/o/c/e) o'tkazib, mavjud bank bilan
+   birlashtiradi. DB savollari BIRINCHI chiqadi — ya'ni bazadagi ma'lumot
+   ustuvor, statik JSON faqat to'ldiruvchi fallback bo'lib qoladi. */
+function mergeBackendQuestionBank(rows) {
+  const knownSubjects = new Set(SUBJECTS.map(s => s.name));
+  const perSubject = {};
+  let valid = 0;
+
+  for (const r of (rows || [])) {
+    if (!r) continue;
+    const subject = r.subject;
+    const diff = String(r.difficulty || '').toLowerCase();
+    const q = typeof r.q === 'string' ? r.q : r.question;
+    const o = Array.isArray(r.o) ? r.o : r.options;
+    const c = typeof r.c === 'number' ? r.c : r.answer;
+    if (!knownSubjects.has(subject) || !QBANK_DIFFICULTIES.includes(diff)) continue;
+    if (typeof q !== 'string' || !q.trim() || !Array.isArray(o) || o.length < 2) continue;
+    if (typeof c !== 'number' || c < 0 || c >= o.length) continue;
+
+    (perSubject[subject] = perSubject[subject] || {})[diff] =
+      (perSubject[subject][diff] || []).concat([{
+        q, o, c,
+        e: typeof r.e === 'string' ? r.e : r.explanation
+      }]);
+    valid++;
+  }
+
+  let added = 0;
+  for (const [subject, levels] of Object.entries(perSubject)) {
+    const cur = Q_BANK[subject] || { beginner: [], intermediate: [], advanced: [] };
+    const mergeLevel = (fallbackArr, dbArr) => {
+      const seen = new Set();
+      const out = [];
+      for (const qq of [...(dbArr || []), ...(fallbackArr || [])]) {
+        const k = normalizeQuestionText(qq && qq.q);
+        if (!k || seen.has(k)) continue;
+        seen.add(k);
+        out.push(qq);
+      }
+      return out;
+    };
+    const before = QBANK_DIFFICULTIES.reduce((s, d) => s + (cur[d] || []).length, 0);
+    Q_BANK[subject] = {
+      beginner: mergeLevel(cur.beginner, levels.beginner),
+      intermediate: mergeLevel(cur.intermediate, levels.intermediate),
+      advanced: mergeLevel(cur.advanced, levels.advanced)
+    };
+    added += QBANK_DIFFICULTIES.reduce((s, d) => s + Q_BANK[subject][d].length, 0) - before;
+  }
+
+  /* C++ / C# alias kalitlarini yangi referens bilan sinxronlash */
+  if (Q_BANK['C++']) Q_BANK['CPlusPlus'] = Q_BANK['C++'];
+  if (Q_BANK['C#']) Q_BANK['CSharp'] = Q_BANK['C#'];
+  return { valid, added };
+}
+
+async function loadBackendQuestionBank() {
+  try {
+    const rows = await fetchBackendQuestions();
+    const { valid, added } = mergeBackendQuestionBank(rows);
+    QBANK_LOADING.backend.loaded = true;
+    QBANK_LOADING.backend.error = null;
+    console.log(`[TESTS] Backend savollar bazasi ulandi: ${valid} ta yaroqli savol (${added} tasi yangi) — /api/tests/questions`);
+  } catch (e) {
+    QBANK_LOADING.backend.error = (e && e.message) || String(e);
+    console.error('[TESTS] Backend /api/tests/questions yuklanmadi — statik JSON fallback ishlaydi:', QBANK_LOADING.backend.error);
+  }
+}
+
+/* ====================== JSON LOADER ====================== */
 
 async function loadQuestionBank() {
   try {
@@ -412,6 +522,10 @@ async function loadQuestionBank() {
     Q_BANK['C#'] = Q_BANK['C#'] || Q_BANK['CSharp'] || { beginner: [], intermediate: [], advanced: [] };
     Q_BANK['CPlusPlus'] = Q_BANK['CPlusPlus'] || Q_BANK['C++'];
     Q_BANK['CSharp'] = Q_BANK['CSharp'] || Q_BANK['C#'];
+
+    /* DB (test_questions) savollarini birlashtirish — admin qo'shan yangi
+       testlar shu yo'l bilan frontendga yetib boradi. Xato bo'lsa fallback. */
+    await loadBackendQuestionBank();
 
     console.log('Question bank loaded:', Object.keys(Q_BANK));
 
@@ -665,8 +779,14 @@ function findTestById(id) {
 /* ====================== TEST UNLOCK PROGRESS ====================== */
 function getSubjectTestOrder(subjectName) {
   const order = [];
+  /* Dinamik: testlar soni ALL_TESTS'dan olinadi — DB'dan yangi test
+     qo'shilsa ham unlock-zanjiri uzilmaydi (hardcoded DIFF_COUNT emas). */
+  const maxByDiff = {};
+  for (const t of (ALL_TESTS[subjectName] || [])) {
+    maxByDiff[t.difficulty] = Math.max(maxByDiff[t.difficulty] || 0, t.number || 0);
+  }
   for (const diff of ["beginner", "intermediate", "advanced"]) {
-    const count = DIFF_COUNT[diff];
+    const count = maxByDiff[diff] || DIFF_COUNT[diff];
     for (let t = 1; t <= count; t++) {
       order.push(`${subjectName}-${diff}-${t}`);
     }
@@ -956,6 +1076,8 @@ window.__itOpenSubjectTests = openSubjectTests;
 window.__itFindTestById = findTestById;
 window.__itGetAllTests = () => ALL_TESTS;
 window.__itGetSubjects = () => SUBJECTS;
+window.__itGetSubjectTestOrder = getSubjectTestOrder;
+window.__itGetBankState = () => ({ loaded: QBANK_LOADING.loaded, backend: { loaded: QBANK_LOADING.backend.loaded, error: QBANK_LOADING.backend.error } });
 /* Sertifikat tizimi (certificates.js) ismni user state'ga mirror qilishi uchun */
 window.__itSaveUserState = saveUsersAndCurrent;
 
@@ -1226,6 +1348,8 @@ function showApp() {
   $("#authScreen").classList.add("hidden");
   $("#app").classList.remove("hidden");
   refreshUserChip();
+  /* Push token <-> user bog'lanishini yangilash (push.js) */
+  try { if (window.ITPush && typeof window.ITPush.attachUser === "function") window.ITPush.attachUser(); } catch (_) {}
   showPage("dashboard");
   /* 🤖 YANGI FOYDALANUVCHI ONBOARDING — faqat ro'yxatdan o'tgan va hali
      onboardingni tugatmagan userlar uchun (existing userlar darhol dashboardga) */
@@ -1275,6 +1399,7 @@ function bindAuth() {
     currentUser = u;
     saveUsersAndCurrent();
     $("#loginForm").reset();
+    itHaptic("light");
     showToast("Tizimga kirdingiz", "success");
     showApp();
   });
@@ -1315,6 +1440,7 @@ function bindAuth() {
     currentUser = u;
     saveUsersAndCurrent();
     $("#registerForm").reset();
+    itHaptic("light");
     showToast("Hisob yaratildi. Xush kelibsiz!", "success");
     showApp();
   });
@@ -1399,50 +1525,77 @@ function getSubjectIcon(name, defaultIcon) {
   if (lname === 'c++') {
     return `<svg viewBox="0 0 24 24" fill="none"><path d="M12 2L2 7v10l10 5 10-5V7L12 2z" stroke="#6366f1" stroke-width="2" stroke-linejoin="round"/><text x="7" y="15" fill="#818cf8" font-family="'JetBrains Mono', monospace" font-size="9" font-weight="bold">C++</text></svg>`;
   }
+  if (lname === 'java') {
+    return `<svg viewBox="0 0 24 24" fill="none"><path d="M9 18.5c-1.8-.5-2.6-1.4-2.2-2.5.3-.9 1.6-1.4 3-1.5M9 18.5c1.6.4 3.9.3 5.2-.4 1.4-.7 1.6-1.9.6-2.6-.6-.4-1.6-.6-2.6-.6M9 18.5c.9 1.1 2.7 1.7 4.5 1.4M14.4 14.9c-.5-1.6-.2-3.2.8-4.6M17 8.5c.9-1.1.8-2.4-.3-3.4M16.5 6.8c.5-.7.4-1.5-.3-2.2" stroke="#e76f00" stroke-width="1.6" stroke-linecap="round"/><path d="M12.5 3.5c1.4 1.3 1.6 2.6.6 4-1.1 1.4-1.3 2.6-.4 3.6" stroke="#5382a1" stroke-width="1.6" stroke-linecap="round"/><ellipse cx="12.4" cy="19.6" rx="5.4" ry="1.6" stroke="#5382a1" stroke-width="1.6"/></svg>`;
+  }
+  if (lname === 'c#') {
+    return `<svg viewBox="0 0 24 24"><rect width="24" height="24" rx="5" fill="#7c3aed"/><text x="5" y="16.5" fill="#ffffff" font-family="'JetBrains Mono', monospace" font-size="10.5" font-weight="bold">C#</text></svg>`;
+  }
+  if (lname === 'sql') {
+    return `<svg viewBox="0 0 24 24" fill="none"><ellipse cx="12" cy="5.5" rx="8" ry="3" stroke="#38bdf8" stroke-width="1.8"/><path d="M4 5.5v6c0 1.7 3.6 3 8 3s8-1.3 8-3v-6" stroke="#38bdf8" stroke-width="1.8"/><path d="M4 11.5v6c0 1.7 3.6 3 8 3s8-1.3 8-3v-6" stroke="#0ea5e9" stroke-width="1.8"/></svg>`;
+  }
+  if (lname === 'ai') {
+    return `<svg viewBox="0 0 24 24" fill="none"><rect x="6" y="6" width="12" height="12" rx="2.5" stroke="#a78bfa" stroke-width="1.8"/><path d="M9.5 3v3M14.5 3v3M9.5 18v3M14.5 18v3M3 9.5h3M3 14.5h3M18 9.5h3M18 14.5h3" stroke="#a78bfa" stroke-width="1.8" stroke-linecap="round"/><text x="7.4" y="14.6" fill="#c4b5fd" font-family="'JetBrains Mono', monospace" font-size="6.5" font-weight="bold">AI</text></svg>`;
+  }
+  if (lname === 'html') {
+    return `<svg viewBox="0 0 24 24"><path d="M3.5 2h17l-1.55 17.2L12 21.8l-6.95-2.6L3.5 2z" fill="#e44d26"/><path d="M12 3.8v16.2l5.6-2.1L19 3.8H12z" fill="#f16529"/><path d="M7.4 6.6h9.2l-.3 2.4H10l.15 2.2h6l-.6 5.3-3.55 1-3.55-1-.25-2.7h2.3l.1 1.2 1.4.4 1.4-.4.2-2.3H7.2L7.4 6.6z" fill="#ffffff"/></svg>`;
+  }
+  if (lname === 'css') {
+    return `<svg viewBox="0 0 24 24"><path d="M3.5 2h17l-1.55 17.2L12 21.8l-6.95-2.6L3.5 2z" fill="#1572b6"/><path d="M12 3.8v16.2l5.6-2.1L19 3.8H12z" fill="#33a9dc"/><path d="M16.6 6.6l-.3 2.4H10l.15 2.2h6l-.6 5.3-3.55 1-3.55-1-.25-2.7h2.3l.1 1.2 1.4.4 1.4-.4.2-2.3H7.2l-.3-6.1h9.7z" fill="#ffffff"/></svg>`;
+  }
   return `<span style="font-size: 22px;">${defaultIcon}</span>`;
 }
 
 function subjectCard(sbj) {
-  const st = userStats(currentUser || {});
-  const info = st.bySubject[sbj.name] || { count: 0 };
-  
   const lname = sbj.name.toLowerCase();
   let boxClass = '';
   if (lname === 'python') boxClass = 'python';
   else if (lname === 'javascript') boxClass = 'js';
-  else if (lname === 'html' || lname === 'css') boxClass = 'web';
+  else if (lname === 'html') boxClass = 'html';
+  else if (lname === 'css') boxClass = 'css';
   else if (lname === 'c++') boxClass = 'cpp';
+  else if (lname === 'java') boxClass = 'java';
+  else if (lname === 'c#') boxClass = 'csharp';
+  else if (lname === 'sql') boxClass = 'sql';
+  else if (lname === 'ai') boxClass = 'ai';
   
-  const isHard = ['javascript', 'c++', 'c#', 'java'].includes(lname);
-  const diffClass = isHard ? 'orta' : 'oson';
-  const diffText = isHard ? 'O‘RTA' : 'OSON';
-  
-  const pct = Math.min(100, Math.round((info.count / 10) * 100)) || 0;
+  /* REAL DATA: fan testlari QBANK'dan (ALL_TESTS) — count/questionCount fake emas */
+  const subjTests = ALL_TESTS[sbj.name] || [];
+  const testCount = subjTests.length;
+  const qCount = subjTests.reduce((s, t) => s + (t.questionCount || (t.questions ? t.questions.length : 0) || 0), 0);
+
+  const state = ensureUserTestProgress(currentUser);
+  const completedCount = subjTests.filter(test => state[test.id] === 'completed').length;
+  const pct = testCount ? Math.round((completedCount / testCount) * 100) : 0;
   const isCompleted = pct >= 100;
+
+  const ctaText = isCompleted ? 'Qayta ishlash' : (pct > 0 ? 'Davom ettirish' : 'Boshlash');
 
   const card = document.createElement("article");
   card.className = "test-card" + (isCompleted ? " completed" : "");
   card.innerHTML = `
-    <div class="lang-box ${boxClass}">
-      ${getSubjectIcon(sbj.name, sbj.icon)}
+    <div class="test-card__top">
+      <div class="lang-box ${boxClass}">
+        ${getSubjectIcon(sbj.name, sbj.icon)}
+      </div>
     </div>
-    <div class="card-body">
-      <div class="card-header-row">
-        <h2 class="card-title">${sbj.name === 'HTML' ? 'HTML & CSS' : sbj.name}</h2>
-        <span class="badge-diff ${diffClass}">${diffText}</span>
+    <div class="test-card__content">
+      <h2 class="test-card__title">${sbj.name === 'HTML' ? 'HTML &amp; CSS' : sbj.name}</h2>
+      <p class="test-card__desc">${sbj.description}</p>
+      <div class="test-card__meta">
+        ${testCount
+          ? `<span>${testCount} ta test</span><span class="sep"></span><span>${qCount} ta savol</span>`
+          : `<span>${sbj.name} asoslari</span>`}
       </div>
-      <div class="card-meta">
-        ${sbj.name} asoslari <span class="sep"></span> 10 ta savol
-      </div>
-      <div class="progress-bar-container">
-        <div class="progress-track">
-          <div class="progress-fill" style="width: ${pct}%"></div>
-        </div>
-        <span class="progress-pct">${pct}%</span>
+      <div class="test-card__progress">
+        ${isCompleted
+          ? `<span class="progress-done"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg> Tugallangan</span>`
+          : `<div class="progress-track"><div class="progress-fill" style="width: ${pct}%"></div></div><span class="progress-pct">${pct}%</span>`}
       </div>
     </div>
     <button class="btn-action ${pct > 0 && !isCompleted ? 'resume' : ''}" type="button">
-      ${pct > 0 && !isCompleted ? 'Davom etish' : 'Boshlash'} <span style="font-family: sans-serif; margin-left: 2px;">→</span>
+      <span>${ctaText}</span>
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><line x1="5" y1="12" x2="19" y2="12"></line><polyline points="12 5 19 12 12 19"></polyline></svg>
     </button>
   `;
   card.addEventListener("click", (e) => {
@@ -1516,9 +1669,24 @@ function openSubjectTests(name) {
   const container = $("#testListContainer");
   container.innerHTML = "";
   if (!list.length) {
-    if (!QBANK_LOADING.loaded) container.innerHTML = `<div class="empty-state" style="padding:48px 16px;text-align:center;"><div class="spinner" style="display:inline-block;vertical-align:middle;margin-right:10px;border:3px solid var(--itt-muted,#94A3B8);border-top-color:var(--itt-primary,#2563EB);border-radius:50%;width:22px;height:22px;animation:spin 0.9s linear infinite;"></div>${name} testlari yuklanmoqda... Iltimos kuting.</div>`;
-    else container.innerHTML = `<div class="empty-state">Testlar mavjud emas</div>`;
+    if (!QBANK_LOADING.loaded) {
+      container.innerHTML = `<div class="empty-state" style="padding:48px 16px;text-align:center;"><div class="spinner" style="display:inline-block;vertical-align:middle;margin-right:10px;border:3px solid var(--itt-muted,#94A3B8);border-top-color:var(--itt-primary,#2563EB);border-radius:50%;width:22px;height:22px;animation:spin 0.9s linear infinite;"></div>${name} testlari yuklanmoqda... Iltimos kuting.</div>`;
+    } else {
+      const bErr = QBANK_LOADING.backend && QBANK_LOADING.backend.error;
+      container.innerHTML = `<div class="empty-state" style="padding:40px 16px;text-align:center;">
+        <div style="font-size:34px;margin-bottom:8px;">📭</div>
+        <p style="margin:0 0 6px;font-weight:600;">${name} uchun testlar mavjud emas</p>
+        ${bErr ? `<p class="muted" style="margin:0 0 4px;font-size:12.5px;">Bazadan yuklashda xatolik: ${String(bErr).slice(0, 120)}</p>` : ''}
+        <button type="button" class="btn btn-ghost bank-retry-btn" style="margin-top:12px;">🔄 Qayta urinib ko'rish</button>
+      </div>`;
+    }
   }
+
+  const retryBtn = container.querySelector(".bank-retry-btn");
+  if (retryBtn) retryBtn.addEventListener("click", () => {
+    showToast("Testlar qayta yuklanmoqda...", "info");
+    reloadQuestionBank();
+  });
 
   ensureUserTestProgress(currentUser);
 
@@ -1700,7 +1868,10 @@ function renderQuestionNav() {
   /* Layout-gina: mobilda scroll qatorida joriy raqam ko'rinadigan qilib suriladi */
   const cur = nav.querySelector(".qn-btn.current");
   if (cur && nav.scrollWidth > nav.clientWidth + 2) {
-    requestAnimationFrame(() => cur.scrollIntoView({ behavior: "smooth", inline: "center", block: "nearest" }));
+    requestAnimationFrame(() => cur.scrollIntoView({
+      behavior: window.matchMedia('(max-width: 680px), (prefers-reduced-motion: reduce)').matches ? 'auto' : 'smooth',
+      inline: "center", block: "nearest"
+    }));
   }
 }
 
@@ -1757,8 +1928,11 @@ function renderQuestion() {
       if (quiz.autoNavTimeout) return;
 
       quiz.answers[idx] = i;
+      /* Haptic: to'g'ri javob — success, noto'g'ri — error (juda yengil) */
+      itHaptic(i === q.c ? "hapticSuccess" : "hapticError");
       renderQuestion();
-      renderProgress();
+      /* Mobil qurilmalarda tanlov feedback'i avval chiziladi, qolgan UI keyingi frame'da yangilanadi. */
+      requestAnimationFrame(() => renderProgress());
       $("#nextBtn").disabled = true;
       $("#clearAnswerBtn").disabled = false;
 
@@ -1814,6 +1988,8 @@ function startQuiz(testId) {
   quiz.finished = false;
   quiz.startedAt = Date.now();
   quiz.remainingSec = test.durationSec;
+  /* Haptic: test boshlanishi (muhim button) */
+  itHaptic("light");
   showPage("test");
   renderQuestion();
   renderProgress();
@@ -2425,6 +2601,8 @@ function bindDuel() {
   });
 
   $("#duelStartSearchBtn")?.addEventListener("click", () => {
+    /* Haptic: duel boshlanishi (bir marta, yengil) */
+    itHaptic("hapticStart");
     const activeMode = $('#duelModeSelector .duel-chip.active')?.getAttribute('data-mode') || 'bot';
     if (activeMode === 'player') {
       startRealPlayerDuel();
@@ -2699,10 +2877,16 @@ function selectDuelAnswer(userChoice) {
 
   if (userCorrect) {
     duelState.player1.score += 1;
+    /* Haptic: duel natijasi (har savolda faqat bir marta) */
+    itHaptic("hapticSuccess");
     showToast("To'g'ri! +1", "success", 1200);
   }
   if (oppCorrect) {
     duelState.player2.score += 1;
+  }
+  /* Foydalanuvchi noto'g'ri javob berdi — boshqa yengil feedback */
+  if (!userCorrect && userChoice !== null) {
+    itHaptic("hapticError");
   }
 
   // Update Score UI
@@ -2924,6 +3108,9 @@ function evaluateRealPlayerRound() {
   const p2ok = p2c === correct;
   if (p1ok) duelState.player1.score++;
   if (p2ok) duelState.player2.score++;
+  /* Haptic: 1-o'yinchi (mahalliy foydalanuvchi) natijasi */
+  if (p1ok) itHaptic("hapticSuccess");
+  else if (p1c !== null) itHaptic("hapticError");
 
   $("#towP1Score").textContent = duelState.player1.score;
   $("#towP2Score").textContent = duelState.player2.score;
@@ -3287,6 +3474,8 @@ function bindStore() {
     const buy = e.target.closest('[data-buy]');
     const equip = e.target.closest('[data-equip]');
     const gift = e.target.closest('[data-gift]');
+    /* Haptic: do'kon muhim tugmalari (sotib olish / taqish / sovg'a) */
+    if (buy || equip || gift) itHaptic('light');
     if (buy) showGiftModal(buy.dataset.buy);
     else if (gift) openSendGiftModal(gift.dataset.gift);
     else if (equip) equipStoreItem(equip.dataset.equip);

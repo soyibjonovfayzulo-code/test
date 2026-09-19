@@ -190,7 +190,7 @@
 }
 .ls-course-head-actions .btn:hover .ls-btn-arrow,
 .ls-course-card:hover .ls-btn-arrow {
-  transform: translateX(4px);
+  transform: translateX(400px);
 }
 
 /* ---------- KURSLAR — ixcham stacked learning list ---------- */
@@ -1693,6 +1693,21 @@
     display: none !important;
   }
 }
+
+/* Testlar bilan mos premium kurs kartalari — faqat Darslar overview sahifasi. */
+#page-lessons.active { max-width:1120px; margin:0 auto; padding:18px 16px 32px; }
+#page-lessons .ls-section-head { margin:0 0 18px; padding:20px; border:1px solid color-mix(in srgb,var(--primary) 28%,var(--border)); border-radius:20px; background:linear-gradient(135deg,color-mix(in srgb,var(--primary) 16%,var(--card)),var(--card)); }
+#page-lessons .ls-section-head h3 { margin:0 0 4px; color:var(--text); } #page-lessons .ls-section-head p { margin:0; color:var(--muted); }
+#page-lessons .ls-topics-head { margin:22px 0 12px; color:var(--text); }
+#page-lessons .ls-courses-grid { display:grid; grid-template-columns:repeat(1,minmax(0,1fr)); gap:16px; align-items:start; }
+#page-lessons .ls-course-card { display:grid; grid-template-columns:1fr auto; grid-template-areas:"icon side" "body side" "meta meta" "progress progress" "action action"; gap:10px; min-width:0; height:252px; box-sizing:border-box; padding:18px; border-radius:24px; color:var(--text); background:radial-gradient(110% 100% at 100% 0%,color-mix(in srgb,var(--ls-color,var(--primary)) 20%,transparent),transparent 58%),var(--card); border:1px solid color-mix(in srgb,var(--ls-color,var(--primary)) 28%,var(--border)); box-shadow:var(--shadow-soft); cursor:pointer; overflow:hidden; transition:transform .2s ease,box-shadow .2s ease,border-color .2s ease; }
+#page-lessons .ls-course-card:hover { transform:translateY(-3px); border-color:var(--ls-color,var(--primary)); box-shadow:0 14px 28px color-mix(in srgb,var(--ls-color,var(--primary)) 17%,transparent); } #page-lessons .ls-course-card:active { transform:translateY(-1px) scale(.985); }
+#page-lessons .ls-course-icon { grid-area:icon; width:54px; height:54px; margin:0; border-radius:17px; background:color-mix(in srgb,var(--ls-color,var(--primary)) 18%,var(--card)); border:1px solid color-mix(in srgb,var(--ls-color,var(--primary)) 45%,transparent); font-size:1.7rem; }
+#page-lessons .ls-course-id { grid-area:body; min-width:0; } #page-lessons .ls-course-id h4 { margin:0 0 4px; color:var(--text); font-size:1.08rem; font-weight:800; } #page-lessons .ls-course-tagline { margin:0; color:var(--muted); font-size:.85rem; line-height:1.4; -webkit-line-clamp:2; }
+#page-lessons .ls-course-side { grid-area:side; align-self:start; } #page-lessons .ls-course-meta { grid-area:meta; display:flex; align-items:center; gap:8px; margin:0; color:var(--muted); font-size:.78rem; }
+#page-lessons .ls-course-progress { grid-area:progress; display:flex; align-items:center; gap:10px; } #page-lessons .ls-course-progress-track { flex:1; height:6px; overflow:hidden; border-radius:999px; background:color-mix(in srgb,var(--muted) 18%,transparent); } #page-lessons .ls-course-progress-track span { display:block; height:100%; border-radius:inherit; background:var(--ls-color,var(--primary)); transition:width .7s cubic-bezier(.22,1,.36,1); } #page-lessons .ls-course-progress b { min-width:31px; color:var(--muted); font-size:.75rem; text-align:right; }
+#page-lessons .ls-course-action { grid-area:action; width:100%; min-height:40px; border:1px solid color-mix(in srgb,var(--ls-color,var(--primary)) 60%,transparent); border-radius:12px; background:color-mix(in srgb,var(--ls-color,var(--primary)) 14%,transparent); color:var(--text); font:700 .86rem inherit; pointer-events:none; } #page-lessons .ls-course-action span { margin-left:6px; font-size:1.05rem; }
+@media (min-width:620px){#page-lessons .ls-courses-grid{grid-template-columns:repeat(2,minmax(0,1fr))}} @media (min-width:1180px){#page-lessons .ls-courses-grid{grid-template-columns:repeat(3,minmax(0,1fr))}} @media (max-width:380px){#page-lessons.active{padding:12px}#page-lessons .ls-course-card{height:242px;padding:15px;border-radius:20px}#page-lessons .ls-course-icon{width:48px;height:48px}}
 
 /* ---------- MOBIL (320px–430px): overflow yo'q, matn kesilmasin ---------- */
 @media (max-width: 480px) {
@@ -3654,4 +3669,41 @@
     animation: none !important;
   }
 }
+
+/* Darslar katalogi — Testlar namunasi bilan 1:1 vizual tizim. */
+#page-lessons.active { max-width: 1530px; padding: 20px 34px 38px; }
+#page-lessons .ls-catalog-hero { position:relative; display:flex; align-items:center; min-height:158px; padding:28px 78px; overflow:hidden; border-radius:28px; background:radial-gradient(500px 210px at 80% 100%,rgba(55,75,255,.48),transparent 65%),linear-gradient(110deg,#102f82,#071b4b 62%,#10297a); border:1px solid rgba(68,121,255,.65); box-shadow:0 16px 36px rgba(0,0,0,.2); }
+#page-lessons .ls-catalog-hero::before { content:""; position:absolute; width:300px; height:300px; top:-150px; left:-55px; border-radius:50%; background:rgba(3,16,64,.42); }
+#page-lessons .ls-catalog-hero::after { content:""; position:absolute; right:70px; bottom:-18px; width:220px; height:180px; background:url('mascot/it-robot.png') center bottom/contain no-repeat; filter:drop-shadow(0 10px 14px rgba(0,0,0,.28)); }
+#page-lessons .ls-catalog-hero h3,#page-lessons .ls-catalog-hero p { position:relative; z-index:1; color:#fff; } #page-lessons .ls-catalog-hero h3 { max-width:680px; margin:0 0 8px; font-size:2rem; } #page-lessons .ls-catalog-hero h3::before { content:"</> O'RGANISH MARKAZI"; display:block; margin-bottom:9px; color:#22d3ee; font-size:.74rem; font-weight:800; letter-spacing:.1em; } #page-lessons .ls-catalog-hero p { color:rgba(211,225,255,.78); font-size:1rem; }
+#page-lessons #lsOverallSlot,#page-lessons #lsContinueSlot { display:none; }
+#page-lessons .ls-topics-head { margin:18px 0 14px; color:var(--text); }
+#page-lessons .ls-courses-grid { display:grid; grid-template-columns:repeat(3,minmax(0,1fr)); gap:18px; align-items:start; }
+#page-lessons .ls-course-card { display:grid; grid-template-columns:112px minmax(0,1fr); grid-template-rows:minmax(92px,1fr) 17px 6px 43px; gap:7px 20px; height:214px; padding:18px 26px 16px 18px; border-radius:54px; background:radial-gradient(160px 130px at 99% 98%,color-mix(in srgb,var(--ls-color,var(--primary)) 37%,transparent),transparent 74%),radial-gradient(200px 150px at 0% 0%,color-mix(in srgb,var(--ls-color,var(--primary)) 25%,transparent),transparent 72%),#081c38; border:1px solid color-mix(in srgb,var(--ls-color,var(--primary)) 38%,rgba(148,163,184,.16)); box-shadow:0 12px 24px rgba(0,0,0,.22); }
+#page-lessons .ls-course-card::before { content:""; position:absolute; inset:0; pointer-events:none; border-radius:inherit; background:linear-gradient(132deg,rgba(255,255,255,.06),transparent 39%); }
+#page-lessons .ls-course-icon { grid-row:1 / 3; grid-column:1; align-self:start; width:92px; height:92px; border-radius:32px; color:#fff; background:color-mix(in srgb,var(--ls-color,var(--primary)) 37%,#0b1b37); border-color:color-mix(in srgb,var(--ls-color,var(--primary)) 68%,transparent); font-size:3rem; box-shadow:inset 0 1px 0 rgba(255,255,255,.18),0 10px 20px color-mix(in srgb,var(--ls-color,var(--primary)) 22%,transparent); }
+#page-lessons .ls-course-id { grid-row:1; grid-column:2; align-self:center; } #page-lessons .ls-course-id h4 { color:#f8fbff; font-size:1.12rem; } #page-lessons .ls-course-tagline { color:#a8b9d6; font-size:.88rem; }
+#page-lessons .ls-course-side { display:none; } #page-lessons .ls-course-meta { grid-row:2; grid-column:2; color:#93a8cb; font-size:.79rem; } #page-lessons .ls-status { display:none; }
+#page-lessons .ls-course-progress { grid-row:3; grid-column:2; margin:0; } #page-lessons .ls-course-progress-track { background:rgba(148,163,184,.22); } #page-lessons .ls-course-progress b { color:#aebfe0; }
+#page-lessons .ls-course-action { grid-row:4; grid-column:2; min-height:43px; background:color-mix(in srgb,var(--ls-color,var(--primary)) 19%,transparent); border-color:color-mix(in srgb,var(--ls-color,var(--primary)) 85%,transparent); color:#fff; }
+#page-lessons .ls-course-card:hover { transform:translateY(-3px); filter:brightness(1.08); }
+[data-theme="light"] #page-lessons .ls-catalog-hero { background:radial-gradient(500px 220px at 80% 100%,#b9ceff,transparent 65%),linear-gradient(110deg,#dceaff,#f8fbff 70%); border-color:#bad0ff; box-shadow:0 14px 30px rgba(30,64,175,.11); } [data-theme="light"] #page-lessons .ls-catalog-hero h3 { color:#10204a; } [data-theme="light"] #page-lessons .ls-catalog-hero h3::before { color:#087eb9; } [data-theme="light"] #page-lessons .ls-catalog-hero p { color:#526684; }
+[data-theme="light"] #page-lessons .ls-course-card { background:radial-gradient(170px 130px at 99% 98%,color-mix(in srgb,var(--ls-color,var(--primary)) 15%,transparent),transparent 75%),radial-gradient(180px 150px at 0% 0%,color-mix(in srgb,var(--ls-color,var(--primary)) 12%,transparent),transparent 72%),#fff; border-color:color-mix(in srgb,var(--ls-color,var(--primary)) 28%,#dce4f0); box-shadow:0 8px 18px rgba(15,23,42,.08); } [data-theme="light"] #page-lessons .ls-course-id h4 { color:#17213a; } [data-theme="light"] #page-lessons .ls-course-tagline,[data-theme="light"] #page-lessons .ls-course-meta,[data-theme="light"] #page-lessons .ls-course-progress b { color:#61718b; } [data-theme="light"] #page-lessons .ls-course-action { color:#17213a; }
+@media (max-width:1100px){#page-lessons .ls-courses-grid{grid-template-columns:repeat(2,minmax(0,1fr))}} @media (max-width:680px){#page-lessons.active{padding:13px 12px 28px}#page-lessons .ls-catalog-hero{min-height:126px;padding:20px 18px;border-radius:22px}#page-lessons .ls-catalog-hero::after{right:0;width:110px;height:112px;opacity:.75}#page-lessons .ls-catalog-hero h3{max-width:calc(100% - 80px);font-size:1.25rem}#page-lessons .ls-catalog-hero p{max-width:calc(100% - 70px);font-size:.78rem}#page-lessons .ls-courses-grid{grid-template-columns:1fr;gap:12px}#page-lessons .ls-course-card{height:194px;border-radius:28px;grid-template-columns:74px minmax(0,1fr);padding:15px}#page-lessons .ls-course-icon{width:62px;height:62px;border-radius:21px;font-size:2rem}#page-lessons .ls-course-action{min-height:38px}}
+
+/* Darslar katalogi: avvalgi vertikal ro'yxat ko'rinishiga qaytarildi. */
+#page-lessons.active { max-width:none; margin:0; padding:0; }
+#page-lessons #lsOverallSlot,#page-lessons #lsContinueSlot { display:block; }
+#page-lessons .ls-section-head { margin-bottom:24px; padding:0; border:0; border-radius:0; background:transparent; }
+#page-lessons .ls-section-head h3 { font-size:1.5rem; font-weight:800; letter-spacing:-.02em; margin-bottom:6px; color:var(--text); }
+#page-lessons .ls-section-head p { color:var(--muted); font-size:.95rem; max-width:640px; line-height:1.5; }
+#page-lessons .ls-topics-head { margin:4px 0 16px; }
+#page-lessons .ls-courses-grid { display:flex; grid-template-columns:none; flex-direction:column; gap:12px; width:100%; max-width:none; }
+#page-lessons .ls-course-card { position:relative; display:flex; align-self:stretch; flex:0 0 100%; width:100% !important; max-width:none !important; box-sizing:border-box; align-items:center; gap:18px; height:auto; min-height:104px; padding:18px 24px; border-radius:24px; background:linear-gradient(90deg,color-mix(in srgb,var(--ls-color,var(--primary)) 8%,var(--card)),var(--card) 45%); border:1px solid color-mix(in srgb,var(--ls-color,var(--primary)) 28%,var(--border)); box-shadow:0 5px 14px rgba(15,23,42,.05); color:inherit; overflow:hidden; }
+#page-lessons .ls-course-card::after { content:""; position:absolute; right:-65px; top:50%; width:190px; height:190px; border-radius:50%; transform:translateY(-50%); background:color-mix(in srgb,var(--ls-color,var(--primary)) 9%,transparent); pointer-events:none; }
+#page-lessons .ls-course-card:hover { transform:translateY(-2px); border-color:color-mix(in srgb,var(--ls-color,var(--primary)) 55%,var(--border)); box-shadow:0 11px 22px color-mix(in srgb,var(--ls-color,var(--primary)) 12%,transparent); }
+#page-lessons .ls-course-icon { width:50px; height:50px; border-radius:16px; font-size:1.5rem; background:color-mix(in srgb,var(--ls-color,var(--primary)) 14%,transparent); border:1px solid color-mix(in srgb,var(--ls-color,var(--primary)) 26%,transparent); box-shadow:none; }
+#page-lessons .ls-course-id { position:relative; z-index:1; flex:1; } #page-lessons .ls-course-id h4 { color:var(--text); } #page-lessons .ls-course-tagline { color:var(--muted); }
+#page-lessons .ls-course-side { position:relative; z-index:1; display:flex; margin-right:8px; } #page-lessons .ls-course-meta { display:flex; margin:5px 0 0; } #page-lessons .ls-course-progress,#page-lessons .ls-course-action { display:none; }
+@media (max-width:560px) { #page-lessons .ls-course-card { min-height:92px; padding:15px; gap:13px; } #page-lessons .ls-course-side { margin-right:0; } }
 

@@ -51,6 +51,17 @@ function initDb() {
         )
       `);
 
+      // Push tokens (FCM device tokens)
+      db.run(`
+        CREATE TABLE IF NOT EXISTS push_tokens (
+          id INTEGER PRIMARY KEY AUTOINCREMENT,
+          token TEXT UNIQUE NOT NULL,
+          user_id TEXT,
+          platform TEXT DEFAULT 'android',
+          updated_at TEXT
+        )
+      `);
+
       // Tests / Test Questions table for Question Bank
       db.run(`
         CREATE TABLE IF NOT EXISTS test_questions (

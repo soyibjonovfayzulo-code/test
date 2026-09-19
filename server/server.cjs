@@ -3,11 +3,34 @@ const cors = require('cors');
 const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
 const path = require('path');
+const fs = require('fs');
 const { db, initDb } = require('./db.cjs');
 
 const app = express();
 const PORT = process.env.PORT || 3000;
 const SECRET_KEY = process.env.ADMIN_SECRET || 'it-test-admin-secret-key-change-in-production';
+
+// -------------------------
+// FIREBASE ADMIN (lazy init)
+// server/serviceAccountKey.json mavjud bo'lsa FCM orqali
+// push xabar yuborish imkoni ochiladi. Yo'q bo'lsa server
+// odatdagidek ishlaydi (faqat /api/push/send 503 qaytaradi).
+// -------------------------
+let firebaseMessaging = null;
+try {
+  const serviceAccountPath = path.join(__dirname, 'serviceAccountKey.json');
+  if (fs.existsSync(serviceAccountPath)) {
+    const admin = require('firebase-admin');
+    const serviceAccount = JSON.parse(fs.readFileSync(serviceAccountPath, 'utf8'));
+    const app2 = admin.initializeApp({ credential: admin.credential.cert(serviceAccount) });
+    firebaseMessaging = admin.messaging(app2);
+    console.log('✅ Firebase Admin SDK ulandi — /api/push/send ishlaydi');
+  } else {
+    console.log('ℹ️ serviceAccountKey.json topilmadi — FCM yuborish o\'chirilgan (/api/push/send 503 qaytaradi)');
+  }
+} catch (e) {
+  console.error('Firebase Admin init xatosi:', e.message);
+}
 
 // Init DB
 initDb().catch(err => console.error('Database initialization error:', err));
@@ -18,7 +41,11 @@ app.use(cors({
     'http://localhost:5173',
     'http://localhost:3000',
     'http://127.0.0.1:5173',
-    'http://127.0.0.1:3000'
+    'http://127.0.0.1:3000',
+    // Capacitor native WebView originlari (Android/iOS ilovadan kelgan so'rovlar)
+    'http://localhost',
+    'https://localhost',
+    'capacitor://localhost'
   ],
   credentials: true,
   methods: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE', 'OPTIONS'],
@@ -495,6 +522,142 @@ app.get('/api/admin/stats', authMiddleware, (req, res) => {
     if (err) return res.status(500).json({ error: err.message });
     res.json(row);
   });
+});
+
+// -------------------------
+// PUSH TOKENS (FCM)
+// -------------------------
+// Qurilma FCM tokenni ro'yxatdan o'tkazadi (public — native ilovadan yuboriladi)
+app.post('/api/push/tokens', (req, res) => {
+  const { token, userId, platform } = req.body || {};
+  if (!token || typeof token !== 'string') {
+    return res.status(400).json({ error: 'token majburiy' });
+  }
+
+  db.run(
+    `INSERT INTO push_tokens (token, user_id, platform, updated_at)
+     VALUES (?, ?, ?, datetime('now'))
+     ON CONFLICT(token) DO UPDATE SET
+       user_id = excluded.user_id,
+       platform = excluded.platform,
+       updated_at = datetime('now')`,
+    [token, userId || null, platform || 'android'],
+    function (err) {
+      if (err) return res.status(500).json({ error: err.message });
+      res.json({ success: true });
+    }
+  );
+});
+
+// Ro'yxatdan o'tgan barcha qurilma tokenlari (admin)
+app.get('/api/push/tokens', authMiddleware, (req, res) => {
+  db.all(
+    'SELECT token, user_id, platform, updated_at FROM push_tokens ORDER BY updated_at DESC',
+    [],
+    (err, rows) => {
+      if (err) return res.status(500).json({ error: err.message });
+      res.json(rows || []);
+    }
+  );
+});
+
+// Tokenni o'chirish (qurilma o'chirilganda/uzoq ishlatilmaganda) — admin
+app.delete('/api/push/tokens/:token', authMiddleware, (req, res) => {
+  db.run('DELETE FROM push_tokens WHERE token = ?', [req.params.token], function (err) {
+    if (err) return res.status(500).json({ error: err.message });
+    res.json({ success: true });
+  });
+});
+
+// -------------------------
+// PUSH YUBORISH (FCM via Firebase Admin SDK)
+// admin JWT talab qiladi.
+// Body: { title, body, token?, userId?, page?, data? }
+//   - token berilsa  -> faqat shu qurilmaga
+//   - userId berilsa -> shu foydalanuvchining tokenlariga
+//   - ikkalasi ham yo'q -> barcha ro'yxatdan o'tgan tokenlarga (broadcast)
+//   - page (masalan 'tests', 'duel') -> notification bosilganda
+//     ilova o'sha page'ga yo'naltiradi (push.js handleTap)
+// -------------------------
+app.post('/api/push/send', authMiddleware, async (req, res) => {
+  if (!firebaseMessaging) {
+    return res.status(503).json({
+      error: "Firebase Admin sozlanmagan. Firebase Console → Project settings → Service accounts → 'Generate new private key' → faylni server/serviceAccountKey.json sifatida saqlang va serverni qayta ishga tushiring."
+    });
+  }
+
+  const { title, body, token, userId, page, data } = req.body || {};
+  if (!title || !body) {
+    return res.status(400).json({ error: 'title va body majburiy' });
+  }
+
+  // Yuborish uchun tokenlar ro'yxatini aniqlash
+  let targetTokens = [];
+  try {
+    if (token) {
+      targetTokens = [String(token)];
+    } else if (userId) {
+      const rows = await new Promise((resolve, reject) => {
+        db.all('SELECT token FROM push_tokens WHERE user_id = ?', [userId], (err, rows) => {
+          if (err) reject(err); else resolve(rows || []);
+        });
+      });
+      targetTokens = rows.map(r => r.token);
+    } else {
+      const rows = await new Promise((resolve, reject) => {
+        db.all('SELECT token FROM push_tokens', [], (err, rows) => {
+          if (err) reject(err); else resolve(rows || []);
+        });
+      });
+      targetTokens = rows.map(r => r.token);
+    }
+  } catch (err) {
+    return res.status(500).json({ error: err.message });
+  }
+
+  if (!targetTokens.length) {
+    return res.status(404).json({ error: "Tokenlar topilmadi — hech qurilma ro'yxatdan o'tmagan (ilovani ochib tokenni ro'yxatdan o'tkazing)" });
+  }
+
+  // FCM data qiymatlari string bo'lishi shart
+  const payloadData = {};
+  Object.entries(data || {}).forEach(([k, v]) => { payloadData[String(k)] = String(v); });
+  if (page) payloadData.page = String(page);
+
+  const baseMessage = {
+    notification: { title: String(title), body: String(body) },
+    data: payloadData,
+    android: {
+      priority: 'high',
+      notification: {
+        channelId: 'ittest',   /* push.js'da yaratilgan channel bilan mos */
+        sound: 'default'
+      }
+    }
+  };
+
+  const results = { sent: 0, failed: 0, invalidTokens: [] };
+  await Promise.all(targetTokens.map(async (t) => {
+    try {
+      await firebaseMessaging.send({ ...baseMessage, token: t });
+      results.sent++;
+    } catch (err) {
+      results.failed++;
+      const code = err && err.code;
+      if (code === 'messaging/registration-token-not-registered' || code === 'messaging/invalid-registration-token') {
+        results.invalidTokens.push(t);
+      }
+    }
+  }));
+
+  // Eskirgan/bekor qilingan tokenlarni bazadan tozalash
+  if (results.invalidTokens.length) {
+    results.invalidTokens.forEach(t => {
+      db.run('DELETE FROM push_tokens WHERE token = ?', [t], () => {});
+    });
+  }
+
+  res.json({ success: true, total: targetTokens.length, ...results });
 });
 
 // Health check

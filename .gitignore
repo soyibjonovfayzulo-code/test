@@ -1,1 +1,13 @@
 node_modules
+
+# Firebase / maxfiy va lokal konfiguratsiya fayllari
+google-services.json
+android/app/google-services.json
+.env
+*.keystore
+keystore.properties
+server/serviceAccountKey.json
+*serviceAccount*.json
+
+# Build natijalari
+dist

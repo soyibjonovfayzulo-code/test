@@ -2288,7 +2288,7 @@ ul {
   border: 2px solid var(--border);
   border-radius: 12px;
   cursor: pointer;
-  transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+  transition: border-color 0.2s ease, background-color 0.2s ease, box-shadow 0.2s ease, transform 0.2s ease;
   display: flex;
   align-items: center;
   gap: 12px;
@@ -2302,6 +2302,11 @@ ul {
   border-color: var(--primary);
   background: var(--card-hover);
   transform: translateX(4px);
+}
+
+@media (max-width: 680px) {
+  .option { transition: border-color .15s ease, background-color .15s ease; }
+  .option:hover { transform: none; }
 }
 
 .option:focus-visible {
@@ -7749,3 +7754,10 @@ textarea {
     width: 100%;
   }
 }
+
+/* Developer Tools guard overlay — desktopda faqat DevTools aniqlanganda ko'rinadi. */
+#devtoolsGuard { position:fixed; inset:0; z-index:2147483647; display:grid; place-items:center; padding:24px; background:rgba(3,10,25,.94); backdrop-filter:blur(12px); color:#f8fafc; }
+#devtoolsGuard[hidden] { display:none; }
+.devtools-guard__card { width:min(420px,100%); padding:30px; border:1px solid rgba(96,165,250,.4); border-radius:22px; background:linear-gradient(145deg,#102650,#09182f); box-shadow:0 24px 70px rgba(0,0,0,.45); text-align:center; }
+.devtools-guard__icon { display:grid; width:52px; height:52px; place-items:center; margin:0 auto 15px; border-radius:16px; background:rgba(59,130,246,.2); color:#60a5fa; font:800 19px/1 ui-monospace,monospace; }
+.devtools-guard__card h2 { margin:0 0 8px; font-size:20px; color:#fff; }.devtools-guard__card p { margin:0; color:#b8c7df; line-height:1.55; }

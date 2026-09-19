@@ -18,6 +18,11 @@ const doc = w.document;
 w.fetch = (p) => {
   try {
     const url = new URL(p, 'http://localhost:5178/');
+    /* Backend API shimi: offline rejim — backend savollari bo'sh massiv
+       (loadBackendQuestionBank xatosiz o'tadi, statik JSON asosiy manba) */
+    if (url.pathname === '/api/tests/questions') {
+      return Promise.resolve({ ok: true, status: 200, json: () => Promise.resolve([]) });
+    }
     const file = path.join(root, url.pathname.replace(/^\//, ''));
     const body = fs.readFileSync(file, 'utf8');
     return Promise.resolve({ ok: true, json: () => Promise.resolve(JSON.parse(body)) });

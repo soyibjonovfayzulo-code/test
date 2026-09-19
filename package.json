@@ -19,9 +19,17 @@
     "@capacitor/android": "^8.5.0",
     "@capacitor/cli": "^8.5.0",
     "@capacitor/core": "^8.5.0",
+    "@capacitor/haptics": "^8.0.2",
+    "@capacitor/push-notifications": "^8.1.2",
+    "bcrypt": "^6.0.0",
+    "cors": "^2.8.5",
+    "express": "^5.1.0",
+    "firebase-admin": "^14.4.0",
     "JSCPP": "^2.0.9",
+    "jsonwebtoken": "^9.0.2",
     "pyodide": "^314.0.6",
     "qrcode-generator": "^2.0.4",
-    "sql.js": "^1.14.2"
+    "sql.js": "^1.14.2",
+    "sqlite3": "^5.1.7"
   }
 }
