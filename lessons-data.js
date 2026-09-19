@@ -102,6 +102,45 @@
               '`<title>` — brauzer tabida ko‘rinadigan sahifa nomi',
               '`<h1>` — eng katta va eng muhim sarlavha, `<h6>` — eng kichik',
               'Ichma-ich turgan teglar: parent (ota) va child (bola); oxirgi ochilgan teg birinchi yopiladi'
+            ],
+            masterXp: 30,
+            homework: 'Uy vazifasi:\n1. O‘zingiz uchun birinchi HTML fayl yarating va unga index.html deb nom bering.\n2. Fayl ichiga DOCTYPE, <html>, <head> (title bilan) va <body> teglarini joylashtiring.\n3. <body> ichiga o‘zingiz haqingizda qisqacha matn yozing: 1 ta h1 sarlavha, 2 ta p paragraf.\n4. Faylni saqlab, brauzerda ochib ko‘ring.\n5. (Challenge) Matn ichiga <br> yordamida yangi qator ham qo‘shib ko‘ring.',
+            summary: 'Bugun HTML asoslarini o‘rgandik: HTML nima, teg/element tushunchalari, sahifa skeleti (DOCTYPE, html, head, body), sarlavhalar h1–h6, paragraf p va yangi qator br. Bu bilimlar keyingi darslar uchun tayanch hisoblanadi!',
+            exercises: [
+              {
+                id: 'l1ex1',
+                type: 'liveedit',
+                mode: 'simple',
+                title: '1-MASHQ — Paragraf yaratish ✍️',
+                instruction: '`<h1>` ostiga yangi `<p>` elementi qo‘shing va unga "Men HTML o‘rganyapman!" deb yozing.',
+                startCode: '<!DOCTYPE html>\n<html>\n  <head>\n    <title>Mening birinchi sahifam</title>\n  </head>\n  <body>\n    <h1>Salom, dunyo!</h1>\n  </body>\n</html>',
+                checks: [
+                  { re: '<p[\\s>][\\s\\S]*Men HTML o‘rganyapman![\\s\\S]*<\\/p>', msg: '`<h1>` tagidan keyin `<p>Men HTML o‘rganyapman!</p>` qo‘shilishi kerak' }
+                ],
+                hint: '<h1> dan keyin yangi qatorda <p>...</p> yozing. Paragraf tegi ochilishi va yopilishi kerak.',
+                explanation: '<p> — paragraf elementi. Har bir yangi p avtomatik yangi qatordan boshlanadi va atrofida bo‘sh joy hosil qiladi.',
+                xp: 10
+              },
+              {
+                id: 'l1ex2',
+                type: 'dragdrop',
+                title: '2-MASHQ — Element qismlarini yig‘ing 🧩',
+                instruction: 'Quyidagi 3 qismdan to‘liq `<p>` elementi yarating: ochiluvchi teg → kontent → yopiluvchi teg.',
+                hint: 'Tartib: 1) ochiluvchi teg <p>, 2) kontent (matn), 3) yopiluvchi teg </p>.',
+                items: ['<p>', 'Salom, HTML!', '</p>'],
+                xp: 10
+              },
+              {
+                id: 'l1ex3',
+                type: 'detective',
+                title: '3-MASHQ — Xatolikni top 🔍',
+                instruction: 'Quyidagi kodda bitta XATO bor. Uni toping va to‘g‘ri javobni belgilang.',
+                code: '<!DOCTYPE html>\n<html>\n  <head>\n    <title>Test</title>\n  </head>\n  <body>\n    <h1>Salom\n    <p>Men o‘rganyapman.</p>\n  </body>\n</html>',
+                options: ['`<!DOCTYPE html>` noto‘g‘ri yozilgan', '`<h1>` ochilib, `</h1>` bilan yopilmagan', '`<body>` tegining yopiluvchisi yo‘q', '`<p>` kontenti noto‘g‘ri'],
+                answer: 1,
+                explanation: '`<h1>Salom` — ochilgan, lekin oxirida `</h1>` yozilmagan. Har bir ochilgan teg (bo‘sh teglar bundan mustasno) o‘z yopiluvchisi bilan yopilishi shart!',
+                xp: 10
+              }
             ]
           },
           quiz: {
@@ -1073,8 +1112,69 @@
                 ],
                 hint: 'STEP 9 — <style> blokini <head> ichiga yozing. STEP 10 — <script> blokini </body> oldiga qo‘ying.',
                 xp: 100
+              },
+              {
+                id: 'l5detective',
+                type: 'detective',
+                title: '3-MASHQ — Portfolio kodi xatosi 🔍',
+                instruction: 'Quyidagi portfolio kodida bitta XATO bor. Uni toping va to‘g‘ri javobni belgilang.',
+                code: '<img src="avatar.jpg">\n<a href="https://github.com" target="_blank">Github</a>\n<button id="contactBtn">Bog‘lanish</button>\n<script>\nconst btn = document.getElementById("contact");\nbtn.addEventListener("click", function() { alert("Salom!"); });\n</script>',
+                options: ['`<img>` da `alt` atributi yo‘q — brauzer rasmni chizmaydi', '`getElementById("contact")` — ID mos kelmadi: button id="contactBtn" lekin "contact" izlanmoqda', '`target="_blank"` noto‘g‘ri atribut', '`addEventListener` noto‘g‘ri funksiyasi ishlatilgan'],
+                answer: 1,
+                explanation: 'Buttonning ID si `contactBtn`, lekin JS da `document.getElementById("contact")` deb izlanmoqda — ID mos kelmadi! Natijada btn = null bo‘lib, JS xato chiqaradi. To‘g‘ri: `getElementById("contactBtn")`.',
+                xp: 10
               }
             ],
+            masterXp: 50,
+            homework: 'Uy vazifasi — REAL PORTFOLIO:\n1. STEP 1–10 orqali yaratilgan loyihangizni o‘zgartiring:\n2. Ism va familiyangizni o‘zingizniki bilan almashtiring.\n3. Skills qismiga 3 ta yangi ko‘nikma qo‘shing (masalan: Figma, Git, English B1).\n4. Projects qismiga 3-ta haqiqiy/ko‘rbargan loyihangizni yozing.\n5. Email va telefon o‘rniga o‘z kontaktingizni yozing.\n6. O‘zingizni avatar rasmingizni ulang (yoki Wikimedia dan boshqa avatar toping).\n7. Aloqa tugmasini bosganda o‘z ismingiz bilan alert chiqadigan qiling.\n8. (Challenge) <footer> elementi qo‘shib, pastga "© 2026 [Ism Familiya]. Barcha huquqlar himoyalangan." deb yozing.',
+            summary: 'Bu darsda HTML, CSS va JavaScriptni birgalikda ishlatib, haqiqiy birinchi saytingizni — portfolioingizni yaratdingiz! Skelet -> Header -> Rasm -> Skills -> Loyihalar -> Aloqa -> CSS bezash -> JS interaktivlik. Bu va davom ettirganingizda haqiqiy professional dasturchi bo‘lasiz! 🚀'
+          },
+          quiz: {
+            passingScore: 80,
+            questions: [
+              {
+                question: 'HTML sahifaning tuzilmasi (skeleti) qaysi juftlik bilan to‘g‘ri?',
+                options: ['`<!DOCTYPE html> → <html> → <head> → <body>`', '`<html> → <!DOCTYPE html> → <head> → <body>`', '`<body> → <head> → <html>`', '`<head> → <body> → <html>`'],
+                answer: 0,
+                explanation: 'To‘g‘ri tartib: 1) DOCTYPE e‘lon, 2) <html> ildiz, 3) <head> ko‘rinmas qism, 4) <body> ko‘rinadigan qism.'
+              },
+              {
+                question: '`<img src="avatar.jpg">` kodida nima yetishmayapti?',
+                options: ['Rasm hajmini beruvchi `size` atributi', 'Rasm tavsifini beruvchi `alt` atributi', 'Rasmni ochuvchi `open` atributi', 'Hech narsa — kod to‘g‘ri'],
+                answer: 1,
+                explanation: '`<img>` da `alt` atributi kerak: 1) rasm yuklanmasa tavsif ko‘rinadi, 2) screen reader (ko‘z ojiz uchun) o‘qiydi, 3) SEO uchun muhim.'
+              },
+              {
+                question: 'Portfolio sahifasida Aloqa bo‘limiga tez o‘tish uchun link qanday yoziladi?',
+                options: ['`<a href="contact">Aloqa</a>`', '`<a href="#contact">Aloqa</a>` (agar section id="contact" bo‘lsa)', '`<a href="/contact.html">Aloqa</a>`', '`<a id="contact">Aloqa</a>`'],
+                answer: 1,
+                explanation: 'Sahifa ichida anchor orqali o‘tish: href="#ID" shaklida. Section da id="contact" bo‘lsa, `href="#contact"` shu bo‘limga scroll qiladi.'
+              },
+              {
+                question: 'Tashqi linkni yangi tabda ochish uchun qaysi atribut ishlatiladi?',
+                options: ['`new="tab"`', '`open="blank"`', '`target="_blank"`', '`href="tab:new"`'],
+                answer: 2,
+                explanation: '`target="_blank"` — linkni yangi, bo‘sh tabda ochadi. O‘sha tabda ochish uchun target="_self" (default).'
+              },
+              {
+                question: '`<button id="mainBtn">Bos</button>` — ushbu tugmani JavaScript da id bo‘yicha qanday topamiz?',
+                options: ['`document.getElementById("mainBtn")`', '`document.getElementByClass("mainBtn")`', '`document.querySelector(mainBtn)`', '`window.find("mainBtn")`'],
+                answer: 0,
+                explanation: '`document.getElementById("id_nomi")` — id bo‘yicha yagona elementni topadi. ID mos kelishi shart: mainBtn = mainBtn.'
+              },
+              {
+                question: 'CSS — bu nima va nima uchun ishlatiladi?',
+                options: ['Sahifaning tuzilmasini yaratadi', 'Sahifani bezaydi: rang, shakl, o‘lcham, joylashuv (dizayn)', 'Ma’lumotlar bazasiga ulanadi', 'Brauzerni yangilaydi'],
+                answer: 1,
+                explanation: 'HTML = tuzilma, CSS = ko‘rinish (dizayn), JavaScript = interaktivlik (harakat). Uchtilasi birga ishlaydi.'
+              },
+              {
+                question: 'JavaScript — qaysi misol to‘g‘ri?',
+                options: ['`const b = document.getElementById("btn"); b.click(function() { alert("Hi"); });`', '`const b = document.getElementById("btn"); b.addEventListener("click", function() { alert("Hi"); });`', '`const b = document.getElementById("btn"); b.onHover(() => alert("Hi"));`', '`document.getElementById("btn").show(alert("Hi"));`'],
+                answer: 1,
+                explanation: '`element.addEventListener("click", function() { ... })` — element bosilganda (click event) bajariladigan kodni ulash standart usuli.'
+              }
+            ]
           }
         },
         {
@@ -2429,46 +2529,1135 @@
       tagline: 'Web sahifani interaktiv qiling.',
       description: 'Web dasturlash tili: DOM, ES6+, async, API bilan ishlash va amaliy loyihalar.',
       topics: [
-        'JavaScript nima?',
-        'O‘zgaruvchilar',
-        'Ma‘lumot turlari',
-        'Operatorlar',
-        'Shart operatorlari',
-        'Tsikllar (for, while)',
-        'Funksiyalar',
-        'Arrow funksiyalar',
-        'Massivlar',
-        'Massiv metodlari',
-        'Obyektlar',
-        'Obyekt metodlari',
-        'String metodlari',
-        'Raqam metodlari',
-        'Math obyekti',
-        'Date bilan ishlash',
-        'Scope tushunchasi',
-        'Hoisting',
-        'Closure‘lar',
-        'Callback funksiyalar',
-        'Promise‘lar',
-        'Async/Await',
-        'Fetch API',
-        'JSON bilan ishlash',
-        'DOM nima?',
-        'DOM selektorlar',
-        'DOM manipulyatsiya',
-        'Eventlar',
-        'Event delegation',
-        'localStorage',
-        'Error handling',
-        'Destructuring',
-        'Spread va Rest',
-        'Modullar',
-        'Class‘lar',
-        'Inheritance',
-        'Map va Set',
-        'RegEx asoslari',
-        'Amaliy loyiha: Todo app',
-        'Yakuniy takrorlash'
+// === JS LESSONS START ===
+        {
+          title: 'JavaScript nima?',
+          duration: 20,
+          xp: 20,
+          content: {
+            intro: 'Bu darsda JavaScript nima ekanligini, u qayerda ishlaydi, HTML va CSS bilan o‘zaro aloqasi nima ekanligini o‘rganamiz. Oxirida bilimingizni test bilan tekshiring.',
+            sections: [
+              {
+                title: 'JavaScript nima?',
+                text: '**JavaScript (JS)** — yirik, keng tarqalgan **dasturlash tili**. U web brauzerlarida (Chrome, Firefox…) to‘g‘ridan-to‘g‘ri **bajarilishi** uchun yaratilgan. Hozir esa Node.js orqali server ham, mobil ilova ham, desktop dastur ham JS yordamida yoziladi.\n\n• **HTML** — sahifaning **tuzilishi** (nima joylashadi)\n• **CSS** — sahifaning **dizayni** (qanday ko‘rinadi)\n• **JavaScript** — sahifaning **harakati va mantiqi** (nimasi qanday ishlaydi)\n\nJavaScript — **interpreted** til: kodni o‘qib, darhol bajaradi. Compiled til (C++, Java) esa avval mashina kodiga aylantiriladi, keyin bajariladi.',
+                code: 'console.log("Salom, JavaScript!");',
+                codeNote: 'console.log() — brauzer konsoliga matn yozish uchun ishlatiladi. Bu JS dasturchining asosiy dasturi — debug uchun ham ishlatiladi.',
+                result: 'Brauzer Konsolida (F12 → Console): "Salom, JavaScript!" yozuvi chiqadi.',
+                note: 'Brauzerni ochib, F12 tugmasini bosing → Console tabiga o‘ting — bu yerda sizning JS kodingiz ishlaydi. Debug qilish uchun keng foydalaniladi.'
+              },
+              {
+                title: 'JavaScript qayerda ishlaydi?',
+                text: 'Asosiy ish muhiti — **brauzer**. Lekin hozir JS juda keng:\n\n1. **Brauzer** — eng asosiy joy: sahifani interaktiv qilish, animatsiyalar, formalarni tekshirish.\n2. **Server** (Node.js) — Node.js brauzer engine (V8) ni olib, serverda ishlatishga imkon berdi. Express, Nest.js kabi frameworklar.\n3. **Mobil ilovalar** — React Native, Ionic.\n4. **Desktop ilovalar** — Electron (VS Code, Discord ham JS!).\n5. **IoT, botlar, sun‘iy intellekt ham** JS bilan ishlaydi.\n\nLekin bu kursda asosiy diqqat — **brauzer** + DOM + API bilan ishlashga.',
+                code: '// Brauzerda: alert oynasini ko‘rsatish\nalert("Salom, foydalanuvchi!");\n\n// Serverda (Node.js): faylni o‘qish — bu kursda emas\n// const fs = require("fs");',
+                codeNote: 'alert() — brauzerga xos funksiya. Node.js da bunday narsa yo‘q, chunki u terminalda ishlaydi.',
+                result: 'Brauzerda "Salom, foydalanuvchi!" yozuvli kichik alert oynasi paydo bo‘ladi.',
+                note: 'Barcha brauzerlar JavaScriptni qo‘llab-quvvatlaydi va o‘z engine lari bilan keladi: Chrome V8, Firefox SpiderMonkey, Safari JavaScriptCore.'
+              },
+              {
+                title: '<script> tegi orqali JS ni HTML ga ulash',
+                text: 'JavaScript kodini HTML faylga 2 usulda ulashingiz mumkin:\n\n1. **Ichki (inline)**: `<script>` tegini ochib, ichiga kodingizni yozasiz.\n2. **Tashqi (external)**: Alohida `.js` fayl yaratasiz va `<script src="fayl.js"></script>` bilan ulaysiz.\n\n⚠️ **Muhim qoida:** `<script>` ni odatda `</body>` dan **oldin** yozasiz. Chunki JS kod yuklanayotganda sahifaning qolgan qismi yuklanmay qoladi. Body oxirida yozsangiz — avval sahifa ko‘rinadi, keyin JS ishlaydi.',
+                code: '<!DOCTYPE html>\n<html lang="uz">\n<head>\n  <title>JS bilan tanishuv</title>\n</head>\n<body>\n  <h1>Salom!</h1>\n\n  <!-- Ichki JS -->\n  <script>\n    console.log("Ichki JS ishladi!");\n    alert("Men HTML ichidaman!");\n  </script>\n</body>\n</html>',
+                codeNote: '`<script>` — bu HTML teg, u JS kodni joylashtirish uchun kerak. Brauzer shu tegni ko‘rganida — ichidagi matnni HTML emas, balki JavaScript deb tushunib bajaradi.',
+                result: 'Sahifa yuklanganda — h1 ko‘rinadi, keyin alert oynasi chiqadi va konsolga "Ichki JS ishladi!" yoziladi.',
+                note: 'Almashtirish: Tashqi fayl uchun — `<script src="app.js"></script>`. Unutmang: yopiluvchi </script> kerak — o‘z-o‘zini yopuvchi variant (<script />) ishlamaydi!'
+              },
+              {
+                title: 'JavaScriptning asosiy imkoniyatlari brauzerda',
+                text: 'Brauzer ichida JS nima qila oladi? juda ko‘p narsa!\n\n• 🖱️ Sichqoncha, klaviatura hodisalarini tinglash (click, hover, keypress)\n• 🎨 DOM — HTML elementlarini o‘zgartirish, yaratish, o‘chirish (rang, matn, joylashuv)\n• 📝 Formalarni validatsiya qilish (yuborishdan oldin tekshirish)\n• 🎬 Animatsiyalar yaratish (elementni siljitish, rangini o‘zgartirish)\n• 💾 localStorage — brauzerda saqlash (hatto sahifa yopilganda ham)\n• 🌐 Fetch API — serverdan ma’lumot olish (API)\n• ⏲️ Vaqt bilan ishlash (setTimeout, setInterval, Date)\n• ⚠️ Xatolarni ushlab, foydalanuvchiga bildirish',
+                code: '// DOM elementni o‘zgartirish\n// (keyingi darslarda chuqur o‘rganamiz)\ndocument.body.style.background = "lightblue";\n\n// 3 soniyadan keyin bajariladi\nsetTimeout(function() {\n  alert("3 soniya o‘tdi! ⏰");\n}, 3000);',
+                codeNote: 'setTimeout(funksiya, ms) — ms millisoniyadan keyin funksiya bajariladi. 1 soniya = 1000 ms.',
+                result: 'Sahifa fon ko‘k bo‘ladi, 3 soniyadan keyin "3 soniya o‘tdi! ⏰" alert oynasi chiqadi.',
+                note: 'Bu kodni ko‘rib hoziroq tushunmasangiz ham xato emas — hammasi o‘z navbatida. Hozir faqat JS nimalarni qila olishini ko‘rsatish uchun misol.'
+              },
+              {
+                title: 'Xulosa — JS ni nima uchun o‘rganamiz?',
+                text: 'O‘zingizga savol bering: **Men web sahifalarni faqat statik (o‘zgarmaydigan) qilib chiqishni xohlaysizmi?** Yoki interaktiv, jonli, foydalanuvchi bilan suhbatlashuvchi sahifalar?\n\nAgar ikkinchi variant bo‘lsa — JavaScript senga kerak!\n\nBugungi darsda biz:\n• JavaScript nima ekanligini, HTML/CSS bilan farqini o‘rgandik\n• Ish muhitlari (brauzer, server, mobil, desktop) ni ko‘rdik\n• `<script>` tegi orqali HTML ga ulashni o‘rgandik\n• Imkoniyatlarni ko‘rdik\n\nEndi — o‘zgaruvchilar va ma’lumot turlari bilan davom etamiz! 🚀',
+                code: '// Umid qilamanki, siz JavaScriptni sevib qolasiz! 😊\nconsole.log("Keyingi darsga o‘tamiz…");',
+                codeNote: '// — bu JS da komment (izoh). Brauzer uni umuman e’tibor bermaydi — faqat dasturchi uchun yoziladi.',
+                result: 'Konsolga: "Keyingi darsga o‘tamiz…"',
+                note: 'Komment — dasturchi uchun. Ikki tur: // bir qatorli, /* ko‘p qatorli */. Kodni o‘qishni osonlashtiradi — har doim foydalaning!'
+              }
+            ],
+            keyPoints: [
+              'JavaScript — dasturlash tili, u sahifaga HARAKAT va MANTIQ qo‘shadi',
+              'HTML = tuzilish, CSS = ko‘rinish, JS = mantiq / harakat',
+              'JavaScript brauzerda, serverda (Node.js), mobil va desktopda ishlaydi',
+              'HTML ga ulash: <script> ichki yoki <script src="fayl.js"> tashqi usulda',
+              '<script> ni odatda </body> oldin yozing (sahifa tez ko‘rinsin)',
+              'Brauzerda JS DOM ni o‘zgartiradi, eventlarni tinglaydi, API so‘rovlarini jo‘natadi',
+              '// — bir qator komment, /* ... */ — ko‘p qator komment'
+            ],
+            masterXp: 25,
+            homework: 'Uy vazifasi:\n1. O‘z kompyuteringizda index.html fayl yarating, unga HTML skeletini yozing.\n2. <body> oxiriga <script> qo‘shing va ichiga 3 ta console.log() bilan o‘zingiz haqingizda matn yozing.\n3. Birorta qatorga // komment qo‘shing.\n4. Faylni brauzerda oching, F12 → Console ga kirib, yozgan matningizni ko‘ring.\n5. (Challenge) alert() bilan birorta xabar ham chiqaring va setTimeout bilan 2 soniyadan keyin boshqa alert chiqaring.',
+            summary: 'JavaScript — web dasturlashning asosiy dasturlash tili. U HTML/CSS bilan birga ishlaydi, sahifaga interaktivlik, mantiq, animatsiya qo‘shadi. Brauzerda ishlatish uchun <script> tegidan foydalaniladi. Endi o‘zgaruvchilarni o‘rganamiz!',
+            exercises: [
+              {
+                id: 'js1ex1',
+                type: 'liveedit',
+                mode: 'simple',
+                title: '1-MASHQ — Birinchi JS kodingiz ✍️',
+                instruction: 'Kodni tahrirlang: <script> ichiga `console.log("Salom, men JS o‘rganyapman!");` qo‘shing va RUN bosing.',
+                startCode: '<!DOCTYPE html>\n<html>\n<head><title>Test</title></head>\n<body>\n  <h1>Test sahifa</h1>\n  <script>\n    // Bu yerga console.log() yozing\n  </script>\n</body>\n</html>',
+                checks: [
+                  { re: 'console\\.log\\([\\s\S]*Salom.*men JS o‘rganyapman', msg: 'console.log() ichida "Salom, men JS o‘rganyapman!" yozilishi kerak' }
+                ],
+                hint: 'console.log("matn") — brauzer konsoliga yozish uchun funksiya.',
+                explanation: 'console.log() — JS da debug qilish va konsolga chiqarishning eng oddiy usuli.',
+                xp: 10
+              },
+              {
+                id: 'js1ex2',
+                type: 'dragdrop',
+                title: '2-MASHQ — JS nimalarni qiladi? 🧩',
+                instruction: 'Quyidagi variantlar orasidan JAVASCRIPT ga xos bo‘lganlarini tanlab, oldinga suring. (JavaScript HTML emas, CSS emas!)',
+                hint: 'JS — mantiq va harakat. Tuzilish va ko‘rinish emas.',
+                items: ['DOM elementni o‘zgartirish', 'Formani tekshirish', 'alert() chiqarish', 'Rasmning manzilini yozish', 'Rang berish (CSS bilan)', '<h1> yaratish'],
+                xp: 10
+              },
+              {
+                id: 'js1ex3',
+                type: 'detective',
+                title: '3-MASHQ — Kodda xato top 🔍',
+                instruction: 'Foydalanuvchi JS ni HTML ga tashqi fayl orqali ulamoqchi, lekin ishlamayapti. Nima noto‘g‘ri?',
+                code: '<head>\n  <script src="app.js" />\n</head>',
+                options: ['`<script>` o‘z-o‘zini yopuvchi <script /> ishlatildi — to‘g‘ri yopiluvchi </script> kerak', '`src` atributi noto‘g‘ri ishlatilgan', '`head` ichida script ishlamaydi, faqat body ichida', 'fayl nomi .js bo‘lmasligi kerak'],
+                answer: 0,
+                explanation: '<script> ni <script /> shaklida o‘z-o‘zini yopib bo‘lmaydi! Har doim <script src="..."></script> — ochiluvchi va yopiluvchi juftligi kerak. Boshqacha — ishlamaydi.',
+                xp: 10
+              }
+            ]
+          },
+          quiz: {
+            passingScore: 80,
+            questions: [
+              {
+                question: 'JavaScript nima?',
+                options: ['Belgilash tili (markup)', 'Dasturlash tili — sahifaga mantiq va harakat qo‘shadi', 'Rasm turlari', 'Brauzer turi'],
+                answer: 1,
+                explanation: 'JavaScript — dasturlash tili. U sahifaga interaktivlik, mantiq, harakat qo‘shadi. HTML markup, CSS esa stil tili.'
+              },
+              {
+                question: 'HTML, CSS, JavaScript orasidagi asosiy farqni aniqlang — JS qanday vazifani bajaradi?',
+                options: ['Sahifaning tuzilishini yaratadi', 'Sahifaning ko‘rinishini, rangini, shaklini beradi', 'Sahifaning mantiqini, interaktivligini va harakatini ta‘minlaydi', 'Brauzerni yuklaydi'],
+                answer: 2,
+                explanation: 'HTML = tuzilish, CSS = ko‘rinish, JS = mantiq/harakat/interaktivlik.'
+              },
+              {
+                question: 'JavaScriptni HTML faylga ulash uchun qaysi teg ishlatiladi?',
+                options: ['<js>', '<code>', '<script>', '<javascript>'],
+                answer: 2,
+                explanation: 'JavaScript kodi <script> ... </script> tegi ichida yoziladi yoki src= bilan tashqi fayl ulanadi.'
+              },
+              {
+                question: 'Tashqi fayl app.js ni ulash uchun to‘g‘ri kod qaysi?',
+                options: ['<script src="app.js" />', '<script href="app.js"></script>', '<script src="app.js"></script>', '<include file="app.js">'],
+                answer: 2,
+                explanation: 'To‘g‘ri: <script src="app.js"></script>. <script /> ishlamaydi, href emas src ishlatiladi.'
+              },
+              {
+                question: '<script> tegi odatda qayerda yoziladi?',
+                options: ['<head> boshida', '</body> dan oldin (body oxirida)', '<html> dan oldin', 'Har qanday joy, farqi yo‘q'],
+                answer: 1,
+                explanation: 'Script body oxirida yozilsa — avval HTML/CSS yuklanadi, sahifa tez ko‘rinadi, keyin JS bajariladi. Head boshida yozsa — sahifa kech ko‘rinishi mumkin.'
+              },
+              {
+                question: 'console.log() funksiyasi nima qiladi?',
+                options: ['Brauzerga alert oynasi chiqaradi', 'Brauzer konsoliga (F12 → Console) matn yozadi', 'Sahifaga matn chiqaradi', 'Serverga xabar jo‘natadi'],
+                answer: 1,
+                explanation: 'console.log() — F12 Console ga yozish, asosan debug qilish uchun ishlatiladi. alert() esa oynali xabar.'
+              },
+              {
+                question: 'Quyidagi kodda // belgisi nima uchun ishlatilgan?\n// Bu mening birinchi kodim\nconsole.log("Salom");',
+                options: ['Matnni qalin qilish uchun', 'Komment (izoh) — brauzer bu qatorni e’tiborsiz qoldiradi', 'Kodni bajarilishga majburlash uchun', 'Import qilish uchun'],
+                answer: 1,
+                explanation: '// — bir qator komment, dasturchi uchun yoziladi, JS engine uni umuman ko‘z yumadi.'
+              },
+              {
+                question: 'alert("Salom!") ishlatilsa — nima bo‘ladi?',
+                options: ['Konsolga "Salom!" yoziladi', 'Brauzerda "Salom!" yozuvli kichik modal alert oynasi chiqadi', 'Sahifaga h1 sifatida "Salom!" chiqadi', 'Hech narsa'],
+                answer: 1,
+                explanation: 'alert() — brauzerning modal oynasi (foydalanuvchi OK bosmaguncha davom etmaydi).'
+              },
+              {
+                question: 'JavaScript brauzerdan tashqarida ham ishlay oladimi?',
+                options: ['Yo‘q, faqat brauzerda ishlaydi', 'Ha, Node.js orqali serverda, mobil va desktopda ham ishlaydi', 'Faqat serverda ishlaydi', 'Faqat mobil qurilmalarda'],
+                answer: 1,
+                explanation: 'Hozir JavaScript juda keng: Node.js server, React Native mobil, Electron desktop va boshqa muhitlarda ishlaydi.'
+              },
+              {
+                question: 'setTimeout(function() { alert(\"A\"); }, 2000); bu kod qachon ishlaydi?',
+                options: ['Darhol', '2 soniyadan keyin', '2 minutdan keyin', 'Faqat 2 marta bajariladi'],
+                answer: 1,
+                explanation: 'setTimeout(callback, millisekund). 2000 ms = 2 soniya. Demak 2 soniyadan keyin alert chiqadi.'
+              }
+            ]
+          }
+        },
+        {
+          title: 'O‘zgaruvchilar',
+          duration: 25,
+          xp: 25,
+          content: {
+            intro: 'Bugun JavaScript da ma’lumotni saqlash — O‘ZGARUVCHILARNI o‘rganamiz. let, const, var farqlari, nom berish qoidalari — hammasi shu darsda! 💪',
+            sections: [
+              {
+                title: 'O‘zgaruvchi nima?',
+                text: '**O‘zgaruvchi (variable)** — ma’lumotni saqlash uchun ajratilgan xotira joyining nomi. Oddiy qilib aytganda — **belgilangan quti** (xotira joyi), unga nom berasiz va ichiga narsa (qiymat) solasiz.\n\nMasalan: shaxsning ismi "Ali" — bitta qism; yoshi 25 — boshqa qism; puli 150000 — uchinchi qism. Ularning hammasini o‘zgaruvchilarga saqlashimiz kerak.\n\nJS da o‘zgaruvchi e’lon qilish (yaratish) uchun 3 kalit so‘z bor: **let**, **const**, **var**.',
+                code: '// O‘zgaruvchi yaratish + qiymat berish (assignment)\nlet ism = "Ali";\nlet yosh = 25;\nlet pul = 150000;\n\n// Konsolga chiqarish\nconsole.log(ism);\nconsole.log(yosh);\nconsole.log(pul);',
+                codeNote: 'let — o‘zgaruvchi e’lon qilish kalit so‘zi. ism — o‘zgaruvchi nomi. = — qiymat berish operatori. "Ali" — qiymat. Oxirida ; nuqta-vergul (statement ni tugatish uchun).',
+                result: 'Konsolda: "Ali" \\n 25 \\n 150000 — uchta qator chiqadi.',
+                note: '= belgisini "teng" emas, "qiymat berish" deb o‘qig! let x = 5 → "x ga 5 ni ber".'
+              },
+              {
+                title: 'let — o‘zgarishi mumkin bo‘lgan o‘zgaruvchi',
+                text: '**let** — zamonaviy JS da eng ko‘p ishlatiladigan. U yordamida yaratilgan o‘zgaruvchi qiymatini keyinchalik **o‘zgartirsa bo‘ladi**.\n\nQoidalari:\n1. Bir marta let bilan yaratgansangiz — keyin let ni yozmaysiz, faqat nomini.\n2. Qiymatni istalgancha o‘zgartirsa bo‘ladi.\n3. Block scope ga ega (keyingi darslarda scope).',
+                code: 'let narx = 10000;\nconsole.log("Birinchi narx:", narx);\n\nnarx = 12000; // qiymatni o‘zgartirish, let ni yozmang!\nconsole.log("Yangilangan narx:", narx);\n\nnarx = narx + 3000; // 12000 + 3000 = 15000\nconsole.log("Yana o‘zgardi:", narx);',
+                codeNote: 'Eslatma: `narx = 12000` — bu qiymatni yangilash. Yana let yozmang: `let narx = 12000` — xato (bir xil nomli let ni 2 marta yaratib bo‘lmaydi).',
+                result: 'Konsolda: "Birinchi narx: 10000" → "Yangilangan narx: 12000" → "Yana o‘zgardi: 15000".',
+                note: 'let ni bir xil nom bilan bir blok ichida 2 marta yaratish mumkin emas — SyntaxError chiqadi. Ammo qiymatni istalgancha o‘zgartirsa bo‘ladi.'
+              },
+              {
+                title: 'const — o‘zgarmaydigan (konstanta)',
+                text: '**const** (constant) — **qiymati hech qachon o‘zgarmaydigan** o‘zgaruvchi. Yaratish paytida qiymat BERISH MAJBURIY, va uni keyin o‘zgartirib bo‘lmaydi.\n\n**Qachon ishlatiladi?**\n• PI = 3.14159, yorug‘lik tezligi kabi konstantalar\n• URL manzillar, kalitlar\n• Element referenslari (bitta olib, keyin ishlatish uchun)\n\nOddiy qoida: **Avval const ishlating, o‘zgarishi kerak bo‘lsa — let ga o‘tkazing.**',
+                code: 'const PI = 3.14159;\nconsole.log("PI:", PI);\n\nconst SAYT_URL = "https://example.com";\nconsole.log("Sayt:", SAYT_URL);\n\n// PI = 3; // ❌ XATO! Assignment to constant variable.\n// const EMPTY; // ❌ XATO! const yaratishda qiymat majburiy!',
+                codeNote: 'PI = 3 qatori komment qilingan, chunki uni yoqib qo‘ysangiz TypeError: Assignment to constant variable xatosi chiqadi.',
+                result: 'Konsolda: "PI: 3.14159" va "Sayt: https://example.com" chiqadi. Xato chiqmaydi (komment bo‘lgani uchun).',
+                note: '⚠️ Muhim: const obyekt va massivlarda **ichki xususiyatlarini o‘zgartirsa bo‘ladi** (faqat o‘zgaruvchi o‘zi qayta tayinlanmaydi). Masalan: const arr = []; arr.push(5) — ishlaydi, lekin arr = [5] — ishlamaydi. Buni obyektlar darsida ko‘ramiz.'
+              },
+              {
+                title: 'var — eski usul (kam ishlatiladi)',
+                text: '**var** — JS ning dastlabki, eski e’lon qilish kalit so‘zi. Endi **yaqinlashuvgan holda ishlatilmaydi**. Nima uchun?\n\n• U function scope ga ega (block emas — bu ko‘p muammolar tug‘diradi)\n• Hoisting xatti-harakat (hozir emas — keyin o‘rganamiz)\n• Bir xil nomni qayta yaratib yuborsangiz ham ogohlantirmaydi\n\nShunchaki — **hoziroq let/const ni ishlating**, var ni emas. Lekin eski kodlarda uni ko‘rasiz, tushunish kerak.',
+                code: 'var eski = 10;\nvar eski = 20; // ❗ Xato emas — var buni yo‘qotadi, bunda let/const xato berardi\n\nconsole.log(eski); // 20',
+                codeNote: 'var da bir xil nomli 2 marta var yaratish mumkin — bu eng katta kamchilik (kutilmagan xatolarga olib keladi).',
+                result: 'Konsolda: 20 — chiqadi (ikkinchi var birinchisini ustiga yozib yuboradi, hech qanday ogohlantirmasdan).',
+                note: 'QISQA QOIDA: let — qiymat o‘zgaradigan narsalar uchun. const — o‘zgarmaydigan narsalar uchun. **var ni umuman ishlatmang.**'
+              },
+              {
+                title: 'O‘zgaruvchiga nom berish qoidalari',
+                text: 'JavaScript da o‘zgaruvchi nomi qanday yozilishi kerak? Qoida — juda muhim!\n\n✅ **Ruxsat etilgan:**\n• Harf (lotin), raqam, $ va _\n• Bosh harfi HARF, $ yoki _ bo‘lishi kerak (RAQAM BO‘LA OLMAYDI!)\n• CamelCase: `ismFamilya`, `userAge`, `maxPrice`\n\n❌ **Taqiqlangan:**\n• Raqam bilan boshlash: `1user` — xato\n• Bo‘sh joy: `user name` — xato (foydalanish: userName)\n• Maxsus belgilar: `user@name` — xato\n• Kalit so‘zlar: `let`, `const`, `for`, `if`, `class` va boshqalar bilan nomlash\n\n✅ **Yaxshi odatlar:**\n• Aniq, tushunarli nom yozing. `a=5` emas, `oylikPul=5000000`\n• Boolean uchun: `isActive`, `hasMoney`, `canLogin` (savol ko‘rinishi)',
+                code: '// ✅ To‘g‘ri nomlar\nlet userName = "Ziyodullo";\nlet user_age = 20;    // snake_case ham ishlaydi, lekin JS da camelCase afzal\nlet $price = 99;\nlet _private = "secret";\n\n// ❌ Noto‘g‘ri nomlar (komment qilingan — yoqib korsa xato beradi)\n// let 1user;          // Raqam bilan boshlanadi\n// let user name;      // Bo‘sh joy bor\n// let user@mail;      // Maxsus belgi\n// let let = 5;        // Kalit so‘z',
+                codeNote: 'JS da standart CamelCase hisoblanadi: birinchi so‘z kichik, keyingi har bir so‘z bosh harf: userFirstName, orderTotalPrice.',
+                result: '✅ To‘g‘ri nomlar hech qanday xatosiz ishlaydi. ❌ qatorlarni kommentdan chiqarsangiz — SyntaxError.',
+                note: '✅ JUDA MUHIM: Nomlash — muhim. O‘zgaruvchi nomini o‘qib — nima saqlaganini darhol tushunilishi kerak. 6 oy o‘tgandan keyin ham o‘z kodingizni o‘qiyotganda tushunasiz.'
+              },
+              {
+                title: 'Qiymat berishning qisqa usullari (shortcut operators)',
+                text: 'Ko‘pincha o‘zgaruvchini o‘ziga nisbatan o‘zgartiramiz: `count = count + 1`. Buning qisqa yo‘li bor!\n\n• `x += 5` → `x = x + 5`\n• `x -= 3` → `x = x - 3`\n• `x *= 2` → `x = x * 2`\n• `x /= 4` → `x = x / 4`\n• `x++` → `x = x + 1` (1 ga oshirish)\n• `x--` → `x = x - 1` (1 ga kamaytirish)',
+                code: 'let count = 10;\ncount += 5;    // 10 + 5 = 15\ncount -= 2;    // 15 - 2 = 13\ncount *= 2;    // 13 * 2 = 26\ncount++;       // 26 + 1 = 27\ncount--;       // 27 - 1 = 26\nconsole.log("Oxirgi count:", count);',
+                codeNote: 'Oxirgi count 26: 10→15→13→26→27→26.',
+                result: 'Konsolda: "Oxirgi count: 26".',
+                note: 'Shu shortcut larni ko‘p ishlatasiz — xotirangizga tushishi kerak!'
+              }
+            ],
+            keyPoints: [
+              'O‘zgaruvchi — xotira qutisi, nomi bor va qiymat saqlaydi',
+              'let — qiymat o‘zgarishi mumkin bo‘lganlar uchun, eng ko‘p ishlatiladi',
+              'const — qiymati o‘zgarmaydigan narsalar uchun (yaratishda qiymat majburiy)',
+              'var — eski usul, bugungi kunda ishlatilmagan (let/const ishlating!)',
+              'Nomlash: CamelCase, raqam bilan BOSHLANMAYDI, bo‘sh joy YO‘Q, kalit so‘z emas',
+              'Qisqa operatorlar: +=, -=, *=, /=, ++, --',
+              'Qoida: avval const, o‘zgarishi kerak bo‘lsa — let'
+            ],
+            masterXp: 30,
+            homework: 'Uy vazifasi:\n1. let ni ishlatib: ism, yosh, shahar o‘zgaruvchilarini yarating va qiymat bering.\n2. const ni ishlatib: TUGILGAN_YIL, MAX_OLCHAM kabi 2 ta konstanta yarating.\n3. let balance = 1000; yarating: += bilan qo‘shing, -= bilan ayrishing, *= bilan ko‘paytiring va oxirgi qiymatni console da ko‘rsating.\n4. CamelCase usulida 5 ta turli o‘zgaruvchi nomi yozing va ularning nima saqlashi mumkinligini kommentda yozing.\n5. (Challenge) 1 ta noto‘g‘ri nom yozing (kommentda qoldiring) va nima uchun noto‘g‘ri ekanligini ham yozing.',
+            summary: 'O‘zgaruvchilar — JS ning asosidir. let (o‘zgaruvchan), const (konstanta) va var (eski) bor. Nom CamelCase da, aniq tushunarli bo‘lishi kerak. Qiymatni qisqa operatorlar (+=, ++ va h.k.) bilan o‘zgartiramiz. Endi ma’lumot turlari!',
+            exercises: [
+              {
+                id: 'js2ex1',
+                type: 'liveedit',
+                mode: 'simple',
+                title: '1-MASHQ — let bilan o‘zgaruvchi yaratish ✍️',
+                instruction: 'let yordamida `meva` nomli o‘zgaruvchi yarating va unga "Olma" qiymatini bering, keyin console da chiqaring.',
+                startCode: '// Bu yerga kodingizni yozing\nconsole.log(meva);',
+                checks: [
+                  { re: 'let\\s+meva\\s*=\\s*["\']Olma["\']', msg: '`let meva = "Olma";` yozilishi kerak' }
+                ],
+                hint: 'let nom = qiymat; shaklida yozing.',
+                explanation: 'let — o‘zgaruvchi yaratish, = — qiymat berish, oxirida ;.',
+                xp: 10
+              },
+              {
+                id: 'js2ex2',
+                type: 'dragdrop',
+                title: '2-MASHQ — let? const? var? 🧩',
+                instruction: 'Holatlarni mos kalit so‘z bilan bog‘lang (drag & drop).',
+                hint: 'O‘zgaradi → let, o‘zgarmaydi → const, eski → var.',
+                items: ['let', 'const', 'var', 'Foydalanuvchining yoshi (o‘zgarishi mumkin)', 'PI soni (3.14) — o‘zgarmaydi', 'Eski kodlarda ko‘rinadi, hozir ishlatilmaydi'],
+                xp: 10
+              },
+              {
+                id: 'js2ex3',
+                type: 'detective',
+                title: '3-MASHQ — Xato top 🔍',
+                instruction: 'Quyidagi koddan bitta qatorda xato bor. Qaysi qator?',
+                code: 'const TOL = 70000;\nTOL = 75000;\nlet ism = "Zuhra";\nism = "Lola";\nconsole.log(TOL, ism);',
+                options: ['1-qator: const ga qiymat berish mumkin emas', '2-qator: const ning qiymatini o‘zgartirib bo‘lmaydi', '4-qator: let ning qiymatini o‘zgartirib bo‘lmaydi', '5-qator: console da 2 o‘zgaruvchini birga chiqarib bo‘lmaydi'],
+                answer: 1,
+                explanation: '2-qator: const TOL ni qayta TOL = 75000 deb qiymat berishga urinilyapti — const o‘zgarmaydi. TypeError: Assignment to constant variable chiqadi.',
+                xp: 10
+              }
+            ]
+          },
+          quiz: {
+            passingScore: 80,
+            questions: [
+              {
+                question: 'let x = 10; — bu yerda "let" nima vazifani bajaradi?',
+                options: ['Qiymat beradi', 'O‘zgaruvchini e’lon qiladi (yaratadi)', 'Xatoni ushlaydi', 'Funksiya yaratadi'],
+                answer: 1,
+                explanation: 'let — o‘zgaruvchi e’lon qilish (yaratish) kalit so‘zi. = esa qiymat beradi.'
+              },
+              {
+                question: 'Qaysi kalit so‘z bilan yaratilgan o‘zgaruvchini keyin o‘zgartirib BO‘LMAYDI?',
+                options: ['let', 'const', 'var', 'create'],
+                answer: 1,
+                explanation: 'const — konstanta, qiymati o‘zgarmaydi. Yaratish paytida qiymat majburiy, keyin esa berilmaydi.'
+              },
+              {
+                question: 'O‘zgaruvchi nomiga qaysi variant TO‘G‘RI?',
+                options: ['1stUser', 'user name', 'userName', 'user-name'],
+                answer: 2,
+                explanation: 'CamelCase: userName to‘g‘ri. 1stUser raqam bilan boshlanadi, user name bo‘sh joy, user-name chiziq — xato.'
+              },
+              {
+                question: 'let y = 5; y += 3; — oxirgi y qiymati qancha?',
+                options: ['5', '3', '8', '53'],
+                answer: 2,
+                explanation: 'y += 3 → y = y + 3 = 5 + 3 = 8.'
+              },
+              {
+                question: 'let z = 10; z--; — z ning oxirgi qiymati?',
+                options: ['9', '10', '11', '10--'],
+                answer: 0,
+                explanation: 'z-- → z = z - 1 = 10 - 1 = 9.'
+              },
+              {
+                question: 'var, let, const orasida eng eski usul (hozir ishlatilmagan) qaysi?',
+                options: ['let', 'const', 'var', 'ikkalasi ham'],
+                answer: 2,
+                explanation: 'var — JS ning eng eski usuli, function scope, hozir let/const ishlatiladi.'
+              },
+              {
+                question: 'Qaysi o‘zgaruvchi nomi TO‘G‘RI?',
+                options: ['let for = 5;', 'let my-age = 20;', 'let _count = 0;', 'let 100users = 100;'],
+                answer: 2,
+                explanation: '_ bilan boshlash mumkin. for — kalit so‘z, my-age — tire, 100users — raqam bilan bosh, hammasi xato.'
+              },
+              {
+                question: 'const a; — bu kodni ishlatsak nima bo‘ladi?',
+                options: ['Hech narsa, a = undefined', 'SyntaxError: const yaratishda qiymat majburiy', 'a = 0 ga teng bo‘ladi', 'ReferenceError'],
+                answer: 1,
+                explanation: 'const e’lon qilishda darhol qiymat berish majburiy. const a; — xato (Missing initializer in const declaration).'
+              },
+              {
+                question: 'let n = 20; n *= 2; n -= 10; — oxirgi n qiymati?',
+                options: ['20', '30', '40', '10'],
+                answer: 1,
+                explanation: 'n *=2 → 20*2=40; n -=10 → 40-10=30. Oxiri: 30.'
+              },
+              {
+                question: 'let va const orasidagi asosiy farq nima?',
+                options: ['let faqat sonlar uchun', 'const qiymati o‘zgarmaydi, let esa o‘zgaradi', 'ular bir xil, nomlari farqli', 'const hozir ishlatilmaydi'],
+                answer: 1,
+                explanation: 'let — o‘zgaruvchan, const — o‘zgarmaydigan (konstanta).'
+              }
+            ]
+          }
+        },
+        {
+          title: 'Ma‘lumot turlari',
+          duration: 30,
+          xp: 30,
+          content: {
+            intro: 'JavaScript da turli xil ma’lumotlar bor: sonlar, matnlar, rost/yolg‘on, massivlar, obyektlar va h.k. — bugun ularni hammasini o‘rganamiz! 📦',
+            sections: [
+              {
+                title: 'JS da 8 ta ma’lumot turi',
+                text: 'JavaScript **dynamically typed** til — o‘zgaruvchini yaratganda uning turini aytib qo‘yilmaydi, JS o‘zi aniqlaydi va keyinchalik turini o‘zgartirsa bo‘ladi.\n\nUmumiy 8 ta tur, ular 2 guruhga bo‘linadi:\n\n**Primitive (oddiy) turlar** (6 ta):\n1. `string` — matn ("salom", \'a\', `shablon`)\n2. `number` — raqam (42, 3.14, Infinity, NaN)\n3. `boolean` — faqat 2 qiymat: true yoki false\n4. `undefined` — qiymat berilmagan o‘zgaruvchi\n5. `null` — bo‘sh, qiymat yo‘qligi (intentionally empty)\n6. `symbol` — unikal identifikator (kam uchraydi)\n\n**Reference (murakkab) turlar** (2 ta):\n7. `object` — obyekt, massiv, function (ular ham obekt)\n8. `bigint` — katta sonlar (2^53 dan katta, kam ishlatiladi)',
+                code: '// Turlarni ko‘ramiz\ns1 = "salom";\nn1 = 42;\nb1 = true;\nu1; // e’lon qilingan, qiymat berilmagan\nnu1 = null;\narr = [1,2,3];\nobj = {ism: "Ali"};\n\nconsole.log(typeof s1);   // string\nconsole.log(typeof n1);   // number\nconsole.log(typeof b1);   // boolean\nconsole.log(typeof u1);   // undefined\nconsole.log(typeof nu1);  // object! (JS ning tarixiy xatosi)\nconsole.log(typeof arr);  // object\nconsole.log(typeof obj);  // object',
+                codeNote: 'typeof operator — berilgan qiymatning turini string ko‘rinishida qaytaradi. typeof null → object — bu JS ning mashhur tarixiy bugi, to‘g‘rilanmagan ( eski kodlar buzilib ketmasligi uchun).',
+                result: 'Konsolda mos ravishda: string, number, boolean, undefined, object, object, object.',
+                note: 'typeof null === "object" — bu xato! Ammo uni to‘g‘rilash uchun eski loyihalar buziladi, shuning uchun qoldirilgan. Turlarni ajratish uchun: `value === null` deb tekshiring.'
+              },
+              {
+                title: 'Number (son)',
+                text: 'JS da integer (butun) va float (o‘nli) sonlar — BITTALI number turi orqali ifodalanadi.\n\nMaxsus qiymatlar:\n• `Infinity` — cheksizlik (n / 0)\n• `-Infinity` — manfiy cheksizlik\n• `NaN` — Not a Number (son emas, masalan 0 / "salom" )',
+                code: 'let a = 10;          // integer\nlet b = 3.14;        // float\nlet c = 10 / 0;      // Infinity\nlet d = "olma" * 2;  // NaN (son emas)\nconsole.log(a, b, c, d);\nconsole.log(typeof a); // "number"',
+                codeNote: 'NaN virusdir: NaN bilan ishlatgan barcha amallar — NaN qaytaradi. NaN === NaN → false (o‘ziga ham teng emas!). Tekshirish uchun Number.isNaN().',
+                result: '10  3.14  Infinity  NaN  →  "number".',
+                note: 'O‘nli sonlarni aniq emasligini eslang: 0.1 + 0.2 === 0.30000000000000004. Pul bilan ishlashda bu ehtiyot bo‘ling.'
+              },
+              {
+                title: 'String (matn)',
+                text: 'JS da string 3 xil yoziladi:\n1. `"..."` — qo‘shtirnoq\n2. `\'...\'` — birtirnoq\n3. `` `...` `` — backtick (ES6+ template literal)\n\nBacktick afzalliklari:\n• Bir necha qatorli matnni yozsa bo‘ladi\n• `${o‘zgaruvchi}` orqali interpolatsiya (qiymatni matn ichiga joylash) mumkin',
+                code: 'let ism = "Zohid";\nlet familiya = \'Karimov\';\n\n// Template literal (backtick)\nlet salom = `Salom, ${ism} ${familiya}! Bugun ${new Date().getDate()}-sanadir.`;\n\nconsole.log(salom);\nconsole.log("Matn uzunligi:", salom.length);',
+                codeNote: '${} — template literalning "interpolatsiya" qismi: ichidagi ifodani hisoblash, string ga kiritadi. length — string qachonki xususiyat, undagi belgilar sonini qaytaradi.',
+                result: 'Salom, Zohid Karimov! Bugun (hozirgi sana)-sanadir.  \\n  Matn uzunligi: (raqam)',
+                note: 'String da qavslar mos kelishi kerak: ichkarida boshqa turdagi qavsni ishlatsa ham bo‘ladi: "Men \'JS\' o‘rganaman" yoki \'Men "JS" o‘rganaman\'.'
+              },
+              {
+                title: 'Boolean (rost / yolg‘on)',
+                text: 'Boolean turi — faqat 2 qiymat: **`true`** (rost) yoki **`false`** (yolg‘on).\n\nAsosan shart operatorlari (if/else) da ishlatiladi. Solishtirish natijasi Boolean bo‘ladi: 5 > 3 → true, 10 < 1 → false.\n\nKo‘pchilik, lekin null, undefined, 0, "", NaN — bular boolean kontekstida false qiymatga ega (ular falsy deb ataladi). Qolganlari hamma — truthy.',
+                code: 'let isOpen = true;\nlet isLogged = false;\nlet age = 17;\n\n// Solishtirish — boolean natija\nlet adult = age >= 18;   // false\nconsole.log("Katta yoshmi?", adult);\n\n// Falsy qiymatlar: Boolean() → false\nconsole.log(Boolean(0));       // false\nconsole.log(Boolean(""));      // false\nconsole.log(Boolean(null));    // false\nconsole.log(Boolean(undefined)); // false\nconsole.log(Boolean(NaN));     // false\nconsole.log(Boolean(5));       // true\nconsole.log(Boolean(" "));     // true (bo‘sh joy borligi uchun!)',
+                codeNote: 'Boolean(qiymat) — qiymatni Boolean turiga aylantiradi. Falsy: 0, "", null, undefined, NaN, false (o‘zi). Qolgan hammasi truthy.',
+                result: 'Katta yoshmi? false, va keyin 5 ta false, 2 ta true.',
+                note: 'Shartni tekshirishda bu juda muhim: if(x) — x truthy bo‘lsa ishlaydi, falsy bo‘lsa ishlamaydi. Ko‘pincha xato manbai!'
+              },
+              {
+                title: 'undefined vs null',
+                text: 'Ikkasi ham "qiymat yo‘qni bildiradi", lekin FARQ bor:\n\n• **`undefined`** — JS ning o‘zi qo‘yadi: e’lon qilingan, lekin qiymat BERILMAGAN o‘zgaruvchi\n• **`null`** — DASTURCHI qo‘yadi: "bu joy bo‘sh, bilim bilan to‘ldirilmagan, vazifani ataylab yopdik" deb eslatish uchun\n\nOddiy qoida: Agar narsa bo‘sh bo‘lishi kerak — null ni ataylab ishlating, undefined JS o‘zi qo‘ysin.',
+                code: 'let x;          // e‘lon qilindi, qiymat BERILMADI\nconsole.log(x);  // undefined\nconsole.log(typeof x); // "undefined"\n\nlet y = null;    // dasturchi tomonidan: qiymat yo‘q, bo‘sh\nconsole.log(y);  // null\nconsole.log(typeof y); // "object" (tarixiy bug)\n\n// null va undefined tengligi\nconsole.log(null == undefined);   // true  (== ga ko‘ra)\nconsole.log(null === undefined);  // false (=== ga ko‘ra, tur farqi)',
+                codeNote: '== — qiymatni solishtiradi, === — qiymat + TURNI ham. Yaxshi amaliyotda DOIM === ishlatiladi.',
+                result: 'undefined, undefined, null, object, true, false.',
+                note: 'Qoida: Hech qachon let x = undefined deb yozmang! Agar bo‘sh kelsin — null yozing.'
+              },
+              {
+                title: 'Type conversion (turini o‘zgartirish)',
+                text: 'Ko‘pincha bir turdagi qiymatni boshqa turga aylantirish kerak bo‘ladi. Masalan: formadan kelgan matn → raqamga.\n\n• String: `String(5)`, `"" + 5`, `5.toString()`\n• Number: `Number("123")`, `parseInt("123a")`, `parseFloat("3.14")`, `+"123"`\n• Boolean: `Boolean(5)`, `!!5` (ikkala not)',
+                code: 'let strNum = "123";\nlet num = Number(strNum);\nconsole.log(num, typeof num); // 123 number\n\nconsole.log(parseInt("123abc"));   // 123 (faqat boshidagi sonlarni oladi)\nconsole.log(parseFloat("3.14px")); // 3.14\n\n// Noto‘g‘ri string\nconsole.log(Number("salom"));   // NaN\n\n// Number → String\nconsole.log(String(456), typeof String(456)); // "456" string',
+                codeNote: 'parseInt o‘qishi mumkin bo‘lgancha boshidan sonni oladi, qolganini tashlaydi. Number esa butun matnni son qila olmasa NaN.',
+                result: '123 number, 123, 3.14, NaN, 456 string.',
+                note: '`+` unari operator Number ga aylantiradi: `+"100"` → 100. Qisqa usul, lekin Number() ko‘proq o‘qiladi.'
+              }
+            ],
+            keyPoints: [
+              'JS — dynamically typed: tur avtomatik aniqlanadi, o‘zgarishi mumkin',
+              'Primitive: string, number, boolean, undefined, null, symbol',
+              'Reference: object (obyekt, massiv, funksiya), bigint',
+              'typeof operatori turini qaytaradi; typeof null === object — tarixiy bug',
+              'String: "", \'\', `` (backtick — ${} interpolatsiya)',
+              'Boolean: true/false; falsy: 0, "", null, undefined, NaN, false',
+              'undefined — JS qo‘yadi (berilmagan), null — dasturchi qo‘yadi (bo‘sh)',
+              'Aylantirish: Number(), String(), Boolean(), parseInt, parseFloat'
+            ],
+            masterXp: 35,
+            homework: 'Uy vazifasi:\n1. let yarating: 6 ta primitive turdan har biri uchun alohida o‘zgaruvchi, ularning qiymatlarini va typeof() chiqaring.\n2. "100" string ni Number ga aylantiring: 3 xil usulda (Number, + unari, parseInt).\n3. Falsy qiymatlarni barchasini console da Boolean(...) orqali tekshiring.\n4. Template literal yordamida ism va yosh o‘zgaruvchilarini olib, "Men ____, ____ yoshdaman" degan gapni hosil qiling.\n5. (Challenge) 0.1 + 0.2 ni hisoblating va natijani ko‘ring — nima chiqishini tahlil qiling.',
+            summary: 'JS da 8 ta ma’lumot turi bor. Primitive (oddiy): string, number, boolean, undefined, null, symbol; reference: object, bigint. Turni typeof() ko‘ramiz, Number/String/Boolean() bilan o‘zgartiramiz. Boolean da falsy qiymatlarni eslab qolish kerak!',
+            exercises: [
+              {
+                id: 'js3ex1',
+                type: 'liveedit',
+                mode: 'simple',
+                title: '1-MASHQ — Turni aniqlash 🔍',
+                instruction: 'typeof operatori yordamida `narx` o‘zgaruvchisining turini konsolga chiqaring.',
+                startCode: 'let narx = 9999;\n// Bu yerga typeof() yordamida turini chiqaring',
+                checks: [
+                  { re: 'typeof\\s+narx|typeof\\(\\s*narx\\s*\\)', msg: 'typeof narx yoki typeof(narx) ishlatilishi kerak' }
+                ],
+                hint: 'typeof operatori berilgan o‘zgaruvchi turini string ko‘rinishida qaytaradi.',
+                explanation: 'typeof operatori — biron qiymatning JS da qaysi turga mansubligini aniqlash.',
+                xp: 10
+              },
+              {
+                id: 'js3ex2',
+                type: 'dragdrop',
+                title: '2-MASHQ — Turlarni moslang 🧩',
+                instruction: 'Qiymatlarni mos turlari bilan bog‘lang.',
+                hint: '"..." → string, rost/yolg‘on → boolean, butun/o‘nli → number, bo‘sh → null/undefined.',
+                items: ['string', 'number', 'boolean', 'undefined', 'null', '"Salom"', '1999', 'true', 'qiymat berilmagan o‘zgaruvchi', 'ataylab bo‘sh qilingan'],
+                xp: 10
+              },
+              {
+                id: 'js3ex3',
+                type: 'detective',
+                title: '3-MASHQ — Xato top 🔍',
+                instruction: 'Foydalanuvchi "5" va "3" ni qo‘shmoqchi, lekin natija 8 emas, 53 chiqmoqda. Nima sabab?',
+                code: 'let a = "5";\nlet b = "3";\nlet c = a + b;\nconsole.log(c); // 53',
+                options: ['Raqamlar noto‘g‘ri yozilgan', 'a va b — string, + ularda QO‘SHISH emas, BIRLASHTIRISH qiladi', 'JS 5+3 ni 53 deb hisoblaydi (bug)', 'vergul ; yetishmayapti'],
+                answer: 1,
+                explanation: '"5" + "3" → string birlashtirish = "53". Avval Number(a) + Number(b) deb aylantirish kerak edi. Bu dastlabki xatolarning eng keng tarqalgani!',
+                xp: 10
+              }
+            ]
+          },
+          quiz: {
+            passingScore: 80,
+            questions: [
+              {
+                question: 'typeof 42 qanday qiymat qaytaradi?',
+                options: ['"integer"', '"number"', '"string"', '"float"'],
+                answer: 1,
+                explanation: 'JS da butun va o‘nli sonlar bittali: number turi.'
+              },
+              {
+                question: 'Quyidagi kodning natijasi qanday?\nlet a = "10" + 5;',
+                options: ['15', '"105"', '50', 'xato'],
+                answer: 1,
+                explanation: 'String + number → number string ga aylanadi va birlashadi: "10" + "5" = "105".'
+              },
+              {
+                question: 'Qaysilar barchasi FALSY (Boolean(false) qaytaradi)?',
+                options: ['0, "", null, undefined, NaN', '1, "a", {}, []', 'true, 5, "0"', 'Infinity, -Infinity, 1'],
+                answer: 0,
+                explanation: 'Falsy: false, 0, "", null, undefined, NaN — bular Boolean() da false beradi.'
+              },
+              {
+                question: 'null vs undefined — asosiy farq?',
+                options: ['Ular bir xil', 'undefined — JS beradi (berilmagan), null — dasturchi ataylab beradi (bo‘sh)', 'undefined object turida', 'null number turida'],
+                answer: 1,
+                explanation: 'undefined — o‘zgaruvchi e’lon qilingan, qiymat berilmagan. null — ataylab "bo‘sh" degani.'
+              },
+              {
+                question: 'Template literal (backtick) nima uchun kerak? Asosiy afzalligi?',
+                options: ['Faqat katta matnlar uchun', '${o\'zgaruvchi} orqali interpolatsiya va ko‘p qatorli yozish mumkin', 'Tezroq ishlaydi', 'Raqamlarni yig‘ish uchun'],
+                answer: 1,
+                explanation: '`` `Salom ${ism}` `` — interpolatsiya va ko‘p qatorli yozish.'
+              },
+              {
+                question: 'Boolean("0") qaysi qiymatni qaytaradi?',
+                options: ['true', 'false', 'NaN', 'undefined'],
+                answer: 0,
+                explanation: '"0" — bo‘sh emas string. Bo‘sh faqat "" (hech narsa) — falsy. "0" → truthy → true.'
+              },
+              {
+                question: 'Number("123abc") va parseInt("123abc") — qiymatlar mos ravishda?',
+                options: ['NaN va 123', '123 va NaN', 'Ikkalasi ham 123', 'Ikkalasi ham NaN'],
+                answer: 0,
+                explanation: 'Number butun matnni aylantirishga urinadi → olmasa NaN. parseInt esa boshidagi sonni olib qolganini tashlaydi → 123.'
+              },
+              {
+                question: 'typeof null — qanday qiymat qaytaradi?',
+                options: ['"null"', '"object"', '"undefined"', '"number"'],
+                answer: 1,
+                explanation: 'Bu JS ning mashhur tarixiy bugi. typeof null — "object" qaytaradi. Buni ishlatmang, tekshirish uchun `x === null`.'
+              },
+              {
+                question: 'let s = "abc"; s.length — nechchi qaytaradi?',
+                options: ['0', '3', '"abc"', 'undefined'],
+                answer: 1,
+                explanation: 'length — string xususiyati, belgilar soni. "abc" → 3.'
+              },
+              {
+                question: 'Qaysi usul STRING ni NUMBER ga to‘g‘ri aylantiradi?',
+                options: ['String("123")', 'Number("123")', 'Boolean("123")', 'typeof("123")'],
+                answer: 1,
+                explanation: 'Number() — number ga aylantiradi. String teskari string qiladi, Boolean esa true.'
+              }
+            ]
+          }
+        },
+        {
+          title: 'Operatorlar',
+          duration: 25,
+          xp: 25,
+          content: {
+            intro: 'Bugun JS da qiymatlar ustida qanday amallarni bajarishni o‘rganamiz: arifmetik, solishtirish, mantiqiy, birlashtirish. 💡',
+            sections: [
+              {
+                title: 'Arifmetik operatorlar',
+                text: 'Oddiy matematika amallari:\n\n• `+` — qo‘shish\n• `-` — ayirish\n• `*` — ko‘paytirish\n• `/` — bo‘lish\n• `%` — qoldiqli bo‘lish (modulo)\n• `**` — daraja (ES7)',
+                code: 'let a = 10, b = 3;\nconsole.log("+", a + b);   // 13\nconsole.log("-", a - b);   // 7\nconsole.log("*", a * b);   // 30\nconsole.log("/", a / b);   // 3.33333...\nconsole.log("%", a % b);   // 1 (10 ni 3 ga bo‘lganda qoldiq 1)\nconsole.log("**", a ** 2); // 100 (10 ning 2-darajasi)',
+                codeNote: '10 % 3 = 1. Bu juft/to‘q tekshirishda juda qo‘l keladi: if (n % 2 === 0) → juft.',
+                result: 'Har bir amalning javobi chiqadi: 13, 7, 30, 3.333..., 1, 100.',
+                note: 'Juft sonni aniqlashda: n % 2 === 0. To‘q: n % 2 !== 0. Bu ko‘p ishlatiladi!'
+              },
+              {
+                title: 'Solishtirish operatorlari',
+                text: 'Natijasi HAR DOIM `true` yoki `false` (Boolean):\n\n• `>` — katta\n• `<` — kichik\n• `>=` — katta yoki teng\n• `<=` — kichik yoki teng\n• `==` — qiymat tengmi (loose, turni o‘zgartirib tekshiradi) ⚠️\n• `===` — qiymat + TUR ham tengmi (strict) ✅\n• `!=` — qiymat teng emasmi ⚠️\n• `!==` — qiymat yoki TUR teng emasmi ✅\n\n**MUHIM:** DOIM `===` va `!==` ni ishlating! Boshqalari turni o‘zgartirib, kutilmagan natijalar beradi.',
+                code: 'console.log(5 > 3);    // true\nconsole.log(10 < 1);    // false\nconsole.log(5 >= 5);    // true\nconsole.log(5 <= 4);    // false\n\n// == vs === — asosiy farq!\nconsole.log("5" == 5);   // true  (string → number ga aylantirib tekshirdi)\nconsole.log("5" === 5);  // false (tur farqi: string vs number)\nconsole.log(null == undefined);   // true\nconsole.log(null === undefined);  // false',
+                codeNote: '== — "loose equality": avval turini aylantirib (type coercion), keyin tekshiradi. === — "strict equality": turini aylantirmaydi. DOIM === ishlatishingiz tavsiya etiladi.',
+                result: 'true, false, true, false, true, false, true, false.',
+                note: 'Solishtirishda juda ko‘p xatolar bo‘ladi. Example: `0 == false → true`, `"" == 0 → true`, ammo `===` da hammasi false. Shuning uchun DOIM ===!'
+              },
+              {
+                title: 'Mantiqiy operatorlar (Logical)',
+                text: 'Boolean qiymatlarni birlashtirish uchun:\n\n• `&&` (AND, va) — ikkalasi ham true bo‘lsa true\n• `||` (OR, yoki) — bittasi ham true bo‘lsa true\n• `!` (NOT, inkor) — true ni false, false ni true qiladi',
+                code: 'let yosh = 20;\nlet pul = true;\n\n// ikkala shart ham bajarilishi kerak\nconsole.log(yosh >= 18 && pul === true);   // true\n\n// yoki — bittasi yetarli\nconsole.log(yosh > 60 || yosh < 7);        // false (ikkalasi ham yolg‘on)\n\n// inkor\nlet isStudent = false;\nconsole.log(!isStudent);  // true\n\n// && ning qisqa tutish (short-circuit): birinchi false bo‘lsa ikkinchini umuman tekshirmaydi\nconsole.log(false && biror_narsa_belarli()); // false, funksiya umuman ishlamaydi!',
+                codeNote: 'Short-circuit: && da 1-chi false bo‘lsa 2-chi hech ishlamaydi. || da 1-chi true bo‘lsa 2-chi ishlamaydi. Bu muhim optimizatsiya.',
+                result: 'true, false, true, false.',
+                note: 'Sintaksisda: && ni AND deb o‘qimang — \"tegin\" deb o‘qiyverish yaxshi. Yozayotganda: if (keldi && vaqtda keldi).'
+              },
+              {
+                title: 'Ternary operator (shartli ternary)',
+                text: 'Qisqa if/else ni 1 qatorda yozish uchun:\n\n`shart ? qiymatAgarTrue : qiymatAgarFalse`\n\nAssigment uchun juda qo‘l keladi.',
+                code: 'let yosh = 17;\n// Shart ? true_qiymat : false_qiymat\nlet status = yosh >= 18 ? "Katta yosh" : "Voyaga yetmagan";\nconsole.log(status); // "Voyaga yetmagan"\n\n// Oddiy if/else bilan bir xil\nlet x = 5;\nlet y = x > 0 ? "musbat" : "manfiy";\nconsole.log(y); // "musbat"',
+                codeNote: 'Ternary faqat qisqa holatlar uchun. Agar juda ko‘p shart bo‘lsa — if/else else if ni ishlating. Aks holda kod o‘qilmas bo‘ladi.',
+                result: '"Voyaga yetmagan", "musbat".',
+                note: 'Kaskadli ternary: const res = a > 10 ? "katta" : a > 5 ? "o‘rta" : "kichik"; — lekin bunday yozmaslik yaxshi. O‘qish qiyin.'
+              },
+              {
+                title: 'Qo‘shish yoki birlashtirish?',
+                text: 'JS da `+` operatori 2 xil vazifa bajaradi:\n1. Sonlar orasida → QO‘SHISH\n2. String biron biri bo‘lsa → BIRLASHTIRISH (concat)\n\nBIRLASHTIRISH — yuqori ustunlikka ega. Ko‘pchilik xato shu yerdan boshlanadi!',
+                code: 'console.log(5 + 3);          // 8 (qo‘shish, ikkalasi number)\nconsole.log("5" + 3);         // "53" (birlashtirish: 3 string ga aylanadi)\nconsole.log(5 + "3");         // "53" (bir xil)\nconsole.log(5 + 3 + " ta");   // "8 ta" (avval 5+3=8, keyin "8"+" ta" = "8 ta")\nconsole.log("ta: " + 5 + 3);  // "ta: 53" (birinchi string, hamma stringga aylanadi!)',
+                codeNote: '4-qatorda: "(ta: " + 5) + 3 → "ta: 5" + 3 → "ta: 53". Izoh: if string birinchi bo‘lsa, keyin hammasi string!',
+                result: '8, "53", "53", "8 ta", "ta: 53".',
+                note: 'Shu sababli formadan kelgan qiymatni Number() bilan oldin aylantirib qo‘ying! Yoki template literal ishlating: `${a + b} ta`.'
+              }
+            ],
+            keyPoints: [
+              'Arifmetik: +, -, *, /, %, ** (daraja)',
+              '% juft/to‘q aniqlashda: n % 2 === 0',
+              'Solishtirish: >, <, >=, <=, ===, !== — DOIM === / !== ni ishlating!',
+              '== turni o‘zgartirib tekshiradi → kutilmagan xatolar',
+              'Mantiqiy: && (va — ikkala true), || (yoki — biri true), ! (inkor)',
+              'Ternary: shart ? true : false — qisqa if/else',
+              '+ operatori: sonlar + son → qo‘shish, string bor → birlashtirish'
+            ],
+            masterXp: 30,
+            homework: 'Uy vazifasi:\n1. 1-100 gacha bo‘lgan 10 ta sonning juft yoki to‘qligini % operatori yordamida tekshiring.\n2. == va === farqini ko‘rsatadigan 3 ta misol yozing.\n3. &&, ||, ! ni ishlatib 3 ta turli mantiqiy ifoda yozing va ularning natijalarini chiqaring.\n4. Ternary operatorini ishlatib, baho (0-100) dan baho: A (90+), B (80-89), C (70-79), D (60-69), F (<60) deb aniqlang.\n5. (Challenge) 5 + "5" * 2 — natija nima bo‘lishini hisoblating va tushuntiring.',
+            summary: 'Operatorlar — JS ning tuzilishi. Arifmetik, solishtirish (===!), mantiqiy, ternary, + biriktirishni hammasi o‘rganildi. Endi shart operatorlari bilan davom!',
+            exercises: [
+              {
+                id: 'js4ex1',
+                type: 'liveedit',
+                mode: 'simple',
+                title: '1-MASHQ — Juft sonni aniqlash ✍️',
+                instruction: 'son o‘zgaruvchisining juft yoki to‘qligini % operatori yordamida aniqlang va natijani (juftmi: true/false) consolga chiqaring.',
+                startCode: 'let son = 24;\n// Bu yerga juftligini aniqlang va consolga chiqaring',
+                checks: [
+                  { re: 'son\\s*%\\s*2\\s*===\\s*0|son\\s*%\\s*2\\s*==\\s*0', msg: 'son % 2 === 0 ishlatilib, juftligi tekshirilishi kerak' }
+                ],
+                hint: 'Juft son 2 ga bo‘lganda qoldiq 0.',
+                explanation: '% operatori bo‘lish amalidagi qoldiqni qaytaradi.',
+                xp: 10
+              },
+              {
+                id: 'js4ex2',
+                type: 'dragdrop',
+                title: '2-MASHQ — Operator tavsifini moslang 🧩',
+                instruction: 'Operatorlarni tavsiflar bilan moslang.',
+                hint: 'Tenglik → ===, va → &&, yoki → ||, daraja → **.',
+                items: ['===', '&&', '||', '!', '**', '%', 'NOT (inkor)', 'AND (ikkala ham true)', 'OR (biri true)', 'strict tenglik (tur + qiymat)', 'modulo (qoldiq)', 'daraja (power)'],
+                xp: 10
+              },
+              {
+                id: 'js4ex3',
+                type: 'detective',
+                title: '3-MASHQ — Xato top 🔍',
+                instruction: '"10" == 10 → true. Lekin bu katta xato bo‘lishi mumkin. Nima uchun to‘g‘ri "===" ishlatilishi kerak?',
+                code: 'if ("10" == 10) {\n  console.log("teng");\n}\nif ("10" === 10) {\n  console.log("bu ishlamaydi");\n}',
+                options: ['"==" va "===" bir xil', '"==" turni o‘zgartirib (string → number) tekshiradi — xavfli, "===" turni ham tekshiradi', '"===" ishlamaydi', '"==" sonlarni emas, faqat stringlarni solishtiradi'],
+                answer: 1,
+                explanation: '"==" — turni coercision qiladi (stringni numberga aylantiradi). Bu ko‘zda turmagan xatolarga sabab bo‘ladi. "===" ikkalasini ham tekshiradi, DOIM uni ishlating!',
+                xp: 10
+              }
+            ]
+          },
+          quiz: {
+            passingScore: 80,
+            questions: [
+              {
+                question: '17 % 5 qancha qiymat qaytaradi?',
+                options: ['3', '2', '3.4', '85'],
+                answer: 1,
+                explanation: '17 ni 5 ga bo‘lsak: 5*3=15, qoldiq 17-15=2. Demak: 2.'
+              },
+              {
+                question: '5 ** 3 — qiymati?',
+                options: ['15', '125', '8', '53'],
+                answer: 1,
+                explanation: '** daraja (power). 5^3 = 5 * 5 * 5 = 125.'
+              },
+              {
+                question: '"7" === 7 — qanday qiymat qaytaradi va nima uchun?',
+                options: ['true, qiymat mos', 'false, string va number — tur farqi', 'true, 7 == 7', 'undefined'],
+                answer: 1,
+                explanation: '=== — strict: turni ham tekshiradi. "7" string, 7 number — tur farqli → false.'
+              },
+              {
+                question: 'true && false — natija?',
+                options: ['true', 'false', 'undefined', 'NaN'],
+                answer: 1,
+                explanation: '&& AND — ikkalasi ham true bo‘lsa true, boshqa hollarda false.'
+              },
+              {
+                question: 'let x = 10; x > 5 && x < 15 — natija?',
+                options: ['true', 'false', '10', 'x'],
+                answer: 0,
+                explanation: '10>5 → true, 10<15 → true. true && true → true.'
+              },
+              {
+                question: 'let a = 5; let res = a > 0 ? "musbat" : "manfiy"; res qiymati?',
+                options: ['"musbat"', '"manfiy"', 'true', '5'],
+                answer: 0,
+                explanation: 'Ternary. 5>0 → true, demak 1-qiymat olinadi: "musbat".'
+              },
+              {
+                question: '"" + 5 + 3 — natija?',
+                options: ['8', '"8"', '"53"', '53'],
+                answer: 2,
+                explanation: '"" + 5 → "5", keyin "5" + 3 → "53". Birinchi string bo‘lsa hammasi string!.'
+              },
+              {
+                question: 'Qaysi mantiqiy natija NOT (inkor) operatori?',
+                options: ['true || false', '!false', 'true && true', 'false == false'],
+                answer: 1,
+                explanation: '! — NOT operatori. !false → true.'
+              },
+              {
+                question: 'Juft sonni tekshirish uchun qaysi kod to‘g‘ri?',
+                options: ['n / 2 === 0', 'n % 2 === 0', 'n % 2 !== 0', 'n // 2 == 0'],
+                answer: 1,
+                explanation: 'n ni 2 ga bo‘lganda qoldiq 0 → juft.'
+              },
+              {
+                question: 'let s = 90; let grade = s >= 90 ? "A" : s >= 80 ? "B" : "C"; grade qiymati?',
+                options: ['"A"', '"B"', '"C"', 'true'],
+                answer: 0,
+                explanation: 's=90, 90 >= 90 → true → "A". Natija: "A".'
+              }
+            ]
+          }
+        },
+        {
+          title: 'Shart operatorlari',
+          duration: 30,
+          xp: 30,
+          content: {
+            intro: 'Bugun JS da shartlar bo‘yicha harakat yo‘nalishini belgilaydigan if, else, else if va switch ni o‘rganamiz. 🔀',
+            sections: [
+              {
+                title: 'if — shart operatori',
+                text: '`if` — agar shart to‘g‘ri (true) bo‘lsa, ichidagi kod bajariladi. Aks holda — o‘tib ketiladi.\n\nStruktura:\n```\nif (shart) {\n  // true bo‘lsa ishlaydi\n}\n```\n\nShart — boolean qiymatga ega bo‘lishi kerak (truthy/falsy asosida).',
+                code: 'let yosh = 20;\n\nif (yosh >= 18) {\n  console.log("Siz voyaga yetgansiz! ✅");\n  console.log("Saytga kirishingiz mumkin.");\n}\n\n// Bu qator doim ishlaydi (if tashqarisida)\nconsole.log("Tugatildi.");',
+                codeNote: 'yosh = 20 → 20 >= 18 true → if ichidagi 2 ta console ishlaydi. Keyin "Tugatildi" ham doim ishlaydi.',
+                result: '"Siz voyaga yetgansiz! ✅" → "Saytga kirishingiz mumkin." → "Tugatildi."',
+                note: 'Shartda () ichida true bo‘lsa {} ichi ishlaydi. Shart () siz yozmasangiz — xato!'
+              },
+              {
+                title: 'if / else — ikkita variant',
+                text: 'Agar shart true bo‘lsa if ichi, false bo‘lsa else ichi ishlaydi.\n\nStruktura:\n```\nif (shart) {\n  // true\n} else {\n  // false\n}\n```',
+                code: 'let yosh = 15;\n\nif (yosh >= 18) {\n  console.log("Katta yosh. Kirish mumkin.");\n} else {\n  console.log("Voyaga yetmagansiz. Kirish taqiqlangan. ⛔");\n}',
+                codeNote: 'yosh = 15 → 15>=18 false. Demak else ishlaydi.',
+                result: '"Voyaga yetmagansiz. Kirish taqiqlangan. ⛔".',
+                note: 'else — HECH QACHON shart qavsini olmaganligini unutmang! else { ... } — shartsiz.'
+              },
+              {
+                title: 'else if — bir nechta shart',
+                text: '3+ variant bo‘lsa — else if.\n\n```\nif (shart1) { ... }\nelse if (shart2) { ... }\nelse if (shart3) { ... }\nelse { ... }  // oxirgi (default)\n```\n\nYuqoridan pastga tekshiradi, BIRINCHI true ni topganda to‘xtaydi.',
+                code: 'let ball = 85;\nlet grade;\n\nif (ball >= 90) {\n  grade = "A (ZO‘R!)";\n} else if (ball >= 80) {\n  grade = "B (Yaxshi)";\n} else if (ball >= 70) {\n  grade = "C (O‘rta)";\n} else if (ball >= 60) {\n  grade = "D (Qoniqarli)";\n} else {\n  grade = "F (O‘tilmadi)";\n}\n\nconsole.log("Sizning bahoingiz:", grade);',
+                codeNote: 'ball=85. 85>=90 false. 85>=80 true → grade B. Pastdagi shartlar umuman TEKSHIRILMAYDI!',
+                result: '"Sizning bahoingiz: B (Yaxshi)".',
+                note: 'Shartlarni kichikdan kattaga emas — katadan kichikka yozing. Aks holda 60 >=60 true deb topib, barcha kattalarni o‘tkazib yuboradi!'
+              },
+              {
+                title: 'Ichma-ich if (nested)',
+                text: 'if ni if ichiga yozish mumkin — bu **nested if**. Lekin juda ko‘p nested — code ni o‘qishni qiyinlashtiradi (callback hell ga o‘xshatadi).',
+                code: 'let yosh = 25;\nlet hasTicket = true;\nlet hasMoney = true;\n\nif (yosh >= 18) {\n  if (hasTicket) {\n    if (hasMoney) {\n      console.log("Barcha shartlar bajarildi! Kirishingiz mumkin 🎉");\n    } else {\n      console.log("Pul yetarli emas");\n    }\n  } else {\n    console.log("Chipta yo‘q");\n  }\n} else {\n  console.log("Yosh kichik");\n}\n\n// Yaxshiroq usul: AND (&&) orqali bir qatorda\nif (yosh >= 18 && hasTicket && hasMoney) {\n  console.log("Barchasi to‘g‘ri! ✅");\n}',
+                codeNote: 'Nested if (1-kod) to‘g‘ri, lekin o‘qish qiyin. Yaxshi variant: 2-kod && operator bilan birlashtirib.',
+                result: '"Barcha shartlar bajarildi! Kirishingiz mumkin 🎉", so‘ngra "Barchasi to‘g‘ri! ✅".',
+                note: 'Qoida: 3+ nested — qayta yozishga urinib ko‘ring: && / ||, early return, ternary va h.k. bilan.'
+              },
+              {
+                title: 'switch / case',
+                text: 'Ko‘p variantlar bo‘lsa (1 o‘zgaruvchini bir nechta qiymat bilan solishtirish) if/else else if o‘rniga switch ishlatsangiz toza bo‘ladi.\n\n```\nswitch (qiymat) {\n  case A: ... break;\n  case B: ... break;\n  default: ...  // hech qaysi case to‘g‘ri kelmasa\n}\n```\n\n⚠️ **break majburiy!** Yo‘q bo‘lsa keyingi case lar ham ishlab ketadi (fall-through).',
+                code: 'let kun = 3;\nlet kunNom;\n\nswitch (kun) {\n  case 1: kunNom = "Dushanba"; break;\n  case 2: kunNom = "Seshanba"; break;\n  case 3: kunNom = "Chorshanba"; break;\n  case 4: kunNom = "Payshanba"; break;\n  case 5: kunNom = "Juma"; break;\n  case 6: kunNom = "Shanba"; break;\n  case 7: kunNom = "Yakshanba"; break;\n  default: kunNom = "Noto‘g‘ri kun!"; // (1-7) gacha bo‘lmasa\n}\n\nconsole.log("Kun:", kunNom);',
+                codeNote: 'kun = 3. switch case 3 ni topadi, kunNom = "Chorshanba". break — switch dan chiqib ketadi (keyingi 4,5… ni ishlamaydi). default — hech qaysi case mos kelmasa ishlaydi (else kabi).',
+                result: '"Kun: Chorshanba".',
+                note: 'case lar qiymat === teng bo‘lishi kerak (strict). Case larda fall-through (break yo‘q bo‘lsa) — ba’zan ixtiyoriy ishlatiladi, lekin odatda xato hisoblanadi.'
+              }
+            ],
+            keyPoints: [
+              'if (shart) {} — shart truthy bo‘lsa ishlaydi',
+              'if/else — 2 variant: true/false',
+              'if/else if/else — ko‘p variant, birinchi true da to‘xtaydi',
+              'Shartlar katta kichik tartibida yozilishi kerak',
+              'Nested if — kamroq ishlating, && / || va early return ni afzal ko‘ring',
+              'switch/case — 1 o‘zgaruvchini ko‘p qiymat bilan solishtirish uchun',
+              'switch da **break** majburiy (aks holda fall-through)'
+            ],
+            masterXp: 35,
+            homework: 'Uy vazifasi:\n1. yosh, hasPassport, hasVisa o‘zgaruvchilari asosida 3 talik shart yozing (if / else if / else bilan): "USA sayohat qilishingiz mumkin", "Pasport yoki visa yo‘q", "Yosh kichik".\n2. Switch yordamida oy raqami (1-12) kiritilsa, uning nomini (Yanvar…) chiqaradigan kod yozing.\n3. Baho (0-100) kiritilsa, har xil baho darajasini (A/B/C/D/F) if else if bilan chiqaring.\n4. Nested if misolini && va || orqali qisqartirib yozing.\n5. (Challenge) 3 ta sonning eng kattasini topadigan if lar zanjirini yozing.',
+            summary: 'Shart operatorlari — dasturning mantiq yo‘nalishini belgilaydi. if / else if / else — eng asosiysi. switch — ko‘p qiymatli varianti. Endi tsikllar bilan davom! ➰',
+            exercises: [
+              {
+                id: 'js5ex1',
+                type: 'liveedit',
+                mode: 'simple',
+                title: '1-MASHQ — if / else yozing ✍️',
+                instruction: 'son musbat yoki manfiy ekanligini aniqlang. musbat bo‘lsa "musbat", manfiy bo‘lsa "manfiy" deb konsolga chiqaring.',
+                startCode: 'let son = -15;\n// Bu yerga if/else yozing va consolga chiqaring',
+                checks: [
+                  { re: 'if\\s*\\([^)]*son\\s*>=?\\s*0[^)]*\\)', msg: 'if da son > 0 yoki son >= 0 tekshirilishi kerak' },
+                  { re: 'else', msg: 'else bloki ham kerak' }
+                ],
+                hint: 'Musbat: son > 0, manfiy: son < 0.',
+                explanation: 'if/else — ikkita variantni boshqarish uchun asosiy tuzilma.',
+                xp: 10
+              },
+              {
+                id: 'js5ex2',
+                type: 'dragdrop',
+                title: '2-MASHQ — Shartni yig‘ing 🧩',
+                instruction: 'Agar yoshi 18+ va puli 10000+ bo‘lsa "Kiritishingiz mumkin", aks holda "Kiritishingiz mumkin emas" — if/else ni to‘g‘ri yig‘ing.',
+                hint: 'Ikkala shartni && bilan birlashtiring.',
+                items: ['if (yosh >= 18 && pul >= 10000)', '{', 'console.log("Kiritishingiz mumkin");', '}', 'else', 'console.log("Kiritishingiz mumkin emas");'],
+                xp: 10
+              },
+              {
+                id: 'js5ex3',
+                type: 'detective',
+                title: '3-MASHQ — Xato top 🔍',
+                instruction: 'Switch kodida xato bor — 4 ni tanlaganda ham "Dushanba" deb chiqmoqda. Nima sabab?',
+                code: 'let n = 4;\nlet m;\nswitch(n) {\n  case 1: m = "Dushanba";\n  case 2: m = "Seshanba";\n  case 3: m = "Chorshanba";\n  case 4: m = "Payshanba";\n  default: m = "Xato";\n}\nconsole.log(m); // HAMMA XOLATDA "Xato" chiqadi!',
+                options: ['switch boshida break yo‘q, hammasi pastga qarab ishlaydi va oxirgi default ustiga yozadi', 'case larda : kerak emas', 'switch da = emas, == ishlatiladi', 'default oxirida bo‘lmaydi'],
+                answer: 0,
+                explanation: 'HAR BIR case oxirida **break** kerak! Yo‘q bo‘lsa — case 4 ishga tushadi, keyin default ham ishlaydi, m = "Xato" bo‘ladi. Switch da break majburiy — ko‘pchilik xatosi!'
+                ,
+                xp: 10
+              }
+            ]
+          },
+          quiz: {
+            passingScore: 80,
+            questions: [
+              {
+                question: 'if (x) ... — x qaysi qiymatda IF ichi ISHLAMAYDI?',
+                options: ['x = 5', 'x = "hello"', 'x = 0', 'x = {}'],
+                answer: 2,
+                explanation: '0 — falsy, demak if body ishlamaydi. Qolganlari truthy (5, "salom", {}).'
+              },
+              {
+                question: 'if/else if/else da — shartlar qanday tekshiriladi?',
+                options: ['Hammasi bir vaqtni o‘zida', 'Yuqoridan pastga, birinchi true ni topganda to‘xtaydi', 'Pastdan yuqoriga', 'Tasodifiy'],
+                answer: 1,
+                explanation: 'Yuqoridan pastga, BIRINCHI true bo‘lgan ishlaydi va keyinchalik tekshirilmaydi.'
+              },
+              {
+                question: 'if b nima uchun ishlatiladi?',
+                options: ['Siklni takrorlash', 'Shart asosida turli kodni bajarish', 'Funksiya yaratish', 'Massiv yaratish'],
+                answer: 1,
+                explanation: 'if — shart operatori, true/false asosida kod bajarilishini boshqaradi.'
+              },
+              {
+                question: 'switch da BREAK yo‘q bo‘lsa — nima bo‘ladi?',
+                options: ['Hech narsa, ishlashi o‘zgarishsiz', 'Keyingi case lardagi kodlar ham ishlab ketadi (fall-through)', 'switch umuman ishlamaydi', 'Sintaksis xatosi'],
+                answer: 1,
+                explanation: 'break yo‘q — keyingi case ham ishlaydi. Bu ko‘pincha xato, ammo ixtiyoriy ishlatiladigan hollari ham bor.'
+              },
+              {
+                question: 'let x = 80; if (x >=90) g="A"; else if (x>=70) g="B"; else g="C"; — g qiymati?',
+                options: ['"A"', '"B"', '"C"', 'undefined'],
+                answer: 1,
+                explanation: '80 >=90 false, keyin 80 >=70 true → "B". Pastdagi shartlar ishlamaydi.'
+              },
+              {
+                question: 'else ning qanday xususiyati to‘g‘ri?',
+                options: ['Har doim () bilan yoziladi', 'Hech qachon () bilan yozilmaydi (shart qabul qilmaydi)', 'Bir nechta else bo‘la oladi', 'Lekin u oldin if bo‘lmasdan ham ishlaydi'],
+                answer: 1,
+                explanation: 'else — shartsiz, faqat oldinda if/else if qoldan keyingina keladi, () qavsini qabul qilmaydi.'
+              },
+              {
+                question: 'if (a > 10) {\n  if (b < 5) console.log("yes");\n} — bu qaysi usul?',
+                options: ['Ternary', 'Nested if (ichma-ich)', 'Switch', 'Loop'],
+                answer: 1,
+                explanation: 'Ichma-ich (nested) if.'
+              },
+              {
+                question: 'Yuqoridagi kodni QISQARTA (kamroq nested) qilish usuli?',
+                options: ['a > 10 || b < 5', 'a > 10 && b < 5', 'a > 10 + b < 5', 'ifall(a > 10, b < 5)'],
+                answer: 1,
+                explanation: '&& (AND) — ikkala ham true → nested emas, 1 qator: if (a>10 && b<5).'
+              },
+              {
+                question: 'switch qaysi holatlarda afzal?',
+                options: ['Bitta o‘zgaruvchini 3+ qiymat bilan solishtirganda', 'Sikl qilganda', 'Bir martalik kodda', 'Faqat raqamlar bilan ishlaganda'],
+                answer: 0,
+                explanation: 'switch 1 ta o‘zgaruvchini ko‘p qiymatlar bilan === bilan solishtirganda — if/else if dan ko‘ra toza kod.'
+              },
+              {
+                question: 'let k = -3; if (k > 0) "musbat"; else if (k === 0) "nol"; else "manfiy"; — natija?',
+                options: ['"musbat"', '"nol"', '"manfiy"', 'undefined'],
+                answer: 2,
+                explanation: '-3>0 false, -3===0 false → else ishlaydi → "manfiy".'
+              }
+            ]
+          }
+        },
+        {
+          title: 'Tsikllar (for, while)',
+          duration: 35,
+          xp: 35,
+          content: {
+            intro: 'Xuddi shu narsani 10 marta, 100 marta yozish charchatadi. JS da buning uchun TSikllar mavjud: for, while, do/while. Bugun ularni o‘rganamiz! ➰',
+            sections: [
+              {
+                title: 'Tsikl nima? while asoslari',
+                text: '**Tsikl (loop)** — bir xil kodni qayta-qayta bajarish. Eng oddiyi — **while**.\n\n```\nwhile (shart) {\n  // shart TRUE bo‘lganda qaytariladi\n}\n```\n\n⚠️ **Diqqat:** Shart qachondir false bo‘lishi kerak, AKS HOLDA — **infinite loop** (cheksiz tsikl) → brauzer qotib qoladi!',
+                code: 'let i = 1;\n\nwhile (i <= 5) {\n  console.log("While:", i);\n  i++;  // i = i + 1 — OMAN shuni unutma! (infinite loop)\n}\n\nconsole.log("While tugadi.");',
+                codeNote: 'i=1, while (1<=5 → true) → ishlaydi. i++ oshiriladi → i=2. Shart false bo‘lguncha davom etadi. 1,2,3,4,5 chiqadi.',
+                result: 'While: 1, While: 2, ..., While: 5, "While tugadi."',
+                note: '❗ **KO‘P XATO:** while da i++ ni unutib yuborish → infinite loop. Har doim o‘zgartiruvchini oshiring!'
+              },
+              {
+                title: 'do…while — avval bajar, keyin tekshir',
+                text: 'while farqi: **avval kod ishlaydi, so‘ngra shart tekshiriladi.**\nDemak kamida 1 marta ISHLASHI GARANTIYA!',
+                code: 'let n = 5;\n\ndo {\n  console.log("DoWhile:", n);\n  n--;\n} while (n >= 10);  // false! Lekin 1-marta ISHLAYDI!\n\nconsole.log("Tugadi.");',
+                codeNote: 'n=5 → do {} ni ishlatadi, "DoWhile: 5" chiqadi, n=4 bo‘ladi. Keyin shart: 4 >= 10 false, chiqib ketadi. False bo‘lsa ham 1 marta ishlaydi!',
+                result: '"DoWhile: 5", "Tugadi." — 1 marta ishlaydi.',
+                note: 'do…while — kamroq ishlatiladi, lekin "kamida 1 marta" kerak bo‘lganda foydali (masalan, prompt olib, qayta so‘rash).'
+              },
+              {
+                title: 'for — eng ko‘p ishlatiladigan tsikl',
+                text: 'for — while ning tuzilgan (structured) varianti. 3 qism: `for (boshlang‘ich; shart; o‘zgartirish)`.\n\n```\nfor (let i=0; i<N; i++) {\n  // N marta ishlaydi\n}\n```\n\n3 qismning ahamiyati:\n1. **Boshlang‘ich:** tsikl oldidan 1 marta ishlaydi (let i=0)\n2. **Shart:** har takrorlash OLDIN tekshiriladi (i < N)\n3. **O‘zgartirish:** har takrorlash KEYIN ishlaydi (i++)',
+                code: '// 0 dan 4 gacha (5 marta): 0 1 2 3 4\nfor (let i = 0; i < 5; i++) {\n  console.log("For:", i);\n}\n\n// Massiv elementlarini chiqarish\nlet mevalar = ["olma", "banan", "nok"];\nfor (let i = 0; i < mevalar.length; i++) {\n  console.log("Meva:", mevalar[i]);\n}',
+                codeNote: '1-for: i=0..4 (5 marta). 2-for — massiv uzunligicha takrorlanadi, i orqali har bir elementga murojaat.',
+                result: 'For: 0,1,2,3,4. Meva: olma, banan, nok.',
+                note: 'Let ni for () ichida yozsangiz — u for block scope ga ega (tashqarida ko‘rinmaydi). Bu yaxshi.'
+              },
+              {
+                title: 'break va continue',
+                text: '• **break** — tsiklni to‘xtatish va darhol chiqib ketish\n• **continue** — hozirgi takrorlashni SKIP qilish, keyingisiga o‘tish',
+                code: '// break — 5 ga yetganda chiqib ket\nfor (let i = 1; i <= 10; i++) {\n  if (i === 5) break;\n  console.log("Break:", i); // 1,2,3,4\n}\nconsole.log("----");\n// continue — juftlarni o‘tkazib yubor, faqat to‘qlarni\nfor (let i = 1; i <= 6; i++) {\n  if (i % 2 === 0) continue; // juft bo‘lsa skip\n  console.log("Oddiy (to‘q):", i); // 1,3,5\n}',
+                codeNote: 'break — i===5 da to‘xta, chiqib ket. continue — shart true bo‘lsa QOLGAN qatorni o‘tkazib, keyingi iteratsiyaga o‘t.',
+                result: 'Break: 1,2,3,4. Keyin Oddiy (to‘q): 1,3,5.',
+                note: 'Nega break ishlatiladi? Masalan: massivda kerakli narsani topdim, qolganlarini qidirish shart emas — break qilamiz.'
+              },
+              {
+                title: 'Amaliy misollar',
+                text: '1 dan 10 gacha yig‘indi, factorial va massiv elementlarining yig‘indisini hisoblash.',
+                code: '// 1) 1 dan 10 gacha sonlar yig‘indisi (1+2+...+10 = 55)\nlet sum = 0;\nfor (let i = 1; i <= 10; i++) {\n  sum += i;\n}\nconsole.log("1+2+...+10 =", sum); // 55\n\n// 2) 5 faktorial: 5! = 1*2*3*4*5 = 120\nlet fact = 1;\nfor (let i = 1; i <= 5; i++) {\n  fact *= i;\n}\nconsole.log("5! =", fact); // 120\n\n// 3) Massiv elementlari yig‘indisi\nlet narxlar = [1000, 2000, 500, 1500];\nlet jami = 0;\nfor (let i = 0; i < narxlar.length; i++) {\n  jami += narxlar[i];\n}\nconsole.log("Umumiy narx:", jami); // 5000',
+                codeNote: 'Bu classic amaliy misollar — tushunishga arziydi. sum/fact/jami — accumulator (yig‘uvchi) deb ataladi.',
+                result: '55, 120, 5000.',
+                note: 'Yig‘uvchi uchun: sum = 0 (yig‘ish uchun), fact = 1 (ko‘paytirish uchun). Boshlanish qiymatlarini tog‘ri tanlash kerak!'
+              },
+              {
+                title: 'Ichma-ich tsikllar (nested loops)',
+                text: 'Tsiklni ham tsikl ichiga yozish mumkin (masalan jadval yoki ko‘p o‘lchovli massiv).',
+                code: '// 1-5 gacha ko‘paytirish jadvalini 3 tasi uchun\nfor (let i = 1; i <= 5; i++) {\n  let qator = "";\n  for (let j = 1; j <= 3; j++) {\n    qator += (i * j) + "\\t"; // tab bilan ajrat\n  }\n  console.log(qator);\n}',
+                codeNote: 'Har bir i uchun j 1..3 gacha ishlaydi. 1-bor 1*1, 1*2, 1*3; 2-bor 2*1, 2*2... shunday davom etadi.',
+                result: '1  2  3 \\n 2  4  6 \\n 3  6  9 \\n 4  8 12 \\n 5 10 15.',
+                note: 'Nested loop lar O(n²) — sekinlashadi. 1000x1000 = 1 million amal. Kamroq nested ishlatishga urining.'
+              }
+            ],
+            keyPoints: [
+              'while (shart) — true bo‘lganda qaytariladi, o‘zgartiruvchini oshirish unutmang!',
+              'do {} while (shart) — kamida 1 marta ishlaydi (keyin tekshir)',
+              'for (i=0; i<N; i++) — eng ko‘p ishlatiladigan, tuzilgan',
+              'break — tsiklni to‘xtatish',
+              'continue — joriy iteratsiyani skip, keyingisiga o‘tish',
+              'Accumulator (sum=0 / fact=1) — yig‘uvchi uchun',
+              'Nested loop — katta hajmlarda sekinlashadi'
+            ],
+            masterXp: 40,
+            homework: 'Uy vazifasi:\n1. 1 dan 100 gacha sonlarning yig‘indisini for yordamida hisoblading.\n2. 10 dan 1 gacha (teskari) while yordamida chiqaring: 10, 9, 8 … 1.\n3. [2, 5, 8, 1, 9, 3] massivning eng katta elementini for yordamida toping.\n4. 99 dan 0 gacha, faqat 3 ga karrali sonlarni continue yordamida chiqaring.\n5. (Challenge) 100 gacha bo‘lgan barcha tub sonlarni (prime) topadigan kod yozing (nested for bilan).',
+            summary: 'Tsikllar — kodni qayta bajarish. while/do while/for va break continue. For eng ko‘p ishlatiladi. Endi funksiyalar bilan davom! 🎯',
+            exercises: [
+              {
+                id: 'js6ex1',
+                type: 'liveedit',
+                mode: 'simple',
+                title: '1-MASHQ — 1 dan 10 gacha for ✍️',
+                instruction: 'for tsikli yordamida 1 dan 10 gacha (10 ham kirg‘izilgan holda) sonlarni konsolga chiqaring.',
+                startCode: '// Bu yerga for tsiklini yozing: 1..10',
+                checks: [
+                  { re: 'for\\s*\\([^}]*i\\s*=\\s*1[^}]*i\\s*<=?\\s*10[^}]*i\\+\\+', msg: 'for (let i = 1; i <= 10; i++) yoki shunga o‘xshash yozilishi kerak' }
+                ],
+                hint: 'Boshlash: i = 1, shart: i <= 10, oshirish: i++.',
+                explanation: 'for loop — aniq sonli takrorlash uchun.',
+                xp: 10
+              },
+              {
+                id: 'js6ex2',
+                type: 'dragdrop',
+                title: '2-MASHQ — For qismlarini moslang 🧩',
+                instruction: 'for (A; B; C) ning A, B, C qismlarini mos vazifalar bilan bog‘lang.',
+                hint: 'Boshlanish, shart, o‘zgartirish.',
+                items: ['A — (boshlang‘ich)', 'B — (shart)', 'C — (o‘zgartirish/keyin)', 'har iteratsiyadan keyin ishlaydi (i++)', 'har iteratsiyadan oldin tekshiriladi', 'faqat DASTLAB 1 marta ishlaydi (let i=0)'],
+                xp: 10
+              },
+              {
+                id: 'js6ex3',
+                type: 'detective',
+                title: '3-MASHQ — Cheksiz tsikl xatosi 🔍',
+                instruction: 'Quyidagi kod cheksiz ishlayapti (infinite loop). Sababi?',
+                code: 'let i = 0;\nwhile (i < 5) {\n  console.log(i);\n}',
+                options: ['while sintaksisi noto‘g‘ri', 'i qiymati hech qachon oshirilmayapti (i++ yo‘q) → 0 < 5 har doim true', 'Shartda 5 emas, 50 bo‘lishi kerak edi', 'let i = 0 → i son emas'],
+                answer: 1,
+                explanation: 'i = 0, hech qachon oshirilmaydi (i++ yo‘q). Shart 0 < 5 doim true → cheksiz. Tsiklda o‘zgartiruvchini OSHIRISH kerak!',
+                xp: 10
+              }
+            ]
+          },
+          quiz: {
+            passingScore: 80,
+            questions: [
+              {
+                question: 'for (let i = 0; i < 3; i++) nechchi marta ishlaydi?',
+                options: ['2', '3', '4', 'cheksiz'],
+                answer: 1,
+                explanation: 'i=0,1,2 → 3 marta ishlaydi (i<3 → 3 ta qiymat).'
+              },
+              {
+                question: 'do {} while() vs while() — asosiy farq?',
+                options: ['Farqlari yo‘q', 'do/while kamida 1 marta ISHLAYDI (keyin tekshir)', 'while kamida 1 marta ishlaydi', 'do/while cheksiz'],
+                answer: 1,
+                explanation: 'do {} — avval ishlaydi, so‘ng shart. Shart false bo‘lsa ham 1 marta ishlaydi!'
+              },
+              {
+                question: 'Tsiklni to‘xtatish uchun qaysi operator ishlatiladi?',
+                options: ['stop', 'break', 'continue', 'exit'],
+                answer: 1,
+                explanation: 'break — tsiklni to‘xtatish. continue — joriy iteratsiyani skip qilish.'
+              },
+              {
+                question: 'for (let i=5; i>=1; i--) console.log(i); — natija qanday?',
+                options: ['1 2 3 4 5', '5 4 3 2 1', '5 1', 'hech narsa'],
+                answer: 1,
+                explanation: 'i=5 boshlanadi, i-- (kamaytiradi), i>=1 sharti. 5,4,3,2,1 chiqadi.'
+              },
+              {
+                question: 'let s = 0; for (let i=1; i<=4; i++) s+=i; — s ning oxirgi qiymati?',
+                options: ['4', '10', '24', '1+2+3+4 (matn)'],
+                answer: 1,
+                explanation: '1+2+3+4 = 10.'
+              },
+              {
+                question: 'continue qanday vazifani bajaradi?',
+                options: ['Tsiklni to‘xtatadi', 'Xatoni ushlaydi', 'Joriy iteratsiyani skip, keyingisiga o‘tadi', 'Funksiyani qaytaradi'],
+                answer: 2,
+                explanation: 'continue — joriy qolgan kodni ishlamasdan, keyingi iteratsiyaga o‘tadi.'
+              },
+              {
+                question: 'let i = 3; while (i > 0) { console.log(i); i--; } — ishlash soni?',
+                options: ['0', '2', '3', 'cheksiz'],
+                answer: 2,
+                explanation: 'i=3, 2, 1 → 3 marta. i=0 bo‘lganda 0>0 false, to‘xtaydi.'
+              },
+              {
+                question: 'for (let i = 0; i <= 5; i = i + 2) → i qiymatlari?',
+                options: ['0 1 2 3 4 5', '0 2 4', '0 2 4 6', '1 3 5'],
+                answer: 2,
+                explanation: 'i = 0, 2, 4, 6 → lekin i<=5 → 0, 2, 4, 6 ??? Wait: i=4 → ishlaydi, keyin i = 6. Shart 6<=5 false → to‘xtaydi. Ikkalasi: 0, 2, 4 — 6 ham tekshiriladi lekin ishlamaydi. A: ishlagan: 0, 2, 4 — JAMI 3.'
+              },
+              {
+                question: 'Massivni aylantirishda i ni qanday chegaralash to‘g‘ri?',
+                options: ['i < massiv.length', 'i <= massiv.length', 'i = massiv.length', 'i > massiv.length'],
+                answer: 0,
+                explanation: 'Indekslar 0 dan boshlanadi, uzunligi N → 0 <= i < N, shuning i < arr.length to‘g‘ri.'
+              },
+              {
+                question: 'Cheksiz tsikl (infinite loop) qachon yuzaga keladi?',
+                options: ['Tsikl juda katta bo‘lsa', 'Shart HECH QACHON false bo‘lmasa', 'break qo‘shilganida', 'i++ qo‘shilganda'],
+                answer: 1,
+                explanation: 'Shart doim true → cheksiz ishlaydi. Brauzer osilib qoladi. Oshiruvchini (i++) unutmaslik kerak!'
+              }
+            ]
+          }
+        },
+        {
+          title: 'Funksiyalar',
+          duration: 35,
+          xp: 35,
+          content: {
+            intro: 'Funksiya — bir necha marta qayta ishlatiladigan kod bloki. Kodni tartibli, qayta foydalanish mumkin, qisqartiradi. Bu dars juda muhim! 🎯',
+            sections: [
+              {
+                title: 'Funksiya nima va nima uchun?',
+                text: '**Funksiya (function)** — bajariladigan vazifalar to‘plami, unga nom berilgan, kerak bo‘lganda chaqiriladi.\n\nAfzalliklari:\n• **DRY** (Don’t Repeat Yourself) — bir xil kodni qayta yozmang\n• **O‘qish oson** — kod bloklarga bo‘linadi\n• **Testlash oson** — har bir funksiya alohida testlanadi\n• **Qayta foydalanish** — bir funksiya ko‘p joyda ishlatiladi\n\nJS da yaratishning 3 usuli bor: Declaration, Expression, Arrow (keyingi dars Arrow).',
+                code: '// Function Declaration — eng oddiy\nfunction salom() {\n  console.log("Salom, dunyo! 👋");\n}\n\n// Chaqirish (call / invoke)\nsalom();\nsalom(); // 2-marta chaqirish',
+                codeNote: 'function — kalit so‘z. salom — nom. () — parametrlar (hozirab bo‘sh). {} — body (funkya bajaradigan narsalar). Chaqirish: nom().',
+                result: '"Salom, dunyo! 👋" — ikki marta chiqadi.',
+                note: 'Nomlash verb bilan boshlanadi: get, set, calc, check, print, build, create, validate, find... Bu yaxshi amaliyot.'
+              },
+              {
+                title: 'Parametr va argument (parameter vs argument)',
+                text: 'Funksiyaga ma’lumot uzatish mumkin:\n\n• **Parameter** — funksiya e’lon qilinganda () ichida yozilgan o‘zgaruvchilar (xususiyatlari)\n• **Argument** — chaqirganda () ichida berilgan HAQIQIY qiymatlar\n\nFunksiya — pech, parametr — shablon, argument — hujjat.',
+                code: '// Parametrlar: ism, yosh\nfunction userGreet(ism, yosh) {\n  console.log(`Salom, ${ism}! Sen ${yosh} yoshdasan.`);\n}\n\n// Argumentlar: "Ali" , 25\nuserGreet("Ali", 25);\nuserGreet("Vali", 30);\nuserGreet("Guli", 22);',
+                codeNote: 'Parametr va argument soni mos kelmasligi mumkin: yetmasa undefined, ortiqchisi — e’tiborsiz qoldiriladi.',
+                result: 'Har birini alohida salomlaydi: "Salom, Ali! Sen 25 yoshdasan." va hokazo.',
+                note: 'Default parametr: `function f(x=5)` — agar argument berilmasa, x = 5.'
+              },
+              {
+                title: 'return — qiymat qaytarish',
+                text: 'Funksiya bajarilgandan so‘ng ba’zi natijani qaytarishi kerak bo‘ladi — **return** operatori orqali.\n\n• return — funksiyani darhol TUGATADI va qiymatni qaytaradi\n• return dan keyin qolgan kod — HECH QACHON ishlamaydi\n• return bo‘lmasa funksiya **undefined** qaytaradi',
+                code: 'function yigindi(a, b) {\n  return a + b;  // qiymatni qaytar, va TUGAT!\n  console.log("Bu qator hech qachon ishlamaydi 😢"); // return keyin\n}\n\nlet javob = yigindi(10, 15);  // javob = 25\nconsole.log("Yig‘indi:", javob);\nconsole.log(yigindi(5, 3)); // 8',
+                codeNote: 'return faqat bitta qiymat qaytaradi. Ko‘p qaytarish kerak bo‘lsa obyekt yoki massivda qaytariladi: return {a, b, c}.',
+                result: '"Yig‘indi: 25", "8".',
+                note: 'Qaytarilgan qiymatni o‘zgaruvchiga saqlay, yoki to‘g‘ridan-to‘g‘ri ishlata olasan (console.log ichida kabi).'
+              },
+              {
+                title: 'Function Expression',
+                text: 'Funksiyani o‘zgaruvchiga tayinlash mumkin — bu **Function Expression**.\n\nAsosiy farq: Declaration hoisted (avval chaqirsangiz ham ishlaydi). Expression — hoisted emas (avval chaqirib bo‘lmaydi).',
+                code: '// Function Expression\nconst kvadrat = function(x) {\n  return x * x;\n};\n\nconsole.log(kvadrat(5)); // 25\nconsole.log(kvadrat(9)); // 81\n\n// Massiv funksiyalarni saqlashi mumkin (reference type!)!\nconst amallar = [\n  function(a,b) { return a + b; },\n  function(a,b) { return a - b; }\n];\nconsole.log(amallar[0](10, 4)); // 14',
+                codeNote: 'Expression da oxirida ; (nuqta-vergul) — chunki bu o‘zgaruvchi e’lon qilish. Declaration da ; kerak emas.',
+                result: '25, 81, 14.',
+                note: 'JS da funksiyalar — **"first-class citizens"** (birinchi darajali fuqarolar). O‘zgaruvchiga berish, massivga solish, boshqa funksiyaga argument sifatida uzatish — hammasi mumkin!'
+              },
+              {
+                title: 'Scope (doiralar) — qisqacha',
+                text: 'Funksiya ichida yaratilgan o‘zgaruvchi — **Faqat shu funksiya ICHIDA** ko‘rinadi. Bu local scope. Tashqarida yasalgan — global scope.',
+                code: 'const globalVar = "Men globalman, hammam ko‘raman!";\n\nfunction test() {\n  const localVar = "Men lokalman, faqat FUNKSIYA ICHIDA ko‘rinaman!";\n  console.log(globalVar); // ✅ ko‘radi\n  console.log(localVar);  // ✅ ko‘radi\n}\ntest();\n// console.log(localVar); // ❌ ReferenceError: localVar is not defined! (tashqarida ko‘rinmaydi)',
+                codeNote: 'Ichki scope tashqi scope ni ko‘radi, aks holda — yo‘q (bu lexical scope). Bu — muhim konsept, keyinchalik batafsil o‘rganiladi.',
+                result: 'globalVar, localVar ikkalasi ham ishlaydi. // kommentli qator yoqilsa — xato.',
+                note: 'Qoida: imkon qadar global o‘zgaruvchilarni kam ishlating! ular bir-biriga aralashib, xatolarga olib keladi.'
+              }
+            ],
+            keyPoints: [
+              'Funksiya — qayta ishlatiladigan kod bloki. DRY prinsipi',
+              'Declaration: function nom() {}. Expression: const x = function() {}',
+              'Parameter — e’lon qilinganda, argument — chaqirganda berilgan',
+              'return — qiymatni qaytaradi va funksiyani DARHOL TUGATADI',
+              'return bo‘lmasa funksiya undefined qaytaradi',
+              'Funksiya ichidagi o‘zgaruvchi — local (tashqarida ko‘rinmaydi)',
+              'JS da funktsiyalar — "first-class citizens" (massivga solish, uzatish mumkin)'
+            ],
+            masterXp: 40,
+            homework: 'Uy vazifasi:\n1. "Kvadrati ni hisoblash" funksiyasini 2 usulda yozing: Declaration va Expression.\n2. 3 ta sonning o‘rtacha qiymatini hisoblovchi funksiya yozing (3 ta parametr, return orqali o‘rtacha qaytarilsin).\n3. Yoshni qabul qilib, 18+ bo‘lsa true, aks holda false qaytaruvchi isAdult(yosh) funksiyasi yozing.\n4. Massivni parametr sifatida olib, uning elementlari yig‘indisini qaytaruvchi sumArray(arr) yozing.\n5. (Challenge) Berilgan n soni uchun n! ni hisoblash funksiyasini yozing (rekursiv yoki tsikl bilan),',
+            summary: 'Funksiyalar — kodni qayta foydalanish va tartiblash usuli. Declaration, Expression, parametrlar, return, scope — bu asoslarni bilish shart. Arrow funksiyalar keyingi dars!',
+            exercises: [
+              {
+                id: 'js7ex1',
+                type: 'liveedit',
+                mode: 'simple',
+                title: '1-MASHQ — Kopaytirish funksiyasi ✍️',
+                instruction: 'Kopaytiruvchi kopaytma(a, b) funksiyasini yozing (function declaration) va u a*b ni return qilsin. Keyin uni chaqirib, natijani consolga chiqaring.',
+                startCode: '// Bu yerga kopaytma() funksiyasini yozing va uni chaqiring\n',
+                checks: [
+                  { re: 'function\\s+kopaytma\\s*\\(\\s*a\\s*,\\s*b\\s*\\)', msg: 'function kopaytma(a, b) {} declaration yozilishi kerak' },
+                  { re: 'return\\s+a\\s*\\*\\s*b', msg: 'return a * b; yozilishi kerak' }
+                ],
+                hint: 'function nom(a, b) { return a * b; }.',
+                explanation: 'Function declaration — funksiyani yaratish usuli.',
+                xp: 10
+              },
+              {
+                id: 'js7ex2',
+                type: 'dragdrop',
+                title: '2-MASHQ — Funksiya qismlarini yig‘ing 🧩',
+                instruction: '"ikki sonni ayirish" funksiyasini to‘g‘ri tartibda yig‘ing.',
+                hint: 'Kalit so‘z → nom → parametr → body → return.',
+                items: ['function ayirma(a, b)', '{', 'const farq = a - b;', 'return farq;', '}'],
+                xp: 10
+              },
+              {
+                id: 'js7ex3',
+                type: 'detective',
+                title: '3-MASHQ — Xato top 🔍',
+                instruction: 'Quyidagi funksiya 18+ bo‘lsa true qaytarishi kerak, lekin "undefined" qaytaradi. Nima sabab?',
+                code: 'function isAdult(yosh) {\n  if (yosh >= 18) {\n    console.log(true);\n  } else {\n    console.log(false);\n  }\n}\nlet res = isAdult(25);\nconsole.log(res); // undefined!',
+                options: ['Parametri yo‘q', 'RETURN operatori YO‘Q — console.log faqat CHIQARADI, qiymat QAYTARMAYDI!', 'Argument berilmadi', 'Funksiya nomi noto‘g‘ri'],
+                answer: 1,
+                explanation: 'Funksiya return qilmasa — natijasi **undefined** bo‘ladi. console.log() faqat konsolga chiqaradi, qiymat qaytarmaydi. To‘g‘risi: return yosh >= 18;'
+                ,
+                xp: 10
+              }
+            ]
+          },
+          quiz: {
+            passingScore: 80,
+            questions: [
+              {
+                question: 'Funksiya nima uchun ishlatiladi?',
+                options: ['Ma’lumotlarni saqlash uchun', 'Qayta foydalanish mumkin bo‘lgan kod bloklari yaratish uchun (DRY)', 'Faqat HTML ni bezash uchun', 'Rasmlarni saqlash uchun'],
+                answer: 1,
+                explanation: 'Funksiya — bir necha marta ishlatiladigan kodni DRY qilish, tuzish uchun.'
+              },
+              {
+                question: 'Funksiyani chaqirish (call) qanday amalga oshiriladi?',
+                options: ['function nom', 'nom()', 'nom[]', 'call nom'],
+                answer: 1,
+                explanation: 'Chaqirish: funksiya_nom().'
+              },
+              {
+                question: 'Parametr va argument farq?',
+                options: ['Bir xil', 'Parameter — e’lon qilinganda () ichida, argument — chaqirganda () ichida beriladi', 'Argument — e’lon qilinganda, parameter — chaqirganda', 'Umuman farq yo‘q'],
+                answer: 1,
+                explanation: 'Parameter — funksiya e’lon qilinganda () ichida yoziladi, argument — uni chaqirganda () ichida beriladi.'
+              }
+            ]
+          }
+        }
       ]
     },
     {
