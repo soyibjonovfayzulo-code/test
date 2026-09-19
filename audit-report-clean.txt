@@ -1,0 +1,37 @@
+LOYIHA AUDITI
+====================================================================================================
+
+[KURS 1] HTML (id: html) — 8 dars
+  [WARN] Dars 1: HTML nima? | C:true Q:true Sec:7 Ex:0 Qs:15
+  [OK] Dars 2: HTML hujjati strukturasi | C:true Q:true Sec:12 Ex:3 Qs:10
+  [OK] Dars 3: HTML atributlari va elementga qo‘shimcha ma’lumot berish | C:true Q:true Sec:13 Ex:3 Qs:11
+  [WARN] Dars 4: Linklar va rasmlar | C:true Q:true Sec:7 Ex:0 Qs:10
+  [WARN] Dars 5: Birinchi katta mini-loyiham | C:true Q:false Sec:9 Ex:0 Qs:0
+  [OK] Dars 6: HTML matnlar, ro‘yxatlar va sahifani rang bilan bezash | C:true Q:true Sec:22 Ex:3 Qs:10
+  [OK] Dars 7: HTML formalar, inputlar va CSS bilan rang berish | C:true Q:true Sec:22 Ex:3 Qs:10
+  [OK] Dars 8: Formani kuchaytirish: required, textarea, select va JavaScript validation | C:true Q:true Sec:20 Ex:3 Qs:13
+
+[KURS 2] CSS (id: css) — 0 dars
+
+[KURS 3] JavaScript (id: javascript) — 0 dars
+
+[KURS 4] Python (id: python) — 0 dars
+
+[KURS 5] Java (id: java) — 0 dars
+
+[KURS 6] C++ (id: cpp) — 0 dars
+
+[KURS 7] SQL (id: sql) — 0 dars
+
+[KURS 8] React (id: react) — 0 dars
+
+[KURS 9] Node.js (id: nodejs) — 0 dars
+
+[KURS 10] AI (id: ai) — 0 dars
+
+Umumiy: Jami:8 OK:5 Muammoli:3
+
+TO'LDIRISH KERAK BO'LGAN DARSLAR:
+  1. [HTML/html] #1 "HTML nima?" — exercises=0
+  2. [HTML/html] #4 "Linklar va rasmlar" — exercises=0
+  3. [HTML/html] #5 "Birinchi katta mini-loyiham" — quiz, exercises=0, quizQs=0
