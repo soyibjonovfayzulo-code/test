@@ -1,6 +1,5 @@
 <!DOCTYPE html>
 <html lang="uz" data-theme="dark">
-
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
@@ -14,8 +13,8 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap"
     rel="stylesheet" />
-  <script type="module" crossorigin src="/assets/index-XTiwsHlF.js"></script>
-  <link rel="stylesheet" crossorigin href="/assets/index-UQqxcEui.css">
+  <script type="module" crossorigin src="/assets/index-VA2ZP4QR.js"></script>
+  <link rel="stylesheet" crossorigin href="/assets/index-SL5fPSIZ.css">
 </head>
 
 <body>
@@ -508,9 +507,14 @@
 
         <!-- TESTS PAGE -->
         <section id="page-tests" class="page" style="padding-top: 14px;">
-          <!-- Search hidden visually but kept for logic -->
-          <input type="hidden" id="testSearch" value="" />
-          
+          <!-- Search Bar — visible (old: type=hidden → search UI yo'q edi → user "fan topilmadi" deb xato his qilardi) -->
+          <div class="tests-search-wrap" role="search" aria-label="Testlar bo'yicha qidiruv">
+            <span class="tests-search-icon" aria-hidden="true">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="7"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
+            </span>
+            <input type="search" id="testSearch" value="" placeholder="Fan nomi yoki izoh bo'yicha qidir..." aria-label="Testlarni qidirish" />
+          </div>
+
           <!-- Hero Banner -->
           <div class="hero-card">
             <div class="hero-text">
@@ -526,12 +530,12 @@
             </div>
           </div>
 
-          <!-- Category Filter Chips -->
+          <!-- Category Filter Chips (subset badges: 9/9, 4/9, 5/9, 3/9) -->
           <nav class="filter-scroll" id="diffFilter" aria-label="Kategoriyalar">
-            <button class="filter-chip active" data-diff="all" type="button">Barchasi</button>
-            <button class="filter-chip" data-diff="dev" type="button">Dasturlash</button>
-            <button class="filter-chip" data-diff="web" type="button">Web</button>
-            <button class="filter-chip" data-diff="it" type="button">IT</button>
+            <button class="filter-chip active" data-diff="all" type="button">Barchasi <span class="chip-badge">9/9</span></button>
+            <button class="filter-chip" data-diff="dev" type="button">Dasturlash <span class="chip-badge">4/9</span></button>
+            <button class="filter-chip" data-diff="web" type="button">Web <span class="chip-badge">5/9</span></button>
+            <button class="filter-chip" data-diff="it" type="button">IT <span class="chip-badge">3/9</span></button>
           </nav>
 
           <!-- Test Cards List -->
@@ -723,8 +727,10 @@
                   <div class="duel-mode-chips" id="duelModeSelector" role="radiogroup" aria-labelledby="duelModeLabel">
                     <button type="button" class="duel-chip active" data-mode="bot" role="radio" aria-checked="true">🤖
                       Bot bilan</button>
-                    <button type="button" class="duel-chip" data-mode="player" role="radio" aria-checked="false">👥 Real
-                      Player</button>
+                    <button type="button" class="duel-chip" data-mode="search" role="radio" aria-checked="false">👥
+                      Raqib qidirish</button>
+                    <button type="button" class="duel-chip" data-mode="hotseat" role="radio" aria-checked="false">🎮
+                      Hot-Seat 2P</button>
                   </div>
                 </div>
 
@@ -778,6 +784,19 @@
                 aria-label="Raqib qidirish jarayoni">
                 <div class="mm-progress-fill" id="mmProgressFill"></div>
               </div>
+              <div class="mm-connection-status hidden" id="mmConnectionStatus" aria-live="polite"></div>
+              <div class="mm-fallback-panel hidden" id="mmFallbackPanel" role="dialog" aria-label="Raqib topilmadi">
+                <p class="mm-fallback-title">Raqib topilmadi 😔</p>
+                <p class="mm-fallback-desc muted">Raqib qidirish vaqti tugadi. Bot bilan davom etishni xohlaysizmi?</p>
+                <div class="mm-fallback-actions">
+                  <button type="button" class="btn btn-primary" id="mmFallbackYesBtn">✅ Ha, bot bilan</button>
+                  <button type="button" class="btn btn-outline" id="mmFallbackNoBtn">❌ Yo'q, chiqish</button>
+                </div>
+              </div>
+              <button type="button" class="btn btn-outline btn-block mm-cancel-btn" id="mmCancelBtn"
+                aria-label="Raqib qidirishni bekor qilish">
+                ⏹️ Qidiruvni bekor qilish
+              </button>
             </div>
           </div>
 
@@ -1601,7 +1620,8 @@
 
   <!-- ====================== ONBOARDING (yangi user uchun) ====================== -->
   <div id="onboardingRoot" hidden></div>
-
+
+  <script src="devtools-guard.js"></script>
 </body>
 
 </html>

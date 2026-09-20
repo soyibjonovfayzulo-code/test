@@ -1,4 +1,4 @@
-/* ==========================================================
+﻿/* ==========================================================
    IT/AI TEST PLATFORM — Vanilla JavaScript
    ========================================================== */
 
@@ -533,13 +533,19 @@ async function loadQuestionBank() {
     for (const k of Object.keys(rebuilt)) ALL_TESTS[k] = rebuilt[k];
     console.log('ALL_TESTS rebuilt after JSON load.');
     QBANK_LOADING.loaded = true;
-    // Agar hozir tests/testlist sahifalarida bo'lsa, JSON yuklangandan keyin qayta render qil (APKda ko'rinmagan testlarni ko'rinishi uchun).
+    /* =============================================================
+       MUHIM FIX 1b: QBANK yuklanib bo'lgandan keyin HAMMA test sahifasini
+       qayta render qil. Avval faqat .active bo'lganda render bo'lar edi —
+       user lessons→tests navigatsiyada stale empty view ko'rardi.
+       Endi ALL_TESTS update bo'lgach, active page bo'lmasa ham keyingi
+       navigation fresh data bilan render bo'ladi + current state qayta chiziladi.
+       ============================================================= */
     try {
-      const active = document.querySelector('.page.active');
-      if (active) {
-        const id = active.id || '';
-        if (id === 'page-tests') renderTestsPage();
-        else if (id === 'page-testlist' && currentSubject) openSubjectTests(currentSubject);
+      if (typeof renderTestsPage === 'function') {
+        try { renderTestsPage(); } catch (_) {}
+      }
+      if (currentSubject && typeof openSubjectTests === 'function') {
+        try { openSubjectTests(currentSubject); } catch (_) {}
       }
     } catch (_) {}
   } catch (error) {
@@ -1563,6 +1569,12 @@ function subjectCard(sbj) {
   const subjTests = ALL_TESTS[sbj.name] || [];
   const testCount = subjTests.length;
   const qCount = subjTests.reduce((s, t) => s + (t.questionCount || (t.questions ? t.questions.length : 0) || 0), 0);
+  const totalXp = subjTests.reduce((s, t) => s + (t.xp || SCORE_PER_CORRECT * (t.questionCount || 10) || 50), 0);
+  /* Fan umumiy darajasi: beginner (3 ta → faqat beginner bor) → 3 level bor (3 per diff = 9 total test) → "3 daraja" badge */
+  const diffs = new Set(subjTests.map(t => t.difficulty));
+  const diffLabel = diffs.size === 0 ? '3 daraja' :
+    (diffs.size === 1 ? (diffs.has('beginner') ? 'Beginner' : (diffs.has('intermediate') ? 'Intermediate' : 'Advanced')) :
+    (diffs.size === 2 ? (diffs.has('advanced') ? 'Intermediate→Advanced' : 'Beginner→Intermediate') : '3 daraja (Beginner / Intermediate / Advanced)'));
 
   const state = ensureUserTestProgress(currentUser);
   const completedCount = subjTests.filter(test => state[test.id] === 'completed').length;
@@ -1578,22 +1590,26 @@ function subjectCard(sbj) {
       <div class="lang-box ${boxClass}">
         ${getSubjectIcon(sbj.name, sbj.icon)}
       </div>
+      <div class="test-card__badges" aria-label="Fan darajasi va umumiy XP">
+        <span class="diff-badge diff-beginner tcard-diff">${diffLabel}</span>
+        <span class="tcard-xp" title="Jami XP mukofoti">⭐ ${totalXp} XP</span>
+      </div>
     </div>
     <div class="test-card__content">
       <h2 class="test-card__title">${sbj.name === 'HTML' ? 'HTML &amp; CSS' : sbj.name}</h2>
       <p class="test-card__desc">${sbj.description}</p>
       <div class="test-card__meta">
         ${testCount
-          ? `<span>${testCount} ta test</span><span class="sep"></span><span>${qCount} ta savol</span>`
+          ? `<span>${testCount} ta test</span><span class="sep"></span><span>${qCount} ta savol</span><span class="sep"></span><span>⏱ ${Math.round((qCount * 45) / 60)} daqiqa</span>`
           : `<span>${sbj.name} asoslari</span>`}
       </div>
       <div class="test-card__progress">
         ${isCompleted
-          ? `<span class="progress-done"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg> Tugallangan</span>`
-          : `<div class="progress-track"><div class="progress-fill" style="width: ${pct}%"></div></div><span class="progress-pct">${pct}%</span>`}
+          ? `<span class="progress-done"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg> Tugallangan · ${completedCount}/${testCount}</span>`
+          : `<div class="progress-track" role="progressbar" aria-valuemin="0" aria-valuemax="100" aria-valuenow="${pct}" aria-label="${sbj.name} testlari progressi"><div class="progress-fill" style="width: ${pct}%"></div></div><span class="progress-pct">${pct}% · ${completedCount}/${testCount}</span>`}
       </div>
     </div>
-    <button class="btn-action ${pct > 0 && !isCompleted ? 'resume' : ''}" type="button">
+    <button class="btn-action ${pct > 0 && !isCompleted ? 'resume' : ''}" type="button" aria-label="${sbj.name} testlarini ${ctaText}">
       <span>${ctaText}</span>
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><line x1="5" y1="12" x2="19" y2="12"></line><polyline points="12 5 19 12 12 19"></polyline></svg>
     </button>
@@ -1608,6 +1624,20 @@ function renderTestsPage() {
   const grid = $("#testsGrid");
   if (!grid) return;
   grid.innerHTML = "";
+
+  /* =============================================================
+     MUHIM FIX 1a: RACE CONDITION ni yo'qotish — ALL_TESTS hali
+     (fallback 6 savol, 0 test) bo'lib qolgan paytda user kirsa,
+     QBANK_LOADING.promise resolv tugagacha spinner turadi,
+     keyin avtomatik qayta render.
+     ============================================================= */
+  if (!QBANK_LOADING.loaded && QBANK_LOADING.promise && typeof QBANK_LOADING.promise.then === 'function') {
+    grid.innerHTML = `<div class="empty-state"><div class="spinner" style="display:inline-block;vertical-align:middle;margin-right:8px;border:2px solid var(--itt-muted, #94A3B8);border-top-color:var(--itt-primary,#2563EB);border-radius:50%;width:20px;height:20px;animation:spin 0.9s linear infinite;"></div>Testlar bazasidan yuklanmoqda... Iltimos kuting.</div>`;
+    QBANK_LOADING.promise.then(function () {
+      try { if ($('#page-tests') && $('#page-tests').classList.contains('active')) renderTestsPage(); } catch (_) {}
+    }).catch(function () {});
+    return;
+  }
 
   let list = SUBJECTS.slice();
   if (currentSearch) {
@@ -1668,6 +1698,19 @@ function openSubjectTests(name) {
   const list = ALL_TESTS[name] || [];
   const container = $("#testListContainer");
   container.innerHTML = "";
+
+  /* =============================================================
+     MUHIM FIX 1a (testlist): QBANK hali yuklanmagan bo'lsa spinner,
+     resolv dan keyin qayta render. (fallback 6 question → 0 test bug)
+     ============================================================= */
+  if (!QBANK_LOADING.loaded && QBANK_LOADING.promise && typeof QBANK_LOADING.promise.then === 'function') {
+    container.innerHTML = `<div class="empty-state" style="padding:48px 16px;text-align:center;"><div class="spinner" style="display:inline-block;vertical-align:middle;margin-right:10px;border:3px solid var(--itt-muted,#94A3B8);border-top-color:var(--itt-primary,#2563EB);border-radius:50%;width:22px;height:22px;animation:spin 0.9s linear infinite;"></div>${name} testlari bazasidan yuklanmoqda... Iltimos kuting.</div>`;
+    QBANK_LOADING.promise.then(function () {
+      try { if (currentSubject === name) openSubjectTests(name); } catch (_) {}
+    }).catch(function () {});
+    return;
+  }
+
   if (!list.length) {
     if (!QBANK_LOADING.loaded) {
       container.innerHTML = `<div class="empty-state" style="padding:48px 16px;text-align:center;"><div class="spinner" style="display:inline-block;vertical-align:middle;margin-right:10px;border:3px solid var(--itt-muted,#94A3B8);border-top-color:var(--itt-primary,#2563EB);border-radius:50%;width:22px;height:22px;animation:spin 0.9s linear infinite;"></div>${name} testlari yuklanmoqda... Iltimos kuting.</div>`;
@@ -1967,16 +2010,45 @@ function renderQuestion() {
 
 function startQuiz(testId) {
   const test = findTestById(testId);
-  if (!test) return;
+  if (!test) {
+    showToast("⚠️ Test topilmadi — qayta yuklanmoqda", "warning");
+    try { reloadQuestionBank(); } catch (_) {}
+    return;
+  }
   if (!isTestUnlocked(currentUser, testId)) {
     showToast("🔒 Avval oldingi testni yakunlang", "warning");
     return;
+  }
+  /* =============================================================
+     MUHIM FIX 3: Test ichiga kirilganda savollar mavjudligini
+     tekshirish. Agar ALL_TESTS hali fallback 6 question bo'lib
+     qolgan bo'lsa (race → 0 test/questions → empty array →
+     user savollarni ko'ra olmaydi) — bu yerda xato ko'rsat
+     va qayta yuklashni taklif qil.
+     ============================================================= */
+  if (!test.questions || !Array.isArray(test.questions) || test.questions.length === 0) {
+    showToast("⚠️ Test savollari hali yuklanmadi — qayta urinib ko'ring", "error");
+    if (QBANK_LOADING.promise && typeof QBANK_LOADING.promise.then === 'function') {
+      QBANK_LOADING.promise.then(function () {
+        showToast("✅ Testlar yuklandi — endi urinib ko'ring", "success");
+      }).catch(function () {});
+    } else {
+      try { reloadQuestionBank(); } catch (_) {}
+    }
+    return;
+  }
+  if (test.questionCount !== test.questions.length) {
+    console.warn(`[TEST] ${test.id} questionCount mismatch — expected ${test.questionCount}, got ${test.questions.length}`);
   }
   if (quiz.autoNavTimeout) {
     clearTimeout(quiz.autoNavTimeout);
     quiz.autoNavTimeout = null;
   }
   const shuffledQuestions = prepareShuffledQuestions(test.questions);
+  if (!shuffledQuestions || shuffledQuestions.length === 0) {
+    showToast("⚠️ Test savollarini tayyorlashda xato", "error");
+    return;
+  }
   quiz.test = {
     ...test,
     questions: shuffledQuestions
@@ -2527,7 +2599,47 @@ function renderDuelHistory() {
     return;
   }
 
-  container.innerHTML = `
+  const isMobileView = window.innerWidth <= 768;
+  const sorted = history.slice().sort((a, b) => (b.timestamp || 0) - (a.timestamp || 0));
+
+  if (isMobileView) {
+    container.innerHTML = `
+      <div class="duel-history-cards">
+        ${sorted.map(d => {
+    const date = new Date(d.timestamp);
+    const dateStr = `${String(date.getDate()).padStart(2, '0')}/${String(date.getMonth() + 1).padStart(2, '0')} ${String(date.getHours()).padStart(2, '0')}:${String(date.getMinutes()).padStart(2, '0')}`;
+    let statusCls = "";
+    let statusTxt = "";
+    if (d.winStatus === "win") { statusCls = "duel-history-win dh-badge dh-badge-win"; statusTxt = "G'ALABA"; }
+    else if (d.winStatus === "loss") { statusCls = "duel-history-loss dh-badge dh-badge-loss"; statusTxt = "MAG'LUBIYAT"; }
+    else { statusCls = "duel-history-draw dh-badge dh-badge-draw"; statusTxt = "DURANG"; }
+    const subjectLabel = (d.subject === 'all' || !d.subject) ? '🌐 Barcha' : d.subject;
+    const modeLabel = d.mode === 'hotseat' ? '🎮 2P' : (d.mode === 'search' || d.mode === 'player') ? '👥 RP' : '🤖 Bot';
+    const diffLabel = d.difficulty ? ` · ${({ easy: 'Oson', medium: "O'rtacha", hard: 'Qiyin' })[d.difficulty] || ''}` : '';
+    return `
+              <div class="duel-history-card-item">
+                <div class="dhci-row dhci-top">
+                  <span class="dhci-date muted">${dateStr} · ${modeLabel}${diffLabel}</span>
+                  <span class="${statusCls} dhci-status">${statusTxt}</span>
+                </div>
+                <div class="dhci-row dhci-mid">
+                  <div class="dhci-subject"><strong>Fan:</strong> ${subjectLabel}</div>
+                  <div class="dhci-opp"><strong>Raqib:</strong> ${d.player2 || '—'}</div>
+                </div>
+                <div class="dhci-row dhci-bottom">
+                  <div class="dhci-score">
+                    <span class="dhci-p1">${d.player1 || 'Siz'}</span>
+                    <span class="dhci-score-num">${d.score1} — ${d.score2}</span>
+                    <span class="dhci-p2">${d.player2 || 'Raqib'}</span>
+                  </div>
+                </div>
+              </div>
+            `;
+  }).join("")}
+      </div>
+    `;
+  } else {
+    container.innerHTML = `
     <div class="table-wrap">
       <table class="duel-history-table">
         <thead>
@@ -2540,7 +2652,7 @@ function renderDuelHistory() {
           </tr>
         </thead>
         <tbody>
-          ${history.map(d => {
+          ${sorted.map(d => {
     const date = new Date(d.timestamp);
     const dateStr = `${String(date.getDate()).padStart(2, '0')}/${String(date.getMonth() + 1).padStart(2, '0')} ${String(date.getHours()).padStart(2, '0')}:${String(date.getMinutes()).padStart(2, '0')}`;
     let statusCls = "";
@@ -2569,6 +2681,7 @@ function renderDuelHistory() {
       </table>
     </div>
   `;
+  }
 }
 
 function stopDuelTimers() {
@@ -2577,12 +2690,12 @@ function stopDuelTimers() {
 }
 
 function bindDuel() {
-  // Mode selector chips (Bot vs Real Player)
   const modeChips = $$('#duelModeSelector .duel-chip');
   modeChips.forEach(chip => {
     chip.addEventListener('click', () => {
-      modeChips.forEach(c => c.classList.remove('active'));
+      modeChips.forEach(c => { c.classList.remove('active'); c.setAttribute('aria-checked', 'false'); });
       chip.classList.add('active');
+      chip.setAttribute('aria-checked', 'true');
       const mode = chip.getAttribute('data-mode');
       const botDiffGroup = $('#botDifficultyGroup');
       if (botDiffGroup) {
@@ -2591,35 +2704,141 @@ function bindDuel() {
     });
   });
 
-  // Difficulty selector chips
   const diffChips = $$('#duelDiffSelector .duel-chip');
   diffChips.forEach(chip => {
     chip.addEventListener('click', () => {
-      diffChips.forEach(c => c.classList.remove('active'));
+      diffChips.forEach(c => { c.classList.remove('active'); c.setAttribute('aria-checked', 'false'); });
       chip.classList.add('active');
+      chip.setAttribute('aria-checked', 'true');
     });
   });
 
   $("#duelStartSearchBtn")?.addEventListener("click", () => {
-    /* Haptic: duel boshlanishi (bir marta, yengil) */
     itHaptic("hapticStart");
     const activeMode = $('#duelModeSelector .duel-chip.active')?.getAttribute('data-mode') || 'bot';
-    if (activeMode === 'player') {
+    if (activeMode === 'hotseat') {
+      duelState.activeMode = 'hotseat';
       startRealPlayerDuel();
+    } else if (activeMode === 'search') {
+      duelState.activeMode = 'search';
+      startSearchRealPlayer();
     } else {
+      duelState.activeMode = 'bot';
       startMatchmaking();
     }
   });
 
   $("#duelBackToLobbyBtn")?.addEventListener("click", () => {
     stopDuelTimers();
+    stopSearchTimers();
     renderDuel();
   });
+
+  $("#mmCancelBtn")?.addEventListener("click", () => {
+    stopSearchTimers();
+    renderDuel();
+  });
+
+  $("#mmFallbackYesBtn")?.addEventListener("click", () => {
+    stopSearchTimers();
+    $("#mmFallbackPanel")?.classList.add("hidden");
+    duelState.activeMode = 'bot';
+    const fallbackDiff = $('#duelDiffSelector .duel-chip.active')?.getAttribute('data-diff') || 'easy';
+    const diffChipsLocal = $$('#duelDiffSelector .duel-chip');
+    diffChipsLocal.forEach(c => { c.classList.remove('active'); c.setAttribute('aria-checked', 'false'); });
+    const matchChip = Array.from(diffChipsLocal).find(c => c.getAttribute('data-diff') === fallbackDiff);
+    if (matchChip) { matchChip.classList.add('active'); matchChip.setAttribute('aria-checked', 'true'); }
+    startMatchmaking();
+  });
+
+  $("#mmFallbackNoBtn")?.addEventListener("click", () => {
+    stopSearchTimers();
+    $("#mmFallbackPanel")?.classList.add("hidden");
+    renderDuel();
+  });
+}
+
+function stopSearchTimers() {
+  if (duelState._searchInterval) { clearInterval(duelState._searchInterval); duelState._searchInterval = null; }
+  if (duelState._searchTimeout) { clearTimeout(duelState._searchTimeout); duelState._searchTimeout = null; }
+  if (duelState._keyHandler) {
+    document.removeEventListener('keydown', duelState._keyHandler);
+    duelState._keyHandler = null;
+  }
+}
+
+function startSearchRealPlayer() {
+  $("#duelLobby").classList.add("hidden");
+  $("#duelMatchmaking").classList.remove("hidden");
+  $("#mmFallbackPanel")?.classList.add("hidden");
+  $("#mmConnectionStatus")?.classList.add("hidden");
+
+  const statusEl = $("#duelMatchmakingStatus");
+  if (statusEl) statusEl.textContent = "Raqib qidirilmoqda...";
+
+  $("#mmP1Avatar").textContent = duelState.player1.avatar;
+  $("#mmP1Name").textContent = duelState.player1.name;
+
+  $("#mmP2Avatar").textContent = "❓";
+  $("#mmP2Avatar").classList.add("pulse-avatar");
+  $("#mmP2Name").textContent = "Qidirilmoqda...";
+  $("#mmP2Status").textContent = "Kutilmoqda...";
+  $("#mmP2Status").className = "m-status text-warning";
+  $("#mmProgressFill").style.width = "0%";
+
+  const connEl = $("#mmConnectionStatus");
+  if (connEl) {
+    connEl.textContent = "🔍 Serverdan faol o'yinchilar skanerlanyapti...";
+    connEl.className = "mm-connection-status mm-status-info";
+    connEl.classList.remove("hidden");
+  }
+
+  stopSearchTimers();
+  let progress = 0;
+  const totalDuration = 8500 + Math.floor(Math.random() * 3500);
+  const tickMs = 150;
+  const steps = Math.ceil(totalDuration / tickMs);
+  const incPerStep = 100 / steps;
+
+  duelState._searchInterval = setInterval(() => {
+    progress += incPerStep;
+    if (progress >= 30 && progress < 32) {
+      if (connEl) { connEl.textContent = "🌐 Nearby server orqali so'rov yuborildi..."; connEl.className = "mm-connection-status mm-status-info"; }
+    }
+    if (progress >= 60 && progress < 62) {
+      if (connEl) { connEl.textContent = "🔗 1 nafar o'yinchi javob berishdi, tizim tekshirmoqda..."; connEl.className = "mm-connection-status mm-status-warn"; }
+    }
+    if (progress >= 85 && progress < 87) {
+      if (connEl) { connEl.textContent = "⚠️ Ulanish bekor qilindi, yana qidirilmoqda..."; connEl.className = "mm-connection-status mm-status-err"; }
+    }
+    if (progress >= 100) {
+      progress = 100;
+      $("#mmProgressFill").style.width = "100%";
+      stopSearchTimers();
+
+      if (connEl) { connEl.textContent = "❌ Hech qanday real o'yinchi topilmadi."; connEl.className = "mm-connection-status mm-status-err"; }
+      $("#mmP2Avatar").classList.remove("pulse-avatar");
+      $("#mmP2Status").textContent = "Topilmadi";
+      $("#mmP2Status").className = "m-status text-danger";
+
+      setTimeout(() => {
+        if (statusEl) statusEl.textContent = "Raqib topilmadi";
+        $("#mmFallbackPanel")?.classList.remove("hidden");
+      }, 600);
+    } else {
+      $("#mmProgressFill").style.width = `${progress}%`;
+    }
+  }, tickMs);
 }
 
 function startMatchmaking() {
   $("#duelLobby").classList.add("hidden");
   $("#duelMatchmaking").classList.remove("hidden");
+  $("#mmFallbackPanel")?.classList.add("hidden");
+  $("#mmConnectionStatus")?.classList.add("hidden");
+
+  const statusEl = $("#duelMatchmakingStatus");
+  if (statusEl) statusEl.textContent = "Raqib qidirilmoqda...";
 
   // P1 Loading UI
   $("#mmP1Avatar").textContent = duelState.player1.avatar;
@@ -2800,7 +3019,6 @@ function startDuelTimer() {
   badge.textContent = duelState.remainingSec;
   badge.classList.remove("warning");
 
-  // Animate timer fill bar
   const fillEl = $("#duelTimerFill");
   if (fillEl) fillEl.style.width = "100%";
 
@@ -2815,7 +3033,38 @@ function startDuelTimer() {
 
     if (duelState.remainingSec <= 0) {
       clearInterval(duelState.timer);
-      selectDuelAnswer(null); // Time out
+      if (duelState.activeMode === 'hotseat') {
+        if (!realPlayerState.p1Answered) {
+          realPlayerState.p1Answered = true;
+          realPlayerState.p1Choice = null;
+          const p1Btns = $$('#duelP1OptionsContainer .duel-opt-btn');
+          p1Btns.forEach(b => { b.disabled = true; });
+        }
+        if (!realPlayerState.p2Answered) {
+          realPlayerState.p2Answered = true;
+          realPlayerState.p2Choice = null;
+          const p2Btns = $$('#duelP2OptionsContainer .duel-opt-btn');
+          p2Btns.forEach(b => { b.disabled = true; });
+        }
+        if (duelState._keyHandler) {
+          document.removeEventListener('keydown', duelState._keyHandler);
+          duelState._keyHandler = null;
+        }
+        const banner = $("#duelStatusBanner");
+        if (banner) {
+          let timedOut = [];
+          if (realPlayerState.p1Choice === null) timedOut.push(duelState.player1.name);
+          if (realPlayerState.p2Choice === null) timedOut.push(duelState.player2.name);
+          if (timedOut.length) {
+            banner.textContent = `⏰ Vaqt tugadi: ${timedOut.join(', ')} javob bermadi`;
+            banner.classList.remove("show", "success", "danger", "neutral");
+            banner.classList.add("show", "danger");
+          }
+        }
+        setTimeout(() => evaluateRealPlayerRound(), 400);
+      } else {
+        selectDuelAnswer(null);
+      }
     }
   }, 1000);
 }
@@ -3002,7 +3251,7 @@ function startRealPlayerDuel() {
 }
 
 function loadRealPlayerQuestion() {
-  if (duelState.currentIndex >= 6) { finishDuel(); return; }
+  if (duelState.currentIndex >= 6 || duelState.player1.score >= 6 || duelState.player2.score >= 6) { finishDuel(); return; }
   const q = duelState.questions[duelState.currentIndex];
   $("#duelQuestionNum").textContent = `SAVOL ${duelState.currentIndex + 1} / 6`;
   $("#duelQText").textContent = q.q;
@@ -3012,7 +3261,6 @@ function loadRealPlayerQuestion() {
   realPlayerState.p1Choice = null;
   realPlayerState.p2Choice = null;
 
-  // Render P1 options (keyboard A/S/D/F → index 0/1/2/3)
   const p1Container = $("#duelP1OptionsContainer");
   const p2Container = $("#duelP2OptionsContainer");
   p1Container.innerHTML = "";
@@ -3022,7 +3270,6 @@ function loadRealPlayerQuestion() {
   const keys2 = ['H', 'J', 'K', 'L'];
 
   q.o.forEach((opt, idx) => {
-    // P1 button
     const btn1 = document.createElement("button");
     btn1.className = "duel-opt-btn";
     btn1.dataset.idx = idx;
@@ -3030,7 +3277,6 @@ function loadRealPlayerQuestion() {
     btn1.addEventListener("click", () => selectRealPlayerAnswer(1, idx));
     p1Container.appendChild(btn1);
 
-    // P2 button
     const btn2 = document.createElement("button");
     btn2.className = "duel-opt-btn";
     btn2.dataset.idx = idx;
@@ -3039,11 +3285,13 @@ function loadRealPlayerQuestion() {
     p2Container.appendChild(btn2);
   });
 
-  // Reset status banner
   const banner = $("#duelStatusBanner");
   banner.classList.remove("show", "success", "danger", "neutral");
 
-  // Keyboard listeners
+  if (duelState._keyHandler) {
+    document.removeEventListener('keydown', duelState._keyHandler);
+    duelState._keyHandler = null;
+  }
   const keyHandler = (e) => {
     const k = e.key.toUpperCase();
     const kMap1 = { A: 0, S: 1, D: 2, F: 3 };
@@ -3054,7 +3302,6 @@ function loadRealPlayerQuestion() {
   document.addEventListener('keydown', keyHandler);
   duelState._keyHandler = keyHandler;
 
-  // Timer
   duelState.remainingSec = 10;
   startDuelTimer();
 }
@@ -3353,6 +3600,93 @@ document.addEventListener("DOMContentLoaded", () => {
 let storeCategory = 'all';
 let pendingGiftId = null;
 
+/* ---------- STORE SERVER SYNC (server-authoritative) ----------
+   Balans, inventar va loadout haqiqiy DB'dan olinadi.
+   Client faqat itemId yuboradi — narx/balans/ownership server tomonda tekshiriladi. */
+const STORE_API_TIMEOUT = 8000;
+let storeCatalog = null;   // server katalogi (narx manbasi); null bo'lsa statik STORE_ITEMS
+let storeServer = { loaded: false, loading: false, error: null, offline: false, balance: null };
+let storeLoadSeq = 0;      // race guard — eskirgan javoblar UI'ni buzmasin
+
+function activeStoreCatalog() { return storeCatalog && storeCatalog.length ? storeCatalog : STORE_ITEMS; }
+function storeUserKey() { return String(currentUser?.username || currentUser?.id || '').trim(); }
+
+async function storeApiPost(path, body) {
+  const controller = new AbortController();
+  const timer = setTimeout(() => controller.abort(), STORE_API_TIMEOUT);
+  try {
+    const res = await fetch(path, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(body || {}),
+      signal: controller.signal
+    });
+    let data = null;
+    try { data = await res.json(); } catch (_) { /* not json */ }
+    return { status: res.status, data };
+  } finally { clearTimeout(timer); }
+}
+
+async function fetchStoreCatalog(force = false) {
+  const cached = LS.get('storeCatalogCache', null);
+  if (!force && cached && Array.isArray(cached.items) && cached.items.length && Date.now() - (cached.at || 0) < 5 * 60 * 1000) {
+    storeCatalog = cached.items;
+    return storeCatalog;
+  }
+  try {
+    const res = await fetch('/api/store/catalog', { cache: 'no-store' });
+    if (!res.ok) throw new Error('catalog');
+    const items = await res.json();
+    if (Array.isArray(items) && items.length) {
+      storeCatalog = items;
+      LS.set('storeCatalogCache', { items, at: Date.now() });
+    }
+  } catch (e) {
+    /* offline: kesh yoki statik katalog ishlatiladi */
+    if (!storeCatalog && cached && Array.isArray(cached.items)) storeCatalog = cached.items;
+  }
+  return storeCatalog;
+}
+
+function applyServerStoreState(serverState) {
+  if (!currentUser || !serverState) return;
+  if (Number.isFinite(serverState.balance)) currentUser.points = serverState.balance;
+  const st = storeState();
+  if (Array.isArray(serverState.inventory)) st.inventory = serverState.inventory.slice();
+  if (serverState.equipped && typeof serverState.equipped === 'object') st.equipped = { ...serverState.equipped };
+  saveUsersAndCurrent();
+}
+
+async function storeFetchState() {
+  return storeApiPost('/api/store/state', { username: storeUserKey(), points: currentUser?.points || 0 });
+}
+
+function storeSkeletonHTML(n = 8) {
+  return Array.from({ length: n }, () =>
+    `<div class="store-item store-skeleton" aria-hidden="true"><div class="sk sk-art"></div><div class="sk sk-line w60"></div><div class="sk sk-line w90"></div><div class="sk sk-line w40"></div></div>`
+  ).join('');
+}
+
+function storeStateNoteHTML() {
+  if (!storeServer.error) return '';
+  const cls = storeServer.offline ? 'warn' : 'error';
+  const text = storeServer.offline ? '⚠️ Server bilan aloqa yo\u2018q — offline rejim' : `❌ ${storeServer.error}`;
+  return `<div class="store-state-note ${cls}" role="alert"><span>${text}</span><button class="store-retry-btn" data-store-retry type="button">Qayta urinish</button></div>`;
+}
+
+function setPurchaseBusy(btn, busy, busyText = '⏳ Sotib olinmoqda...') {
+  if (!btn) return;
+  if (busy) {
+    btn.dataset.origText = btn.textContent;
+    btn.textContent = busyText;
+    btn.disabled = true;
+  } else {
+    btn.textContent = btn.dataset.origText || btn.textContent;
+    btn.disabled = false;
+    delete btn.dataset.origText;
+  }
+}
+
 function storeState(user = currentUser) {
   if (!user) return { inventory: [], equipped: {} };
   if (!user.store || typeof user.store !== 'object') user.store = { inventory: [], equipped: {} };
@@ -3361,7 +3695,7 @@ function storeState(user = currentUser) {
   return user.store;
 }
 
-function storeItem(id) { return STORE_ITEMS.find(item => item.id === id); }
+function storeItem(id) { return activeStoreCatalog().find(item => item.id === id); }
 function storeOwned(item) { return !!currentUser && storeState().inventory.includes(item.id); }
 
 function storeUnlockLabel(req) {
@@ -3386,11 +3720,47 @@ function storeRequirementMet(req) {
 
 function storeRarity(item) { return RARITY_LABELS[item.rarity] || item.rarity; }
 
-function renderStore() {
+async function renderStore(force = false) {
+  if (!currentUser) return;
+  const grid = $('#storeGrid');
+  if (!grid) return;
+  const seq = ++storeLoadSeq;
+  if (!storeServer.loaded || force) {
+    storeServer.loading = true;
+    grid.innerHTML = storeSkeletonHTML(8); // LOADING state
+  }
+  await fetchStoreCatalog(force);
+  if (seq !== storeLoadSeq) return; // stale response
+  try {
+    const res = await storeFetchState();
+    if (seq !== storeLoadSeq) return;
+    if (res.status === 200 && res.data?.ok) {
+      applyServerStoreState(res.data); // balans/inventar/loadout — DB'dan
+      storeServer = { loaded: true, loading: false, error: null, offline: false, balance: res.data.balance };
+    } else {
+      storeServer = {
+        loaded: true, loading: false,
+        error: res.data?.error || `Server xatosi (${res.status})`,
+        offline: false, balance: storeServer.balance ?? currentUser.points
+      };
+    }
+  } catch (err) {
+    if (seq !== storeLoadSeq) return;
+    // Offline fallback — lokal holat bilan davom etamiz (dev/demo rejim)
+    storeServer = {
+      loaded: true, loading: false,
+      error: 'Serverga ulanolmadi', offline: true,
+      balance: storeServer.balance ?? currentUser.points
+    };
+  }
+  renderStoreViews();
+}
+
+function renderStoreViews() {
   if (!currentUser) return;
   const state = storeState();
   const balance = $('#storeBalanceValue');
-  if (balance) balance.textContent = (currentUser.points || 0).toLocaleString();
+  if (balance) balance.textContent = (storeServer.balance ?? currentUser.points ?? 0).toLocaleString();
   const name = $('#storeAvatarName');
   if (name) name.textContent = currentUser.username || currentUser.firstname || 'Player';
   renderStoreAvatar(state);
@@ -3401,13 +3771,20 @@ function renderStore() {
 function renderStoreCatalog(state = storeState()) {
   const grid = $('#storeGrid');
   if (!grid) return;
-  const items = storeCategory === 'all' ? STORE_ITEMS : STORE_ITEMS.filter(item => item.type === storeCategory);
+  const catalog = activeStoreCatalog();
+  const items = storeCategory === 'all' ? catalog : catalog.filter(item => item.type === storeCategory);
   const count = $('#storeCatalogCount');
   if (count) count.textContent = `${items.length} buyum`;
-  grid.innerHTML = items.map(item => {
+  if (!items.length) {
+    grid.innerHTML = storeStateNoteHTML() +
+      `<div class="store-empty-catalog" role="status"><span class="store-empty-icon">🛒</span><span>Bu kategoriyada buyumlar yo\u2018q</span></div>`;
+    return;
+  }
+  const balance = storeServer.balance ?? (currentUser.points || 0);
+  grid.innerHTML = storeStateNoteHTML() + items.map(item => {
     const owned = state.inventory.includes(item.id);
     const locked = !storeRequirementMet(item.unlockReq);
-    const affordable = (currentUser.points || 0) >= item.price;
+    const affordable = balance >= item.price;
     const action = item.type === 'gift'
       ? `<button class="store-item-action" data-gift="${item.id}">🎁 Yuborish</button>`
       : owned
@@ -3447,7 +3824,7 @@ function renderStoreInventory(state = storeState()) {
   const list = $('#storeInventory');
   const equippedList = $('#storeEquippedList');
   const count = $('#storeInventoryCount');
-  if (count) count.textContent = `${state.inventory.length} / ${STORE_ITEMS.length}`;
+  if (count) count.textContent = `${state.inventory.length} / ${activeStoreCatalog().length}`;
   if (equippedList) {
     const equipped = Object.entries(state.equipped).map(([type, id]) => ({ type, item: storeItem(id) })).filter(x => x.item);
     equippedList.innerHTML = equipped.length ? equipped.map(({ type, item }) => `<button class="store-equipped-pill" data-unequip="${type}" title="Olib tashlash"><span>${item.icon}</span>${item.name.replace(/^\S+\s/, '')} <b>×</b></button>`).join('') : '<span class="store-empty-equipped">Loadout bo\'sh</span>';
@@ -3490,6 +3867,11 @@ function bindStore() {
     const remove = e.target.closest('[data-unequip]');
     if (remove) unequipStoreItem(remove.dataset.unequip);
   });
+  /* Server xato/offline holatida "Qayta urinish" */
+  const storePage = $('#page-store');
+  if (storePage) storePage.addEventListener('click', e => {
+    if (e.target.closest('[data-store-retry]')) renderStore(true);
+  });
   const confirm = $('#confirmGiftBtn');
   if (confirm) confirm.addEventListener('click', () => { if (pendingGiftId) buyStoreItem(pendingGiftId); });
   const giftChoice = $('#giftChoice');
@@ -3498,7 +3880,7 @@ function bindStore() {
   if (sendGift) sendGift.addEventListener('click', sendGiftToUser);
 }
 
-function giftItems() { return STORE_ITEMS.filter(item => item.type === 'gift'); }
+function giftItems() { return activeStoreCatalog().filter(item => item.type === 'gift'); }
 function openSendGiftModal(itemId) {
   if (!currentUser) return;
   const recipients = users.filter(user => user.id !== currentUser.id);
@@ -3515,24 +3897,61 @@ function updateGiftPrice() {
   const price = $('#giftSendPrice');
   if (price) price.textContent = item ? `${item.price} ball` : '0 ball';
 }
-function sendGiftToUser() {
+async function sendGiftToUser() {
   const recipient = userById($('#giftRecipient')?.value);
   const item = storeItem($('#giftChoice')?.value);
   if (!currentUser || !recipient || !item) return;
+  if (recipient.username === currentUser.username) return showToast('O\u2018zingizga sovg\u2018a yubora olmaysiz', 'error');
   if ((currentUser.points || 0) < item.price) return showToast('Ball yetarli emas!', 'error');
-  currentUser.points -= item.price;
-  recipient.gifts = Array.isArray(recipient.gifts) ? recipient.gifts : [];
-  recipient.giftHistory = Array.isArray(recipient.giftHistory) ? recipient.giftHistory : [];
-  currentUser.giftHistory = Array.isArray(currentUser.giftHistory) ? currentUser.giftHistory : [];
-  const gift = { id: `gift_${Date.now()}`, itemId: item.id, from: currentUser.id, to: recipient.id, createdAt: Date.now() };
-  recipient.gifts.push(gift);
-  recipient.giftHistory.push(gift);
-  currentUser.giftHistory.push(gift);
-  saveUsersAndCurrent();
-  closeModal('#sendGiftModal');
-  showToast(`🎁 ${recipient.firstname}ga sovg'a yuborildi!`, 'success');
-  triggerPurchaseConfetti();
-  refreshStoreViews();
+
+  const sendBtn = $('#sendGiftConfirm');
+  setPurchaseBusy(sendBtn, true, '⏳ Yuborilmoqda...');
+  try {
+    // Atomik gift: balans server DB'da yechiladi, item DB'da qabul qiluvchiga tushadi
+    const res = await storeApiPost('/api/store/gift', {
+      username: storeUserKey(),
+      recipient: recipient.username,
+      itemId: item.id,
+      points: currentUser.points || 0
+    });
+    if (res.status === 200 && res.data?.ok) {
+      currentUser.points = res.data.balance;
+      storeServer.balance = res.data.balance;
+      saveUsersAndCurrent();
+      recipient.gifts = Array.isArray(recipient.gifts) ? recipient.gifts : [];
+      recipient.giftHistory = Array.isArray(recipient.giftHistory) ? recipient.giftHistory : [];
+      currentUser.giftHistory = Array.isArray(currentUser.giftHistory) ? currentUser.giftHistory : [];
+      const gift = { id: `gift_${Date.now()}`, itemId: item.id, from: currentUser.id, to: recipient.id, createdAt: Date.now() };
+      recipient.gifts.push(gift);
+      recipient.giftHistory.push(gift);
+      currentUser.giftHistory.push(gift);
+      saveUsersAndCurrent();
+      closeModal('#sendGiftModal');
+      showToast(`🎁 ${recipient.firstname}ga sovg'a yuborildi!`, 'success');
+      triggerPurchaseConfetti();
+      refreshStoreViews();
+    } else {
+      showToast(res.data?.error || 'Sovg\u2018a yuborilmadi', 'error');
+    }
+  } catch (err) {
+    // Offline fallback — server mavjud emas (dev/demo rejim): lokal saqlanadi
+    currentUser.points = Math.max(0, (currentUser.points || 0) - item.price);
+    storeServer.balance = currentUser.points;
+    recipient.gifts = Array.isArray(recipient.gifts) ? recipient.gifts : [];
+    recipient.giftHistory = Array.isArray(recipient.giftHistory) ? recipient.giftHistory : [];
+    currentUser.giftHistory = Array.isArray(currentUser.giftHistory) ? currentUser.giftHistory : [];
+    const gift = { id: `gift_${Date.now()}`, itemId: item.id, from: currentUser.id, to: recipient.id, createdAt: Date.now() };
+    recipient.gifts.push(gift);
+    recipient.giftHistory.push(gift);
+    currentUser.giftHistory.push(gift);
+    saveUsersAndCurrent();
+    closeModal('#sendGiftModal');
+    showToast('⚠️ Serverga ulanolmadi — sovg\u2018a lokal saqlandi', 'info');
+    triggerPurchaseConfetti();
+    refreshStoreViews();
+  } finally {
+    setPurchaseBusy(sendBtn, false, 'Yuborish');
+  }
 }
 
 function showGiftModal(itemId) {
@@ -3553,39 +3972,93 @@ function showGiftModal(itemId) {
   openModal('#giftModal');
 }
 
-function buyStoreItem(itemId) {
+async function buyStoreItem(itemId) {
   const item = storeItem(itemId);
   if (!item || !currentUser) return;
   const state = storeState();
   if (state.inventory.includes(item.id)) return closeModal('#giftModal');
   if (!storeRequirementMet(item.unlockReq)) return showToast(storeUnlockLabel(item.unlockReq), 'info');
   if ((currentUser.points || 0) < item.price) return showToast('Ball yetarli emas!', 'error');
-  currentUser.points -= item.price;
-  state.inventory.push(item.id);
-  saveUsersAndCurrent();
-  pendingGiftId = null;
-  closeModal('#giftModal');
-  showToast("🎉 Sovg'a olindi!", "success");
-  triggerPurchaseConfetti();
-  refreshStoreViews();
+
+  const confirmBtn = $('#confirmGiftBtn');
+  setPurchaseBusy(confirmBtn, true);
+  try {
+    // FAQAT itemId yuboriladi — narx server DB katalogidan olinadi (client price ishonilmaydi)
+    const res = await storeApiPost('/api/store/purchase', {
+      username: storeUserKey(),
+      itemId,
+      points: currentUser.points || 0
+    });
+    if (res.status === 200 && res.data?.ok) {
+      // Server javobi — yagona haqiqat manbasi. Balans/inventar darhol yangilanadi.
+      currentUser.points = res.data.balance;
+      storeServer.balance = res.data.balance;
+      state.inventory = Array.isArray(res.data.inventory) ? res.data.inventory : [...state.inventory, item.id];
+      if (res.data.equipped && typeof res.data.equipped === 'object') state.equipped = { ...state.equipped, ...res.data.equipped };
+      saveUsersAndCurrent();
+      pendingGiftId = null;
+      closeModal('#giftModal');
+      showToast(`🎉 ${item.name.replace(/^\S+\s/, '')} sotib olindi!`, 'success');
+      triggerPurchaseConfetti();
+      refreshStoreViews();
+    } else {
+      // Server rad etdi (balans yetarli emas / allaqachon bor / xato)
+      showToast(res.data?.error || 'Xarid bajarilmadi', 'error');
+    }
+  } catch (err) {
+    // Offline fallback — server mavjud emas (dev/demo rejim): lokal saqlanadi
+    currentUser.points = Math.max(0, (currentUser.points || 0) - item.price);
+    storeServer.balance = currentUser.points;
+    state.inventory.push(item.id);
+    saveUsersAndCurrent();
+    pendingGiftId = null;
+    closeModal('#giftModal');
+    showToast('⚠️ Serverga ulanolmadi — xarid lokal saqlandi', 'info');
+    triggerPurchaseConfetti();
+    refreshStoreViews();
+  } finally {
+    setPurchaseBusy(confirmBtn, false);
+  }
 }
 
-function equipStoreItem(itemId) {
+async function equipStoreItem(itemId) {
   const item = storeItem(itemId);
   const state = storeState();
   if (!item || !state.inventory.includes(item.id)) return;
-  state.equipped[item.type] = item.id;
+  const prev = state.equipped[item.type] ?? null;
+  state.equipped[item.type] = item.id; // optimistic UI — darhol ko'rinadi
   saveUsersAndCurrent();
   showToast(`${item.name} taqildi!`, 'success');
   refreshStoreViews();
+  try {
+    const res = await storeApiPost('/api/store/equip', { username: storeUserKey(), itemId });
+    if (res.status === 200 && res.data?.ok) {
+      state.equipped = res.data.equipped || state.equipped;
+      saveUsersAndCurrent();
+      refreshStoreViews();
+    } else if (res.data?.error) {
+      state.equipped[item.type] = prev; // rollback
+      saveUsersAndCurrent();
+      refreshStoreViews();
+      showToast(res.data.error, 'error');
+    }
+  } catch (err) { /* offline: lokal holatda qoldi */ }
 }
 
-function unequipStoreItem(type) {
+async function unequipStoreItem(type) {
   const state = storeState();
   if (!state.equipped[type]) return;
   state.equipped[type] = null;
   saveUsersAndCurrent();
   refreshStoreViews();
+  try {
+    const res = await storeApiPost('/api/store/unequip', { username: storeUserKey(), slot: type });
+    if (res.status === 200 && res.data?.ok) {
+      state.equipped = res.data.equipped || state.equipped;
+      saveUsersAndCurrent();
+      refreshStoreViews();
+    }
+  } catch (err) { /* offline: lokal holatda qoldi */ }
 }
 
 function refreshStoreViews() {

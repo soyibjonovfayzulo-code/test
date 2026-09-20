@@ -660,6 +660,101 @@ app.post('/api/push/send', authMiddleware, async (req, res) => {
   res.json({ success: true, total: targetTokens.length, ...results });
 });
 
+// -------------------------
+// STORE / DO'KON (server-authoritative)
+// Client faqat itemId yuboradi — narx, balans, ownership server DB'da tekshiriladi.
+// -------------------------
+const store = require('./store.cjs');
+
+// Katalog seed (server ishga tushganda narxlar DB bilan sinxronlanadi)
+store.seedStoreItems(db).then(() => {
+  console.log('✅ Store katalogi DB bilan sinxronlandi');
+}).catch(err => console.error('Store seed xatosi:', err.message));
+
+// Katalog — clientga server narxlari qaytadi
+app.get('/api/store/catalog', async (req, res) => {
+  try {
+    const rows = await new Promise((resolve, reject) => {
+      db.all('SELECT id, name, type, price, rarity, icon, description, unlock_req FROM store_items WHERE active = 1 ORDER BY sort_order ASC', [], (err, rows) => err ? reject(err) : resolve(rows || []));
+    });
+    res.json(rows.map(r => ({
+      id: r.id, name: r.name, type: r.type, price: r.price, rarity: r.rarity,
+      icon: r.icon, description: r.description,
+      unlockReq: r.unlock_req ? JSON.parse(r.unlock_req) : null
+    })));
+  } catch (err) {
+    res.status(500).json({ error: 'Katalog yuklanmadi' });
+  }
+});
+
+// Holat — balans, inventar, loadout (hammasi DB'dan)
+app.post('/api/store/state', async (req, res) => {
+  const userKey = store.sanitizeUserKey(req.body?.username || req.body?.userId);
+  if (!userKey) return res.status(400).json({ error: 'username talab qilinadi' });
+  try {
+    const state = await store.getStoreState(db, userKey, req.body?.points);
+    res.json({ ok: true, ...state });
+  } catch (err) {
+    res.status(500).json({ error: 'Holat olinmadi' });
+  }
+});
+
+// PURCHASE — atomik tranzaksiya. Body'dagi price E'TIBORGA OLINMAYDI.
+app.post('/api/store/purchase', async (req, res) => {
+  const userKey = store.sanitizeUserKey(req.body?.username || req.body?.userId);
+  const itemId = String(req.body?.itemId || '').trim();
+  if (!userKey) return res.status(400).json({ error: 'username talab qilinadi' });
+  if (!itemId) return res.status(400).json({ error: 'itemId talab qilinadi' });
+  const result = await store.purchaseItem(db, userKey, itemId, req.body?.points);
+  if (!result.ok) return res.status(result.code || 400).json({ error: result.error });
+  const state = await store.getStoreState(db, userKey);
+  res.json({ ok: true, balance: result.balance, item: result.item, inventory: state.inventory, equipped: state.equipped });
+});
+
+// EQUIP — faqat inventardagi buyum taqiladi
+app.post('/api/store/equip', async (req, res) => {
+  const userKey = store.sanitizeUserKey(req.body?.username || req.body?.userId);
+  const itemId = String(req.body?.itemId || '').trim();
+  if (!userKey) return res.status(400).json({ error: 'username talab qilinadi' });
+  if (!itemId) return res.status(400).json({ error: 'itemId talab qilinadi' });
+  try {
+    const result = await store.equipItem(db, userKey, itemId);
+    if (!result.ok) return res.status(result.code || 400).json({ error: result.error });
+    const state = await store.getStoreState(db, userKey);
+    res.json({ ok: true, slot: result.slot, itemId: result.itemId, equipped: state.equipped });
+  } catch (err) {
+    res.status(500).json({ error: 'Taqish bajarilmadi' });
+  }
+});
+
+// UNEQUIP
+app.post('/api/store/unequip', async (req, res) => {
+  const userKey = store.sanitizeUserKey(req.body?.username || req.body?.userId);
+  const slot = String(req.body?.slot || '').trim();
+  if (!userKey) return res.status(400).json({ error: 'username talab qilinadi' });
+  try {
+    const result = await store.unequipItem(db, userKey, slot);
+    if (!result.ok) return res.status(result.code || 400).json({ error: result.error });
+    const state = await store.getStoreState(db, userKey);
+    res.json({ ok: true, slot: result.slot, equipped: state.equipped });
+  } catch (err) {
+    res.status(500).json({ error: 'Olish bajarilmadi' });
+  }
+});
+
+// GIFT — sovg'a yuborish (yuboruvchi balansi atomik yechiladi, item qabul qiluvchiga tushadi)
+app.post('/api/store/gift', async (req, res) => {
+  const userKey = store.sanitizeUserKey(req.body?.username || req.body?.userId);
+  const recipientKey = store.sanitizeUserKey(req.body?.recipient);
+  const itemId = String(req.body?.itemId || '').trim();
+  if (!userKey) return res.status(400).json({ error: 'username talab qilinadi' });
+  if (!recipientKey) return res.status(400).json({ error: 'Qabul qiluvchi talab qilinadi' });
+  if (!itemId) return res.status(400).json({ error: 'itemId talab qilinadi' });
+  const result = await store.giftItem(db, userKey, recipientKey, itemId, req.body?.points);
+  if (!result.ok) return res.status(result.code || 400).json({ error: result.error });
+  res.json({ ok: true, balance: result.balance, item: result.item });
+});
+
 // Health check
 app.get('/api/health', (req, res) => {
   res.json({ status: 'ok', time: new Date().toISOString() });

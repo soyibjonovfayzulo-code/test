@@ -7761,3 +7761,442 @@ textarea {
 .devtools-guard__card { width:min(420px,100%); padding:30px; border:1px solid rgba(96,165,250,.4); border-radius:22px; background:linear-gradient(145deg,#102650,#09182f); box-shadow:0 24px 70px rgba(0,0,0,.45); text-align:center; }
 .devtools-guard__icon { display:grid; width:52px; height:52px; place-items:center; margin:0 auto 15px; border-radius:16px; background:rgba(59,130,246,.2); color:#60a5fa; font:800 19px/1 ui-monospace,monospace; }
 .devtools-guard__card h2 { margin:0 0 8px; font-size:20px; color:#fff; }.devtools-guard__card p { margin:0; color:#b8c7df; line-height:1.55; }
+
+/* ==========================================================================
+   T5 — QUIZ ICHI MOBILE UX (test ichidagi savollar, overflow, touch target)
+   ========================================================================== */
+
+/* --- Dashboard ortda ko'rinmasligi: #page-test.active mustahkam background --- */
+.page#page-test {
+  background: var(--bg) !important;
+  min-height: 100vh;
+  min-height: 100dvh;
+}
+#page-test.active {
+  display: block !important;
+  position: relative;
+  z-index: 1;
+}
+
+/* --- Option tugmalari: 48px MINIMUM touch target + katta mobil moslashuv --- */
+@media (max-width: 430px) {
+  .option {
+    min-height: 52px !important;
+    padding: 12px 14px !important;
+    border-radius: 14px !important;
+    gap: 11px !important;
+  }
+  .option-text { font-size: 14px; line-height: 1.45; }
+  .option-mark,
+  .option-letter {
+    width: 32px; height: 32px; font-size: 13px;
+    flex: 0 0 32px;
+    border-radius: 9px;
+  }
+  .test-timer {
+    padding: 8px 14px;
+    font-size: 18px;
+    min-height: 40px;
+    border-radius: 12px;
+  }
+  .test-header {
+    gap: 10px;
+    flex-direction: column;
+    align-items: stretch;
+    margin-bottom: 14px;
+  }
+  .test-header-info h2 {
+    font-size: 16.5px;
+    line-height: 1.35;
+    word-break: break-word;
+  }
+  .question-area {
+    padding: 18px 16px !important;
+    border-radius: 18px;
+  }
+  .question-text,
+  .question-area h3,
+  .question-area p {
+    word-break: break-word;
+    overflow-wrap: anywhere;
+  }
+  .test-mini-stats {
+    gap: 10px;
+    margin-bottom: 14px;
+  }
+  .mini-stat {
+    padding: 5px 10px;
+    font-size: 12px;
+    border-radius: 18px;
+  }
+  .question-nav {
+    grid-template-columns: repeat(5, minmax(0, 1fr));
+    gap: 6px;
+  }
+  .qn-btn {
+    min-height: 44px;
+    min-width: 44px;
+    font-size: 13px;
+    border-radius: 10px;
+  }
+  .test-nav-buttons {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 10px;
+  }
+  .test-nav-buttons .btn {
+    min-height: 48px;
+    width: 100%;
+    font-size: 15px;
+    border-radius: 14px;
+  }
+  .test-nav-center {
+    order: 3;
+    width: 100%;
+    justify-content: space-between;
+    flex-wrap: nowrap;
+    gap: 10px;
+  }
+  .test-nav-center .btn {
+    flex: 1 1 0;
+    min-width: 0;
+  }
+  .modal-overlay {
+    padding: 10px;
+    z-index: 2000 !important;
+    background: rgba(3, 7, 18, 0.78);
+  }
+  .modal {
+    max-height: calc(100dvh - 20px) !important;
+    border-radius: 22px;
+  }
+  .modal-header,
+  .modal-body,
+  .modal-footer {
+    padding: 16px;
+  }
+  .modal-footer {
+    flex-direction: column;
+    gap: 10px;
+  }
+  .modal-footer .btn {
+    width: 100%;
+    min-height: 48px;
+    font-size: 15px;
+  }
+  .test-progress-text {
+    font-size: 12.5px;
+    line-height: 1.5;
+    word-break: break-word;
+  }
+}
+
+@media (max-width: 390px) {
+  .option {
+    min-height: 50px !important;
+    padding: 11px 13px !important;
+    border-radius: 13px !important;
+    gap: 10px !important;
+  }
+  .option-text { font-size: 13.5px; }
+  .option-mark,
+  .option-letter {
+    width: 30px; height: 30px; font-size: 12.5px;
+    flex: 0 0 30px;
+    border-radius: 8px;
+  }
+  .question-area { padding: 16px 14px !important; }
+  .test-header-info h2 { font-size: 16px; }
+  .test-timer { font-size: 17px; padding: 7px 12px; }
+  .mini-stat { padding: 4px 9px; font-size: 11.5px; }
+  .qn-btn { min-height: 42px; min-width: 42px; font-size: 12.5px; }
+}
+
+@media (max-width: 375px) {
+  .option {
+    min-height: 49px !important;
+    padding: 10px 12px !important;
+    gap: 9.5px !important;
+  }
+  .option-text { font-size: 13px; line-height: 1.5; }
+  .option-mark,
+  .option-letter {
+    width: 29px; height: 29px; font-size: 12px;
+    flex: 0 0 29px;
+  }
+  .test-header-info h2 { font-size: 15.5px; }
+  .test-timer { font-size: 16px; padding: 6.5px 11px; }
+  .question-area { padding: 15px 13px !important; border-radius: 17px; }
+  .qn-btn { min-height: 41px; min-width: 41px; }
+  .option-badge { padding: 3px 8px; font-size: 10.5px; }
+}
+
+@media (max-width: 360px) {
+  .option {
+    min-height: 48px !important;
+    padding: 10px 11px !important;
+    border-radius: 12px !important;
+    gap: 9px !important;
+  }
+  .option-text { font-size: 12.8px; }
+  .option-mark,
+  .option-letter {
+    width: 28px; height: 28px; font-size: 11.5px;
+    flex: 0 0 28px;
+    border-radius: 7px;
+  }
+  .test-header-info h2 { font-size: 15px; }
+  .test-timer { font-size: 15.5px; }
+  .mini-stat { padding: 4px 8px; font-size: 11px; }
+  .qn-btn { min-height: 40px; min-width: 40px; font-size: 12px; }
+}
+
+@media (max-width: 320px) {
+  .option {
+    min-height: 47px !important;
+    padding: 9px 10px !important;
+    border-radius: 11px !important;
+    gap: 8px !important;
+  }
+  .option-text { font-size: 12px; line-height: 1.5; }
+  .option-mark,
+  .option-letter {
+    width: 27px; height: 27px; font-size: 11px;
+    flex: 0 0 27px;
+    border-radius: 7px;
+  }
+  .option-badge {
+    position: static !important;
+    transform: none !important;
+    margin-left: auto;
+    padding: 2.5px 7px;
+    font-size: 10px;
+    border-radius: 8px;
+  }
+  .test-header-info h2 { font-size: 14.5px; }
+  .test-timer { font-size: 14.5px; padding: 6px 10px; }
+  .question-area { padding: 14px 11px !important; border-radius: 16px; }
+  .test-progress-text { font-size: 11.5px; }
+  .mini-stat { padding: 3.5px 7px; font-size: 10.5px; }
+  .question-nav { gap: 5px; }
+  .qn-btn { min-height: 38px; min-width: 38px; font-size: 11.5px; border-radius: 9px; }
+  .test-nav-buttons .btn {
+    min-height: 46px;
+    font-size: 14px;
+    border-radius: 13px;
+  }
+}
+
+/* ==========================================================================
+   MUHIM OVERFLOW FIX (NESTED SCROLL):
+   Uzun code/text FAQAT O'Z KONTEYNERIDA scroll bo'lsin, GLOBAL page horizontal
+   scroll bo'lmasin.
+   ========================================================================== */
+
+/* Savol matn + ichki elementlar */
+.question-area,
+.question-text,
+.question-area p,
+.question-area li,
+.question-area div,
+.review-q,
+.review-ans,
+.review-explanation,
+.option-text {
+  word-break: break-word;
+  overflow-wrap: anywhere;
+}
+
+/* Code bloklari — FAQAT ichkarida scroll */
+.question-area pre,
+.question-area code,
+.question-area .code,
+.review-explanation pre,
+.review-explanation code,
+pre > code,
+.code-block,
+.code-snippet {
+  max-width: 100% !important;
+  overflow-x: auto !important;
+  overflow-y: hidden;
+  -webkit-overflow-scrolling: touch;
+  overscroll-behavior-x: contain;
+  word-break: normal;
+  overflow-wrap: normal;
+  white-space: pre;
+  box-sizing: border-box;
+  display: block;
+}
+
+/* Inline code — scroll emas, faqat wrap */
+.question-area p code,
+.question-area li code,
+.review-explanation p code,
+.option-text code {
+  display: inline;
+  white-space: normal;
+  overflow-wrap: anywhere;
+  word-break: break-word;
+  padding: 1px 5px;
+  border-radius: 5px;
+  background: rgba(99, 102, 241, 0.12);
+  border: 1px solid rgba(99, 102, 241, 0.2);
+  font-size: 0.9em;
+  font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+  color: var(--text);
+}
+
+/* Pre tag mustahkamligi */
+.question-area pre,
+.review-explanation pre,
+pre {
+  margin: 10px 0;
+  padding: 12px 14px;
+  background: rgba(2, 6, 23, 0.75);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+  font-size: 13px;
+  line-height: 1.6;
+  color: #e2e8f0;
+  box-sizing: border-box;
+  overscroll-behavior: contain;
+  max-height: 380px;
+  overflow: auto;
+  -webkit-overflow-scrolling: touch;
+}
+
+/* Test navigator ichida ham nested scroll to'g'ri */
+.navigator-area,
+.test-sidebar,
+.question-nav {
+  overscroll-behavior: contain;
+  -webkit-overflow-scrolling: touch;
+  box-sizing: border-box;
+  min-width: 0;
+  max-width: 100%;
+}
+
+/* Safe area notch (quiz pastki tugmalar keyboard yopib ketmasligi) */
+@supports (padding: max(0px)) {
+  #page-test {
+    padding-bottom: max(24px, env(safe-area-inset-bottom));
+  }
+  .test-nav-buttons {
+    padding-bottom: max(0px, env(safe-area-inset-bottom));
+  }
+  .test-body {
+    padding-bottom: max(12px, env(safe-area-inset-bottom));
+  }
+}
+
+/* Reduced motion */
+@media (prefers-reduced-motion: reduce) {
+  .option,
+  .qn-btn,
+  .btn,
+  .filter-chip { transition: none !important; animation: none !important; }
+  .option:hover,
+  .qn-btn:hover,
+  .test-card:hover { transform: none !important; }
+}
+
+/* ============================================================
+   DO'KON (STORE) — LOADING / ERROR / EMPTY STATES
+   ============================================================ */
+.store-skeleton {
+  pointer-events: none;
+  min-height: 240px;
+}
+
+.store-skeleton .sk {
+  background: linear-gradient(90deg, var(--bg) 25%, var(--card-hover) 50%, var(--bg) 75%);
+  background-size: 200% 100%;
+  animation: skeleton-loading 1.5s infinite;
+  border-radius: 8px;
+}
+
+.store-skeleton .sk-art {
+  width: 64px;
+  height: 64px;
+  margin: 0 auto 14px;
+  border-radius: 18px;
+}
+
+.store-skeleton .sk-line {
+  height: 12px;
+  margin: 8px auto;
+}
+
+.store-skeleton .sk-line.w60 { width: 60%; }
+.store-skeleton .sk-line.w90 { width: 90%; }
+.store-skeleton .sk-line.w40 { width: 40%; }
+
+.store-state-note {
+  grid-column: 1 / -1;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 10px 14px;
+  border-radius: var(--radius-sm, 10px);
+  font-size: 13px;
+  font-weight: 600;
+  margin-bottom: 4px;
+}
+
+.store-state-note.warn {
+  background: color-mix(in srgb, var(--warning, #f59e0b) 12%, transparent);
+  border: 1px solid color-mix(in srgb, var(--warning, #f59e0b) 35%, transparent);
+  color: var(--warning, #f59e0b);
+}
+
+.store-state-note.error {
+  background: color-mix(in srgb, var(--danger, #ef4444) 12%, transparent);
+  border: 1px solid color-mix(in srgb, var(--danger, #ef4444) 35%, transparent);
+  color: var(--danger, #ef4444);
+}
+
+.store-retry-btn {
+  background: transparent;
+  border: 1px solid currentColor;
+  color: inherit;
+  font-weight: 700;
+  font-size: 12px;
+  padding: 6px 12px;
+  border-radius: 999px;
+  cursor: pointer;
+  min-height: 32px;
+  flex: 0 0 auto;
+}
+
+.store-retry-btn:hover {
+  background: color-mix(in srgb, currentColor 12%, transparent);
+}
+
+.store-empty-catalog {
+  grid-column: 1 / -1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  padding: 48px 16px;
+  color: var(--muted);
+  font-size: 14px;
+  text-align: center;
+}
+
+.store-empty-catalog .store-empty-icon {
+  font-size: 40px;
+  line-height: 1;
+}
+
+/* Busy holatdagi tugmalar */
+.btn[disabled],
+.store-item-action[disabled] {
+  opacity: 0.65;
+  cursor: not-allowed;
+  pointer-events: none;
+}
+

@@ -757,3 +757,441 @@
     transform: scale(0.99);
   }
 }
+
+/* ==========================================================================
+   T4/T5 YANGI QO'SHILGANLAR
+   Search wrapper, subset chip badge, XP/diff badge, 6 ta mobil breakpoint,
+   global overflow-x ni to'g'rilash.
+   ========================================================================== */
+
+/* --- Global horizontal scroll ni to'g'rilash --- */
+html,
+body {
+  overflow-x: hidden !important;
+  max-width: 100vw;
+}
+
+#page-tests,
+#page-testlist,
+#page-test,
+#page-result {
+  max-width: 100vw !important;
+  overflow-x: hidden !important;
+  box-sizing: border-box;
+}
+
+/* --- Spinner yuklanish (QBANK_LOADING guard) --- */
+#page-tests .spinner {
+  width: 28px;
+  height: 28px;
+  border: 3px solid var(--tt-track);
+  border-top-color: var(--tt-primary);
+  border-radius: 50%;
+  display: inline-block;
+  animation: ttSpin 0.85s linear infinite;
+  margin: 0 auto 12px;
+}
+@keyframes ttSpin {
+  to { transform: rotate(360deg); }
+}
+#page-tests .empty-state .spinner { display: block; }
+#page-tests .empty-state p { margin: 0; }
+
+/* --- Search wrapper (oldin type=hidden edi, endi ko'rinadi) --- */
+.tests-search-wrap {
+  position: relative;
+  width: 100%;
+  max-width: 100%;
+  box-sizing: border-box;
+}
+
+.tests-search-wrap .tests-search-icon {
+  position: absolute;
+  left: 16px;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 40px;
+  height: 40px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--tt-text-muted);
+  pointer-events: none;
+  z-index: 2;
+}
+
+#page-tests #testSearch[type="search"] {
+  display: block;
+  width: 100%;
+  max-width: 100%;
+  height: 48px;
+  min-height: 48px;
+  margin: 0;
+  padding: 0 16px 0 52px;
+  box-sizing: border-box;
+  font-family: inherit;
+  font-size: 14px;
+  font-weight: 600;
+  line-height: 1.2;
+  color: var(--tt-text-main);
+  background: var(--tt-bg-card);
+  border: 1px solid var(--tt-border-card);
+  border-radius: 16px;
+  box-shadow: var(--tt-shadow);
+  outline: none;
+  transition: border-color 0.2s ease, box-shadow 0.2s ease, background 0.2s ease;
+  -webkit-appearance: none;
+  appearance: none;
+}
+
+#page-tests #testSearch[type="search"]::placeholder {
+  color: var(--tt-text-muted);
+  font-weight: 500;
+  opacity: 0.9;
+}
+
+#page-tests #testSearch[type="search"]:focus {
+  border-color: var(--tt-border-hover);
+  box-shadow: 0 0 0 3px var(--tt-primary-soft), var(--tt-shadow);
+  background: var(--tt-bg-card-hover);
+}
+
+/* Safari search cancel button ni to'g'rilash */
+#page-tests #testSearch[type="search"]::-webkit-search-cancel-button {
+  -webkit-appearance: none;
+  appearance: none;
+}
+
+/* --- Filter chip badges (9/9, 4/9, 5/9, 3/9) --- */
+#page-tests .filter-chip .chip-badge {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 26px;
+  height: 18px;
+  padding: 0 6px;
+  margin-left: 7px;
+  border-radius: 999px;
+  font-size: 10px;
+  font-weight: 800;
+  letter-spacing: 0;
+  line-height: 1;
+  background: rgba(255, 255, 255, 0.1);
+  color: inherit;
+  vertical-align: middle;
+}
+#page-tests .filter-chip.active .chip-badge {
+  background: rgba(255, 255, 255, 0.22);
+  color: #ffffff;
+}
+
+/* --- Subject card: XP/diff badge + badges wrapper --- */
+#page-tests .test-card__badges {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  justify-content: flex-start;
+  gap: 6px;
+  flex: 1 1 auto;
+  min-width: 0;
+}
+
+#page-tests .tcard-diff {
+  font-size: 10px;
+  font-weight: 800;
+  letter-spacing: 0.3px;
+  padding: 4px 8px;
+  border-radius: 8px;
+  line-height: 1.2;
+  text-align: right;
+  max-width: 100%;
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  background: var(--tt-primary-soft);
+  border: 1px solid var(--tt-primary-border);
+  color: var(--tt-primary-text);
+}
+#page-tests .tcard-diff.diff-intermediate {
+  background: var(--tt-amber-soft);
+  border: 1px solid var(--tt-amber-border);
+  color: var(--tt-amber-text);
+}
+#page-tests .tcard-diff.diff-advanced {
+  background: rgba(239, 68, 68, 0.14);
+  border: 1px solid rgba(239, 68, 68, 0.4);
+  color: #fca5a5;
+}
+
+#page-tests .tcard-xp {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  font-size: 11px;
+  font-weight: 800;
+  letter-spacing: 0.2px;
+  padding: 4px 9px;
+  border-radius: 999px;
+  line-height: 1.2;
+  color: var(--tt-amber-text);
+  background: var(--tt-amber-soft);
+  border: 1px solid var(--tt-amber-border);
+  white-space: nowrap;
+}
+
+/* --- Old fixed height → auto responsive height (badge qo'shilgani uchun) --- */
+#page-tests .test-card {
+  height: auto !important;
+  min-height: 244px;
+}
+
+/* Desktop grid override oldin height:214px + grid-template-rows → auto qil */
+#page-tests.active #page-tests .test-card,
+#page-tests .test-list .test-card {
+  height: auto !important;
+  min-height: 244px;
+}
+
+@media (min-width: 1024px) {
+  /* Old premium grid override L599-L604: height 214px → auto, grid rows → flexible */
+  #page-tests .test-card {
+    min-height: 230px !important;
+    grid-template-rows: minmax(96px, auto) auto 6px auto !important;
+    align-content: start;
+  }
+}
+
+/* ==========================================================================
+   6 TA EXPLICIT MOBILE BREAKPOINT (talab qilingan 320 → 430)
+   ========================================================================== */
+
+/* --- 430px va kichikroq (Pixel 7 Pro, iPhone 14 Plus) --- */
+@media (max-width: 430px) {
+  #page-tests { padding: 8px 14px 28px !important; }
+  #page-tests .hero-card { padding: 14px 16px; min-height: 0; border-radius: 18px; }
+  #page-tests .hero-heading { font-size: 16px; }
+  #page-tests .hero-subtext { font-size: 11px; line-height: 1.45; }
+  #page-tests .hero-mascot-wrapper { right: 2px; bottom: -8px; width: 78px; height: 78px; }
+
+  #page-tests #testSearch[type="search"] { height: 46px; padding-left: 48px; font-size: 13.5px; border-radius: 14px; }
+  #page-tests .tests-search-icon { left: 12px; }
+
+  #page-tests .filter-chip { padding: 8px 14px; font-size: 11.5px; }
+  #page-tests .filter-chip .chip-badge { margin-left: 5px; font-size: 9.5px; }
+
+  #page-tests .test-list { grid-template-columns: 1fr; gap: 11px; }
+
+  #page-tests .test-card {
+    min-height: 240px;
+    padding: 14px 14px 13px;
+    border-radius: 18px;
+    gap: 9px;
+  }
+
+  #page-tests .lang-box { width: 46px; height: 46px; border-radius: 13px; }
+  #page-tests .lang-box svg { width: 25px; height: 25px; }
+
+  #page-tests .test-card__title { font-size: 15.5px; }
+  #page-tests .test-card__desc { font-size: 11.5px; -webkit-line-clamp: 2; min-height: 2.5em; }
+  #page-tests .test-card__meta { font-size: 10.5px; gap: 5px; }
+
+  #page-tests .tcard-diff { font-size: 9.5px; padding: 3.5px 7px; }
+  #page-tests .tcard-xp { font-size: 10.5px; padding: 3.5px 8px; }
+
+  #page-tests .btn-action { min-height: 44px; font-size: 13px; border-radius: 12px; padding: 10px 14px; }
+}
+
+/* --- 412px (Pixel 7, Samsung S23) --- */
+@media (max-width: 412px) {
+  #page-tests { padding: 8px 12px 28px !important; }
+  #page-tests .hero-card { padding: 13px 15px; border-radius: 17px; }
+  #page-tests .hero-heading { font-size: 15.5px; }
+  #page-tests .hero-mascot-wrapper { width: 74px; height: 74px; }
+  #page-tests .hero-text { max-width: calc(100% - 76px); }
+
+  #page-tests .test-card { min-height: 238px; padding: 13px 13px 12px; border-radius: 17px; }
+  #page-tests .tcard-diff { font-size: 9.2px; }
+  #page-tests .tcard-xp { font-size: 10px; }
+  #page-tests .btn-action { min-height: 43px; }
+}
+
+/* --- 390px (iPhone 12/13/14/15) --- */
+@media (max-width: 390px) {
+  #page-tests { padding: 7px 11px 26px !important; }
+  #page-tests .hero-card { padding: 12px 14px; }
+  #page-tests .hero-heading { font-size: 15px; }
+  #page-tests .hero-subtext { font-size: 10.8px; }
+  #page-tests .hero-mascot-wrapper { width: 70px; height: 70px; right: 0; bottom: -10px; }
+
+  #page-tests #testSearch[type="search"] { height: 45px; padding-left: 46px; font-size: 13px; border-radius: 13px; }
+
+  #page-tests .filter-chip { padding: 7.5px 13px; font-size: 11px; }
+
+  #page-tests .test-card {
+    min-height: 236px;
+    padding: 13px 12px 12px;
+    border-radius: 16px;
+    gap: 8.5px;
+  }
+  #page-tests .test-card__badges { gap: 5px; }
+  #page-tests .tcard-diff,
+  #page-tests .tcard-xp { letter-spacing: 0; }
+  #page-tests .test-card__meta { font-size: 10.2px; }
+  #page-tests .test-card__title { font-size: 15px; }
+  #page-tests .test-card__desc { font-size: 11px; }
+  #page-tests .btn-action { min-height: 42px; font-size: 12.5px; }
+}
+
+/* --- 375px (iPhone SE 3gen / iPhone 11 Pro) --- */
+@media (max-width: 375px) {
+  #page-tests { padding: 7px 10px 24px !important; }
+  #page-tests .hero-card { padding: 11px 13px; border-radius: 16px; }
+  #page-tests .hero-heading { font-size: 14.5px; }
+  #page-tests .hero-subtext { font-size: 10.5px; }
+  #page-tests .hero-mascot-wrapper { width: 66px; height: 66px; }
+  #page-tests .hero-text { max-width: calc(100% - 70px); }
+
+  #page-tests #testSearch[type="search"] { height: 44px; padding: 0 12px 0 42px; font-size: 12.8px; }
+  #page-tests .tests-search-icon { left: 10px; width: 36px; }
+
+  #page-tests .filter-chip { padding: 7px 12px; font-size: 10.8px; }
+  #page-tests .filter-chip .chip-badge { font-size: 9px; padding: 0 5px; }
+
+  #page-tests .test-card {
+    min-height: 232px;
+    padding: 12px 12px 11px;
+    border-radius: 16px;
+    gap: 8px;
+  }
+
+  #page-tests .lang-box { width: 42px; height: 42px; border-radius: 12px; }
+  #page-tests .lang-box svg { width: 23px; height: 23px; }
+
+  #page-tests .test-card__top { gap: 8px; }
+  #page-tests .test-card__badges { gap: 4.5px; }
+  #page-tests .tcard-diff { font-size: 8.8px; padding: 3px 6.5px; }
+  #page-tests .tcard-xp { font-size: 9.8px; padding: 3px 7.5px; gap: 3px; }
+
+  #page-tests .test-card__title { font-size: 14.5px; line-height: 1.3; }
+  #page-tests .test-card__desc { font-size: 10.8px; line-height: 1.45; }
+  #page-tests .test-card__meta { font-size: 10px; }
+
+  #page-tests .btn-action { min-height: 42px; font-size: 12.5px; padding: 9px 12px; }
+  #page-tests .progress-pct { font-size: 10.5px; min-width: 28px; }
+  #page-tests .progress-done { font-size: 11px; }
+}
+
+/* --- 360px (Samsung A seriyali / kichik) --- */
+@media (max-width: 360px) {
+  #page-tests { padding: 6px 10px 24px !important; }
+  #page-tests .hero-card { padding: 11px 12px; }
+  #page-tests .hero-heading { font-size: 14px; }
+  #page-tests .hero-mascot-wrapper { width: 60px; height: 60px; right: 0; }
+  #page-tests .hero-text { max-width: calc(100% - 64px); }
+
+  #page-tests #testSearch[type="search"] { height: 43px; font-size: 12.5px; }
+
+  #page-tests .filter-chip { padding: 6.5px 11px; font-size: 10.5px; }
+
+  #page-tests .test-card {
+    min-height: 228px;
+    padding: 12px 11px 11px;
+    border-radius: 15px;
+    gap: 7.5px;
+  }
+
+  #page-tests .lang-box { width: 40px; height: 40px; border-radius: 11px; }
+  #page-tests .lang-box svg { width: 21px; height: 21px; }
+
+  #page-tests .test-card__badges { flex-direction: row; align-items: center; justify-content: flex-end; gap: 4px; }
+  #page-tests .tcard-diff { font-size: 8.2px; padding: 3px 6px; border-radius: 7px; }
+  #page-tests .tcard-xp { font-size: 9.2px; padding: 3px 7px; }
+
+  #page-tests .test-card__title { font-size: 14px; white-space: normal; -webkit-line-clamp: 1; display: -webkit-box; -webkit-box-orient: vertical; overflow: hidden; }
+  #page-tests .test-card__desc { font-size: 10.5px; }
+  #page-tests .test-card__meta { font-size: 9.6px; }
+
+  #page-tests .btn-action { min-height: 41px; font-size: 12px; }
+  #page-tests .progress-pct { font-size: 10px; }
+}
+
+/* --- 320px (iPhone SE 2016 — eng kichik talab qilingan) --- */
+@media (max-width: 320px) {
+  #page-tests { padding: 6px 8px 22px !important; }
+  #page-tests .hero-card { padding: 10px 10px; border-radius: 14px; }
+  #page-tests .hero-heading { font-size: 13px; }
+  #page-tests .hero-subtext { font-size: 10px; line-height: 1.4; }
+  #page-tests .hero-mascot-wrapper { display: none; }
+  #page-tests .hero-text { max-width: 100%; }
+
+  #page-tests #testSearch[type="search"] { height: 42px; padding: 0 10px 0 40px; font-size: 12px; border-radius: 12px; }
+  #page-tests .tests-search-icon { left: 8px; width: 34px; }
+
+  #page-tests .filter-scroll { gap: 6px; }
+  #page-tests .filter-chip { padding: 6px 10px; font-size: 10px; }
+  #page-tests .filter-chip .chip-badge { display: none; }
+
+  #page-tests .test-list { gap: 9px; }
+
+  #page-tests .test-card {
+    min-height: 220px;
+    padding: 11px 10px 10px;
+    border-radius: 14px;
+    gap: 7px;
+  }
+
+  #page-tests .test-card__top { gap: 7px; }
+  #page-tests .lang-box { width: 38px; height: 38px; border-radius: 10px; flex: 0 0 38px; }
+  #page-tests .lang-box svg { width: 20px; height: 20px; }
+  #page-tests .test-card__badges { flex-direction: column; gap: 3.5px; }
+  #page-tests .tcard-diff { font-size: 7.8px; padding: 2.5px 5.5px; }
+  #page-tests .tcard-xp { font-size: 8.8px; padding: 2.5px 6px; }
+
+  #page-tests .test-card__title { font-size: 13px; line-height: 1.35; }
+  #page-tests .test-card__desc { font-size: 10px; line-height: 1.4; -webkit-line-clamp: 2; min-height: 2.4em; }
+  #page-tests .test-card__meta { font-size: 9.2px; gap: 4px; }
+
+  #page-tests .test-card__progress { gap: 6px; }
+  #page-tests .progress-pct { font-size: 9.6px; min-width: 26px; }
+  #page-tests .progress-done { font-size: 10.5px; gap: 4px; }
+  #page-tests .progress-done svg { width: 11px; height: 11px; }
+
+  #page-tests .btn-action { min-height: 40px; font-size: 11.5px; padding: 8px 10px; border-radius: 11px; }
+  #page-tests .btn-action svg { width: 13px; height: 13px; }
+}
+
+/* ==========================================================================
+   MOBILE NAV: page-testlist (ichki test ro'yxat) 320-430px uchun kengaytma
+   (testlar-redesign.css L614-L746 oldin 600/360/320 edi — 375/390/412/430 qo'shamiz)
+   ========================================================================== */
+@media (max-width: 430px) {
+  #page-testlist .page-head h2 { font-size: 17.5px; }
+  .test-list-item { padding: 15px; gap: 11px; border-radius: 17px; }
+  .tli-title { font-size: 14.5px; }
+  .tli-meta { font-size: 11.5px; }
+  .tli-right .btn { min-height: 47px; font-size: 14.5px; }
+  .test-mini-stats span { font-size: 11.5px; }
+}
+@media (max-width: 390px) {
+  .test-list-item { padding: 14px 13px; }
+  .tli-title { font-size: 14px; }
+  .tli-meta { font-size: 11px; }
+}
+@media (max-width: 375px) {
+  #page-testlist .page-head h2 { font-size: 16.5px; }
+  .test-list-item { padding: 13px 12px; gap: 10px; }
+  .tli-title { font-size: 13.8px; }
+  .tli-right .btn { min-height: 46px; font-size: 14px; }
+}
+
+/* Safe area notch (iPhone 12+) uchun pastki padding */
+@supports (padding: max(0px)) {
+  #page-tests,
+  #page-testlist,
+  #page-test,
+  #page-result {
+    padding-left: max(12px, env(safe-area-inset-left));
+    padding-right: max(12px, env(safe-area-inset-right));
+    padding-bottom: max(24px, env(safe-area-inset-bottom));
+  }
+}
