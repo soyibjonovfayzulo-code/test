@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "938132611316",
+    "project_id": "orzutalimuz",
+    "storage_bucket": "orzutalimuz.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:938132611316:android:306296bf0722178af87ea1",
+        "android_client_info": {
+          "package_name": "uz.orzutalim.app"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCkCf3-qO7k0A2JYIiSMOw9bdYQKU-_D3U"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

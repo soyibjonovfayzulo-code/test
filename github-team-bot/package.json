@@ -1,0 +1,17 @@
+{
+  "name": "orzutalim-dev-bot",
+  "version": "1.0.0",
+  "private": true,
+  "description": "OrzuTalim Dev Bot — GitHub -> Telegram team development notifier. MUSTAQIL modul: mavjud OrzuTalim serveriga dependency qilmaydi.",
+  "main": "src/index.js",
+  "type": "commonjs",
+  "scripts": {
+    "start": "node src/index.js",
+    "dev": "node src/index.js",
+    "test": "node --test \"test/*.test.js\""
+  },
+  "engines": {
+    "node": ">=18.0.0"
+  },
+  "license": "UNLICENSED"
+}

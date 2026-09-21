@@ -7,19 +7,35 @@
     "dev": "vite",
     "build": "vite build",
     "preview": "vite preview",
+    "server": "node server/server.cjs",
     "audit": "node audit-tests.cjs",
-    "ai:server": "node server/ai-backend.mjs"
+    "ai:server": "node server/ai-backend.mjs",
+    "bot": "node github-team-bot/src/index.js",
+    "bot:dev": "node github-team-bot/src/index.js",
+    "bot:test": "node --test \"github-team-bot/test/*.test.js\"",
+    "test": "npm run bot:test"
   },
   "devDependencies": {
     "jsdom": "^30.0.1",
-    "vite": "^5.4.2"
+    "vite": "^8.3.0"
   },
   "dependencies": {
     "@capacitor/android": "^8.5.0",
-    "@capacitor/cli": "^8.5.0",
+    "@capacitor/cli": "^8.4.3",
     "@capacitor/core": "^8.5.0",
+    "@capacitor/haptics": "^8.0.2",
+    "@capacitor/push-notifications": "^8.1.2",
+    "bcrypt": "^6.0.0",
+    "cors": "^2.8.5",
+    "dotenv": "^18.0.1",
+    "express": "^5.1.0",
+    "firebase-admin": "^14.4.0",
     "JSCPP": "^2.0.9",
+    "jsonwebtoken": "^9.0.2",
+    "node-telegram-bot-api": "^2.1.0",
     "pyodide": "^314.0.6",
-    "sql.js": "^1.14.2"
+    "qrcode-generator": "^2.0.4",
+    "sql.js": "^1.14.2",
+    "sqlite3": "^5.1.7"
   }
 }

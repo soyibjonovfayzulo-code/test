@@ -1,0 +1,15 @@
+{
+  "name": "orzutalim-dev-agent",
+  "version": "1.0.0",
+  "private": true,
+  "description": "OrzuTalim Local Dev Agent — developer kompyuterida real git operatsiyalar",
+  "main": "src/agent.js",
+  "type": "commonjs",
+  "scripts": {
+    "start": "node src/agent.js"
+  },
+  "engines": {
+    "node": ">=18.0.0"
+  },
+  "license": "UNLICENSED"
+}
