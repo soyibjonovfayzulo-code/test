@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- ITTest Widget o'lchamlari -->
+<resources>
+    <dimen name="it_widget_ring_size">62dp</dimen>
+    <dimen name="it_widget_robot_size">104dp</dimen>
+    <dimen name="it_widget_flame_size">38dp</dimen>
+</resources>

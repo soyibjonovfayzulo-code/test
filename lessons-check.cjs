@@ -34,6 +34,33 @@ function ok(cond, label, extra) {
 function section(name) { console.log('\n[' + name + ']'); }
 function click(el) { el.dispatchEvent(new w.MouseEvent('click', { bubbles: true })); }
 
+/* Diagnostika testini yechish (daraja endi test natijasi orqali aniqlanadi):
+   mode = 'correct' (advanced) | 'wrong' (beginner) | 'mixed' (2/5 -> intermediate) */
+function normQ(s) { return String(s).replace(/`/g, '').replace(/\s+/g, ' ').trim(); }
+function answerDiagnostic(mode) {
+  const bank = [];
+  API.getCourse('html').lessons.forEach(function (l) {
+    ((l.quiz && l.quiz.questions) || []).forEach(function (q) { bank.push(q); });
+  });
+  let correctCount = 0, guard = 0;
+  while (doc.querySelector('#lessonLevelModal').classList.contains('active')) {
+    if (++guard > 20) throw new Error('Diagnostika testi tugamadi (guard)');
+    const question = normQ(doc.querySelector('.ls-diagnostic-question').textContent);
+    const source = bank.find(function (b) { return normQ(b.question) === question; });
+    const options = Array.from(doc.querySelectorAll('.ls-diagnostic-option'));
+    const correct = source ? normQ(source.options[source.answer]) : '';
+    const wantCorrect = mode === 'correct' || (mode === 'mixed' && correctCount < 2);
+    let target;
+    if (wantCorrect) {
+      target = options.find(function (o) { return normQ(o.textContent).indexOf(correct) !== -1; });
+      correctCount++;
+    } else {
+      target = options.find(function (o) { return normQ(o.textContent).indexOf(correct) === -1; });
+    }
+    click(target || options[0]);
+  }
+}
+
 /* ===================== 1. DATA ARXITEKTURASI ===================== */
 section('DATA ARXITEKTURASI');
 const API = w.CoursesAPI;
@@ -68,30 +95,26 @@ ok(doc.querySelector('#lsContinueSlot .ls-continue') !== null, 'Davom ettirish b
 ok(cards[0].textContent.includes('HTML'), 'Birinchi karta HTML');
 ok(/ta dars|ta dars/.test(cards[0].textContent) && /\d+/.test(cards[0].textContent), "Kartada darslar soni bor");
 ok(cards[0].textContent.includes('0%'), 'Kartada progress 0%');
-ok(cards[0].textContent.includes('Boshlash'), 'Kartada "Boshlash" tugmasi');
+ok(cards[0].getAttribute('role') === 'button' && cards[0].textContent.includes('Boshlanmagan'), 'Kartada holat pill (butun karta — yagona action)');
 
-/* ===================== 3. BILIM DARAJASI MODALI (birinchi kirish) ===================== */
-section('BILIM DARAJASI MODALI');
+/* ===================== 3. BILIM DARAJASI — DIAGNOSTIKA TESTI (birinchi kirish) ===================== */
+section('BILIM DARAJASI — DIAGNOSTIKA TESTI');
 click(cards[0]);
 ok(visitedPages.includes('lessonCourse'), "Kurs sahifasiga o'tildi");
-ok(doc.querySelector('#lessonLevelModal').classList.contains('active'), 'Level modal ochildi (birinchi kirish)');
-const opts = doc.querySelectorAll('#lessonLevelBody .ls-level-option');
-ok(opts.length === 3, '3 ta daraja varianti chiqdi');
-ok(opts[0].textContent.includes('Umuman bilmayman'), '1-daraja: Umuman bilmayman');
-ok(opts[1].textContent.includes('Asoslarini bilaman'), '2-daraja: Asoslarini bilaman');
-ok(opts[2].textContent.includes('Yaxshi bilaman'), '3-daraja: Yaxshi bilaman');
-
-// 1-daraja tanlanadi (beginner — ketma-ket)
-click(opts[0]);
-ok(!doc.querySelector('#lessonLevelModal').classList.contains('active'), 'Tanlangach modal yopildi');
+ok(doc.querySelector('#lessonLevelModal').classList.contains('active'), 'Diagnostika modal ochildi (birinchi kirish)');
+ok(doc.querySelectorAll('#lessonLevelBody .ls-diagnostic-option').length >= 2, 'Diagnostika savol variantlari chiqdi');
+// Hammasiga noto'g'ri javob -> beginner (ketma-ket qulf rejimi)
+answerDiagnostic('wrong');
+ok(!doc.querySelector('#lessonLevelModal').classList.contains('active'), 'Test yakunlangach modal yopildi');
+ok(doc.querySelector('#lsCourseContainer .ls-level-chip').textContent.includes('Umuman bilmayman'), "Test natijasi: 'Umuman bilmayman' darajasi");
 
 /* ===================== 4. QULF LOGIKASI (BEGINNER) ===================== */
 section('QULF LOGIKASI — BEGINNER (ketma-ket)');
-const lessons = doc.querySelectorAll('#lsCourseContainer .ls-lesson-card');
+const lessons = doc.querySelectorAll('#lsCourseContainer .ls-ccard');
 ok(lessons.length === API.raw[0].topics.length, 'Barcha dars kartalari chiqdi (' + lessons.length + ')');
-ok(lessons[0].classList.contains('ls-current'), '1-dars = joriy (ochiq)');
-ok(lessons[1].classList.contains('ls-locked'), '2-dars qulflangan');
-ok(lessons[lessons.length - 1].classList.contains('ls-locked'), 'Oxirgi dars ham qulflangan');
+ok(lessons[0].classList.contains('ls-ccard--current'), '1-dars = joriy (ochiq)');
+ok(lessons[1].classList.contains('ls-ccard--locked'), '2-dars qulflangan');
+ok(lessons[lessons.length - 1].classList.contains('ls-ccard--locked'), 'Oxirgi dars ham qulflangan');
 ok(lessons[0].textContent.includes('15 daqiqa'), 'Kartada davomiylik bor');
 ok(lessons[0].textContent.includes('Boshlang'), 'Kartada daraja matni bor');
 
@@ -144,7 +167,7 @@ w.__itGetCurrentUser = function () { return { username: 'adv_user' }; };
 w.eval(appSrc);
 w.Lessons.handlePage('lessons');
 click(doc.querySelectorAll('#lsCoursesGrid .ls-course-card')[0]);
-click(doc.querySelectorAll('#lessonLevelBody .ls-level-option')[2]); // advanced — hammasi ochiq
+answerDiagnostic('correct'); // advanced — hammasi ochiq
 const noContentId = 'html-d' + w.CoursesAPI.getCourse('html').lessonCount; // oxirgi dars — string topic, kontent yo'q
 w.Lessons.openLesson('html', noContentId);
 ok(visitedPages[visitedPages.length - 1] === 'lessonView', 'Kontentsiz dars ochildi (advanced)');
@@ -199,12 +222,12 @@ ok(doc.querySelector('#lsGoNextBtn') !== null, 'Keyingi dars tugmasi bor');
 // Kurs sahifasiga qaytish — progress + holatlar
 click(doc.querySelector('#lsBackToCourse'));
 ok(visitedPages[visitedPages.length - 1] === 'lessonCourse', "Kurs sahifasiga qaytdi");
-const lessons2 = doc.querySelectorAll('#lsCourseContainer .ls-lesson-card');
-ok(lessons2[0].classList.contains('ls-completed'), '1-dars = ✅ tugallangan');
-ok(lessons2[0].textContent.includes('✅'), '1-dars kartasida ✅ ikonkasi');
-ok(lessons2[1].classList.contains('ls-current'), '2-dars = joriy (ochiq bo\'ldi)');
-ok(lessons2[1].textContent.includes('🧪'), '2-dars kartasida 🧪 test ikonkasi');
-ok(lessons2[2].classList.contains('ls-locked'), '3-dars hali yopiq');
+const lessons2 = doc.querySelectorAll('#lsCourseContainer .ls-ccard');
+ok(lessons2[0].classList.contains('ls-ccard--done'), '1-dars = ✅ tugallangan');
+ok(lessons2[0].textContent.includes('Tugallangan'), '1-dars kartasida Tugallangan statusi');
+ok(lessons2[1].classList.contains('ls-ccard--current'), '2-dars = joriy (ochiq bo\'ldi)');
+ok(lessons2[1].textContent.includes('Davom etmoqda'), '2-dars kartasida Davom etmoqda statusi');
+ok(lessons2[2].classList.contains('ls-ccard--locked'), '3-dars hali yopiq');
 ok(doc.querySelector('#lsCourseContainer').textContent.includes('3%'), 'Progress 3% (1/30) — faqat testdan keyin oshdi');
 ok(doc.querySelector('#lsCourseContainer').textContent.includes('Bilim darajasi'), "Bilim darajasi chipda ko'rinadi");
 
@@ -213,28 +236,29 @@ section("O'RGANISH SOZLAMALARI");
 click(doc.querySelector('#lsSettingsBtn'));
 ok(doc.querySelector('#lessonSettingsModal').classList.contains('active'), 'Sozlamalar modali ochildi');
 ok(doc.querySelector('#lessonSettingsBody').textContent.includes('Umuman bilmayman'), 'Joriy daraja korsatildi');
-const setOpts = doc.querySelectorAll('#lessonSettingsBody .ls-level-option');
-click(setOpts[1]); // intermediate
-const lessons3 = doc.querySelectorAll('#lsCourseContainer .ls-lesson-card');
-ok(!lessons3[29].classList.contains('ls-locked'), 'Intermediate: barcha darslar ochiq (30-dars ham)');
+// Daraja endi qo'lda tanlanmaydi — diagnostikani qayta topshirish orqali o'zgartiriladi
+click(doc.querySelector('#lsRetakeDiagnosticBtn'));
+ok(doc.querySelector('#lessonLevelModal').classList.contains('active'), 'Qayta diagnostika ochildi');
+answerDiagnostic('mixed'); // 2/5 to'g'ri = 40% -> intermediate
+const lessons3 = doc.querySelectorAll('#lsCourseContainer .ls-ccard');
+ok(!lessons3[29].classList.contains('ls-ccard--locked'), 'Intermediate: barcha darslar ochiq (30-dars ham)');
 
-// Advanced darajaga o'tkazib ko'rish
+// Qayta topshirib advanced darajaga o'tish
 click(doc.querySelector('#lsSettingsBtn'));
-const setOpts2 = doc.querySelectorAll('#lessonSettingsBody .ls-level-option');
-ok(setOpts2[1].classList.contains('selected'), 'Tanlangan daraja belgilangan');
-click(setOpts2[2]); // advanced
-ok(!doc.querySelectorAll('#lsCourseContainer .ls-lesson-card')[29].classList.contains('ls-locked'), 'Advanced: hammasi ochiq');
+click(doc.querySelector('#lsRetakeDiagnosticBtn'));
+answerDiagnostic('correct'); // advanced
+ok(!doc.querySelectorAll('#lsCourseContainer .ls-ccard')[29].classList.contains('ls-ccard--locked'), 'Advanced: hammasi ochiq');
 
 /* ===================== 8. DAVOM ETTIRISH BANNERI ===================== */
 section('DAVOM ETTIRISH BANNERI');
 w.Lessons.handlePage('lessons');
 const banner = doc.querySelector('#lsContinueSlot .ls-continue');
-ok(banner.textContent.includes('O‘qishni davom ettiring'), 'Banner matni bor');
+ok(banner.textContent.includes('Davom ettirish'), 'Banner matni bor');
 ok(banner.textContent.includes('HTML'), 'Oxirgi faol kurs (HTML) korinadi');
 ok(banner.textContent.includes('2-dars'), 'Oxirgi dars (2-dars) korinadi');
 ok(banner.textContent.includes('3%'), 'Bannerda progress bor');
 click(doc.querySelector('#lsContinueBtn'));
-ok(visitedPages[visitedPages.length - 1] === 'lessonCourse', 'Davom ettirish tugmasi kurs sahifasini ochdi');
+ok(visitedPages[visitedPages.length - 1] === 'lessonView', 'Davom ettirish tugmasi joriy darsni to‘g‘ridan ochdi');
 
 /* ===================== 9. SAQLANISH (localStorage) ===================== */
 section('SAQLANISH — QAYTA KIRGANDA JOYIDAN DAVOM');
@@ -245,9 +269,9 @@ w.Lessons.handlePage('lessons');
 const banner2 = doc.querySelector('#lsContinueSlot .ls-continue');
 ok(banner2.textContent.includes('HTML') && banner2.textContent.includes('3%'), 'Progress saqlangan (3%)');
 click(doc.querySelectorAll('#lsCoursesGrid .ls-course-card')[0]);
-const lessons4 = doc.querySelectorAll('#lsCourseContainer .ls-lesson-card');
-ok(lessons4[0].classList.contains('ls-completed'), '1-dars tugallangan holati saqlangan');
-ok(lessons4[1].classList.contains('ls-current'), '2-dars joriy holati saqlangan');
+const lessons4 = doc.querySelectorAll('#lsCourseContainer .ls-ccard');
+ok(lessons4[0].classList.contains('ls-ccard--done'), '1-dars tugallangan holati saqlangan');
+ok(lessons4[1].classList.contains('ls-ccard--current'), '2-dars joriy holati saqlangan');
 ok(!doc.querySelector('#lessonLevelModal').classList.contains('active'), 'Daraja modal qayta so\'ralmadi (saqlangan)');
 
 /* ===================== 10. HAR KIM UCHUN AJRATILGAN SAQLASH ===================== */
@@ -287,14 +311,14 @@ ok(bannerBtn11 && bannerBtn11.querySelector('.ls-btn-arrow'), 'Davom ettirish tu
 
 // Kurs sahifasi (beginner daraja)
 click(doc.querySelectorAll('#lsCoursesGrid .ls-course-card')[0]);
-click(doc.querySelectorAll('#lessonLevelBody .ls-level-option')[0]);
+answerDiagnostic('wrong'); // beginner
 const resumeBtn11 = doc.querySelector('#lsResumeBtn');
 ok(resumeBtn11 && resumeBtn11.querySelector('.ls-btn-arrow'), 'Kurs sahifasi Davom ettirish tugmasida arrow bor');
 const chip11 = doc.querySelector('#lsCourseContainer .ls-level-chip');
 ok(!!chip11 && chip11.textContent.indexOf('Umuman bilmayman') !== -1, 'Bilim darajasi badge chiqdi');
 
 // Qulflangan karta: shake + toast + modal
-const lockedCard11 = doc.querySelectorAll('#lsCourseContainer .ls-lesson-card')[1];
+const lockedCard11 = doc.querySelectorAll('#lsCourseContainer .ls-ccard')[1];
 click(lockedCard11);
 ok(lockedCard11.classList.contains('ls-shake'), 'Qulflangan karta shake animatsiya oladi');
 ok(w.__lastToast.msg.indexOf('Bu dars hozircha yopiq') !== -1, 'Toast: Bu dars hozircha yopiq');
@@ -305,7 +329,7 @@ click(doc.querySelector('#lessonLockedFooter .btn-ghost'));
 // Completion via test: hook info (xp=10, coins=20), toast, effects
 let hookInfo = null;
 w.LessonsHooks.onLessonComplete.push(function (info) { hookInfo = info; });
-click(doc.querySelectorAll('#lsCourseContainer .ls-lesson-card')[0]); // 1-dars (read bosqichi)
+click(doc.querySelectorAll('#lsCourseContainer .ls-ccard')[0]); // 1-dars (read bosqichi)
 click(doc.querySelector('#lsMarkReadBtn')); // o'qilgan deb belgilash
 click(doc.querySelector('#lsStartQuizBtn')); // testni boshlash
 // 5 savolga to'g'ri javob
@@ -338,8 +362,8 @@ w.eval(dataSrc);
 w.eval(appSrc);
 w.Lessons.handlePage('lessons');
 click(doc.querySelectorAll('#lsCoursesGrid .ls-course-card')[0]);
-click(doc.querySelectorAll('#lessonLevelBody .ls-level-option')[0]); // beginner
-click(doc.querySelectorAll('#lsCourseContainer .ls-lesson-card')[0]); // 1-dars
+answerDiagnostic('wrong'); // beginner
+click(doc.querySelectorAll('#lsCourseContainer .ls-ccard')[0]); // 1-dars
 click(doc.querySelector('#lsMarkReadBtn'));
 click(doc.querySelector('#lsStartQuizBtn'));
 // 3 ta to'g'ri, 2 ta noto'g'ri => 60% — o'tmadi
@@ -374,11 +398,11 @@ ok(doc.querySelectorAll('.ls-review-line.good').length === 2, 'Noto\'g\'ri javob
 
 // O'tmasa — keyingi dars yopiq qoladi
 click(doc.querySelector('#lsBackToCourse'));
-const lessonsF = doc.querySelectorAll('#lsCourseContainer .ls-lesson-card');
-ok(lessonsF[1].classList.contains('ls-locked'), 'Testdan o\'tmagach 2-dars HAMON yopiq');
+const lessonsF = doc.querySelectorAll('#lsCourseContainer .ls-ccard');
+ok(lessonsF[1].classList.contains('ls-ccard--locked'), 'Testdan o\'tmagach 2-dars HAMON yopiq');
 ok(doc.querySelector('#lsCourseContainer').textContent.includes('0%'), 'Progress 0% — o\'tmagan dars hisobga olinmadi');
 // Qayta topshirish: darsga qaytib, testni yangi random savollar bilan topshirish
-click(doc.querySelectorAll('#lsCourseContainer .ls-lesson-card')[0]); // 1-darsga qaytish (read bosqichi — o'qilgan, tugallanmagan)
+click(doc.querySelectorAll('#lsCourseContainer .ls-ccard')[0]); // 1-darsga qaytish (read bosqichi — o'qilgan, tugallanmagan)
 ok(doc.querySelector('#lsStartQuizBtn') !== null, 'Qayta kirganda test tugmasi mavjud (o\'qilgan saqlangan)');
 click(doc.querySelector('#lsStartQuizBtn'));
 const attempt1 = [];
@@ -394,9 +418,9 @@ const passHero2 = doc.querySelector('.ls-result-hero');
 ok(passHero2.classList.contains('pass'), 'Qayta topshirishda o\'tdi (100%)');
 // dars endi tugallandi — 2-dars ochildi
 click(doc.querySelector('#lsBackToCourse'));
-const lessonsF2 = doc.querySelectorAll('#lsCourseContainer .ls-lesson-card');
-ok(lessonsF2[0].classList.contains('ls-completed'), 'Qayta topshirib o\'tgach 1-dars tugallandi');
-ok(!lessonsF2[1].classList.contains('ls-locked'), 'Endi 2-dars ochildi');
+const lessonsF2 = doc.querySelectorAll('#lsCourseContainer .ls-ccard');
+ok(lessonsF2[0].classList.contains('ls-ccard--done'), 'Qayta topshirib o\'tgach 1-dars tugallandi');
+ok(!lessonsF2[1].classList.contains('ls-ccard--locked'), 'Endi 2-dars ochildi');
 ok(doc.querySelector('#lsCourseContainer').textContent.includes('3%'), 'Progress 3% bo\'ldi');
 
 // RANDOM: ikki urinishda savollar to'plami farq qilishi kerak (ehtimoliy — C(15,5)=3003)
@@ -405,7 +429,7 @@ w.eval(dataSrc);
 w.eval(appSrc);
 w.Lessons.handlePage('lessons');
 click(doc.querySelectorAll('#lsCoursesGrid .ls-course-card')[0]);
-click(doc.querySelectorAll('#lessonLevelBody .ls-level-option')[2]); // advanced
+answerDiagnostic('correct'); // advanced
 w.Lessons.openLesson('html', 'html-d1');
 click(doc.querySelector('#lsMarkReadBtn'));
 click(doc.querySelector('#lsStartQuizBtn'));

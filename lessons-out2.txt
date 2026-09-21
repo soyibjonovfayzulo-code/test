@@ -2,14 +2,14 @@
 [DATA ARXITEKTURASI]
   тЬЕ CoursesAPI mavjud
   тЬЕ 10 ta kurs bor (10)
-  тЬЕ HTML kursi 30 dars (30)
+  тЬЕ HTML kursi darslari = topics uzunligi (33)
   тЬЕ JavaScript kursi 40 dars (40)
   тЬЕ CSS kursi 25 dars
   тЬЕ findLesson ishlaydi
   тЬЕ nextLesson ishlaydi
   тЬЕ Noto'g'ri id -> null
-  тЬЕ Data'ga 1 qator qo'shilib yangi dars paydo bo'ldi (31)
-  тЬЕ Qayta o'chirildi (30)
+  тЬЕ Data'ga 1 qator qo'shilib yangi dars paydo bo'ldi
+  тЬЕ Qayta o'chirildi
 
 [DARSLAR BOSH SAHIFASI]
   тЬЕ 10 ta kurs karta chiqdi (10)
@@ -19,21 +19,19 @@
   тЬЕ Kartada progress 0%
   тЬЕ Kartada "Boshlash" tugmasi
 
-[BILIM DARAJASI MODALI]
+[BILIM DARAJASI тАФ DIAGNOSTIKA TESTI]
   тЬЕ Kurs sahifasiga o'tildi
-  тЬЕ Level modal ochildi (birinchi kirish)
-  тЬЕ 3 ta daraja varianti chiqdi
-  тЬЕ 1-daraja: Umuman bilmayman
-  тЬЕ 2-daraja: Asoslarini bilaman
-  тЬЕ 3-daraja: Yaxshi bilaman
-  тЬЕ Tanlangach modal yopildi
+  тЬЕ Diagnostika modal ochildi (birinchi kirish)
+  тЬЕ Diagnostika savol variantlari chiqdi
+  тЬЕ Test yakunlangach modal yopildi
+  тЬЕ Test natijasi: 'Umuman bilmayman' darajasi
 
 [QULF LOGIKASI тАФ BEGINNER (ketma-ket)]
-  тЬЕ 30 ta dars kartasi chiqdi (30)
-  тЭМ 1-dars = joriy (ochiq)
+  тЬЕ Barcha dars kartalari chiqdi (33)
+  тЬЕ 1-dars = joriy (ochiq)
   тЬЕ 2-dars qulflangan
-  тЬЕ 30-dars ham qulflangan
-  тЭМ Kartada davomiylik bor
+  тЬЕ Oxirgi dars ham qulflangan
+  тЬЕ Kartada davomiylik bor
   тЬЕ Kartada daraja matni bor
   тЬЕ Qulflangan dars sahifani o'zgartirmadi
   тЬЕ ЁЯФТ Qulf modal chiqdi
@@ -62,47 +60,143 @@
   тЬЕ Sahifa o'zgarmadi
 
 [KONTENTSIZ DARS тАФ PLACEHOLDER]
-  тЬЕ 3-dars ochildi (advanced)
-  тЬЕ "Dars tayyorlanmoqda" placeholder chiqdi (kontent yo'q)
+  тЬЕ Kontentsiz dars ochildi (advanced)
+  тЬЕ "Dars tayyorlanmoqda" placeholder chiqdi (kontent yo'q dars)
   тЬЕ Test ham hali yo'q тАФ eslatma bor
 
 [TESTDAN O'TISH тАФ PROGRESS + KEYINGI DARS]
   тЬЕ Savollar banki 15 ta (15)
   тЬЕ passingScore = 80%
-node : C:\Users\USTAFON\Desktop\aaaayti\lessons
--check.cjs:35
-строка:1 знак:1
-+ node lessons-check.cjs 2>&1 | Out-File -Encod
-ing utf8 lessons-out2.tx ...
-+ ~~~~~~~~~~~~~~~~~~~~~~~~~~~
-    + CategoryInfo          : NotSpecified: (C 
-   :\Users\USTAFO...ns-check.cjs:35:String) [  
-  ], RemoteException
-    + FullyQualifiedErrorId : NativeCommandErr 
-   or
- 
-function click(el) { el.dispatchEvent(new w.Mou
-seEvent('click', { bubbles: true })); }
-                        ^
+  тЬЕ Qayta kirganda o'qilgan darsda test tugmasi DARHOL bor (read saqlangan) тЬЕ
+  тЬЕ Test bosqichi ochildi
+  тЬЕ 1-savol bankdan: <head> ichiga qaysi element joylasht...
+  тЬЕ 1-savolda 4 variant
+  тЬЕ 1-savol variantlari takrorlanmaydi
+  тЬЕ 1-savol: to'g'ri javob yashil belgilandi
+  тЬЕ 1-savoldan keyin davom tugmasi chiqdi
+  тЬЕ 2-savol bankdan: HTML nomining "HyperText" qismi nima...
+  тЬЕ 2-savolda 4 variant
+  тЬЕ 2-savol variantlari takrorlanmaydi
+  тЬЕ 2-savol: to'g'ri javob yashil belgilandi
+  тЬЕ 2-savoldan keyin davom tugmasi chiqdi
+  тЬЕ 3-savol bankdan: Quyidagi kod natijasida nima chiqadi...
+  тЬЕ 3-savolda 4 variant
+  тЬЕ 3-savol variantlari takrorlanmaydi
+  тЬЕ 3-savol: to'g'ri javob yashil belgilandi
+  тЬЕ 3-savoldan keyin davom tugmasi chiqdi
+  тЬЕ 4-savol bankdan: <!DOCTYPE html> yozuvi nima vazifani...
+  тЬЕ 4-savolda 4 variant
+  тЬЕ 4-savol variantlari takrorlanmaydi
+  тЬЕ 4-savol: to'g'ri javob yashil belgilandi
+  тЬЕ 4-savoldan keyin davom tugmasi chiqdi
+  тЬЕ 5-savol bankdan: <br> tegi haqida qaysi fikr to'g'ri?...
+  тЬЕ 5-savolda 4 variant
+  тЬЕ 5-savol variantlari takrorlanmaydi
+  тЬЕ 5-savol: to'g'ri javob yashil belgilandi
+  тЬЕ 5-savoldan keyin davom tugmasi chiqdi
+  тЬЕ Natija ekrani: PASS holati
+  тЬЕ ЁЯОЙ Ajoyib! matni bor
+  тЬЕ Ball 5/5
+  тЬЕ Foiz 100%
+  тЬЕ тЬЕ Testdan o'tdingiz belgisi
+  тЬЕ +10 XP chipi
+  тЬЕ +20 Coin chipi
+  тЬЕ ЁЯФУ 2-dars ochildi banneri
+  тЬЕ Tahlil: 5 ta savol ko'rsatildi
+  тЬЕ Har bir savolda izoh bor
+  тЬЕ Keyingi dars tugmasi bor
+  тЬЕ Kurs sahifasiga qaytdi
+  тЬЕ 1-dars = тЬЕ tugallangan
+  тЬЕ 1-dars kartasida тЬЕ ikonkasi
+  тЬЕ 2-dars = joriy (ochiq bo'ldi)
+  тЬЕ 2-dars kartasida ЁЯзк test ikonkasi
+  тЬЕ 3-dars hali yopiq
+  тЬЕ Progress 3% (1/30) тАФ faqat testdan keyin oshdi
+  тЬЕ Bilim darajasi chipda ko'rinadi
 
-TypeError: Cannot read properties of null (read
-ing 'dispatchEvent')
-    at click (C:\Users\USTAFON\Desktop\aaaayti\
-lessons-check.cjs:35:25)
-    at Object.<anonymous> (C:\Users\USTAFON\Des
-ktop\aaaayti\lessons-check.cjs:160:1)
-    at Module._compile (node:internal/modules/c
-js/loader:1872:14)
-    at Object..js (node:internal/modules/cjs/lo
-ader:2003:10)
-    at Module.load (node:internal/modules/cjs/l
-oader:1594:32)
-    at Module._load (node:internal/modules/cjs/
-loader:1396:12)
-    at wrapModuleLoad (node:internal/modules/cj
-s/loader:255:19)
-    at Module.executeUserEntryPoint [as runMain
-] (node:internal/modules/run_main:154:5)
-    at node:internal/main/run_main_module:33:47
+[O'RGANISH SOZLAMALARI]
+  тЬЕ Sozlamalar modali ochildi
+  тЬЕ Joriy daraja korsatildi
+  тЬЕ Qayta diagnostika ochildi
+  тЬЕ Intermediate: barcha darslar ochiq (30-dars ham)
+  тЬЕ Advanced: hammasi ochiq
 
-Node.js v24.19.0
+[DAVOM ETTIRISH BANNERI]
+  тЬЕ Banner matni bor
+  тЬЕ Oxirgi faol kurs (HTML) korinadi
+  тЬЕ Oxirgi dars (2-dars) korinadi
+  тЬЕ Bannerda progress bor
+  тЬЕ Davom ettirish tugmasi joriy darsni toтАШgтАШridan ochdi
+
+[SAQLANISH тАФ QAYTA KIRGANDA JOYIDAN DAVOM]
+  тЬЕ Progress saqlangan (3%)
+  тЬЕ 1-dars tugallangan holati saqlangan
+  тЬЕ 2-dars joriy holati saqlangan
+  тЬЕ Daraja modal qayta so'ralmadi (saqlangan)
+
+[FOYDALANUVCHI BO'YICHA AJRATILGAN SAQLASH]
+  тЬЕ Boshqa foydalanuvchi -> progress 0%
+
+[UX тАФ PROFIL DROPDOWN va CHIQISH]
+  тЬЕ Profil dropdown DOMda mavjud
+  тЬЕ 6 ta menyu elementi (6)
+  тЬЕ Menyu elementi: Profilim
+  тЬЕ Menyu elementi: Sozlamalar
+  тЬЕ Menyu elementi: Til
+  тЬЕ Menyu elementi: Mavzu
+  тЬЕ Menyu elementi: Yordam
+  тЬЕ Menyu elementi: Chiqish
+  тЬЕ Chiqish xavfsiz uslubda (ux-menu-danger)
+  тЬЕ Chiqish tasdiqlash modali DOMda
+  тЬЕ Modal savoli: Hisobdan chiqmoqchimisiz?
+  тЬЕ Bekor qilish / Chiqish tugmalari bor
+  тЬЕ Modalda ma'lumotlar saqlanadi izohi bor
+  тЬЕ Tasdiqlash tugmasi (#logoutConfirmBtn) bor
+
+[UX тАФ SHAKE / TOAST / ARROW / EFFECTS / PROGRESS ANIMATSIYA]
+  тЬЕ Davom ettirish tugmasida arrow span bor
+  тЬЕ Kurs sahifasi Davom ettirish tugmasida arrow bor
+  тЬЕ Bilim darajasi badge chiqdi
+  тЬЕ Qulflangan karta shake animatsiya oladi
+  тЬЕ Toast: Bu dars hozircha yopiq
+  тЬЕ Qulf modal ham ochiladi (eski funksiya saqlangan)
+  тЬЕ Hook info: xp=10, coins=20 (+10 XP / +20 Coin)
+  тЬЕ Toastda XP va Coin bor
+  тЬЕ LessonsEffects.celebrate mavjud
+  тЬЕ celebrate xatosiz chaqirildi
+  тЬЕ Progress bar 0% dan boshlanadi (animatsiya rejimi)
+  тЬЕ Progress bar 3% ga smooth toтАШldi (1/30, rAF dan keyin)
+
+[TESTDAN O'TMASLIK тАФ QAYTA TOPSHIRISH]
+  тЬЕ 4-savol: noto'g'ri javob qizil belgilandi
+  тЬЕ 4-savol: to'g'ri javob ham ko'rsatildi
+  тЬЕ 5-savol: noto'g'ri javob qizil belgilandi
+  тЬЕ 5-savol: to'g'ri javob ham ko'rsatildi
+  тЬЕ Natija: FAIL holati
+  тЬЕ ЁЯШФ Xato matni bor
+  тЬЕ Ball 3/5
+  тЬЕ Foiz 60%
+  тЬЕ тЭМ Testdan o'tmadingiz
+  тЬЕ Minimal ball eslatmasi (80%) bor
+  тЬЕ ЁЯФД Qayta topshirish tugmasi bor
+  тЬЕ ЁЯУЪ Darsni qayta ko'rish tugmasi bor
+  тЬЕ Keyingi dars tugmasi YO'Q (o'tmadi)
+  тЬЕ 2 ta noto'g'ri javob tahlilda belgilangan
+  тЬЕ Noto'g'ri javoblar uchun to'g'ri javob ko'rsatilgan
+  тЬЕ Testdan o'tmagach 2-dars HAMON yopiq
+  тЬЕ Progress 0% тАФ o'tmagan dars hisobga olinmadi
+  тЬЕ Qayta kirganda test tugmasi mavjud (o'qilgan saqlangan)
+  тЬЕ Qayta topshirishda o'tdi (100%)
+  тЬЕ Qayta topshirib o'tgach 1-dars tugallandi
+  тЬЕ Endi 2-dars ochildi
+  тЬЕ Progress 3% bo'ldi
+  тЬЕ Random: ikki urinishda savollar to'plami farq qiladi
+  тЬЕ Random savol bankdan: HTML nomining "HyperText" qismi ...
+  тЬЕ Random savol bankdan: Salom<br>Dunyo matni brauzerda q...
+  тЬЕ Random savol bankdan: <head> ichiga qaysi element joyl...
+  тЬЕ Random savol bankdan: Foydalanuvchiga ko'rinadigan bar...
+  тЬЕ Random savol bankdan: Quyidagi kodlardan qaysi birida ...
+
+==========================================
+  NATIJA: 170 otdi, 0 xato
+==========================================

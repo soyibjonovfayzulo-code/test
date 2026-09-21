@@ -1,0 +1,396 @@
+/* ============================================================
+   ITTest — MOBILE DAILY / STREAK / FREEZE CSS (v2)
+   Light/white + soft blue atmosphere, ITTest BLUE flame.
+   Faqat mobil (<=768px). Desktopda butunlay yashirinadi.
+   320 / 360 / 390 / 412 / 430 — safe-area bilan moslashgan.
+   ============================================================ */
+
+/* ---------- Fullscreen light overlay ---------- */
+.ds-screen-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 1050;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 18px;
+  padding-top: max(18px, env(safe-area-inset-top));
+  padding-bottom: max(18px, env(safe-area-inset-bottom));
+  background:
+    radial-gradient(560px 340px at 50% -12%, rgba(37, 99, 235, 0.16), transparent 70%),
+    radial-gradient(420px 260px at 50% 112%, rgba(56, 189, 248, 0.12), transparent 70%),
+    rgba(246, 249, 254, 0.96);
+  backdrop-filter: blur(16px) saturate(140%);
+  -webkit-backdrop-filter: blur(16px) saturate(140%);
+  overflow-y: auto;
+  overflow-x: hidden;
+}
+
+/* ---------- Card (white, soft blue glow) ---------- */
+.ds-screen-card {
+  position: relative;
+  width: 100%;
+  max-width: 400px;
+  background:
+    radial-gradient(420px 210px at 50% -8%, rgba(37, 99, 235, 0.08), transparent 70%),
+    #ffffff;
+  border: 1px solid rgba(148, 175, 226, 0.35);
+  border-radius: 30px;
+  box-shadow:
+    0 24px 48px -14px rgba(30, 64, 175, 0.22),
+    0 0 0 6px rgba(37, 99, 235, 0.05);
+  padding: 30px 22px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  box-sizing: border-box;
+  overflow: hidden;
+}
+
+/* ---------- Badge ---------- */
+.ds-screen-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 0.72rem;
+  font-weight: 800;
+  letter-spacing: 0.09em;
+  color: #2563eb;
+  background: rgba(37, 99, 235, 0.08);
+  border: 1px solid rgba(37, 99, 235, 0.28);
+  border-radius: 999px;
+  padding: 5px 14px;
+  margin-bottom: 16px;
+  text-transform: uppercase;
+}
+
+/* ---------- Headings ---------- */
+.ds-screen-title {
+  font-size: clamp(1.12rem, 4.6vw, 1.35rem);
+  font-weight: 800;
+  line-height: 1.3;
+  margin: 0 0 8px;
+  color: #0f172a;
+}
+.ds-screen-sub {
+  font-size: clamp(0.85rem, 3.6vw, 0.93rem);
+  color: #64748b;
+  line-height: 1.5;
+  margin: 0 0 16px;
+  max-width: 36ch;
+}
+
+/* ---------- Robot / Mascot ---------- */
+.ds-mascot-box {
+  width: clamp(118px, 34vw, 140px);
+  height: clamp(118px, 34vw, 140px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 2px 0 10px;
+  position: relative;
+  z-index: 1;
+}
+.ds-mascot-box .mascot { transform: scale(0.9); transform-origin: center; }
+.ds-mascot-fallback { font-size: 3.4rem; line-height: 1; }
+
+/* ---------- 🟦 ITTest BLUE flame ---------- */
+.ds-blue-flame {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  animation: dsFlameBreathe 2.1s ease-in-out infinite;
+  filter: drop-shadow(0 4px 14px rgba(37, 99, 235, 0.4));
+}
+.ds-fire-svg { width: 100%; height: 100%; display: block; overflow: visible; }
+.ds-fire-glow { opacity: 0.6; animation: dsGlowPulse 2s ease-in-out infinite; }
+.ds-fire-outer { animation: dsOuterFlicker 1.7s ease-in-out infinite alternate; transform-origin: 50% 90%; }
+.ds-fire-inner { animation: dsInnerFlicker 1.3s ease-in-out infinite alternate; transform-origin: 50% 85%; }
+
+@keyframes dsFlameBreathe {
+  0%, 100% { transform: scale(1) translateY(0); }
+  50% { transform: scale(1.07) translateY(-2px); }
+}
+@keyframes dsGlowPulse { 0%, 100% { opacity: 0.45; } 50% { opacity: 0.9; } }
+@keyframes dsOuterFlicker {
+  0% { transform: scale(1) rotate(-1deg); }
+  100% { transform: scale(1.04) rotate(1.4deg); }
+}
+@keyframes dsInnerFlicker {
+  0% { transform: scale(0.94) translateY(1px); }
+  100% { transform: scale(1.06) translateY(-1px); }
+}
+
+/* ---------- Streak counter ---------- */
+.ds-streak-counter {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  margin: 2px 0 14px;
+  position: relative;
+  z-index: 1;
+}
+.ds-streak-number {
+  font-size: clamp(2.5rem, 13vw, 3.4rem);
+  font-weight: 800;
+  line-height: 1;
+  color: #0f172a;
+  letter-spacing: -0.02em;
+  font-variant-numeric: tabular-nums;
+}
+.ds-streak-number.ds-blue-text { color: #2563eb; }
+.ds-streak-unit {
+  font-size: clamp(0.85rem, 3.6vw, 0.95rem);
+  font-weight: 700;
+  color: #64748b;
+  max-width: 8ch;
+  text-align: left;
+  line-height: 1.25;
+}
+
+/* ---------- Week row: Du..Ya ---------- */
+.ds-week-row {
+  display: grid;
+  grid-template-columns: repeat(7, minmax(0, 1fr));
+  gap: 6px;
+  width: 100%;
+  margin: 0 0 18px;
+}
+.ds-week-day {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 3px;
+  padding: 9px 0;
+  border-radius: 14px;
+  background: #f1f5fb;
+  border: 1px solid #e2e8f0;
+  min-width: 0;
+}
+.ds-day-lbl { font-size: 0.68rem; font-weight: 700; color: #64748b; }
+.ds-day-dot { font-size: 0.82rem; font-weight: 800; color: #94a3b8; line-height: 1; }
+
+.ds-day-done { background: linear-gradient(160deg, rgba(37, 99, 235, 0.14), rgba(56, 189, 248, 0.1)); border-color: rgba(37, 99, 235, 0.4); }
+.ds-day-done .ds-day-dot { color: #2563eb; }
+.ds-day-done .ds-day-lbl { color: #1e40af; }
+
+.ds-day-freeze { background: #e0f2fe; border-color: rgba(14, 165, 233, 0.45); }
+
+.ds-day-today {
+  background: #ffffff;
+  border: 2px solid #2563eb;
+  box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.14);
+}
+.ds-day-today .ds-day-dot { color: #2563eb; }
+.ds-day-today .ds-day-lbl { color: #1e40af; }
+
+.ds-day-missed, .ds-day-future { opacity: 0.55; }
+
+/* ---------- Buttons ---------- */
+.ds-screen-actions { display: flex; flex-direction: column; gap: 10px; width: 100%; }
+.ds-btn {
+  border: none;
+  cursor: pointer;
+  font-family: inherit;
+  font-weight: 700;
+  border-radius: 16px;
+  transition: transform 0.15s ease, box-shadow 0.15s ease, background 0.2s ease;
+  -webkit-tap-highlight-color: transparent;
+}
+.ds-btn:active { transform: scale(0.97); }
+.ds-btn-lg { min-height: 52px; font-size: 0.98rem; width: 100%; }
+.ds-btn-primary {
+  background: linear-gradient(135deg, #2563eb, #1d4ed8);
+  color: #ffffff;
+  box-shadow: 0 10px 22px -8px rgba(37, 99, 235, 0.55);
+}
+.ds-btn-primary:hover { background: linear-gradient(135deg, #1d4ed8, #1e40af); }
+.ds-btn-ghost {
+  background: transparent;
+  color: #2563eb;
+  border: 1.5px solid rgba(37, 99, 235, 0.35);
+  min-height: 46px;
+  font-size: 0.92rem;
+}
+.ds-btn-ghost:hover { background: rgba(37, 99, 235, 0.06); }
+
+/* ---------- Permission ---------- */
+.ds-perm-icon {
+  width: 68px;
+  height: 68px;
+  border-radius: 22px;
+  background: linear-gradient(160deg, rgba(37, 99, 235, 0.1), rgba(56, 189, 248, 0.08));
+  border: 1px solid rgba(37, 99, 235, 0.25);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 2rem;
+  margin: 2px 0 14px;
+  animation: dsBellRing 2.6s ease-in-out infinite;
+}
+@keyframes dsBellRing {
+  0%, 82%, 100% { transform: rotate(0deg); }
+  85% { transform: rotate(9deg); }
+  89% { transform: rotate(-8deg); }
+  93% { transform: rotate(5deg); }
+  97% { transform: rotate(-3deg); }
+}
+
+/* ---------- Freeze chip ---------- */
+.ds-freeze-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 0.76rem;
+  font-weight: 700;
+  color: #0369a1;
+  background: #e0f2fe;
+  border: 1px solid rgba(14, 165, 233, 0.35);
+  border-radius: 999px;
+  padding: 5px 12px;
+  margin: -6px 0 12px;
+}
+
+/* ---------- Freeze toast (kichik muz effekti) ---------- */
+.ds-freeze-toast {
+  position: fixed;
+  left: 50%;
+  bottom: max(18px, env(safe-area-inset-bottom));
+  transform: translateX(-50%);
+  z-index: 1080;
+  display: flex;
+  align-items: center;
+  gap: 9px;
+  background: #ffffff;
+  border: 1px solid rgba(14, 165, 233, 0.45);
+  border-radius: 16px;
+  box-shadow: 0 14px 30px -10px rgba(2, 132, 199, 0.35), 0 0 0 4px rgba(56, 189, 248, 0.12);
+  padding: 11px 16px;
+  max-width: calc(100vw - 32px);
+  box-sizing: border-box;
+}
+.ds-freeze-ico { font-size: 1.25rem; line-height: 1; }
+.ds-freeze-txt { font-size: 0.84rem; color: #334155; line-height: 1.35; }
+.ds-freeze-txt b { color: #0369a1; }
+.ds-freeze-n { color: #0369a1; font-weight: 700; }
+
+/* ---------- Celebration ---------- */
+.ds-celeb-overlay {
+  background:
+    radial-gradient(620px 380px at 50% -10%, rgba(37, 99, 235, 0.2), transparent 70%),
+    radial-gradient(460px 280px at 50% 112%, rgba(56, 189, 248, 0.16), transparent 70%),
+    rgba(246, 249, 254, 0.97);
+}
+.ds-celeb-card {
+  padding: 32px 22px;
+  border-color: rgba(37, 99, 235, 0.4);
+  box-shadow:
+    0 26px 56px -14px rgba(30, 64, 175, 0.3),
+    0 0 0 6px rgba(37, 99, 235, 0.07);
+}
+.ds-celeb-halo {
+  position: absolute;
+  top: -46px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 240px;
+  height: 240px;
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(37, 99, 235, 0.2), transparent 68%);
+  pointer-events: none;
+  animation: dsGlowPulse 2.4s ease-in-out infinite;
+}
+.ds-celeb-sub {
+  font-size: clamp(0.88rem, 3.7vw, 0.96rem);
+  color: #334155;
+  line-height: 1.5;
+  margin: 0 0 16px;
+  position: relative;
+  z-index: 1;
+}
+.ds-celeb-sub b { color: #f59e0b; }
+.ds-celeb-auto-note {
+  font-size: 0.76rem;
+  font-weight: 600;
+  color: #94a3b8;
+  margin-top: 2px;
+}
+
+/* ---------- Celebration particles (kichik moviy) ---------- */
+.ds-particle {
+  position: absolute;
+  top: 22%;
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: radial-gradient(circle, #38bdf8, #2563eb);
+  opacity: 0;
+  pointer-events: none;
+  animation: dsParticleFloat 2.2s ease-in-out infinite;
+}
+.ds-particle.ds-p0 { left: 14%; animation-delay: 0s; }
+.ds-particle.ds-p1 { left: 26%; animation-delay: 0.35s; }
+.ds-particle.ds-p2 { left: 40%; animation-delay: 0.7s; }
+.ds-particle.ds-p3 { left: 62%; animation-delay: 0.2s; }
+.ds-particle.ds-p4 { left: 76%; animation-delay: 0.55s; }
+.ds-particle.ds-p5 { left: 87%; animation-delay: 0.9s; }
+.ds-particle.ds-p6 { left: 20%; animation-delay: 1.15s; }
+.ds-particle.ds-p7 { left: 70%; animation-delay: 1.4s; }
+@keyframes dsParticleFloat {
+  0% { transform: translateY(12px) scale(0.5); opacity: 0; }
+  35% { opacity: 0.85; }
+  100% { transform: translateY(-38px) scale(1); opacity: 0; }
+}
+
+/* ---------- Screen transitions ---------- */
+.ds-anim-in { animation: dsSlideUp 0.34s cubic-bezier(0.16, 1, 0.3, 1) forwards; }
+.ds-anim-out { animation: dsSlideDown 0.26s ease forwards; }
+
+@keyframes dsSlideUp {
+  0% { opacity: 0; transform: translateY(22px) scale(0.97); }
+  100% { opacity: 1; transform: translateY(0) scale(1); }
+}
+@keyframes dsSlideDown {
+  0% { opacity: 1; transform: translateY(0) scale(1); }
+  100% { opacity: 0; transform: translateY(16px) scale(0.97); }
+}
+
+/* ---------- Very small screens (<=359px) ---------- */
+@media (max-width: 359px) {
+  .ds-screen-card { padding: 24px 14px; border-radius: 24px; }
+  .ds-week-day { padding: 7px 0; border-radius: 11px; }
+  .ds-mascot-box { width: 104px; height: 104px; }
+  .ds-streak-number { font-size: 2.3rem; }
+}
+
+/* ---------- Larger phones (>=400px) ---------- */
+@media (min-width: 400px) and (max-width: 768px) {
+  .ds-screen-card { padding: 34px 26px; }
+}
+
+/* ---------- Reduced motion ---------- */
+@media (prefers-reduced-motion: reduce) {
+  .ds-anim-in, .ds-anim-out, .ds-blue-flame,
+  .ds-fire-glow, .ds-fire-outer, .ds-fire-inner,
+  .ds-perm-icon, .ds-celeb-halo, .ds-particle, .ds-freeze-toast {
+    animation: none !important;
+    transition: none !important;
+  }
+}
+
+/* ============================================================
+   DESKTOP RULE (>768px): mobil daily oqim UMUMAN ko'rinmaydi
+   ============================================================ */
+@media (min-width: 769px) {
+  .ds-screen-overlay,
+  .ds-freeze-toast {
+    display: none !important;
+    visibility: hidden !important;
+    opacity: 0 !important;
+    pointer-events: none !important;
+  }
+}

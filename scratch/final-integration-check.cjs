@@ -1,0 +1,16 @@
+const f = require('fs');
+const s = f.readFileSync('certificates.js', 'utf8');
+const c = f.readFileSync('certificates-check.cjs', 'utf8');
+const i = f.readFileSync('index.html', 'utf8');
+const sc = f.readFileSync('script.js', 'utf8');
+console.log('chunk markers left:', (s.match(/__CHUNK\d+__/g) || []).length);
+console.log('T markers left:', (c.match(/__T\d+__/g) || []).length);
+console.log('page-certificate:', i.includes('page-certificate'));
+console.log('certificates.js tag:', i.includes('src="certificates.js"'));
+console.log('certificates.css link:', i.includes('certificates.css'));
+console.log('profileCertsBtn:', i.includes('profileCertsBtn'));
+console.log('old cert modal removed:', !i.includes('certEditNameModal'));
+console.log('script.js delegate:', sc.includes('ITCertificates.renderPage'));
+console.log('script.js saveState expose:', sc.includes('__itSaveUserState'));
+console.log('script.js PAGE_TITLES cert:', sc.includes('certificate: "Sertifikatlar"'));
+console.log('script.js PROTECTED cert:', /PROTECTED_PAGES = \[.*"certificate"\]/.test(sc));

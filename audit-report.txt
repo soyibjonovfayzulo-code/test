@@ -1,0 +1,287 @@
+LOYIHA AUDITI - BARCHA KURS VA DARSLAR
+==========================================================================================
+
+
+[KURS 1] HTML (id: html) — 130 dars
+  [WARN] Dars 1: HTML nima? | Content:YES Quiz:NO Sections:0 Ex:0 QuizQs:0
+  [WARN] Dars 2: HTML nima? | Content:NO Quiz:NO Sections:1 Ex:0 QuizQs:0
+  [WARN] Dars 3: HTML qanday ishlaydi? | Content:NO Quiz:NO Sections:1 Ex:0 QuizQs:0
+  [WARN] Dars 4: Teg (Tag), Kontent va Element | Content:NO Quiz:NO Sections:1 Ex:0 QuizQs:0
+  [WARN] Dars 5: Oddiy HTML sahifa strukturasi | Content:NO Quiz:NO Sections:1 Ex:0 QuizQs:0
+  [WARN] Dars 6: Parent va Child (ota va bola) elementlar | Content:NO Quiz:NO Sections:1 Ex:0 QuizQs:0
+  [WARN] Dars 7: Sarlavhalar (h1–h6), Paragraf (p) va Yangi qator (br) | Content:NO Quiz:NO Sections:1 Ex:0 QuizQs:0
+  [WARN] Dars 8: Xulosa | Content:NO Quiz:YES Sections:1 Ex:0 QuizQs:8
+  [WARN] Dars 9: HTML hujjati strukturasi | Content:YES Quiz:NO Sections:0 Ex:0 QuizQs:0
+  [WARN] Dars 10: HTML skeleti — umumiy ko‘rinish | Content:NO Quiz:NO Sections:1 Ex:0 QuizQs:0
+  [WARN] Dars 11: <!DOCTYPE html> — hujjat turi e‘loni | Content:NO Quiz:NO Sections:1 Ex:0 QuizQs:0
+  [WARN] Dars 12: <html lang= | Content:NO Quiz:NO Sections:0 Ex:0 QuizQs:0
+  [WARN] Dars 13: <head> — ko‘rinmaydigan qism | Content:NO Quiz:NO Sections:1 Ex:0 QuizQs:0
+  [WARN] Dars 14: <meta charset= | Content:NO Quiz:NO Sections:0 Ex:0 QuizQs:0
+  [WARN] Dars 15: <title> — sahifa nomi | Content:NO Quiz:NO Sections:1 Ex:0 QuizQs:0
+  [WARN] Dars 16: <body> — ko‘rinadigan qism | Content:NO Quiz:NO Sections:1 Ex:0 QuizQs:0
+  [WARN] Dars 17: Parent / Child — ota va bola | Content:NO Quiz:NO Sections:1 Ex:0 QuizQs:0
+  [WARN] Dars 18: Nesting va Indentation | Content:NO Quiz:NO Sections:1 Ex:1 QuizQs:0
+  [WARN] Dars 19: 1-MASHQ — Live Edit | Content:NO Quiz:NO Sections:0 Ex:1 QuizQs:0
+  [WARN] Dars 20: 2-MASHQ — Drag & Drop | Content:NO Quiz:NO Sections:0 Ex:1 QuizQs:0
+  [WARN] Dars 21: 3-MASHQ — Kod detektivi | Content:NO Quiz:YES Sections:0 Ex:0 QuizQs:5
+  [WARN] Dars 22: HTML atributlari va elementga qo‘shimcha ma’lumot berish | Content:YES Quiz:NO Sections:0 Ex:0 QuizQs:0
+  [WARN] Dars 23: Atribut nima? 🤔 | Content:NO Quiz:NO Sections:1 Ex:0 QuizQs:0
+  [WARN] Dars 24: name= | Content:NO Quiz:NO Sections:0 Ex:0 QuizQs:0
+  [WARN] Dars 25: src — rasm qayerdan olinadi? 📥 | Content:NO Quiz:NO Sections:1 Ex:0 QuizQs:0
+  [WARN] Dars 26: alt — rasm haqida qisqa matn 📝 | Content:NO Quiz:NO Sections:1 Ex:0 QuizQs:0
+  [WARN] Dars 27: class — elementga guruh nomi berish 🏷️ | Content:NO Quiz:NO Sections:1 Ex:0 QuizQs:0
+  [WARN] Dars 28: id — elementga o‘ziga xos nom 🆔 | Content:NO Quiz:NO Sections:1 Ex:0 QuizQs:0
+  [WARN] Dars 29: title — hover qilsangiz chiqadigan izoh 💬 | Content:NO Quiz:NO Sections:1 Ex:0 QuizQs:0
+  [WARN] Dars 30: Bir nechta atribut bitta elementda 🎯 | Content:NO Quiz:NO Sections:1 Ex:0 QuizQs:0
+  [WARN] Dars 31: 🎨 CSS nima qiladi? | Content:NO Quiz:NO Sections:1 Ex:0 QuizQs:0
+  [WARN] Dars 32: ⚡ JavaScript nima qiladi? | Content:NO Quiz:NO Sections:1 Ex:0 QuizQs:0
+  [WARN] Dars 33: Asosiy rasm | Content:NO Quiz:NO Sections:0 Ex:1 QuizQs:0
+  [WARN] Dars 34: 1-MASHQ — <img> ga alt qo‘shing 🖼️ | Content:NO Quiz:NO Sections:0 Ex:1 QuizQs:0
+  [WARN] Dars 35: 2-MASHQ — <button> ga id qo‘shing 🆔 | Content:NO Quiz:NO Sections:0 Ex:1 QuizQs:0
+  [WARN] Dars 36: 3-MASHQ — <div> ga class qo‘shing 🎨 | Content:NO Quiz:YES Sections:0 Ex:0 QuizQs:5
+  [WARN] Dars 37: Linklar va rasmlar | Content:YES Quiz:NO Sections:0 Ex:0 QuizQs:0
+  [WARN] Dars 38: <a> — link elementi 🔗 | Content:NO Quiz:NO Sections:1 Ex:0 QuizQs:0
+  [WARN] Dars 39: href va URL 🌍 | Content:NO Quiz:NO Sections:1 Ex:0 QuizQs:0
+  [WARN] Dars 40: Tashqi va ichki link 🔀 | Content:NO Quiz:NO Sections:1 Ex:0 QuizQs:0
+  [WARN] Dars 41: target= | Content:NO Quiz:NO Sections:0 Ex:0 QuizQs:0
+  [WARN] Dars 42: Email va telefon linklari 📧📞 | Content:NO Quiz:NO Sections:1 Ex:0 QuizQs:0
+  [WARN] Dars 43: Page anchor — sahifa ichida sakrash ⚓ | Content:NO Quiz:NO Sections:1 Ex:0 QuizQs:0
+  [WARN] Dars 44: ⚡ JavaScript: link bosilishini boshqarish | Content:NO Quiz:NO Sections:1 Ex:1 QuizQs:0
+  [WARN] Dars 45: 1-MASHQ — Google ga link yarating 🔗 | Content:NO Quiz:NO Sections:0 Ex:1 QuizQs:0
+  [WARN] Dars 46: 2-MASHQ — Yangi tabda ochiladigan link 🗂️ | Content:NO Quiz:NO Sections:0 Ex:1 QuizQs:0
+  [WARN] Dars 47: 3-MASHQ — Anchor bilan Kontakt bo‘limiga o‘tish ⚓ | Content:NO Quiz:NO Sections:0 Ex:0 QuizQs:0
+  [WARN] Dars 48: 🎁 BONUS — JS Mini Challenge ⚡ | Content:NO Quiz:YES Sections:0 Ex:0 QuizQs:7
+  [WARN] Dars 49: Birinchi katta mini-loyiham | Content:YES Quiz:NO Sections:0 Ex:0 QuizQs:0
+  [WARN] Dars 50: REVIEW 1 — HTML asoslari 📦 | Content:NO Quiz:NO Sections:1 Ex:0 QuizQs:0
+  [WARN] Dars 51: REVIEW 2 — HTML document skeleton 🦴 | Content:NO Quiz:NO Sections:1 Ex:0 QuizQs:0
+  [WARN] Dars 52: REVIEW 3 — Attributes 🏷️ | Content:NO Quiz:NO Sections:1 Ex:0 QuizQs:0
+  [WARN] Dars 53: REVIEW 4 — Links 🔗 | Content:NO Quiz:NO Sections:1 Ex:0 QuizQs:0
+  [WARN] Dars 54: 🎨 CSS — sahifani bezaydi | Content:NO Quiz:NO Sections:1 Ex:0 QuizQs:0
+  [WARN] Dars 55: ⚡ JavaScript — sahifaga harakat beradi | Content:NO Quiz:NO Sections:1 Ex:0 QuizQs:0
+  [WARN] Dars 56: 🚀 ENDI O‘ZING YARAT | Content:NO Quiz:NO Sections:1 Ex:0 QuizQs:0
+  [WARN] Dars 57: 🎛 BIR SAHIFA, UCH XIL HOLAT | Content:NO Quiz:NO Sections:0 Ex:0 QuizQs:0
+  [WARN] Dars 58: 🚀 MY FIRST PORTFOLIO | Content:NO Quiz:NO Sections:0 Ex:0 QuizQs:0
+  [WARN] Dars 59: 🎮 O‘YIN 2 — Build the HTML 🧱 | Content:NO Quiz:NO Sections:0 Ex:0 QuizQs:0
+  [WARN] Dars 60: 🚀 MY FIRST PORTFOLIO — LOYIHA | Content:NO Quiz:NO Sections:0 Ex:0 QuizQs:0
+  [WARN] Dars 61: HTML matnlar, ro‘yxatlar va sahifani rang bilan bezash | Content:YES Quiz:NO Sections:0 Ex:0 QuizQs:0
+  [WARN] Dars 62: 🔁 TEZKOR ESLATMA — eslaymiz! | Content:NO Quiz:NO Sections:0 Ex:0 QuizQs:0
+  [WARN] Dars 63: <strong> — muhim matn 💪 | Content:NO Quiz:NO Sections:1 Ex:0 QuizQs:0
+  [WARN] Dars 64: Qaysi biri qalin matn beradi? 🤔 | Content:NO Quiz:NO Sections:1 Ex:0 QuizQs:0
+  [WARN] Dars 65: <em> — urg‘uli matn 🔊 | Content:NO Quiz:NO Sections:1 Ex:0 QuizQs:0
+  [WARN] Dars 66: <strong> va <em> — farqi qani? ⚖️ | Content:NO Quiz:NO Sections:1 Ex:0 QuizQs:0
+  [WARN] Dars 67: <br> — yangi qator ⏎ | Content:NO Quiz:NO Sections:1 Ex:0 QuizQs:0
+  [WARN] Dars 68: <hr> — ajratuvchi chiziq ➖ | Content:NO Quiz:NO Sections:1 Ex:0 QuizQs:0
+  [WARN] Dars 69: <ul> — tartibsiz ro‘yxat 📋 | Content:NO Quiz:NO Sections:1 Ex:0 QuizQs:0
+  [WARN] Dars 70: <li> — ro‘yxatdagi bitta band 📌 | Content:NO Quiz:NO Sections:1 Ex:0 QuizQs:0
+  [WARN] Dars 71: <ol> — tartibli ro‘yxat 🔢 | Content:NO Quiz:NO Sections:1 Ex:0 QuizQs:0
+  [WARN] Dars 72: <ul> yoki <ol>? — yakuniy taqqoslash ⚖️ | Content:NO Quiz:NO Sections:1 Ex:0 QuizQs:0
+  [WARN] Dars 73: 🎨 CSSga o‘tish — ozgina chiroyli qilamiz | Content:NO Quiz:NO Sections:1 Ex:0 QuizQs:0
+  [WARN] Dars 74: CSS: color — matn rangi 🔴 | Content:NO Quiz:NO Sections:1 Ex:0 QuizQs:0
+  [WARN] Dars 75: CSS: background-color — orqa fon rangi 🟦 | Content:NO Quiz:NO Sections:1 Ex:0 QuizQs:0
+  [WARN] Dars 76: O‘yin 1 — Ro‘yxat ustasi | Content:NO Quiz:NO Sections:0 Ex:0 QuizQs:0
+  [WARN] Dars 77: O‘yin 2 — Kod detektivi | Content:NO Quiz:NO Sections:0 Ex:0 QuizQs:0
+  [WARN] Dars 78: O‘yin 3 — CSSsiz yoki CSS bilan? (color) | Content:NO Quiz:NO Sections:0 Ex:0 QuizQs:0
+  [WARN] Dars 79: O‘yin 4 — CSSsiz yoki CSS bilan? (background-color) | Content:NO Quiz:NO Sections:0 Ex:0 QuizQs:0
+  [WARN] Dars 80: O‘yin 5 — Rang sehrgari | Content:NO Quiz:NO Sections:0 Ex:1 QuizQs:0
+  [WARN] Dars 81: MASHQ 1 — `<strong>` bilan muhim matn yarating 💪 | Content:NO Quiz:NO Sections:0 Ex:1 QuizQs:0
+  [WARN] Dars 82: MASHQ 2 — `<ul>` va `<li>` bilan 3 ta skill yozing 📋 | Content:NO Quiz:NO Sections:0 Ex:1 QuizQs:0
+  [WARN] Dars 83: MASHQ 3 — `<ol>` va `<li>` bilan 3 ta qadam yarating 🔢 | Content:NO Quiz:NO Sections:0 Ex:0 QuizQs:0
+  [WARN] Dars 84: 🎁 BONUS — CSS bilan bezang 🎨 | Content:NO Quiz:YES Sections:0 Ex:0 QuizQs:6
+  [WARN] Dars 85: HTML formalar, inputlar va CSS bilan rang berish | Content:YES Quiz:NO Sections:0 Ex:0 QuizQs:0
+  [WARN] Dars 86: 🔁 TEZKOR ESLATMA — eslaymiz! | Content:NO Quiz:NO Sections:0 Ex:0 QuizQs:0
+  [WARN] Dars 87: <form> — forma 📋 | Content:NO Quiz:NO Sections:1 Ex:0 QuizQs:0
+  [WARN] Dars 88: Forma ishlayaptimi? 🤔 | Content:NO Quiz:NO Sections:1 Ex:0 QuizQs:0
+  [WARN] Dars 89: <label> — maydon nomi 🏷 | Content:NO Quiz:NO Sections:1 Ex:0 QuizQs:0
+  [WARN] Dars 90: <input> — yozish maydoni ✍️ | Content:NO Quiz:NO Sections:1 Ex:0 QuizQs:0
+  [WARN] Dars 91: placeholder — yordamchi matn 💬 | Content:NO Quiz:NO Sections:1 Ex:0 QuizQs:0
+  [WARN] Dars 92: type= | Content:NO Quiz:NO Sections:0 Ex:0 QuizQs:0
+  [WARN] Dars 93: type= | Content:NO Quiz:NO Sections:0 Ex:0 QuizQs:0
+  [WARN] Dars 94: <button> — tugma 🔘 | Content:NO Quiz:NO Sections:1 Ex:0 QuizQs:0
+  [WARN] Dars 95: Hammasini birlashtiramiz — to‘liq forma 🧩 | Content:NO Quiz:NO Sections:1 Ex:0 QuizQs:0
+  [WARN] Dars 96: CSSga o‘tish — formani chiroyli qilamiz 🎨 | Content:NO Quiz:NO Sections:1 Ex:0 QuizQs:0
+  [WARN] Dars 97: Rang nomlari English tilida 🇬🇧 | Content:NO Quiz:NO Sections:1 Ex:0 QuizQs:0
+  [WARN] Dars 98: background-color — orqa fon rangi 🟦 | Content:NO Quiz:NO Sections:1 Ex:0 QuizQs:0
+  [WARN] Dars 99: JavaScript — tugmaga jon berish ⚡ | Content:NO Quiz:NO Sections:1 Ex:0 QuizQs:0
+  [WARN] Dars 100: input.value — yozilgan qiymat 💡 | Content:NO Quiz:NO Sections:1 Ex:0 QuizQs:0
+  [WARN] Dars 101: O‘yin 1 — Type Doctor | Content:NO Quiz:NO Sections:0 Ex:0 QuizQs:0
+  [WARN] Dars 102: O‘yin 2 — Rangni toping | Content:NO Quiz:NO Sections:0 Ex:0 QuizQs:0
+  [WARN] Dars 103: O‘yin 3 — Formani yig‘ing | Content:NO Quiz:NO Sections:0 Ex:1 QuizQs:0
+  [WARN] Dars 104: MASHQ 1 — Ism uchun text input yarating ✍️ | Content:NO Quiz:NO Sections:0 Ex:1 QuizQs:0
+  [WARN] Dars 105: MASHQ 2 — Email uchun email input yarating 📧 | Content:NO Quiz:NO Sections:0 Ex:1 QuizQs:0
+  [WARN] Dars 106: MASHQ 3 — Ism + email + button bilan kichik forma yarating 🧩 | Content:NO Quiz:NO Sections:0 Ex:0 QuizQs:0
+  [WARN] Dars 107: 🎁 BONUS — Rangli input va tugma 🎨 | Content:NO Quiz:NO Sections:0 Ex:0 QuizQs:0
+  [WARN] Dars 108: 🎁 BONUS — JS: Salom, [ism]! 👋 | Content:NO Quiz:YES Sections:0 Ex:0 QuizQs:5
+  [WARN] Dars 109: Formani kuchaytirish: required, textarea, select va JavaScript validation | Content:YES Quiz:NO Sections:0 Ex:0 QuizQs:0
+  [WARN] Dars 110: 🔁 TEZKOR ESLATMA — eslaymiz! | Content:NO Quiz:NO Sections:0 Ex:0 QuizQs:0
+  [WARN] Dars 111: required — bo‘sh qoldirish taqiqlangan! 🚫 | Content:NO Quiz:NO Sections:1 Ex:0 QuizQs:0
+  [WARN] Dars 112: name — maydonga nom berish 📛 | Content:NO Quiz:NO Sections:1 Ex:0 QuizQs:0
+  [WARN] Dars 113: value — boshlang‘ich qiymat 💡 | Content:NO Quiz:NO Sections:1 Ex:0 QuizQs:0
+  [WARN] Dars 114: textarea — ko‘p qatorli matn 📝 | Content:NO Quiz:NO Sections:1 Ex:0 QuizQs:0
+  [WARN] Dars 115: select va option — tanlash oynasi 📋 | Content:NO Quiz:NO Sections:1 Ex:0 QuizQs:0
+  [WARN] Dars 116: CSS bilan formani chiroyli qilamiz 🎨 | Content:NO Quiz:NO Sections:1 Ex:0 QuizQs:0
+  [WARN] Dars 117: Elementlarni bittadan eslaymiz 🧱 | Content:NO Quiz:NO Sections:1 Ex:0 QuizQs:0
+  [WARN] Dars 118: HTML + CSS + JavaScript — kim nima qiladi? 🤝 | Content:NO Quiz:NO Sections:1 Ex:0 QuizQs:0
+  [WARN] Dars 119: submit — forma yuborilishi 🚀 | Content:NO Quiz:NO Sections:1 Ex:0 QuizQs:0
+  [WARN] Dars 120: getElementById va .value — yozilgan qiymatni olish 💡 | Content:NO Quiz:NO Sections:1 Ex:0 QuizQs:0
+  [WARN] Dars 121: REAL INTERACTION — Salom, Ahatjon! 👋 | Content:NO Quiz:NO Sections:1 Ex:0 QuizQs:0
+  [WARN] Dars 122: if va alert — JavaScript validation ✅ | Content:NO Quiz:NO Sections:1 Ex:0 QuizQs:0
+  [WARN] Dars 123: O‘yin 1 — Required Doctor | Content:NO Quiz:NO Sections:0 Ex:0 QuizQs:0
+  [WARN] Dars 124: O‘yin 2 — Formani tanla | Content:NO Quiz:NO Sections:0 Ex:0 QuizQs:0
+  [WARN] Dars 125: O‘yin 3 — Choice Maker | Content:NO Quiz:NO Sections:0 Ex:1 QuizQs:0
+  [WARN] Dars 126: MASHQ 1 — Ism inputiga required qo‘shing 🚫 | Content:NO Quiz:NO Sections:0 Ex:1 QuizQs:0
+  [WARN] Dars 127: MASHQ 2 — Textarea va select yarating 📝 | Content:NO Quiz:NO Sections:0 Ex:1 QuizQs:0
+  [WARN] Dars 128: MASHQ 3 — To‘liq ishlaydigan forma yarating 🧩 | Content:NO Quiz:NO Sections:0 Ex:0 QuizQs:0
+  [WARN] Dars 129: 🎁 BONUS — Input va tugmani CSS bilan bezang 🎨 | Content:NO Quiz:NO Sections:0 Ex:0 QuizQs:0
+  [WARN] Dars 130: 🎁 BONUS — JS validation: Salom, [ism]! 👋 | Content:NO Quiz:YES Sections:0 Ex:0 QuizQs:6
+
+[KURS 2] CSS (id: css) — 0 dars
+
+[KURS 3] JavaScript (id: javascript) — 0 dars
+
+[KURS 4] Python (id: python) — 0 dars
+
+[KURS 5] Java (id: java) — 0 dars
+
+[KURS 6] C++ (id: cpp) — 0 dars
+
+[KURS 7] SQL (id: sql) — 0 dars
+
+[KURS 8] React (id: react) — 0 dars
+
+[KURS 9] Node.js (id: nodejs) — 0 dars
+
+[KURS 10] AI (id: ai) — 0 dars
+
+Umumiy: Jami:130 OK:0 Muammoli:130
+
+MUAMMOLI DARSLAR:
+  1. [HTML] Dars 1: HTML nima? - quiz yo'q, sections kam (0/3), mashq kam (0/3), quiz savollar kam (0/5)
+  2. [HTML] Dars 2: HTML nima? - content yo'q, quiz yo'q, sections kam (1/3), mashq kam (0/3), quiz savollar kam (0/5)
+  3. [HTML] Dars 3: HTML qanday ishlaydi? - content yo'q, quiz yo'q, sections kam (1/3), mashq kam (0/3), quiz savollar kam (0/5)
+  4. [HTML] Dars 4: Teg (Tag), Kontent va Element - content yo'q, quiz yo'q, sections kam (1/3), mashq kam (0/3), quiz savollar kam (0/5)
+  5. [HTML] Dars 5: Oddiy HTML sahifa strukturasi - content yo'q, quiz yo'q, sections kam (1/3), mashq kam (0/3), quiz savollar kam (0/5)
+  6. [HTML] Dars 6: Parent va Child (ota va bola) elementlar - content yo'q, quiz yo'q, sections kam (1/3), mashq kam (0/3), quiz savollar kam (0/5)
+  7. [HTML] Dars 7: Sarlavhalar (h1–h6), Paragraf (p) va Yangi qator (br) - content yo'q, quiz yo'q, sections kam (1/3), mashq kam (0/3), quiz savollar kam (0/5)
+  8. [HTML] Dars 8: Xulosa - content yo'q, sections kam (1/3), mashq kam (0/3)
+  9. [HTML] Dars 9: HTML hujjati strukturasi - quiz yo'q, sections kam (0/3), mashq kam (0/3), quiz savollar kam (0/5)
+  10. [HTML] Dars 10: HTML skeleti — umumiy ko‘rinish - content yo'q, quiz yo'q, sections kam (1/3), mashq kam (0/3), quiz savollar kam (0/5)
+  11. [HTML] Dars 11: <!DOCTYPE html> — hujjat turi e‘loni - content yo'q, quiz yo'q, sections kam (1/3), mashq kam (0/3), quiz savollar kam (0/5)
+  12. [HTML] Dars 12: <html lang= - content yo'q, quiz yo'q, sections kam (0/3), mashq kam (0/3), quiz savollar kam (0/5)
+  13. [HTML] Dars 13: <head> — ko‘rinmaydigan qism - content yo'q, quiz yo'q, sections kam (1/3), mashq kam (0/3), quiz savollar kam (0/5)
+  14. [HTML] Dars 14: <meta charset= - content yo'q, quiz yo'q, sections kam (0/3), mashq kam (0/3), quiz savollar kam (0/5)
+  15. [HTML] Dars 15: <title> — sahifa nomi - content yo'q, quiz yo'q, sections kam (1/3), mashq kam (0/3), quiz savollar kam (0/5)
+  16. [HTML] Dars 16: <body> — ko‘rinadigan qism - content yo'q, quiz yo'q, sections kam (1/3), mashq kam (0/3), quiz savollar kam (0/5)
+  17. [HTML] Dars 17: Parent / Child — ota va bola - content yo'q, quiz yo'q, sections kam (1/3), mashq kam (0/3), quiz savollar kam (0/5)
+  18. [HTML] Dars 18: Nesting va Indentation - content yo'q, quiz yo'q, sections kam (1/3), mashq kam (1/3), quiz savollar kam (0/5)
+  19. [HTML] Dars 19: 1-MASHQ — Live Edit - content yo'q, quiz yo'q, sections kam (0/3), mashq kam (1/3), quiz savollar kam (0/5)
+  20. [HTML] Dars 20: 2-MASHQ — Drag & Drop - content yo'q, quiz yo'q, sections kam (0/3), mashq kam (1/3), quiz savollar kam (0/5)
+  21. [HTML] Dars 21: 3-MASHQ — Kod detektivi - content yo'q, sections kam (0/3), mashq kam (0/3)
+  22. [HTML] Dars 22: HTML atributlari va elementga qo‘shimcha ma’lumot berish - quiz yo'q, sections kam (0/3), mashq kam (0/3), quiz savollar kam (0/5)
+  23. [HTML] Dars 23: Atribut nima? 🤔 - content yo'q, quiz yo'q, sections kam (1/3), mashq kam (0/3), quiz savollar kam (0/5)
+  24. [HTML] Dars 24: name= - content yo'q, quiz yo'q, sections kam (0/3), mashq kam (0/3), quiz savollar kam (0/5)
+  25. [HTML] Dars 25: src — rasm qayerdan olinadi? 📥 - content yo'q, quiz yo'q, sections kam (1/3), mashq kam (0/3), quiz savollar kam (0/5)
+  26. [HTML] Dars 26: alt — rasm haqida qisqa matn 📝 - content yo'q, quiz yo'q, sections kam (1/3), mashq kam (0/3), quiz savollar kam (0/5)
+  27. [HTML] Dars 27: class — elementga guruh nomi berish 🏷️ - content yo'q, quiz yo'q, sections kam (1/3), mashq kam (0/3), quiz savollar kam (0/5)
+  28. [HTML] Dars 28: id — elementga o‘ziga xos nom 🆔 - content yo'q, quiz yo'q, sections kam (1/3), mashq kam (0/3), quiz savollar kam (0/5)
+  29. [HTML] Dars 29: title — hover qilsangiz chiqadigan izoh 💬 - content yo'q, quiz yo'q, sections kam (1/3), mashq kam (0/3), quiz savollar kam (0/5)
+  30. [HTML] Dars 30: Bir nechta atribut bitta elementda 🎯 - content yo'q, quiz yo'q, sections kam (1/3), mashq kam (0/3), quiz savollar kam (0/5)
+  31. [HTML] Dars 31: 🎨 CSS nima qiladi? - content yo'q, quiz yo'q, sections kam (1/3), mashq kam (0/3), quiz savollar kam (0/5)
+  32. [HTML] Dars 32: ⚡ JavaScript nima qiladi? - content yo'q, quiz yo'q, sections kam (1/3), mashq kam (0/3), quiz savollar kam (0/5)
+  33. [HTML] Dars 33: Asosiy rasm - content yo'q, quiz yo'q, sections kam (0/3), mashq kam (1/3), quiz savollar kam (0/5)
+  34. [HTML] Dars 34: 1-MASHQ — <img> ga alt qo‘shing 🖼️ - content yo'q, quiz yo'q, sections kam (0/3), mashq kam (1/3), quiz savollar kam (0/5)
+  35. [HTML] Dars 35: 2-MASHQ — <button> ga id qo‘shing 🆔 - content yo'q, quiz yo'q, sections kam (0/3), mashq kam (1/3), quiz savollar kam (0/5)
+  36. [HTML] Dars 36: 3-MASHQ — <div> ga class qo‘shing 🎨 - content yo'q, sections kam (0/3), mashq kam (0/3)
+  37. [HTML] Dars 37: Linklar va rasmlar - quiz yo'q, sections kam (0/3), mashq kam (0/3), quiz savollar kam (0/5)
+  38. [HTML] Dars 38: <a> — link elementi 🔗 - content yo'q, quiz yo'q, sections kam (1/3), mashq kam (0/3), quiz savollar kam (0/5)
+  39. [HTML] Dars 39: href va URL 🌍 - content yo'q, quiz yo'q, sections kam (1/3), mashq kam (0/3), quiz savollar kam (0/5)
+  40. [HTML] Dars 40: Tashqi va ichki link 🔀 - content yo'q, quiz yo'q, sections kam (1/3), mashq kam (0/3), quiz savollar kam (0/5)
+  41. [HTML] Dars 41: target= - content yo'q, quiz yo'q, sections kam (0/3), mashq kam (0/3), quiz savollar kam (0/5)
+  42. [HTML] Dars 42: Email va telefon linklari 📧📞 - content yo'q, quiz yo'q, sections kam (1/3), mashq kam (0/3), quiz savollar kam (0/5)
+  43. [HTML] Dars 43: Page anchor — sahifa ichida sakrash ⚓ - content yo'q, quiz yo'q, sections kam (1/3), mashq kam (0/3), quiz savollar kam (0/5)
+  44. [HTML] Dars 44: ⚡ JavaScript: link bosilishini boshqarish - content yo'q, quiz yo'q, sections kam (1/3), mashq kam (1/3), quiz savollar kam (0/5)
+  45. [HTML] Dars 45: 1-MASHQ — Google ga link yarating 🔗 - content yo'q, quiz yo'q, sections kam (0/3), mashq kam (1/3), quiz savollar kam (0/5)
+  46. [HTML] Dars 46: 2-MASHQ — Yangi tabda ochiladigan link 🗂️ - content yo'q, quiz yo'q, sections kam (0/3), mashq kam (1/3), quiz savollar kam (0/5)
+  47. [HTML] Dars 47: 3-MASHQ — Anchor bilan Kontakt bo‘limiga o‘tish ⚓ - content yo'q, quiz yo'q, sections kam (0/3), mashq kam (0/3), quiz savollar kam (0/5)
+  48. [HTML] Dars 48: 🎁 BONUS — JS Mini Challenge ⚡ - content yo'q, sections kam (0/3), mashq kam (0/3)
+  49. [HTML] Dars 49: Birinchi katta mini-loyiham - quiz yo'q, sections kam (0/3), mashq kam (0/3), quiz savollar kam (0/5)
+  50. [HTML] Dars 50: REVIEW 1 — HTML asoslari 📦 - content yo'q, quiz yo'q, sections kam (1/3), mashq kam (0/3), quiz savollar kam (0/5)
+  51. [HTML] Dars 51: REVIEW 2 — HTML document skeleton 🦴 - content yo'q, quiz yo'q, sections kam (1/3), mashq kam (0/3), quiz savollar kam (0/5)
+  52. [HTML] Dars 52: REVIEW 3 — Attributes 🏷️ - content yo'q, quiz yo'q, sections kam (1/3), mashq kam (0/3), quiz savollar kam (0/5)
+  53. [HTML] Dars 53: REVIEW 4 — Links 🔗 - content yo'q, quiz yo'q, sections kam (1/3), mashq kam (0/3), quiz savollar kam (0/5)
+  54. [HTML] Dars 54: 🎨 CSS — sahifani bezaydi - content yo'q, quiz yo'q, sections kam (1/3), mashq kam (0/3), quiz savollar kam (0/5)
+  55. [HTML] Dars 55: ⚡ JavaScript — sahifaga harakat beradi - content yo'q, quiz yo'q, sections kam (1/3), mashq kam (0/3), quiz savollar kam (0/5)
+  56. [HTML] Dars 56: 🚀 ENDI O‘ZING YARAT - content yo'q, quiz yo'q, sections kam (1/3), mashq kam (0/3), quiz savollar kam (0/5)
+  57. [HTML] Dars 57: 🎛 BIR SAHIFA, UCH XIL HOLAT - content yo'q, quiz yo'q, sections kam (0/3), mashq kam (0/3), quiz savollar kam (0/5)
+  58. [HTML] Dars 58: 🚀 MY FIRST PORTFOLIO - content yo'q, quiz yo'q, sections kam (0/3), mashq kam (0/3), quiz savollar kam (0/5)
+  59. [HTML] Dars 59: 🎮 O‘YIN 2 — Build the HTML 🧱 - content yo'q, quiz yo'q, sections kam (0/3), mashq kam (0/3), quiz savollar kam (0/5)
+  60. [HTML] Dars 60: 🚀 MY FIRST PORTFOLIO — LOYIHA - content yo'q, quiz yo'q, sections kam (0/3), mashq kam (0/3), quiz savollar kam (0/5)
+  61. [HTML] Dars 61: HTML matnlar, ro‘yxatlar va sahifani rang bilan bezash - quiz yo'q, sections kam (0/3), mashq kam (0/3), quiz savollar kam (0/5)
+  62. [HTML] Dars 62: 🔁 TEZKOR ESLATMA — eslaymiz! - content yo'q, quiz yo'q, sections kam (0/3), mashq kam (0/3), quiz savollar kam (0/5)
+  63. [HTML] Dars 63: <strong> — muhim matn 💪 - content yo'q, quiz yo'q, sections kam (1/3), mashq kam (0/3), quiz savollar kam (0/5)
+  64. [HTML] Dars 64: Qaysi biri qalin matn beradi? 🤔 - content yo'q, quiz yo'q, sections kam (1/3), mashq kam (0/3), quiz savollar kam (0/5)
+  65. [HTML] Dars 65: <em> — urg‘uli matn 🔊 - content yo'q, quiz yo'q, sections kam (1/3), mashq kam (0/3), quiz savollar kam (0/5)
+  66. [HTML] Dars 66: <strong> va <em> — farqi qani? ⚖️ - content yo'q, quiz yo'q, sections kam (1/3), mashq kam (0/3), quiz savollar kam (0/5)
+  67. [HTML] Dars 67: <br> — yangi qator ⏎ - content yo'q, quiz yo'q, sections kam (1/3), mashq kam (0/3), quiz savollar kam (0/5)
+  68. [HTML] Dars 68: <hr> — ajratuvchi chiziq ➖ - content yo'q, quiz yo'q, sections kam (1/3), mashq kam (0/3), quiz savollar kam (0/5)
+  69. [HTML] Dars 69: <ul> — tartibsiz ro‘yxat 📋 - content yo'q, quiz yo'q, sections kam (1/3), mashq kam (0/3), quiz savollar kam (0/5)
+  70. [HTML] Dars 70: <li> — ro‘yxatdagi bitta band 📌 - content yo'q, quiz yo'q, sections kam (1/3), mashq kam (0/3), quiz savollar kam (0/5)
+  71. [HTML] Dars 71: <ol> — tartibli ro‘yxat 🔢 - content yo'q, quiz yo'q, sections kam (1/3), mashq kam (0/3), quiz savollar kam (0/5)
+  72. [HTML] Dars 72: <ul> yoki <ol>? — yakuniy taqqoslash ⚖️ - content yo'q, quiz yo'q, sections kam (1/3), mashq kam (0/3), quiz savollar kam (0/5)
+  73. [HTML] Dars 73: 🎨 CSSga o‘tish — ozgina chiroyli qilamiz - content yo'q, quiz yo'q, sections kam (1/3), mashq kam (0/3), quiz savollar kam (0/5)
+  74. [HTML] Dars 74: CSS: color — matn rangi 🔴 - content yo'q, quiz yo'q, sections kam (1/3), mashq kam (0/3), quiz savollar kam (0/5)
+  75. [HTML] Dars 75: CSS: background-color — orqa fon rangi 🟦 - content yo'q, quiz yo'q, sections kam (1/3), mashq kam (0/3), quiz savollar kam (0/5)
+  76. [HTML] Dars 76: O‘yin 1 — Ro‘yxat ustasi - content yo'q, quiz yo'q, sections kam (0/3), mashq kam (0/3), quiz savollar kam (0/5)
+  77. [HTML] Dars 77: O‘yin 2 — Kod detektivi - content yo'q, quiz yo'q, sections kam (0/3), mashq kam (0/3), quiz savollar kam (0/5)
+  78. [HTML] Dars 78: O‘yin 3 — CSSsiz yoki CSS bilan? (color) - content yo'q, quiz yo'q, sections kam (0/3), mashq kam (0/3), quiz savollar kam (0/5)
+  79. [HTML] Dars 79: O‘yin 4 — CSSsiz yoki CSS bilan? (background-color) - content yo'q, quiz yo'q, sections kam (0/3), mashq kam (0/3), quiz savollar kam (0/5)
+  80. [HTML] Dars 80: O‘yin 5 — Rang sehrgari - content yo'q, quiz yo'q, sections kam (0/3), mashq kam (1/3), quiz savollar kam (0/5)
+  81. [HTML] Dars 81: MASHQ 1 — `<strong>` bilan muhim matn yarating 💪 - content yo'q, quiz yo'q, sections kam (0/3), mashq kam (1/3), quiz savollar kam (0/5)
+  82. [HTML] Dars 82: MASHQ 2 — `<ul>` va `<li>` bilan 3 ta skill yozing 📋 - content yo'q, quiz yo'q, sections kam (0/3), mashq kam (1/3), quiz savollar kam (0/5)
+  83. [HTML] Dars 83: MASHQ 3 — `<ol>` va `<li>` bilan 3 ta qadam yarating 🔢 - content yo'q, quiz yo'q, sections kam (0/3), mashq kam (0/3), quiz savollar kam (0/5)
+  84. [HTML] Dars 84: 🎁 BONUS — CSS bilan bezang 🎨 - content yo'q, sections kam (0/3), mashq kam (0/3)
+  85. [HTML] Dars 85: HTML formalar, inputlar va CSS bilan rang berish - quiz yo'q, sections kam (0/3), mashq kam (0/3), quiz savollar kam (0/5)
+  86. [HTML] Dars 86: 🔁 TEZKOR ESLATMA — eslaymiz! - content yo'q, quiz yo'q, sections kam (0/3), mashq kam (0/3), quiz savollar kam (0/5)
+  87. [HTML] Dars 87: <form> — forma 📋 - content yo'q, quiz yo'q, sections kam (1/3), mashq kam (0/3), quiz savollar kam (0/5)
+  88. [HTML] Dars 88: Forma ishlayaptimi? 🤔 - content yo'q, quiz yo'q, sections kam (1/3), mashq kam (0/3), quiz savollar kam (0/5)
+  89. [HTML] Dars 89: <label> — maydon nomi 🏷 - content yo'q, quiz yo'q, sections kam (1/3), mashq kam (0/3), quiz savollar kam (0/5)
+  90. [HTML] Dars 90: <input> — yozish maydoni ✍️ - content yo'q, quiz yo'q, sections kam (1/3), mashq kam (0/3), quiz savollar kam (0/5)
+  91. [HTML] Dars 91: placeholder — yordamchi matn 💬 - content yo'q, quiz yo'q, sections kam (1/3), mashq kam (0/3), quiz savollar kam (0/5)
+  92. [HTML] Dars 92: type= - content yo'q, quiz yo'q, sections kam (0/3), mashq kam (0/3), quiz savollar kam (0/5)
+  93. [HTML] Dars 93: type= - content yo'q, quiz yo'q, sections kam (0/3), mashq kam (0/3), quiz savollar kam (0/5)
+  94. [HTML] Dars 94: <button> — tugma 🔘 - content yo'q, quiz yo'q, sections kam (1/3), mashq kam (0/3), quiz savollar kam (0/5)
+  95. [HTML] Dars 95: Hammasini birlashtiramiz — to‘liq forma 🧩 - content yo'q, quiz yo'q, sections kam (1/3), mashq kam (0/3), quiz savollar kam (0/5)
+  96. [HTML] Dars 96: CSSga o‘tish — formani chiroyli qilamiz 🎨 - content yo'q, quiz yo'q, sections kam (1/3), mashq kam (0/3), quiz savollar kam (0/5)
+  97. [HTML] Dars 97: Rang nomlari English tilida 🇬🇧 - content yo'q, quiz yo'q, sections kam (1/3), mashq kam (0/3), quiz savollar kam (0/5)
+  98. [HTML] Dars 98: background-color — orqa fon rangi 🟦 - content yo'q, quiz yo'q, sections kam (1/3), mashq kam (0/3), quiz savollar kam (0/5)
+  99. [HTML] Dars 99: JavaScript — tugmaga jon berish ⚡ - content yo'q, quiz yo'q, sections kam (1/3), mashq kam (0/3), quiz savollar kam (0/5)
+  100. [HTML] Dars 100: input.value — yozilgan qiymat 💡 - content yo'q, quiz yo'q, sections kam (1/3), mashq kam (0/3), quiz savollar kam (0/5)
+  101. [HTML] Dars 101: O‘yin 1 — Type Doctor - content yo'q, quiz yo'q, sections kam (0/3), mashq kam (0/3), quiz savollar kam (0/5)
+  102. [HTML] Dars 102: O‘yin 2 — Rangni toping - content yo'q, quiz yo'q, sections kam (0/3), mashq kam (0/3), quiz savollar kam (0/5)
+  103. [HTML] Dars 103: O‘yin 3 — Formani yig‘ing - content yo'q, quiz yo'q, sections kam (0/3), mashq kam (1/3), quiz savollar kam (0/5)
+  104. [HTML] Dars 104: MASHQ 1 — Ism uchun text input yarating ✍️ - content yo'q, quiz yo'q, sections kam (0/3), mashq kam (1/3), quiz savollar kam (0/5)
+  105. [HTML] Dars 105: MASHQ 2 — Email uchun email input yarating 📧 - content yo'q, quiz yo'q, sections kam (0/3), mashq kam (1/3), quiz savollar kam (0/5)
+  106. [HTML] Dars 106: MASHQ 3 — Ism + email + button bilan kichik forma yarating 🧩 - content yo'q, quiz yo'q, sections kam (0/3), mashq kam (0/3), quiz savollar kam (0/5)
+  107. [HTML] Dars 107: 🎁 BONUS — Rangli input va tugma 🎨 - content yo'q, quiz yo'q, sections kam (0/3), mashq kam (0/3), quiz savollar kam (0/5)
+  108. [HTML] Dars 108: 🎁 BONUS — JS: Salom, [ism]! 👋 - content yo'q, sections kam (0/3), mashq kam (0/3)
+  109. [HTML] Dars 109: Formani kuchaytirish: required, textarea, select va JavaScript validation - quiz yo'q, sections kam (0/3), mashq kam (0/3), quiz savollar kam (0/5)
+  110. [HTML] Dars 110: 🔁 TEZKOR ESLATMA — eslaymiz! - content yo'q, quiz yo'q, sections kam (0/3), mashq kam (0/3), quiz savollar kam (0/5)
+  111. [HTML] Dars 111: required — bo‘sh qoldirish taqiqlangan! 🚫 - content yo'q, quiz yo'q, sections kam (1/3), mashq kam (0/3), quiz savollar kam (0/5)
+  112. [HTML] Dars 112: name — maydonga nom berish 📛 - content yo'q, quiz yo'q, sections kam (1/3), mashq kam (0/3), quiz savollar kam (0/5)
+  113. [HTML] Dars 113: value — boshlang‘ich qiymat 💡 - content yo'q, quiz yo'q, sections kam (1/3), mashq kam (0/3), quiz savollar kam (0/5)
+  114. [HTML] Dars 114: textarea — ko‘p qatorli matn 📝 - content yo'q, quiz yo'q, sections kam (1/3), mashq kam (0/3), quiz savollar kam (0/5)
+  115. [HTML] Dars 115: select va option — tanlash oynasi 📋 - content yo'q, quiz yo'q, sections kam (1/3), mashq kam (0/3), quiz savollar kam (0/5)
+  116. [HTML] Dars 116: CSS bilan formani chiroyli qilamiz 🎨 - content yo'q, quiz yo'q, sections kam (1/3), mashq kam (0/3), quiz savollar kam (0/5)
+  117. [HTML] Dars 117: Elementlarni bittadan eslaymiz 🧱 - content yo'q, quiz yo'q, sections kam (1/3), mashq kam (0/3), quiz savollar kam (0/5)
+  118. [HTML] Dars 118: HTML + CSS + JavaScript — kim nima qiladi? 🤝 - content yo'q, quiz yo'q, sections kam (1/3), mashq kam (0/3), quiz savollar kam (0/5)
+  119. [HTML] Dars 119: submit — forma yuborilishi 🚀 - content yo'q, quiz yo'q, sections kam (1/3), mashq kam (0/3), quiz savollar kam (0/5)
+  120. [HTML] Dars 120: getElementById va .value — yozilgan qiymatni olish 💡 - content yo'q, quiz yo'q, sections kam (1/3), mashq kam (0/3), quiz savollar kam (0/5)
+  121. [HTML] Dars 121: REAL INTERACTION — Salom, Ahatjon! 👋 - content yo'q, quiz yo'q, sections kam (1/3), mashq kam (0/3), quiz savollar kam (0/5)
+  122. [HTML] Dars 122: if va alert — JavaScript validation ✅ - content yo'q, quiz yo'q, sections kam (1/3), mashq kam (0/3), quiz savollar kam (0/5)
+  123. [HTML] Dars 123: O‘yin 1 — Required Doctor - content yo'q, quiz yo'q, sections kam (0/3), mashq kam (0/3), quiz savollar kam (0/5)
+  124. [HTML] Dars 124: O‘yin 2 — Formani tanla - content yo'q, quiz yo'q, sections kam (0/3), mashq kam (0/3), quiz savollar kam (0/5)
+  125. [HTML] Dars 125: O‘yin 3 — Choice Maker - content yo'q, quiz yo'q, sections kam (0/3), mashq kam (1/3), quiz savollar kam (0/5)
+  126. [HTML] Dars 126: MASHQ 1 — Ism inputiga required qo‘shing 🚫 - content yo'q, quiz yo'q, sections kam (0/3), mashq kam (1/3), quiz savollar kam (0/5)
+  127. [HTML] Dars 127: MASHQ 2 — Textarea va select yarating 📝 - content yo'q, quiz yo'q, sections kam (0/3), mashq kam (1/3), quiz savollar kam (0/5)
+  128. [HTML] Dars 128: MASHQ 3 — To‘liq ishlaydigan forma yarating 🧩 - content yo'q, quiz yo'q, sections kam (0/3), mashq kam (0/3), quiz savollar kam (0/5)
+  129. [HTML] Dars 129: 🎁 BONUS — Input va tugmani CSS bilan bezang 🎨 - content yo'q, quiz yo'q, sections kam (0/3), mashq kam (0/3), quiz savollar kam (0/5)
+  130. [HTML] Dars 130: 🎁 BONUS — JS validation: Salom, [ism]! 👋 - content yo'q, sections kam (0/3), mashq kam (0/3)

@@ -1,0 +1,504 @@
+/* ==========================================================
+   ITTest — CERTIFICATES (certificates.css)
+   Premium light-paper sertifikat dizayni.
+   Global design system: PRIMARY blue #2563EB / SECONDARY cyan #06B6D4 /
+   REWARD gold #D4A017 / SUCCESS green #10B981 / navy text.
+   Certificate HAR DOIM light/print-friendly (dark mode ta'sir qilmaydi).
+   ========================================================== */
+
+/* ---------- OVERLAY (viewer + verify) ---------- */
+.certv-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 9999;
+  display: none;
+  background: rgba(7, 10, 19, .82);
+  -webkit-backdrop-filter: blur(10px);
+  backdrop-filter: blur(10px);
+}
+.certv-overlay.open { display: flex; flex-direction: column; }
+.certv-topbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 12px 20px;
+  flex: 0 0 auto;
+}
+.certv-actions { display: flex; gap: 8px; flex-wrap: wrap; }
+.certv-scroll {
+  flex: 1 1 auto;
+  overflow-y: auto;
+  padding: 16px 16px 48px;
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+  -webkit-overflow-scrolling: touch;
+}
+.certv-body { width: 100%; display: flex; justify-content: center; }
+
+body.cert-modal-open { overflow: hidden; }
+
+/* ---------- NAME STEP (birinchi martalik ism yig'ish) ---------- */
+.cert-name-step {
+  margin: auto;
+  width: 100%;
+  max-width: 480px;
+  background: #fff;
+  border-radius: 20px;
+  padding: 36px 28px;
+  text-align: center;
+  box-shadow: 0 24px 64px rgba(2, 8, 23, .45);
+  color: #0f2a52;
+}
+.cert-name-step h2 { font-size: 20px; font-weight: 800; margin: 10px 0 6px; color: #0f2a52; }
+.cert-name-step .muted { color: #5a6b85; font-size: 14px; }
+.cert-name-emoji { font-size: 44px; line-height: 1; }
+.cert-name-step form { margin-top: 18px; text-align: left; }
+.cert-name-step .input {
+  width: 100%;
+  border: 2px solid #dbe7fb;
+  border-radius: 12px;
+  padding: 13px 14px;
+  font-size: 15px;
+  background: #f7faff;
+  color: #0f2a52;
+  outline: none;
+  transition: border-color .2s ease, box-shadow .2s ease;
+}
+.cert-name-step .input:focus {
+  border-color: #2563eb;
+  box-shadow: 0 0 0 4px rgba(37, 99, 235, .12);
+}
+.cert-name-warn { min-height: 20px; color: #dc2626; font-size: 12.5px; margin: 6px 2px 8px; }
+.cert-name-submit { width: 100%; justify-content: center; }
+.cert-name-skip { width: 100%; justify-content: center; margin-top: 8px; }
+
+/* ---------- CERTIFICATE PAPER (A4 landscape-like) ---------- */
+.cert-paper {
+  position: relative;
+  width: min(1100px, 100%);
+  min-height: 720px;
+  background:
+    radial-gradient(1200px 400px at 50% -8%, rgba(37, 99, 235, .06), transparent 60%),
+    radial-gradient(800px 300px at 100% 100%, rgba(6, 182, 212, .07), transparent 55%),
+    linear-gradient(180deg, #ffffff, #f8fbff);
+  border-radius: 18px;
+  padding: 52px 64px 40px;
+  color: #0f2a52;
+  box-shadow: 0 30px 80px rgba(2, 8, 23, .5);
+  display: flex;
+  flex-direction: column;
+  text-align: center;
+  overflow: hidden;
+  print-color-adjust: exact;
+  -webkit-print-color-adjust: exact;
+}
+/* ikki qatlamli ramka: ko'k + oltin */
+.cert-border {
+  position: absolute;
+  inset: 12px;
+  border: 2px solid rgba(37, 99, 235, .35);
+  border-radius: 12px;
+  pointer-events: none;
+}
+.cert-border::after {
+  content: '';
+  position: absolute;
+  inset: 6px;
+  border: 1.5px solid rgba(212, 160, 23, .55);
+  border-radius: 8px;
+}
+.cert-corner {
+  position: absolute;
+  width: 34px;
+  height: 34px;
+  pointer-events: none;
+  border-color: #d4a017;
+  border-style: solid;
+  border-width: 0;
+  opacity: .9;
+}
+.cert-corner--tl { top: 6px; left: 6px; border-top-width: 4px; border-left-width: 4px; border-top-left-radius: 8px; }
+.cert-corner--tr { top: 6px; right: 6px; border-top-width: 4px; border-right-width: 4px; border-top-right-radius: 8px; }
+.cert-corner--bl { bottom: 6px; left: 6px; border-bottom-width: 4px; border-left-width: 4px; border-bottom-left-radius: 8px; }
+.cert-corner--br { bottom: 6px; right: 6px; border-bottom-width: 4px; border-right-width: 4px; border-bottom-right-radius: 8px; }
+
+.cert-preview-badge {
+  position: absolute;
+  top: 22px;
+  right: 22px;
+  background: linear-gradient(135deg, #06b6d4, #2563eb);
+  color: #fff;
+  font-size: 10.5px;
+  font-weight: 800;
+  letter-spacing: .08em;
+  padding: 6px 12px;
+  border-radius: 999px;
+  z-index: 2;
+}
+
+/* ---------- HEADER ---------- */
+.cert-head { display: flex; flex-direction: column; align-items: center; gap: 4px; }
+.cert-logo { display: flex; align-items: center; gap: 10px; font-size: 26px; font-weight: 800; color: #0f2a52; }
+.cert-logo-ico { font-size: 30px; }
+.cert-logo-text b { color: #2563eb; }
+.cert-tagline {
+  font-size: 12.5px;
+  font-weight: 600;
+  letter-spacing: .14em;
+  text-transform: uppercase;
+  color: #06b6d4;
+}
+.cert-deco { width: 150px; height: 26px; margin-top: 6px; }
+
+/* ---------- ASOSIY MATN ---------- */
+.cert-title {
+  margin: 26px 0 6px;
+  font-size: clamp(30px, 4.6vw, 44px);
+  font-weight: 900;
+  letter-spacing: .22em;
+  background: linear-gradient(120deg, #2563eb 10%, #06b6d4 55%, #d4a017 100%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+.cert-sub { font-size: 15px; color: #5a6b85; }
+.cert-name {
+  font-size: clamp(28px, 4.4vw, 46px);
+  font-weight: 900;
+  text-transform: uppercase;
+  letter-spacing: .06em;
+  color: #0f2a52;
+  margin: 14px auto 10px;
+  padding-bottom: 12px;
+  max-width: 86%;
+  border-bottom: 2px solid rgba(37, 99, 235, .25);
+  line-height: 1.15;
+  overflow-wrap: anywhere;
+}
+.cert-body { max-width: 72%; margin: 0 auto; font-size: 15.5px; line-height: 1.65; color: #33415c; }
+.cert-body strong { color: #2563eb; }
+
+/* ---------- STATS ---------- */
+.cert-stats {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 12px;
+  max-width: 86%;
+  margin: 28px auto 0;
+}
+.cert-stat {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 2px;
+  background: rgba(37, 99, 235, .055);
+  border: 1px solid rgba(37, 99, 235, .14);
+  border-radius: 12px;
+  padding: 12px 8px;
+}
+.cert-stat-ico { font-size: 18px; }
+.cert-stat-lbl { font-size: 10.5px; font-weight: 700; letter-spacing: .1em; text-transform: uppercase; color: #5a6b85; }
+.cert-stat-val { font-size: 13.5px; font-weight: 800; color: #0f2a52; text-align: center; }
+
+/* ---------- FOOTER: sana / QR / ID ---------- */
+.cert-foot {
+  margin-top: auto;
+  padding-top: 26px;
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 18px;
+}
+.cert-foot-col { display: flex; flex-direction: column; gap: 3px; text-align: left; min-width: 150px; }
+.cert-foot-id { text-align: right; align-items: flex-end; }
+.cert-foot-lbl { font-size: 10.5px; font-weight: 700; letter-spacing: .1em; text-transform: uppercase; color: #5a6b85; }
+.cert-foot-val { font-size: 14.5px; font-weight: 800; color: #0f2a52; }
+.cert-id-code { font-family: ui-monospace, 'Cascadia Mono', Consolas, monospace; letter-spacing: .04em; }
+.cert-foot-qr { display: flex; flex-direction: column; align-items: center; gap: 4px; }
+.cert-foot-qr svg { width: 92px; height: 92px; background: #fff; border: 1px solid rgba(37, 99, 235, .25); border-radius: 8px; padding: 5px; }
+.cert-qr-cap { font-size: 10px; color: #5a6b85; }
+
+/* ---------- REVEAL ANIMATION (soft, ~1s, reduced-motion) ---------- */
+@keyframes certReveal {
+  from { opacity: 0; transform: scale(.955) translateY(16px); }
+  to { opacity: 1; transform: scale(1) translateY(0); }
+}
+@keyframes certShimmer {
+  from { transform: translateX(-130%) skewX(-18deg); }
+  to { transform: translateX(230%) skewX(-18deg); }
+}
+.cert-reveal { animation: certReveal .9s cubic-bezier(.16, 1, .3, 1) both; }
+.cert-paper::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  width: 34%;
+  background: linear-gradient(100deg, transparent, rgba(37, 99, 235, .08), transparent);
+  animation: certShimmer 1.1s ease .15s both;
+  pointer-events: none;
+}
+@media (prefers-reduced-motion: reduce) {
+  .cert-reveal { animation: none; }
+  .cert-paper::before { display: none; }
+}
+
+/* ---------- VERIFY CARD ---------- */
+.certv-verify .certv-body { align-items: flex-start; }
+.verify-card {
+  width: 100%;
+  max-width: 620px;
+  background: #fff;
+  border-radius: 18px;
+  padding: 30px 26px;
+  margin: 8vh auto 0;
+  color: #0f2a52;
+  box-shadow: 0 24px 64px rgba(2, 8, 23, .45);
+  text-align: center;
+}
+.verify-hero { display: flex; flex-direction: column; align-items: center; gap: 6px; }
+.verify-emoji { font-size: 44px; line-height: 1; }
+.verify-hero h2 { font-size: 21px; font-weight: 800; }
+.verify-hero p { color: #5a6b85; font-size: 14px; }
+.verify-status-pill {
+  display: inline-block;
+  background: rgba(16, 185, 129, .12);
+  color: #059669;
+  border: 1px solid rgba(16, 185, 129, .4);
+  font-weight: 800;
+  font-size: 12px;
+  letter-spacing: .06em;
+  padding: 5px 14px;
+  border-radius: 999px;
+}
+.verify-fail .verify-emoji { filter: none; }
+.verify-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+  margin: 20px 0 16px;
+  text-align: left;
+}
+.verify-grid > div {
+  background: #f7faff;
+  border: 1px solid #e3ecfb;
+  border-radius: 10px;
+  padding: 10px 12px;
+}
+.verify-grid .verify-wide { grid-column: 1 / -1; }
+.verify-grid dt { font-size: 10.5px; font-weight: 700; letter-spacing: .08em; text-transform: uppercase; color: #5a6b85; }
+.verify-grid dd { margin: 2px 0 0; font-size: 14.5px; font-weight: 800; color: #0f2a52; overflow-wrap: anywhere; }
+.verify-search { display: flex; gap: 8px; margin: 6px 0 16px; }
+.verify-search .input {
+  flex: 1;
+  border: 2px solid #dbe7fb;
+  border-radius: 10px;
+  padding: 11px 12px;
+  font-size: 13.5px;
+  background: #f7faff;
+  color: #0f2a52;
+  outline: none;
+  font-family: ui-monospace, Consolas, monospace;
+}
+.verify-search .input:focus { border-color: #2563eb; }
+
+/* ---------- SERTIFIKATLAR PAGE (list) ---------- */
+.certp-head h3 { font-size: 22px; font-weight: 800; }
+.certp-head p { color: var(--muted, #64748b); margin-top: 2px; }
+.certp-summary {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  flex-wrap: wrap;
+  margin: 16px 0;
+}
+.certp-stat {
+  display: flex;
+  align-items: baseline;
+  gap: 8px;
+  background: var(--card, rgba(255, 255, 255, .06));
+  border: 1px solid var(--border, rgba(255, 255, 255, .08));
+  border-radius: 12px;
+  padding: 10px 16px;
+}
+.certp-stat-num { font-size: 22px; font-weight: 900; color: var(--primary, #6366f1); }
+.certp-stat-lbl { font-size: 13px; color: var(--muted, #64748b); font-weight: 600; }
+.certp-preview-note {
+  font-size: 12px;
+  color: var(--secondary, #06b6d4);
+  background: rgba(6, 182, 212, .1);
+  border: 1px dashed rgba(6, 182, 212, .45);
+  padding: 7px 12px;
+  border-radius: 999px;
+}
+.certp-controls {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  flex-wrap: wrap;
+  margin-bottom: 14px;
+}
+.certp-controls .search-box { flex: 1 1 260px; max-width: 380px; }
+.certp-filters { flex-wrap: wrap; }
+.certp-namebar { margin-bottom: 14px; }
+.certp-namebar-inner {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex-wrap: wrap;
+  background: var(--card, rgba(255, 255, 255, .06));
+  border: 1px solid var(--border, rgba(255, 255, 255, .08));
+  border-radius: 12px;
+  padding: 10px 14px;
+  font-size: 14px;
+}
+.certp-namebar-lbl { color: var(--muted, #64748b); font-size: 12.5px; }
+
+.certp-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(290px, 1fr));
+  gap: 14px;
+}
+.certp-card {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  background: var(--card, rgba(255, 255, 255, .06));
+  border: 1px solid var(--border, rgba(255, 255, 255, .08));
+  border-radius: 16px;
+  padding: 16px;
+  transition: transform .18s ease, border-color .18s ease, box-shadow .18s ease;
+}
+.certp-card:hover {
+  transform: translateY(-2px);
+  border-color: rgba(99, 102, 241, .45);
+  box-shadow: 0 8px 28px rgba(0, 0, 0, .18);
+}
+.certp-card.locked { opacity: .62; }
+.certp-card-top { display: flex; align-items: center; gap: 9px; flex-wrap: wrap; }
+.certp-course-ico {
+  width: 34px;
+  height: 34px;
+  border-radius: 10px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 17px;
+  flex: 0 0 auto;
+}
+.certp-course-name { font-weight: 800; font-size: 15px; }
+.cert-status-badge {
+  margin-left: auto;
+  font-size: 10.5px;
+  font-weight: 800;
+  padding: 4px 10px;
+  border-radius: 999px;
+  letter-spacing: .03em;
+}
+.cert-status-badge.earned { background: rgba(16, 185, 129, .14); color: #10b981; border: 1px solid rgba(16, 185, 129, .4); }
+.cert-status-badge.preview { background: rgba(6, 182, 212, .12); color: #06b6d4; border: 1px solid rgba(6, 182, 212, .4); }
+.cert-status-badge.locked { background: rgba(100, 116, 139, .16); color: #94a3b8; border: 1px solid rgba(100, 116, 139, .35); }
+.certp-lesson-num { font-size: 12px; font-weight: 700; color: var(--primary, #6366f1); text-transform: uppercase; letter-spacing: .07em; }
+.certp-lesson-title { font-size: 15px; font-weight: 700; line-height: 1.35; }
+.certp-cert-id {
+  font-family: ui-monospace, Consolas, monospace;
+  font-size: 11px;
+  color: var(--muted, #64748b);
+  letter-spacing: .03em;
+}
+.certp-card-foot { margin-top: auto; padding-top: 6px; }
+.certp-card-foot .btn { width: 100%; justify-content: center; }
+.certp-empty {
+  grid-column: 1 / -1;
+  text-align: center;
+  color: var(--muted, #64748b);
+  padding: 40px 0;
+}
+
+/* ---------- KURS PROGRESS BAR (per-course kartalar) ---------- */
+.certp-progress { display: flex; flex-direction: column; gap: 6px; }
+.certp-progress-track {
+  height: 8px;
+  border-radius: 999px;
+  background: rgba(148, 163, 184, .22);
+  overflow: hidden;
+}
+.certp-progress-bar {
+  display: block;
+  height: 100%;
+  border-radius: 999px;
+  background: linear-gradient(90deg, #2563eb, #06b6d4);
+  transition: width .35s ease;
+}
+.certp-card.locked .certp-progress-bar { background: linear-gradient(90deg, #64748b, #94a3b8); }
+.certp-card.earned .certp-progress-bar { background: linear-gradient(90deg, #10b981, #06b6d4); }
+.certp-progress-meta {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  font-size: 11.5px;
+  font-weight: 700;
+  color: var(--muted, #64748b);
+}
+
+/* Profile summary card */
+.profile-cert-card { margin-top: 14px; }
+
+/* ---------- RESPONSIVE (mobile 320–430, tablet 768–1024) ---------- */
+@media (max-width: 900px) {
+  .cert-paper { padding: 44px 34px 30px; min-height: 640px; }
+  .cert-body { max-width: 90%; }
+}
+@media (max-width: 640px) {
+  .certv-scroll { padding: 10px 10px 36px; }
+  .certv-topbar { flex-wrap: wrap; }
+  .certv-actions { width: 100%; }
+  .certv-actions .btn { flex: 1; justify-content: center; }
+  .cert-paper { padding: 46px 22px 26px; border-radius: 14px; }
+  .cert-name { font-size: clamp(24px, 7.4vw, 34px); }
+  .cert-body { font-size: 14px; max-width: 100%; }
+  .cert-stats { grid-template-columns: repeat(2, 1fr); max-width: 100%; gap: 8px; }
+  .cert-foot { flex-direction: column; align-items: center; text-align: center; gap: 14px; }
+  .cert-foot-col, .cert-foot-id { align-items: center; text-align: center; min-width: 0; }
+  .verify-grid { grid-template-columns: 1fr; }
+  .verify-search { flex-direction: column; }
+  .certp-grid { grid-template-columns: 1fr; }
+}
+@media (min-width: 641px) and (max-width: 1024px) {
+  .cert-paper { min-height: 680px; }
+  .cert-stats { max-width: 96%; }
+}
+
+/* ---------- PRINT / PDF (faqat sertifikat chiqadi) ---------- */
+@media print {
+  @page { size: A4 landscape; margin: 8mm; }
+  body.print-cert * { visibility: hidden !important; }
+  body.print-cert #certViewerOverlay,
+  body.print-cert #certViewerOverlay * { visibility: visible !important; }
+  body.print-cert #certViewerOverlay {
+    position: absolute;
+    inset: 0;
+    display: block;
+    background: #fff !important;
+    -webkit-backdrop-filter: none;
+    backdrop-filter: none;
+  }
+  body.print-cert #certViewerOverlay .certv-topbar { display: none !important; }
+  body.print-cert #certViewerOverlay .certv-scroll { padding: 0; overflow: visible; display: block; }
+  body.print-cert .cert-paper {
+    box-shadow: none !important;
+    width: 100% !important;
+    min-height: 0 !important;
+    border-radius: 0;
+    margin: 0 auto;
+  }
+  body.print-cert .cert-preview-badge { display: none !important; }
+  body.print-cert .cert-paper::before { display: none !important; }
+  body.print-cert .cert-reveal { animation: none !important; }
+}
+
+

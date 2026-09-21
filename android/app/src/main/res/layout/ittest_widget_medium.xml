@@ -1,0 +1,134 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- ITTest MEDIUM widget (4x2): brand + streak + daily progress + current lesson + CTA -->
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/widget_root"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:background="@drawable/ittest_widget_bg"
+    android:paddingStart="16dp"
+    android:paddingEnd="16dp"
+    android:paddingTop="12dp"
+    android:paddingBottom="12dp">
+
+    <!-- Header: logo + brand + subtitle (+ optional freeze indicator) -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:gravity="center_vertical">
+
+        <ImageView
+            android:layout_width="20dp"
+            android:layout_height="20dp"
+            android:src="@mipmap/ic_launcher_round"
+            android:importantForAccessibility="no" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="6dp"
+            android:text="@string/widget_brand"
+            android:textColor="@color/it_widget_text_primary"
+            android:textSize="14sp"
+            android:textStyle="bold"
+            android:contentDescription="@string/widget_brand" />
+
+        <TextView
+            android:layout_width="0dp"
+            android:layout_height="1dp"
+            android:layout_weight="1" />
+
+        <TextView
+            android:id="@+id/widget_freeze"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textColor="@color/it_widget_text_secondary"
+            android:textSize="11sp"
+            android:visibility="gone"
+            tools:text="🧊 1" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/widget_header_sub"
+            android:textColor="@color/it_widget_text_secondary"
+            android:textSize="11sp" />
+    </LinearLayout>
+
+    <!-- Streak -->
+    <TextView
+        android:id="@+id/widget_streak"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="10dp"
+        android:text="@string/widget_streak_empty"
+        android:textColor="@color/it_widget_text_primary"
+        android:textSize="21sp"
+        android:textStyle="bold"
+        android:contentDescription="@string/widget_streak_a11y" />
+
+    <!-- Daily progress -->
+    <TextView
+        android:id="@+id/widget_progress_text"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="6dp"
+        android:text="@string/widget_progress_empty"
+        android:textColor="@color/it_widget_text_secondary"
+        android:textSize="13sp"
+        android:textStyle="bold"
+        android:contentDescription="@string/widget_progress_a11y" />
+
+    <ProgressBar
+        android:id="@+id/widget_progress_bar"
+        style="?android:attr/progressBarStyleHorizontal"
+        android:layout_width="match_parent"
+        android:layout_height="8dp"
+        android:layout_marginTop="8dp"
+        android:max="100"
+        android:progress="0"
+        android:progressDrawable="@drawable/ittest_widget_progress"
+        android:importantForAccessibility="no" />
+
+    <!-- Current lesson -->
+    <TextView
+        android:id="@+id/widget_lesson"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="10dp"
+        android:text="@string/widget_no_lesson"
+        android:textColor="@color/it_widget_text_primary"
+        android:textSize="13sp"
+        android:textStyle="bold"
+        android:maxLines="1"
+        android:ellipsize="end"
+        android:contentDescription="@string/widget_lesson_a11y" />
+
+    <TextView
+        android:id="@+id/widget_lesson_title"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="2dp"
+        android:text=""
+        android:textColor="@color/it_widget_text_secondary"
+        android:textSize="11sp"
+        android:maxLines="1"
+        android:ellipsize="end"
+        android:importantForAccessibility="no" />
+
+    <!-- CTA: app ochiladi -->
+    <TextView
+        android:id="@+id/widget_cta"
+        android:layout_width="match_parent"
+        android:layout_height="36dp"
+        android:layout_marginTop="10dp"
+        android:background="@drawable/ittest_widget_cta_bg"
+        android:gravity="center"
+        android:text="@string/widget_cta"
+        android:textColor="@color/it_widget_cta_text"
+        android:textSize="13sp"
+        android:textStyle="bold"
+        android:contentDescription="@string/widget_cta_a11y" />
+</LinearLayout>

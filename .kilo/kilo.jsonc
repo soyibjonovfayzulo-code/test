@@ -1,0 +1,9 @@
+{
+  "$schema": "https://app.kilo.ai/config.json",
+  "mcp": {
+    "airbyte-knowledge-mcp": {
+      "type": "remote",
+      "url": "https://airbyte.mcp.kapa.ai"
+    }
+  }
+}

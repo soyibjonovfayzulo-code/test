@@ -4,7 +4,7 @@ android {
     namespace = "com.ustafon.myapp"
     compileSdk = rootProject.ext.compileSdkVersion
     defaultConfig {
-        applicationId "com.ustafon.myapp"
+        applicationId "uz.orzutalim.app"
         minSdkVersion rootProject.ext.minSdkVersion
         targetSdkVersion rootProject.ext.targetSdkVersion
         versionCode 1

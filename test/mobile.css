@@ -75,11 +75,13 @@
     box-sizing: border-box !important;
   }
 
-  /* ------------------------------------------------------------
+  /* ------------------------------------------------------------ 
      2. STICKY MOBILE TOPBAR (HEADER)
+     Sticky: header oqimda qoladi — .main .page endi header OSTIDAN
+     boshlanadi (fixed edi, content header ostiga yashirinib qolardi).
      ------------------------------------------------------------ */
   .topbar {
-    position: fixed !important;
+    position: sticky !important;
     top: 0 !important;
     z-index: 80 !important;
     display: flex !important;

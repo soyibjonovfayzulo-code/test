@@ -131,6 +131,7 @@ ul {
 /* ====================== AUTH SCREEN ====================== */
 .auth-screen {
   min-height: 100vh;
+  min-height: 100dvh;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -568,6 +569,7 @@ ul {
 .app {
   display: flex;
   min-height: 100vh;
+  min-height: 100dvh;
 }
 
 /* SIDEBAR */
@@ -740,6 +742,7 @@ ul {
   display: flex;
   flex-direction: column;
   min-height: 100vh;
+  min-height: 100dvh;
   min-width: 0;
   transition: margin-left 250ms ease;
 }
@@ -865,19 +868,29 @@ ul {
 }
 
 /* TOPBAR */
+/* Root-cause fix: oldin `position: fixed` edi lekin left/right/width YO'Q edi —
+   shrink-to-fit bo'lib chapdagi kichik blok ko'rinishida qolardi va content
+   ostida content yashirinib qolardi. Endi sticky: full width (sidebar bilan
+   align), content tabiiy oqimda header OSTIDA boshlanadi, scroll'da sakramaydi. */
 .topbar {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 16px 24px;
-  background: var(--card);
+  padding: 12px 24px;
+  min-height: 64px;
+  background: color-mix(in srgb, var(--bg) 92%, var(--card));
   border-bottom: 1px solid var(--border);
   backdrop-filter: var(--glass);
   -webkit-backdrop-filter: var(--glass);
-  position: fixed;
+  box-shadow: var(--shadow-soft);
+  position: sticky;
   top: 0;
-  z-index: 50;
+  left: 0;
+  width: 100%;
+  z-index: 90;
   gap: 12px;
+  /* Header ichidagi dropdown'lar stack contexti izolyatsiya qilinadi */
+  isolation: isolate;
 }
 
 .topbar-left {
@@ -2166,6 +2179,9 @@ ul {
   font-size: 22px;
   font-weight: 700;
   font-variant-numeric: tabular-nums;
+  position: static;
+  z-index: auto;
+  flex-shrink: 0;
 }
 
 .test-timer.warning {
@@ -2207,11 +2223,21 @@ ul {
   margin-bottom: 6px;
 }
 
+/* SAVOL + NAVIGATOR LAYOUT: chap — savol, o'ng — ixcham navigator paneli.
+   Panel oqim ichida (grid column), savol bilan overlap qilmaydi. */
 .test-body {
   display: grid;
-  grid-template-columns: 1fr 220px;
-  gap: 20px;
+  grid-template-columns: minmax(0, 1fr) 240px;
+  gap: 24px;
   margin-bottom: 20px;
+  align-items: start;
+}
+
+.test-sidebar {
+  position: sticky;
+  top: calc(var(--topbar-h, 64px) + 12px);
+  align-self: start;
+  min-width: 0;
 }
 
 .question-area {
@@ -2219,6 +2245,7 @@ ul {
   border: 1px solid var(--border);
   border-radius: var(--radius);
   padding: 28px;
+  min-width: 0;
 }
 
 .question-number {
@@ -2261,7 +2288,7 @@ ul {
   border: 2px solid var(--border);
   border-radius: 12px;
   cursor: pointer;
-  transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+  transition: border-color 0.2s ease, background-color 0.2s ease, box-shadow 0.2s ease, transform 0.2s ease;
   display: flex;
   align-items: center;
   gap: 12px;
@@ -2275,6 +2302,11 @@ ul {
   border-color: var(--primary);
   background: var(--card-hover);
   transform: translateX(4px);
+}
+
+@media (max-width: 680px) {
+  .option { transition: border-color .15s ease, background-color .15s ease; }
+  .option:hover { transform: none; }
 }
 
 .option:focus-visible {
@@ -2434,27 +2466,39 @@ ul {
   box-shadow: 0 4px 12px rgba(91, 124, 250, 0.3);
 }
 
+/* ------------------------------------------------------------------
+   SAVOLLAR NAVIGATORI (DESKTOP SIDEBAR)
+   Root-cause fix: oldin .navigator-area `position: fixed; top: 80px` edi —
+   navigator floating overlay bo'lib asosiy savol kontenti USTIDA turardi.
+   Endi u .test-body gridining o'ng ustunida ODDIY oqim elementi sifatida
+   turadi (sticky scroll effekt bilan), hech qachon savol ustiga chiqmaydi.
+   ------------------------------------------------------------------ */
 .navigator-area {
   background: var(--card);
   border: 1px solid var(--border);
   border-radius: var(--radius);
-  padding: 16px;
+  padding: 14px;
   align-self: start;
-  position: fixed;
-  top: 80px;
+  position: sticky;
+  top: calc(var(--topbar-h, 64px) + 12px);
+  z-index: 1;
+  min-width: 0;
+  max-height: calc(100vh - var(--topbar-h, 64px) - 24px);
+  overflow-y: auto;
+  overscroll-behavior: contain;
 }
 
 .navigator-header {
   font-weight: 600;
   font-size: 14px;
-  margin-bottom: 12px;
+  margin-bottom: 10px;
 }
 
 .question-nav {
   display: grid;
-  grid-template-columns: repeat(5, 1fr);
-  gap: 8px;
-  margin-bottom: 16px;
+  grid-template-columns: repeat(5, minmax(0, 1fr));
+  gap: 7px;
+  margin-bottom: 12px;
 }
 
 .qn-btn {
@@ -2464,6 +2508,7 @@ ul {
   border: 1px solid var(--border);
   font-size: 13px;
   font-weight: 600;
+  line-height: 1;
   transition: all 0.25s ease;
   display: flex;
   align-items: center;
@@ -3955,6 +4000,7 @@ body {
 
 body {
   min-height: 100vh;
+  min-height: 100dvh;
 }
 
 body,
@@ -4045,8 +4091,13 @@ textarea {
     grid-template-columns: 1fr;
   }
 
+  /* Kichik ekranlarda navigator panel OQIM ICHIDA (stack) bo'ladi —
+     floating overlay emas, savolni yopmaydi */
+  .test-sidebar,
   .navigator-area {
     position: static;
+    max-height: none;
+    overflow: visible;
   }
 }
 
@@ -4126,12 +4177,26 @@ textarea {
   }
 
   .test-header {
-    flex-direction: column;
-    align-items: stretch;
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 10px;
+  }
+
+  .test-header-info {
+    min-width: 0;
+  }
+
+  .test-header-info h2 {
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
   }
 
   .test-timer {
     text-align: center;
+    flex-shrink: 0;
   }
 
   .question-area {
@@ -4209,7 +4274,15 @@ textarea {
   }
 
   .question-nav {
-    grid-template-columns: repeat(5, 1fr);
+    grid-template-columns: repeat(5, minmax(0, 1fr));
+    gap: 6px;
+  }
+
+  /* Raqamlar (1,2,3...) har doim to'liq ko'rinsin */
+  .qn-btn {
+    min-width: 34px;
+    font-size: 13px;
+    line-height: 1;
   }
 
   .auth-card {
@@ -7177,6 +7250,63 @@ textarea {
   background: rgba(148, 163, 184, 0.25);
 }
 
+/* ==========================================================
+   LAYER HIERARCHY & CLICK AUDIT
+   Maqsad: dekorativ elementlar HECH QACHON button/link/text
+   clickini ushlab qolmasin. Hierarchy:
+     background/dekor      → z-index: auto/0  + pointer-events: none
+     content (cards/hero)  → z-index: 1–10
+     topbar                → z-index: 90
+     sidebar (drawer)      → z-index: 100
+     modal                 → z-index: 1000
+     toast                 → z-index: 2000
+     loading               → z-index: 3000
+     confetti (decor)      → z-index: 9999 (pointer-events: none)
+   ========================================================== */
+
+/* --- Dekorativ pseudo-elementlar / overlaylar: faqat vizual --- */
+.auth-bg::after,
+.auth-bg .orb,
+.welcome-banner::before,
+.welcome-banner::after,
+.btn::after,
+.xp-bar-fill::after,
+.progress-fill::after,
+.subject-card::before,
+.store-item::before,
+.store-avatar-stage.store-effect-sparkle::before,
+.sidebar .nav-item.active::before,
+.hero-ring-glow {
+  pointer-events: none;
+}
+
+/* Hero'dagi suzuvchi kod badge'lari — aria-hidden dekoratsiyalar:
+   ular :hover'ga ega, lekin clickni ushlab qolmasin. */
+.hero-code-badge {
+  pointer-events: none;
+}
+
+/* Header ichidagi barcha interactive elementlar aniq clickable
+   (transparent overlay ular ustida qolmasin): */
+.topbar .hamburger,
+.topbar .icon-btn,
+.topbar .notif-btn,
+.topbar .user-chip,
+.topbar .ux-user-dropdown .ux-menu-item {
+  position: relative;
+  z-index: 2;
+  cursor: pointer;
+}
+
+/* Header background/border qatlami — elementlar ostida, click to'siq emas */
+.topbar::before {
+  content: none;
+}
+
+/* Scroll'da header Ostidagi content hech qachon ko'rinmasin:
+   sticky header oqimda — padding-top hack talab etilmadi.
+   (fixed header variantida mobile safe-area header ICHIDA hisoblanadi) */
+
 .code-textarea:focus {
   outline: none;
 }
@@ -7417,3 +7547,217 @@ textarea {
     height: 450px;
   }
 }
+
+/* ====================== CERTIFICATE STYLING ====================== */
+.cert-page-container {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+  max-width: 960px;
+  margin: 0 auto;
+  padding: 8px;
+}
+
+.cert-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 16px;
+}
+
+.cert-header-left h3 {
+  font-size: 24px;
+  font-weight: 700;
+  margin-bottom: 4px;
+  color: var(--text);
+}
+
+.cert-header-left p {
+  color: var(--muted);
+  font-size: 14px;
+}
+
+.cert-header-actions {
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+.cert-card-wrapper {
+  background: var(--card);
+  border-radius: var(--radius-lg);
+  padding: 16px;
+  box-shadow: var(--shadow);
+}
+
+.cert-card-border {
+  border: 4px double var(--primary);
+  border-radius: var(--radius);
+  padding: 24px;
+  background: linear-gradient(135deg, rgba(99, 102, 241, 0.05), rgba(56, 189, 248, 0.05));
+  position: relative;
+}
+
+.cert-card-inner {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+  text-align: center;
+}
+
+.cert-top {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.cert-badge-brand {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 20px;
+  font-weight: 800;
+  color: var(--text);
+}
+
+.cert-id-tag {
+  font-family: monospace;
+  font-size: 13px;
+  color: var(--muted);
+  background: var(--bg);
+  padding: 4px 10px;
+  border-radius: 20px;
+  border: 1px solid var(--border);
+}
+
+.cert-main-title h2 {
+  font-size: 32px;
+  letter-spacing: 4px;
+  color: var(--primary);
+  margin-bottom: 4px;
+}
+
+.cert-subtitle {
+  font-size: 12px;
+  letter-spacing: 2px;
+  color: var(--muted);
+  font-weight: 600;
+}
+
+.cert-given-to {
+  font-size: 14px;
+  color: var(--muted);
+  margin-bottom: 8px;
+}
+
+.cert-student-name {
+  font-size: 32px;
+  font-weight: 800;
+  color: var(--text);
+  margin-bottom: 12px;
+  text-decoration: underline;
+  text-decoration-color: var(--primary);
+  text-underline-offset: 8px;
+}
+
+.cert-achievement-text {
+  max-width: 680px;
+  margin: 0 auto;
+  font-size: 15px;
+  line-height: 1.6;
+  color: var(--text);
+}
+
+.cert-meta-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+  gap: 12px;
+  background: var(--bg);
+  padding: 16px;
+  border-radius: var(--radius);
+  border: 1px solid var(--border);
+}
+
+.cert-meta-item {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  font-size: 13px;
+}
+
+.cert-meta-lbl {
+  color: var(--muted);
+}
+
+.cert-meta-val {
+  color: var(--text);
+}
+
+.cert-status-ok {
+  color: var(--success);
+}
+
+.cert-footer {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-end;
+  margin-top: 16px;
+  padding-top: 16px;
+  border-top: 1px dashed var(--border);
+}
+
+.cert-qr-box {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+  font-size: 11px;
+  color: var(--muted);
+}
+
+.cert-qr-svg {
+  width: 60px;
+  height: 60px;
+  border-radius: 6px;
+}
+
+.cert-signature-box {
+  text-align: right;
+  font-size: 13px;
+}
+
+.cert-sig-line {
+  font-weight: 700;
+  color: var(--text);
+  border-bottom: 1px solid var(--text);
+  padding-bottom: 4px;
+  margin-bottom: 4px;
+}
+
+.cert-sig-title {
+  color: var(--muted);
+  font-size: 12px;
+}
+
+@media print {
+  body * {
+    visibility: hidden;
+  }
+  #certPrintArea, #certPrintArea * {
+    visibility: visible;
+  }
+  #certPrintArea {
+    position: absolute;
+    left: 0;
+    top: 0;
+    width: 100%;
+  }
+}
+
+/* Developer Tools guard overlay — desktopda faqat DevTools aniqlanganda ko'rinadi. */
+#devtoolsGuard { position:fixed; inset:0; z-index:2147483647; display:grid; place-items:center; padding:24px; background:rgba(3,10,25,.94); backdrop-filter:blur(12px); color:#f8fafc; }
+#devtoolsGuard[hidden] { display:none; }
+.devtools-guard__card { width:min(420px,100%); padding:30px; border:1px solid rgba(96,165,250,.4); border-radius:22px; background:linear-gradient(145deg,#102650,#09182f); box-shadow:0 24px 70px rgba(0,0,0,.45); text-align:center; }
+.devtools-guard__icon { display:grid; width:52px; height:52px; place-items:center; margin:0 auto 15px; border-radius:16px; background:rgba(59,130,246,.2); color:#60a5fa; font:800 19px/1 ui-monospace,monospace; }
+.devtools-guard__card h2 { margin:0 0 8px; font-size:20px; color:#fff; }.devtools-guard__card p { margin:0; color:#b8c7df; line-height:1.55; }

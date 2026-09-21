@@ -1,5 +1,10 @@
 {
-  "appId": "com.ustafon.myapp",
+  "appId": "uz.orzutalim.app",
   "appName": "ITtest",
-  "webDir": "dist"
+  "webDir": "dist",
+  "plugins": {
+    "PushNotifications": {
+      "presentationOptions": ["alert", "badge", "sound"]
+    }
+  }
 }

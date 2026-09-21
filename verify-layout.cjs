@@ -116,7 +116,8 @@ function click(el) { el.dispatchEvent(new w.MouseEvent('click', { bubbles: true 
 setTimeout(function () {
   w.Lessons.handlePage('lessons');
   click(doc.querySelectorAll('#lsCoursesGrid .ls-course-card')[0]);
-  click(doc.querySelectorAll('#lessonLevelBody .ls-level-option')[0]);
+  /* Daraja endi diagnostika testi orqali aniqlanadi (openLevelModal);
+     darslar fallback 'intermediate' (barchasi ochiq) bilan ochiladi. */
   w.Lessons.openLesson('html', 'html-d1');
 
   const viewer = doc.querySelector('#lsLessonContainer');
@@ -147,7 +148,7 @@ setTimeout(function () {
   // Kurs sahifasi ham render
   click(doc.querySelector('#lsQuizBackBtn'));
   click(doc.querySelector('#lsBackToCourse'));
-  ok(doc.querySelectorAll('#lsCourseContainer .ls-lesson-card').length >= 31, 'Kurs sahifasi: 31+ dars kartasi');
+  ok(doc.querySelectorAll('#lsCourseContainer .ls-ccard').length >= 31, 'Kurs sahifasi: 31+ dars kartasi');
 
   ok(consoleErrors === 0, 'Console error = 0 (' + consoleErrors + ')');
 

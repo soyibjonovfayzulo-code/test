@@ -24,6 +24,54 @@
 
         </activity>
 
+        <!-- ITTest SMALL home screen widget -->
+        <receiver
+            android:name=".widget.ITTestWidgetSmall"
+            android:label="@string/widget_label_small"
+            android:description="@string/widget_description_small"
+            android:exported="false">
+            <intent-filter>
+                <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
+                <action android:name="android.intent.action.DATE_CHANGED" />
+                <action android:name="android.intent.action.TIMEZONE_CHANGED" />
+            </intent-filter>
+            <meta-data
+                android:name="android.appwidget.provider"
+                android:resource="@xml/ittest_widget_small_info" />
+        </receiver>
+
+        <!-- ITTest LARGE home screen widget (asosiy reference design) -->
+        <receiver
+            android:name=".widget.ITTestWidgetLarge"
+            android:label="@string/widget_label_large"
+            android:description="@string/widget_description_large"
+            android:exported="false">
+            <intent-filter>
+                <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
+                <action android:name="android.intent.action.DATE_CHANGED" />
+                <action android:name="android.intent.action.TIMEZONE_CHANGED" />
+            </intent-filter>
+            <meta-data
+                android:name="android.appwidget.provider"
+                android:resource="@xml/ittest_widget_large_info" />
+        </receiver>
+
+        <!-- ITTest MEDIUM home screen widget -->
+        <receiver
+            android:name=".widget.ITTestWidgetMedium"
+            android:label="@string/widget_label_medium"
+            android:description="@string/widget_description_medium"
+            android:exported="false">
+            <intent-filter>
+                <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
+                <action android:name="android.intent.action.DATE_CHANGED" />
+                <action android:name="android.intent.action.TIMEZONE_CHANGED" />
+            </intent-filter>
+            <meta-data
+                android:name="android.appwidget.provider"
+                android:resource="@xml/ittest_widget_medium_info" />
+        </receiver>
+
         <provider
             android:name="androidx.core.content.FileProvider"
             android:authorities="${applicationId}.fileprovider"
@@ -38,4 +86,9 @@
     <!-- Permissions -->
 
     <uses-permission android:name="android.permission.INTERNET" />
+    <!-- Push notification (Android 13+ POST_NOTIFICATIONS) -->
+    <uses-permission android:name="android.permission.POST_NOTIFICATIONS" />
+    <!-- Haptic feedback / vibration fallback -->
+    <uses-permission android:name="android.permission.VIBRATE" />
 </manifest>
+

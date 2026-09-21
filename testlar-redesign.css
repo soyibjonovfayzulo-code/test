@@ -1,0 +1,759 @@
+/* ==========================================================================
+   TESTLAR REDESIGN — PREMIUM EDTECH UI (v2)
+   Faqat #page-tests (Testlar sahifasi) uchun scoped stillar.
+   Boshqa bo'limlarga tegmaydi. Light/dark ikkala temani qo'llab-quvvatlaydi.
+   ========================================================================== */
+
+:root {
+  /* Dark theme default qiymatlar (script.js'dagi theme default: dark) */
+  --tt-bg-card: #131c33;
+  --tt-bg-card-hover: #182342;
+  --tt-border-card: rgba(148, 163, 184, 0.14);
+  --tt-border-hover: rgba(47, 123, 255, 0.45);
+  --tt-shadow: 0 2px 10px rgba(2, 6, 23, 0.35);
+  --tt-shadow-hover: 0 14px 28px rgba(2, 6, 23, 0.45);
+  --tt-text-main: #f1f5f9;
+  --tt-text-sub: #94a3b8;
+  --tt-text-muted: #64748b;
+  --tt-icon-bg: #1a2440;
+  --tt-icon-border: rgba(148, 163, 184, 0.18);
+  --tt-track: rgba(148, 163, 184, 0.16);
+  --tt-chip-bg: rgba(148, 163, 184, 0.08);
+  --tt-chip-border: rgba(148, 163, 184, 0.16);
+  --tt-chip-text: #94a3b8;
+  --tt-chip-hover-bg: rgba(148, 163, 184, 0.15);
+  --tt-chip-hover-text: #e2e8f0;
+  --tt-hero-bg: linear-gradient(135deg, #16224a 0%, #101a38 100%);
+  --tt-hero-shadow: 0 10px 28px rgba(2, 6, 23, 0.4);
+  --tt-primary: #2f7bff;
+  --tt-primary-strong: #1d4ed8;
+  --tt-cyan: #38bdf8;
+  --tt-primary-soft: rgba(47, 123, 255, 0.14);
+  --tt-primary-border: rgba(47, 123, 255, 0.4);
+  --tt-primary-text: #7db5ff;
+  --tt-amber-text: #fbbf24;
+  --tt-amber-border: rgba(251, 191, 36, 0.4);
+  --tt-amber-soft: rgba(245, 158, 11, 0.16);
+}
+
+/* Light theme — [data-theme="light"] html atributi bilan (theme.js bilan mos) */
+[data-theme="light"] #page-tests,
+:root[data-theme="light"] {
+  --tt-bg-card: #ffffff;
+  --tt-bg-card-hover: #fbfcff;
+  --tt-border-card: rgba(15, 23, 42, 0.09);
+  --tt-border-hover: rgba(47, 123, 255, 0.4);
+  --tt-shadow: 0 2px 8px rgba(15, 23, 42, 0.06);
+  --tt-shadow-hover: 0 14px 28px rgba(15, 23, 42, 0.12);
+  --tt-text-main: #0f172a;
+  --tt-text-sub: #475569;
+  --tt-text-muted: #64748b;
+  --tt-icon-bg: #f1f5f9;
+  --tt-icon-border: rgba(15, 23, 42, 0.08);
+  --tt-track: rgba(15, 23, 42, 0.1);
+  --tt-chip-bg: #ffffff;
+  --tt-chip-border: rgba(15, 23, 42, 0.12);
+  --tt-chip-text: #475569;
+  --tt-chip-hover-bg: #f1f5f9;
+  --tt-chip-hover-text: #0f172a;
+  --tt-hero-bg: linear-gradient(135deg, #eef4ff 0%, #ffffff 100%);
+  --tt-hero-shadow: 0 10px 26px rgba(15, 23, 42, 0.08);
+  --tt-primary-soft: rgba(47, 123, 255, 0.1);
+  --tt-primary-border: rgba(47, 123, 255, 0.35);
+  --tt-primary-text: #1d4ed8;
+  --tt-amber-text: #b45309;
+  --tt-amber-border: rgba(217, 119, 6, 0.4);
+  --tt-amber-soft: rgba(245, 158, 11, 0.12);
+}
+
+/* ==========================================================================
+   PAGE SHELL — MUHIM: display FAQAT .active holatda (routing bugi: specificity)
+   ========================================================================== */
+#page-tests {
+  padding: 10px 16px 28px !important;
+  background: transparent !important;
+}
+
+#page-tests.active {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  max-width: 980px;
+  width: 100%;
+  margin: 0 auto;
+}
+
+/* Page load — juda nozik stagger */
+@keyframes ttCardIn {
+  from { opacity: 0; transform: translateY(10px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+/* ==========================================================================
+   COMPACT HERO HEADER
+   ========================================================================== */
+#page-tests .hero-card {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  border-radius: 20px;
+  padding: 16px 18px;
+  min-height: 0;
+  background: var(--tt-hero-bg);
+  border: 1px solid rgba(47, 123, 255, 0.22);
+  box-shadow: var(--tt-hero-shadow);
+  overflow: hidden;
+}
+
+#page-tests .hero-text {
+  position: relative;
+  z-index: 2;
+  min-width: 0;
+  max-width: calc(100% - 96px);
+}
+
+#page-tests .hero-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  font-size: 10px;
+  font-weight: 800;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  color: var(--tt-cyan);
+  margin-bottom: 5px;
+}
+
+#page-tests .hero-heading {
+  font-size: 18px;
+  font-weight: 800;
+  line-height: 1.25;
+  letter-spacing: -0.3px;
+  color: var(--tt-text-main);
+  margin: 0 0 4px;
+}
+
+#page-tests .hero-subtext {
+  font-size: 11.5px;
+  line-height: 1.45;
+  color: var(--tt-text-sub);
+  margin: 0;
+}
+
+/* Robot — faqat dekorativ, contentni bosib ketmaydi */
+#page-tests .hero-mascot-wrapper {
+  position: absolute;
+  right: 4px;
+  bottom: -6px;
+  width: 92px;
+  height: 92px;
+  z-index: 1;
+  pointer-events: none;
+}
+
+#page-tests .hero-mascot-img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  filter: drop-shadow(0 8px 16px rgba(47, 123, 255, 0.35));
+}
+
+@media (max-width: 480px) {
+  #page-tests .hero-text { max-width: calc(100% - 78px); }
+  #page-tests .hero-mascot-wrapper { width: 74px; height: 74px; right: 0; bottom: -8px; opacity: 0.95; }
+  #page-tests .hero-heading { font-size: 16.5px; }
+  #page-tests .hero-subtext { font-size: 11px; }
+}
+
+@media (max-width: 330px) {
+  #page-tests .hero-mascot-wrapper { display: none; }
+  #page-tests .hero-text { max-width: 100%; }
+}
+
+/* ==========================================================================
+   CATEGORY FILTER — pill/chip
+   ========================================================================== */
+#page-tests .filter-scroll {
+  display: flex;
+  gap: 8px;
+  overflow-x: auto;
+  scrollbar-width: none;
+  padding: 2px 2px 4px;
+  margin: 0 -2px;
+  -webkit-overflow-scrolling: touch;
+}
+
+#page-tests .filter-scroll::-webkit-scrollbar {
+  display: none;
+}
+
+#page-tests .filter-chip {
+  flex: none;
+  font-family: inherit;
+  font-size: 12px;
+  font-weight: 700;
+  padding: 8px 16px;
+  border-radius: 999px;
+  background: var(--tt-chip-bg);
+  border: 1px solid var(--tt-chip-border);
+  color: var(--tt-chip-text);
+  cursor: pointer;
+  transition: background 0.2s ease, color 0.2s ease, border-color 0.2s ease, transform 0.15s ease, box-shadow 0.2s ease;
+}
+
+#page-tests .filter-chip.active {
+  background: linear-gradient(135deg, var(--tt-primary) 0%, var(--tt-primary-strong) 100%);
+  border-color: transparent;
+  color: #ffffff;
+  box-shadow: 0 4px 12px rgba(47, 123, 255, 0.35);
+}
+
+#page-tests .filter-chip:not(.active):hover {
+  background: var(--tt-chip-hover-bg);
+  color: var(--tt-chip-hover-text);
+}
+
+#page-tests .filter-chip:active {
+  transform: scale(0.94);
+}
+
+/* ==========================================================================
+   TEST GRID — mobile 1 ustun, tablet 2, desktop 3
+   ========================================================================== */
+#page-tests .test-list {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: 12px;
+  width: 100%;
+  align-items: start;
+}
+
+@media (min-width: 560px) {
+  #page-tests .test-list {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 14px;
+  }
+}
+
+@media (min-width: 1100px) {
+  #page-tests .test-list {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 16px;
+  }
+}
+
+/* ==========================================================================
+   TEST CARD — ixcham, vertical, premium learning-app uslubi
+   ========================================================================== */
+#page-tests .test-card {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  min-width: 0;
+  height: 244px;
+  box-sizing: border-box;
+  padding: 16px 16px 14px;
+  border-radius: 20px;
+  background: var(--tt-bg-card);
+  border: 1px solid var(--tt-border-card);
+  box-shadow: var(--tt-shadow);
+  cursor: pointer;
+  overflow: hidden;
+  transition: transform 0.2s ease, box-shadow 0.2s ease, border-color 0.2s ease, background 0.2s ease;
+  will-change: transform;
+}
+
+#page-tests .test-card:hover {
+  transform: translateY(-3px);
+  background: var(--tt-bg-card-hover);
+  border-color: var(--tt-border-hover);
+  box-shadow: var(--tt-shadow-hover);
+}
+
+#page-tests .test-card:active {
+  transform: translateY(-1px) scale(0.985);
+  transition-duration: 0.1s;
+}
+
+/* Hover paytida pastdagi nozik accent chiziq */
+#page-tests .test-card::after {
+  content: "";
+  position: absolute;
+  left: 16px;
+  right: 16px;
+  bottom: 0;
+  height: 2px;
+  border-radius: 2px 2px 0 0;
+  background: linear-gradient(90deg, var(--tt-primary), var(--tt-cyan));
+  opacity: 0;
+  transition: opacity 0.2s ease;
+}
+
+#page-tests .test-card:hover::after {
+  opacity: 0.9;
+}
+
+/* — Card header: icon + difficulty badge — */
+#page-tests .test-card__top {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 10px;
+}
+
+#page-tests .lang-box {
+  width: 48px;
+  height: 48px;
+  border-radius: 14px;
+  display: grid;
+  place-items: center;
+  flex: none;
+  background: var(--tt-icon-bg);
+  border: 1px solid var(--tt-icon-border);
+  transition: transform 0.2s ease;
+}
+
+#page-tests .test-card:hover .lang-box {
+  transform: scale(1.06);
+}
+
+#page-tests .lang-box svg {
+  width: 26px;
+  height: 26px;
+  display: block;
+}
+
+/* Har bir fan uchun soft brand tint */
+#page-tests .lang-box.python { background: rgba(56, 189, 248, 0.13); border-color: rgba(56, 189, 248, 0.35); }
+#page-tests .lang-box.js     { background: rgba(245, 158, 11, 0.13); border-color: rgba(245, 158, 11, 0.35); }
+#page-tests .lang-box.html   { background: rgba(228, 77, 38, 0.12);  border-color: rgba(228, 77, 38, 0.35); }
+#page-tests .lang-box.css    { background: rgba(21, 114, 182, 0.14); border-color: rgba(51, 169, 220, 0.4); }
+#page-tests .lang-box.cpp    { background: rgba(99, 102, 241, 0.13); border-color: rgba(99, 102, 241, 0.38); }
+#page-tests .lang-box.java   { background: rgba(231, 111, 0, 0.12);  border-color: rgba(231, 111, 0, 0.35); }
+#page-tests .lang-box.csharp { background: rgba(124, 58, 237, 0.13); border-color: rgba(124, 58, 237, 0.38); }
+#page-tests .lang-box.sql    { background: rgba(14, 165, 233, 0.12); border-color: rgba(14, 165, 233, 0.38); }
+#page-tests .lang-box.ai     { background: rgba(167, 139, 250, 0.14); border-color: rgba(167, 139, 250, 0.4); }
+
+/* Difficulty badge — kichik detail element */
+#page-tests .badge-diff {
+  flex: none;
+  font-size: 9px;
+  font-weight: 800;
+  letter-spacing: 0.8px;
+  padding: 4px 8px;
+  border-radius: 7px;
+  text-transform: uppercase;
+  margin-top: 2px;
+}
+
+#page-tests .badge-diff.oson {
+  color: var(--tt-primary-text);
+  background: var(--tt-primary-soft);
+  border: 1px solid var(--tt-primary-border);
+}
+
+#page-tests .badge-diff.orta {
+  color: var(--tt-amber-text);
+  background: var(--tt-amber-soft);
+  border: 1px solid var(--tt-amber-border);
+}
+
+/* — Card content: text hierarchy — */
+#page-tests .test-card__content {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  min-width: 0;
+}
+
+#page-tests .test-card__title {
+  font-size: 16px;
+  font-weight: 800;
+  letter-spacing: -0.2px;
+  line-height: 1.3;
+  color: var(--tt-text-main);
+  margin: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+#page-tests .test-card__desc {
+  font-size: 12px;
+  line-height: 1.45;
+  color: var(--tt-text-sub);
+  margin: 0;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  min-height: 2.6em;
+}
+
+#page-tests .test-card__meta {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 11px;
+  font-weight: 600;
+  color: var(--tt-text-muted);
+  margin-top: 2px;
+  overflow: hidden;
+  white-space: nowrap;
+}
+
+#page-tests .test-card__meta .sep {
+  width: 3px;
+  height: 3px;
+  border-radius: 50%;
+  background: var(--tt-text-muted);
+  display: inline-block;
+  flex: none;
+}
+
+/* — Progress — */
+#page-tests .test-card__progress {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-top: 4px;
+  min-height: 18px;
+}
+
+#page-tests .progress-track {
+  flex: 1;
+  height: 6px;
+  border-radius: 999px;
+  background: var(--tt-track);
+  overflow: hidden;
+}
+
+#page-tests .progress-fill {
+  height: 100%;
+  border-radius: 999px;
+  background: linear-gradient(90deg, var(--tt-primary) 0%, var(--tt-cyan) 100%);
+  animation: ttProgressGrow 0.8s cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+
+@keyframes ttProgressGrow {
+  from { width: 0; }
+}
+
+#page-tests .progress-pct {
+  flex: none;
+  font-size: 11px;
+  font-weight: 700;
+  color: var(--tt-text-muted);
+  font-variant-numeric: tabular-nums;
+  min-width: 30px;
+  text-align: right;
+}
+
+/* 100% — tugallangan holati */
+#page-tests .test-card.completed {
+  border-color: rgba(34, 197, 94, 0.35);
+}
+
+#page-tests .progress-done {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 11.5px;
+  font-weight: 800;
+  color: #22c55e;
+}
+
+#page-tests .progress-done svg {
+  width: 13px;
+  height: 13px;
+  flex: none;
+}
+
+/* — CTA — */
+#page-tests .btn-action {
+  margin-top: auto;
+  width: 100%;
+  min-height: 40px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 7px;
+  font-family: inherit;
+  font-size: 13px;
+  font-weight: 700;
+  padding: 9px 14px;
+  border-radius: 12px;
+  border: 1px solid var(--tt-primary-border);
+  background: var(--tt-primary-soft);
+  color: var(--tt-primary-text);
+  cursor: pointer;
+  white-space: nowrap;
+  transition: background 0.2s ease, color 0.2s ease, border-color 0.2s ease, box-shadow 0.2s ease, transform 0.15s ease;
+}
+
+#page-tests .btn-action svg {
+  width: 15px;
+  height: 15px;
+  flex: none;
+  transition: transform 0.2s ease;
+}
+
+#page-tests .test-card:hover .btn-action svg,
+#page-tests .btn-action:hover svg {
+  transform: translateX(3px);
+}
+
+#page-tests .btn-action:hover {
+  background: linear-gradient(135deg, var(--tt-primary) 0%, var(--tt-primary-strong) 100%);
+  border-color: transparent;
+  color: #ffffff;
+  box-shadow: 0 6px 16px rgba(47, 123, 255, 0.35);
+}
+
+#page-tests .btn-action:active {
+  transform: scale(0.97);
+}
+
+#page-tests .btn-action.resume {
+  border-color: var(--tt-amber-border);
+  background: var(--tt-amber-soft);
+  color: var(--tt-amber-text);
+}
+
+#page-tests .btn-action.resume:hover {
+  background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%);
+  border-color: transparent;
+  color: #ffffff;
+  box-shadow: 0 6px 16px rgba(245, 158, 11, 0.35);
+}
+
+/* Tugallangan card CTA — yashil */
+#page-tests .test-card.completed .btn-action {
+  border-color: rgba(34, 197, 94, 0.4);
+  background: rgba(34, 197, 94, 0.12);
+  color: #22c55e;
+}
+
+#page-tests .test-card.completed .btn-action:hover {
+  background: linear-gradient(135deg, #22c55e 0%, #16a34a 100%);
+  border-color: transparent;
+  color: #ffffff;
+  box-shadow: 0 6px 16px rgba(34, 197, 94, 0.3);
+}
+
+/* Empty / loading state */
+#page-tests .empty-state {
+  grid-column: 1 / -1;
+  color: var(--tt-text-muted);
+  text-align: center;
+  padding: 32px 16px;
+  font-size: 13px;
+}
+
+/* ==========================================================================
+   RESPONSIVE FINE-TUNING
+   ========================================================================== */
+@media (max-width: 380px) {
+  #page-tests { padding: 8px 12px 24px !important; }
+  #page-tests .test-list { gap: 10px; }
+  #page-tests .test-card { height: 232px; padding: 14px 13px 12px; border-radius: 18px; gap: 8px; }
+  #page-tests .lang-box { width: 44px; height: 44px; border-radius: 12px; }
+  #page-tests .lang-box svg { width: 24px; height: 24px; }
+  #page-tests .test-card__title { font-size: 15px; }
+  #page-tests .test-card__desc { font-size: 11.5px; }
+  #page-tests .btn-action { min-height: 42px; }
+}
+
+@media (min-width: 381px) and (max-width: 559px) {
+  #page-tests .test-list { gap: 12px; }
+}
+
+@media (min-width: 1024px) {
+  #page-tests .hero-card { padding: 18px 22px; }
+  #page-tests .hero-heading { font-size: 20px; }
+  #page-tests .hero-mascot-wrapper { width: 104px; height: 104px; }
+}
+#page-tests .test-card { animation: ttCardIn 0.35s cubic-bezier(0.22, 1, 0.36, 1) both; }
+#page-tests .test-card:nth-child(1) { animation-delay: 0.02s; }
+#page-tests .test-card:nth-child(2) { animation-delay: 0.06s; }
+#page-tests .test-card:nth-child(3) { animation-delay: 0.1s; }
+#page-tests .test-card:nth-child(4) { animation-delay: 0.14s; }
+#page-tests .test-card:nth-child(5) { animation-delay: 0.18s; }
+#page-tests .test-card:nth-child(6) { animation-delay: 0.22s; }
+#page-tests .test-card:nth-child(7) { animation-delay: 0.26s; }
+#page-tests .test-card:nth-child(8) { animation-delay: 0.3s; }
+#page-tests .test-card:nth-child(9) { animation-delay: 0.34s; }
+@media (prefers-reduced-motion: reduce) {
+  #page-tests .test-card { animation: none; }
+}
+
+/* Testlar katalogi — premium dark-card reference uslubi. */
+#page-tests.active { max-width:1530px; padding:20px 34px 36px; }
+#page-tests .hero-card { min-height:158px; padding:28px 78px; border-radius:28px; background:radial-gradient(500px 210px at 80% 100%,rgba(55,75,255,.48),transparent 65%),linear-gradient(110deg,#102f82,#071b4b 62%,#10297a); border-color:rgba(68,121,255,.65); box-shadow:0 16px 36px rgba(0,0,0,.2); }
+#page-tests .hero-card::before { content:""; position:absolute; width:300px; height:300px; top:-150px; left:-55px; border-radius:50%; background:rgba(3,16,64,.42); }
+#page-tests .hero-text { z-index:1; max-width:700px; } #page-tests .hero-heading { color:#fff; font-size:2rem; } #page-tests .hero-subtext { color:rgba(211,225,255,.78); font-size:1rem; } #page-tests .hero-mascot-wrapper { right:70px; bottom:-18px; width:220px; height:180px; }
+#page-tests .filter-chip { padding:10px 25px; color:#b9c7df; background:#0b213e; border-color:rgba(110,149,202,.28); } #page-tests .filter-chip.active { background:linear-gradient(135deg,#177cff,#0750d7); }
+#page-tests .test-list { grid-template-columns:repeat(3,minmax(0,1fr)); gap:18px; }
+#page-tests .test-card { display:grid; grid-template-columns:112px minmax(0,1fr); grid-template-rows:minmax(92px,1fr) 17px 6px 43px; gap:7px 20px; height:214px; padding:18px 26px 16px 18px; border-radius:54px; background:radial-gradient(160px 130px at 99% 98%,color-mix(in srgb,var(--tt-primary) 37%,transparent),transparent 74%),radial-gradient(200px 150px at 0% 0%,color-mix(in srgb,var(--tt-primary) 25%,transparent),transparent 72%),#081c38; border-color:color-mix(in srgb,var(--tt-primary) 38%,rgba(148,163,184,.16)); box-shadow:0 12px 24px rgba(0,0,0,.22); }
+#page-tests .test-card__top { grid-row:1 / 3; grid-column:1; } #page-tests .lang-box { width:92px; height:92px; border-radius:32px; background:color-mix(in srgb,var(--tt-primary) 37%,#0b1b37); } #page-tests .lang-box svg { width:48px; height:48px; }
+#page-tests .test-card__content { grid-row:1; grid-column:2; align-self:center; margin:0; } #page-tests .test-card__title { color:#f8fbff; font-size:1.12rem; } #page-tests .test-card__desc { color:#a8b9d6; min-height:0; } #page-tests .test-card__meta { grid-row:2; grid-column:2; color:#93a8cb; }
+#page-tests .test-card__progress { grid-row:3; grid-column:2; margin:0; } #page-tests .progress-track { height:6px; background:rgba(148,163,184,.22); } #page-tests .progress-pct { color:#aebfe0; }
+#page-tests .btn-action { grid-row:4; grid-column:2; min-height:43px; background:color-mix(in srgb,var(--tt-primary) 19%,transparent); border-color:color-mix(in srgb,var(--tt-primary) 85%,transparent); color:#fff; }
+[data-theme="light"] #page-tests .hero-card { background:radial-gradient(500px 220px at 80% 100%,#b9ceff,transparent 65%),linear-gradient(110deg,#dceaff,#f8fbff 70%); border-color:#bad0ff; box-shadow:0 14px 30px rgba(30,64,175,.11); } [data-theme="light"] #page-tests .hero-heading{color:#10204a}[data-theme="light"] #page-tests .hero-subtext{color:#526684}
+[data-theme="light"] #page-tests .test-card { background:radial-gradient(170px 130px at 99% 98%,rgba(47,123,255,.12),transparent 75%),#fff; border-color:#dce4f0; box-shadow:0 8px 18px rgba(15,23,42,.08); } [data-theme="light"] #page-tests .test-card__title{color:#17213a}[data-theme="light"] #page-tests .test-card__desc,[data-theme="light"] #page-tests .test-card__meta,[data-theme="light"] #page-tests .progress-pct{color:#61718b}[data-theme="light"] #page-tests .btn-action{color:#17213a}
+@media(max-width:1100px){#page-tests .test-list{grid-template-columns:repeat(2,minmax(0,1fr))}} @media(max-width:680px){#page-tests.active{padding:13px 12px 28px}#page-tests .hero-card{min-height:126px;padding:20px 18px;border-radius:22px}#page-tests .hero-mascot-wrapper{right:0;width:110px;height:112px}#page-tests .hero-text{max-width:calc(100% - 80px)}#page-tests .hero-heading{font-size:1.25rem}#page-tests .hero-subtext{font-size:.78rem}#page-tests .test-list{grid-template-columns:1fr;gap:12px}#page-tests .test-card{height:194px;border-radius:28px;grid-template-columns:74px minmax(0,1fr);padding:15px}#page-tests .lang-box{width:62px;height:62px;border-radius:21px}#page-tests .lang-box svg{width:34px;height:34px}#page-tests .btn-action{min-height:38px}}
+/* ==========================================================================
+   TESTS — MOBILE FINE-TUNING (page-testlist / page-result / review)
+   Faqat mobil (<=600px) ekranlar uchun: testlar ro'yxati qatorlari,
+   natija sahifasi tugmalari va javoblarni ko'rish bloki.
+   Desktop ko'rinish umuman o'zgarmaydi.
+   ========================================================================== */
+@media (max-width: 600px) {
+  /* --- TESTLIST: qator vertikal stack + katta touch area --- */
+  #page-testlist .page-head {
+    flex-wrap: wrap;
+    gap: 10px;
+  }
+
+  #page-testlist .page-head h2 {
+    font-size: 18px;
+    min-width: 0;
+  }
+
+  .test-list-item {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 12px;
+    padding: 16px;
+    min-width: 0;
+  }
+
+  .tli-left {
+    min-width: 0;
+  }
+
+  .tli-title {
+    font-size: 15px;
+    line-height: 1.45;
+    overflow-wrap: anywhere;
+    word-break: break-word;
+  }
+
+  .tli-meta {
+    font-size: 12px;
+    gap: 8px;
+    row-gap: 6px;
+  }
+
+  .tli-lock-hint {
+    font-size: 11.5px !important;
+  }
+
+  .tli-right {
+    width: 100%;
+  }
+
+  .tli-right .btn {
+    width: 100%;
+    min-height: 48px;
+    font-size: 15px;
+  }
+
+  /* --- QUIZ MINI-STATS: 320px'da ham sig'ishi uchun --- */
+  .test-mini-stats {
+    gap: 8px;
+    row-gap: 6px;
+  }
+
+  .test-mini-stats span {
+    font-size: 12px;
+  }
+
+  /* --- RESULT PAGE: tugmalar to'liq kenglikda, stack --- */
+  #page-result .result-actions {
+    flex-direction: column;
+    gap: 10px;
+  }
+
+  #page-result .result-actions .btn {
+    width: 100%;
+    min-height: 48px;
+    font-size: 15px;
+  }
+
+  /* --- REVIEW: uzun savol/javob matnlari kesilmasin --- */
+  .review-ans {
+    flex-wrap: wrap;
+    row-gap: 4px;
+  }
+
+  .review-ans .label {
+    min-width: 0;
+  }
+
+  .review-ans .ans {
+    overflow-wrap: anywhere;
+    word-break: break-word;
+  }
+
+  .review-q,
+  .review-explanation {
+    overflow-wrap: anywhere;
+    word-break: break-word;
+  }
+
+  /* --- EMPTY STATE + retry tugmasi (bank yuklanmasa) --- */
+  .empty-state .bank-retry-btn {
+    width: 100%;
+    min-height: 46px;
+  }
+}
+
+@media (max-width: 360px) {
+  .test-list-item {
+    padding: 14px 12px;
+  }
+
+  .tli-meta {
+    font-size: 11.5px;
+  }
+
+  .tli-title {
+    font-size: 14.5px;
+  }
+
+  #page-result .result-hero h1 {
+    font-size: 26px;
+  }
+
+  .test-mini-stats span {
+    font-size: 11px;
+  }
+}
+
+@media (max-width: 320px) {
+  .test-list-item {
+    padding: 12px 10px;
+  }
+
+  .tli-right .btn {
+    min-height: 46px;
+    font-size: 14px;
+  }
+}
+
+/* --- Touch qurilmalarda test ro'yxati hover effektini o'chirish --- */
+@media (hover: none) and (pointer: coarse) {
+  .test-list-item:hover {
+    border-color: var(--border);
+    transform: none;
+    box-shadow: none;
+  }
+
+  .test-list-item:active {
+    transform: scale(0.99);
+  }
+}

@@ -176,16 +176,6 @@ const FALLBACK_Q_BANK = {
 };
 
 /* ====================== DYNAMIC OPTION SHUFFLING & BALANCING ENGINE ====================== */
-/* Fisher–Yates aralashtirish — bir tekis taqsimlangan (bias-free) shuffle.
-   sort(() => Math.random() - 0.5) usuli esa notekis taqsimot beradi. */
-function shuffleArray(arr) {
-  for (let i = arr.length - 1; i > 0; i--) {
-    const j = Math.floor(Math.random() * (i + 1));
-    [arr[i], arr[j]] = [arr[j], arr[i]];
-  }
-  return arr;
-}
-
 function prepareShuffledQuestions(questions) {
   if (!Array.isArray(questions) || !questions.length) return [];
 
@@ -196,7 +186,8 @@ function prepareShuffledQuestions(questions) {
   const basePositions = [0, 1, 2, 3];
   const targetPositions = [];
   while (targetPositions.length < cloned.length) {
-    targetPositions.push(...shuffleArray(basePositions.slice()));
+    const shuffledBlock = basePositions.slice().sort(() => Math.random() - 0.5);
+    targetPositions.push(...shuffledBlock);
   }
 
   return cloned.map((q, idx) => {
@@ -205,7 +196,7 @@ function prepareShuffledQuestions(questions) {
     const originalCorrectIndex = (q.c !== undefined && q.c >= 0 && q.c < q.o.length) ? q.c : 0;
     const correctOptionText = q.o[originalCorrectIndex];
     const distractors = q.o.filter((_, i) => i !== originalCorrectIndex);
-    const shuffledDistractors = shuffleArray(distractors);
+    const shuffledDistractors = distractors.sort(() => Math.random() - 0.5);
 
     const targetPos = targetPositions[idx] % q.o.length;
     const newOptions = [];
@@ -235,72 +226,193 @@ function ensureBank(subjectName) {
   if (subjectName === 'C#' && !Q_BANK['CSharp']) Q_BANK['CSharp'] = Q_BANK[subjectName];
 }
 
+function normalizeQuestionText(text) {
+  return String(text || '').trim().toLowerCase().replace(/\s+/g, ' ');
+}
+
+/* Remove invalid questions and duplicates (by unique ID-ish normalized text). */
+function dedupeQuestions(pool, testLabel) {
+  const seen = new Set();
+  const out = [];
+  for (const q of (pool || [])) {
+    if (!q || !q.q || !Array.isArray(q.o) || q.o.length !== 4) {
+      console.error(`[TEST ERROR] ${testLabel}: invalid question skipped:`, q);
+      continue;
+    }
+    if (typeof q.c !== 'number' || q.c < 0 || q.c > 3) {
+      console.error(`[TEST ERROR] ${testLabel}: missing correct answer, skipped:`, q.q);
+      continue;
+    }
+    const key = normalizeQuestionText(q.q);
+    if (seen.has(key)) continue;
+    seen.add(key);
+    out.push(q);
+  }
+  return out;
+}
+
+/* Validate a built test. Logs clear errors, returns list of problems. */
+function validateTest(test) {
+  const problems = [];
+  if (!test) { problems.push('test mavjud emas'); return problems; }
+  if (!test.id) problems.push('test ID mavjud emas');
+  if (!Array.isArray(test.questions)) { problems.push('questions mavjud emas'); return problems; }
+  if (test.questions.length !== QUESTIONS_PER_TEST)
+    problems.push(`Expected ${QUESTIONS_PER_TEST} questions, Found ${test.questions.length}`);
+  const ids = new Set(), texts = new Set();
+  test.questions.forEach((q, i) => {
+    if (!q || !q.q) { problems.push(`Savol #${i + 1}: matn mavjud emas`); return; }
+    const key = normalizeQuestionText(q.q);
+    if (ids.has(key)) problems.push(`Savol #${i + 1}: DUPLICATE savol: "${q.q}"`);
+    ids.add(key);
+    if (texts.has(key)) problems.push(`Savol #${i + 1}: DUPLICATE matn`);
+    texts.add(key);
+    if (!Array.isArray(q.o) || q.o.length !== 4) problems.push(`Savol #${i + 1}: 4 ta variant yo'q`);
+    else if (new Set(q.o).size !== 4) problems.push(`Savol #${i + 1}: variantlar duplicate`);
+    if (typeof q.c !== 'number' || q.c < 0 || q.c > 3) problems.push(`Savol #${i + 1}: to'g'ri javob noto'g'ri`);
+  });
+  if (test.subject && test.difficulty && !DIFFICULTY_LABELS[test.difficulty])
+    problems.push(`level noto'g'ri: ${test.difficulty}`);
+  if (problems.length)
+    console.error(`[TEST ERROR] ${test.title || test.id}\n  ` + problems.join('\n  '));
+  return problems;
+}
+
+/*
+  Build tests from a subject/level question pool.
+  RULES:
+   - duplicate questions removed (never repeat questions inside a test)
+   - only COMPLETE chunks of 10 unique questions become tests
+   - a test is NEVER padded by repeating questions
+*/
+function buildTestsFromPool(subjectName, diff, pool) {
+  const tests = [];
+  const clean = dedupeQuestions(pool, `${subjectName} ${diff}`);
+  const total = Math.floor(clean.length / QUESTIONS_PER_TEST);
+  for (let t = 0; t < total; t++) {
+    const qs = clean.slice(t * QUESTIONS_PER_TEST, (t + 1) * QUESTIONS_PER_TEST);
+    const test = {
+      id: `${subjectName}-${diff}-${t + 1}`,
+      subject: subjectName,
+      difficulty: diff,
+      number: t + 1,
+      title: `${DIFFICULTY_LABELS[diff]} Test ${t + 1}`,
+      questionCount: qs.length,
+      durationSec: TEST_DURATION_SEC,
+      questions: qs,
+    };
+    validateTest(test);
+    tests.push(test);
+  }
+  if (clean.length % QUESTIONS_PER_TEST !== 0 && clean.length > 0) {
+    console.warn(`[TEST WARN] ${subjectName} ${diff}: ${clean.length % QUESTIONS_PER_TEST} ortiqcha savol — to'liq 10 lik test bo'lmagani uchun test yaratilmadi (duplicate padding TAQIQLANGAN).`);
+  }
+  return tests;
+}
+
 function rebuildAllTests() {
   const all = {};
   for (const sbj of SUBJECTS) {
     ensureBank(sbj.name);
-    all[sbj.name] = createTestsForSubject(sbj.name);
+    const bank = Q_BANK[sbj.name];
+    const tests = [];
+    if (!bank) {
+      all[sbj.name] = [];
+      continue;
+    }
+    for (const diff of ['beginner', 'intermediate', 'advanced']) {
+      tests.push(...buildTestsFromPool(sbj.name, diff, bank[diff] || []));
+    }
+    all[sbj.name] = tests;
   }
   return all;
 }
 
 Object.assign(Q_BANK, FALLBACK_Q_BANK);
 
-/* ====================== JSON LOADER (parallel) ====================== */
-const SUBJECT_FILE_KEYS = {
-  python: 'Python',
-  javascript: 'JavaScript',
-  java: 'Java',
-  cpp: 'CPlusPlus',
-  csharp: 'CSharp',
-  html: 'HTML',
-  css: 'CSS',
-  sql: 'SQL',
-  ai: 'AI'
-};
-const emptyBank = () => ({ beginner: [], intermediate: [], advanced: [] });
+/* ====================== JSON LOADER ====================== */
+let ALL_TESTS = {};
 
 async function loadQuestionBank() {
-  // Barcha fanlar parallel yuklanadi — ketma-ket await o'rniga ~9x tezroq boshlanish
-  const results = await Promise.all(
-    Object.keys(SUBJECT_FILE_KEYS).map(async (subject) => {
+  try {
+    const subjects = ['python', 'javascript', 'java', 'cpp', 'csharp', 'html', 'css', 'sql', 'ai'];
+
+    for (const subject of subjects) {
       try {
-        const response = await fetch(`./data/${subject}.json`);
-        if (!response.ok) return null;
-        return [SUBJECT_FILE_KEYS[subject], await response.json()];
+        let response = null;
+        const candidatePaths = [
+          `./data/${subject}.json`,
+          `data/${subject}.json`,
+          `/data/${subject}.json`,
+          `./public/data/${subject}.json`,
+          `public/data/${subject}.json`
+        ];
+        for (const p of candidatePaths) {
+          try {
+            const res = await fetch(p);
+            if (res && res.ok) { response = res; break; }
+          } catch (_) {}
+        }
+        if (!response) continue;
+
+        const data = await response.json();
+
+        const keyMap = {
+          'python': 'Python',
+          'javascript': 'JavaScript',
+          'java': 'Java',
+          'cpp': 'C++',
+          'csharp': 'C#',
+          'html': 'HTML',
+          'css': 'CSS',
+          'sql': 'SQL',
+          'ai': 'AI'
+        };
+
+        const key = keyMap[subject];
+        if (key && data) {
+          const merged = {
+            beginner: data.beginner || [],
+            intermediate: data.intermediate || [],
+            advanced: data.advanced || []
+          };
+          const current = Q_BANK[key] || { beginner: [], intermediate: [], advanced: [] };
+          const seen = new Set();
+          const mergeLevel = (fallbackArr, jsonArr) => {
+            const out = [];
+            for (const q of [...(jsonArr || []), ...(fallbackArr || [])]) {
+              const k = normalizeQuestionText(q && q.q);
+              if (!k || seen.has(k)) continue;
+              seen.add(k);
+              out.push(q);
+            }
+            return out;
+          };
+          Q_BANK[key] = {
+            beginner: mergeLevel(current.beginner, merged.beginner),
+            intermediate: mergeLevel(current.intermediate, merged.intermediate),
+            advanced: mergeLevel(current.advanced, merged.advanced)
+          };
+          if (key === 'C++') Q_BANK['CPlusPlus'] = Q_BANK['C++'];
+          if (key === 'C#') Q_BANK['CSharp'] = Q_BANK['C#'];
+        }
       } catch (e) {
         console.debug(`Failed to load ${subject}.json (using fallback):`, e.message);
-        return null;
       }
-    })
-  );
+    }
 
-  for (const entry of results) {
-    if (!entry) continue;
-    const [key, data] = entry;
-    if (!key || !data) continue;
-    const current = Q_BANK[key] || emptyBank();
-    Q_BANK[key] = {
-      beginner: [...(current.beginner || []), ...(Array.isArray(data.beginner) ? data.beginner : [])],
-      intermediate: [...(current.intermediate || []), ...(Array.isArray(data.intermediate) ? data.intermediate : [])],
-      advanced: [...(current.advanced || []), ...(Array.isArray(data.advanced) ? data.advanced : [])]
-    };
-  }
+    Q_BANK['C++'] = Q_BANK['C++'] || Q_BANK['CPlusPlus'] || { beginner: [], intermediate: [], advanced: [] };
+    Q_BANK['C#'] = Q_BANK['C#'] || Q_BANK['CSharp'] || { beginner: [], intermediate: [], advanced: [] };
+    Q_BANK['CPlusPlus'] = Q_BANK['CPlusPlus'] || Q_BANK['C++'];
+    Q_BANK['CSharp'] = Q_BANK['CSharp'] || Q_BANK['C#'];
 
-  Q_BANK['C++'] = Q_BANK['C++'] || Q_BANK['CPlusPlus'] || emptyBank();
-  Q_BANK['C#'] = Q_BANK['C#'] || Q_BANK['CSharp'] || emptyBank();
-  Q_BANK['CPlusPlus'] = Q_BANK['CPlusPlus'] || Q_BANK['C++'];
-  Q_BANK['CSharp'] = Q_BANK['CSharp'] || Q_BANK['C#'];
+    console.log('Question bank loaded:', Object.keys(Q_BANK));
 
-  console.log('Question bank loaded:', Object.keys(Q_BANK));
-
-  // ALL_TESTS ni yangilash — async yuklanish tugagach ishga tushadi
-  try {
     const rebuilt = rebuildAllTests();
     for (const k of Object.keys(rebuilt)) ALL_TESTS[k] = rebuilt[k];
     console.log('ALL_TESTS rebuilt after JSON load.');
-  } catch (e) {
-    console.warn('ALL_TESTS rebuild skipped:', e);
+  } catch (error) {
+    console.error('Error loading question bank:', error);
   }
 }
 
@@ -518,36 +630,11 @@ function createTestsForSubject(subjectName) {
   if (!bank) { console.warn("No Q_BANK for:", subjectName); return []; }
   const tests = [];
   for (const diff of ["beginner", "intermediate", "advanced"]) {
-    const pool = (bank[diff] || []).slice();
-    const count = DIFF_COUNT[diff];
-    for (let t = 0; t < count; t++) {
-      const start = t * QUESTIONS_PER_TEST;
-      const end = start + QUESTIONS_PER_TEST;
-      let qs = pool.slice(start, end);
-      if (qs.length > 0 && qs.length < QUESTIONS_PER_TEST) {
-        let padIdx = 0;
-        while (qs.length < QUESTIONS_PER_TEST) {
-          qs.push(pool[padIdx % pool.length]);
-          padIdx++;
-        }
-      }
-      if (!qs.length) continue;
-      tests.push({
-        id: `${subjectName}-${diff}-${t + 1}`,
-        subject: subjectName,
-        difficulty: diff,
-        number: t + 1,
-        title: `${DIFFICULTY_LABELS[diff]} Test ${t + 1}`,
-        questionCount: qs.length,
-        durationSec: TEST_DURATION_SEC,
-        questions: qs,
-      });
-    }
+    tests.push(...buildTestsFromPool(subjectName, diff, bank[diff] || []));
   }
   return tests;
 }
 
-const ALL_TESTS = {};
 Object.assign(ALL_TESTS, rebuildAllTests());
 
 function findTestById(id) {
@@ -603,10 +690,12 @@ function markTestCompletedAndUnlockNext(user, completedTestId) {
 
   progress[completedTestId] = "completed";
 
-  let subjectName = null;
-  for (const s of SUBJECTS) {
-    if (completedTestId.startsWith(s.name + "-")) { subjectName = s.name; break; }
-  }
+  const subject = completedTestId.split("-").slice(0, -2).join("-") ||
+    SUBJECTS.find(s => completedTestId.startsWith(s.name))?.name;
+  const subjectName = (() => {
+    for (const s of SUBJECTS) if (completedTestId.startsWith(s.name + "-")) return s.name;
+    return null;
+  })();
   if (!subjectName) return null;
 
   const order = getSubjectTestOrder(subjectName);
@@ -701,8 +790,8 @@ function ensureUsers() {
       { id: "u2", firstname: "Sarah", lastname: "Kim", username: "sarah_k", email: "s@mail.com", password: "12345", xp: 180, points: 180, level: 2, avatar: "🦊", joinedAt: Date.now() - 86400000 * 14, streak: 2, lastActiveDay: null, testResults: [], store: { inventory: [], equipped: {} } },
       { id: "u3", firstname: "Bekzod", lastname: "R.", username: "bekzod", email: "b@mail.com", password: "12345", xp: 95, points: 95, level: 1, avatar: "🐼", joinedAt: Date.now() - 86400000 * 7, streak: 1, lastActiveDay: null, testResults: [], store: { inventory: [], equipped: {} } },
     ];
+    LS.set("users", users);
   }
-  // Saqlash funksiya oxirida bir marta bajariladi (dublikat yozuv olib tashlandi)
 
   // Migrate legacy profile data into the shared Store state once.
   users = users.map(u => {
@@ -785,10 +874,14 @@ function dayKey(ts = Date.now()) {
   return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`;
 }
 function updateStreakOnTest(user) {
+  if (window.DailyStreak && typeof window.DailyStreak.syncStreakAndFreezes === "function") {
+    try { window.DailyStreak.syncStreakAndFreezes(user); } catch (e) { /* noop */ }
+  }
   const today = dayKey();
   const yest = dayKey(Date.now() - 86400000);
   if (user.lastActiveDay === today) return;
   if (user.lastActiveDay === yest) user.streak = (user.streak || 0) + 1;
+  else if (user.streak > 0 && user.lastActiveDay) user.streak = (user.streak || 0) + 1;
   else user.streak = 1;
   user.lastActiveDay = today;
 }
@@ -827,19 +920,27 @@ function loadTheme() { applyTheme(LS.get("theme", "dark")); }
 /* ====================== ROUTING ====================== */
 const PAGE_TITLES = {
   dashboard: "Bosh sahifa", tests: "Testlar", testlist: "Testlar ro\'yxati",
-  test: "Test", result: "Natija", results: "Natijalar tarixi",
+  test: "Test", result: "Natija",
   ranking: "Reyting", achievements: "Yutuqlar", profile: "Profil", settings: "Sozlamalar",
   duel: "Duel", store: "Do'kon", coding: "Code Playground", projects: "Loyihalarim",
   lessons: "Darslar", lessonCourse: "Kurs darslari", lessonView: "Dars",
 };
-const PROTECTED_PAGES = ["dashboard", "tests", "testlist", "test", "result", "results", "ranking", "achievements", "profile", "duel", "store", "coding", "projects", "lessons", "lessonCourse", "lessonView"];
+const PROTECTED_PAGES = ["dashboard", "tests", "testlist", "test", "result", "ranking", "achievements", "profile", "duel", "store", "coding", "projects", "lessons", "lessonCourse", "lessonView"];
 
-/* Darslar tizimi (lessons-app.js) bilan integratsiya uchun expose */
+/* Darslar va Daily Streak tizimlari bilan integratsiya uchun expose */
 window.__itShowPage = showPage;
 window.__itGetCurrentUser = () => currentUser;
 window.__itConfetti = triggerConfetti;
+window.__itStartQuiz = startQuiz;
+window.__itOpenSubjectTests = openSubjectTests;
+window.__itFindTestById = findTestById;
+window.__itGetAllTests = () => ALL_TESTS;
+window.__itGetSubjects = () => SUBJECTS;
 
 function showPage(name) {
+  /* "Natijalar" bo'limi olib tashlangan — eski /#results link/dashboard havolalari
+     Bosh sahifaga yo'naltiriladi (broken page / bo'sh sahifa bo'lmaydi) */
+  if (name === "results") { showToast("📊 Natijalar bo'limi olib tashlandi — Bosh sahifaga yo'naltirildi", "info"); name = "dashboard"; }
   if (PROTECTED_PAGES.includes(name) && !currentUser) {
     showToast("Avval tizimga kiring", "info");
     showAuthScreen();
@@ -854,14 +955,14 @@ function showPage(name) {
   $$(".nav-item[data-page]").forEach(n => n.classList.toggle("active", n.getAttribute("data-page") === name));
   if (name === "dashboard") { renderDashboard(); if (window.MobileUI) window.MobileUI.renderDashboard(); }
   else if (name === "tests") renderTestsPage();
-  else if (name === "results") renderResultsHistory();
   else if (name === "ranking") renderLeaderboard();
   else if (name === "achievements") renderAchievements();
   else if (name === "profile") renderProfile();
   else if (name === "duel") renderDuel();
   else if (name === "store") renderStore();
   else if (name === "coding") renderCodingPage();
-  else if (name === "projects") renderProjectsPage();
+  else if (name === "projects") { if (typeof renderProjectsPage === "function") renderProjectsPage(); }
+  else if (name === "certificate") renderCertificatePage();
   else if (name === "lessons" || name === "lessonCourse" || name === "lessonView") {
     if (window.Lessons) window.Lessons.handlePage(name);
   }
@@ -929,15 +1030,7 @@ function bindNav() {
   $$('.back-btn[data-back]').forEach(el => el.addEventListener("click", () => showPage(el.getAttribute("data-back"))));
   $("#hamburger").addEventListener("click", toggleSidebarMenu);
 
-  // Resize handler debounced (rAF bilan) — uzluksiz resize'da layout thrash bo'lmaydi
-  let sidebarResizeRaf = 0;
-  window.addEventListener("resize", () => {
-    if (sidebarResizeRaf) cancelAnimationFrame(sidebarResizeRaf);
-    sidebarResizeRaf = requestAnimationFrame(() => {
-      sidebarResizeRaf = 0;
-      syncSidebarState();
-    });
-  });
+  window.addEventListener("resize", syncSidebarState);
 
   $("#sidebarOverlay").addEventListener("click", () => {
     if (isMobileView()) closeMobileSidebar();
@@ -1034,6 +1127,12 @@ function bindNav() {
     logoutUser();
   });
 
+function showAuthScreen() {
+  $("#app").classList.add("hidden");
+  $("#authScreen").classList.remove("hidden");
+  const loginTab = $(".auth-tab[data-tab='login']");
+  if (loginTab) loginTab.click();
+}
   syncSidebarState();
 }
 
@@ -1088,6 +1187,9 @@ function logoutUser() {
   const userChip = $("#userChip");
   if (userDropdown) userDropdown.classList.remove("active");
   if (userChip) userChip.setAttribute("aria-expanded", "false");
+  if (window.ITOnboarding) {
+    try { window.ITOnboarding.hide(); } catch (e) { /* noop */ }
+  }
   showToast("🚪 Hisobdan chiqdingiz. Yana ko'rishguncha!", "info");
   showAuthScreen();
 }
@@ -1102,7 +1204,24 @@ function showApp() {
   $("#app").classList.remove("hidden");
   refreshUserChip();
   showPage("dashboard");
+  /* 🤖 YANGI FOYDALANUVCHI ONBOARDING — faqat ro'yxatdan o'tgan va hali
+     onboardingni tugatmagan userlar uchun (existing userlar darhol dashboardga) */
+  if (window.ITOnboarding) {
+    try { window.ITOnboarding.maybeStart(currentUser); }
+    catch (e) { console.warn("Onboarding start xatosi:", e); }
+  }
 }
+
+/* ====================== ONBOARDING BRIDGE ====================== */
+/* Onboarding tugatilganda / o'tkazib yuborilganda user belgisini tozalash.
+   Shu bilan "LOGIN → DASHBOARD" backward-compatible flow saqlanadi. */
+window.__itOnboardingFinish = function () {
+  if (!currentUser) return false;
+  delete currentUser.onboardingPending;
+  currentUser.onboardingCompleted = true;
+  saveUsersAndCurrent();
+  return true;
+};
 
 function bindAuth() {
   $$(".pwd-toggle").forEach(b => b.addEventListener("click", () => {
@@ -1165,7 +1284,8 @@ function bindAuth() {
       streak: 0, lastActiveDay: null, testResults: [],
       duelHistory: [],
       achievements: [],
-      store: { inventory: [], equipped: {} }
+      store: { inventory: [], equipped: {} },
+      onboardingPending: true
     };
     users.push(u);
     currentUser = u;
@@ -1217,268 +1337,24 @@ function updateDuelStatsUI() {
 }
 
 function renderDashboard() {
+  /* YANGI DASHBOARD (0 dan qayta qurilgan) — window.ITDashboard.render()
+     real user data bilan render qiladi: hero, keyingi qadam, streak,
+     quick actions, test/duel/challenge, XP/goal, activity.
+     Eski giant hero, stats-grid, fanlar progressi, chartlar va
+     "So'nggi natijalar" paneli Dashboarddan butunlay olib tashlandi. */
+  if (window.ITDashboard && typeof window.ITDashboard.render === "function") {
+    try {
+      window.ITDashboard.render();
+      return;
+    } catch (e) {
+      console.warn("Dashboard render xatosi:", e);
+    }
+  }
+  /* Fallback: dashboard.js moduli hali yuklanmagan bo'lsa — minimal welcome */
   const u = currentUser;
   if (!u) return;
-  const xp = u.xp || 0;
-  const lvl = u.level || 1;
-  $("#welcomeMini").textContent = `Salom, ${u.firstname} 👋`;
-  $("#dashLevelBadge").textContent = `Level ${lvl}`;
-  const xpp = xpProgress(xp);
-  $("#dashXpText").textContent = `${xpp.current} XP`;
-  $("#dashXpNext").textContent = `/ ${xpp.next} XP`;
-  $("#dashXpFill").style.width = `${xpp.percent}%`;
-
-  const s = userStats(u);
-  $("#statXp").textContent = u.points || 0;
-  $("#statTests").textContent = s.total;
-  $("#statAvg").textContent = `${s.avgPercent}%`;
-  $("#statStreak").textContent = u.streak || 0;
-
-  updateDuelStatsUI();
-
-  // Fanlar progress
-  const sp = $("#subjectProgress");
-  sp.innerHTML = "";
-  for (const sbj of SUBJECTS) {
-    const st = s.bySubject[sbj.name] || { count: 0, totalScore: 0, bestScore: 0 };
-    const maxBest = MAX_SCORE_PER_TEST * 9;
-    const percent = maxBest ? Math.min(100, Math.round((st.bestScore * 100) / maxBest)) : 0;
-    const row = document.createElement("div");
-    row.className = "progress-item";
-    row.innerHTML = `
-      <div class="progress-item-head">
-        <span><strong>${sbj.icon}</strong> ${sbj.name}</span>
-        <span class="muted">${st.count} ta · ${percent}%</span>
-      </div>
-      <div class="progress-bar"><div class="progress-fill" style="width:${percent}%"></div></div>
-    `;
-    sp.appendChild(row);
-  }
-
-  // Recent results
-  const rr = $("#recentResults");
-  rr.innerHTML = "";
-  const recent = (u.testResults || []).slice().sort((a, b) => b.timestamp - a.timestamp).slice(0, 5);
-  if (!recent.length) rr.innerHTML = `<div class="empty-state"><div class="empty-state-icon">📝</div><h3>Hali test ishlanmagan</h3><p>Testlarni boshlash uchun Testlar sahifasiga o'ting</p></div>`;
-  for (const r of recent) {
-    const d = new Date(r.timestamp);
-    const dateStr = `${d.getDate()}/${d.getMonth() + 1}`;
-    const el = document.createElement("div");
-    el.className = "recent-item";
-    el.innerHTML = `
-      <div class="recent-item-info">
-        <div class="recent-item-name">${SUBJECTS.find(x => x.name === r.subject)?.icon || '📝'} ${r.subject} · ${r.title}</div>
-        <div class="recent-item-sub">${dateStr} · ${DIFFICULTY_LABELS[r.difficulty] || ''}</div>
-      </div>
-      <div class="recent-item-score">
-        <div class="recent-item-pct">${r.score}/50 · ${r.percent}%</div>
-        <span class="badge ${r.passed ? 'badge-success' : 'badge-danger'}">${r.passed ? 'PASSED' : 'FAILED'}</span>
-      </div>
-    `;
-    rr.appendChild(el);
-  }
-
-  // CHARTS
-  renderLineChart(u);
-  renderDonutChart(u);
-  renderBarChart(u);
-}
-
-/* ---------- CHARTS ---------- */
-function renderLineChart(u) {
-  const container = $("#lineChartContainer");
-  if (!container) return;
-  const all = (u.testResults || []).slice().sort((a, b) => a.timestamp - b.timestamp);
-  const lastN = all.slice(-10);
-
-  const subTitle = $("#chartSubtitle");
-  if (subTitle) subTitle.textContent = all.length ? `Oxirgi ${lastN.length} ta test · jami ${all.length}` : "Hali test ishlanmagan";
-
-  if (!lastN.length) {
-    container.innerHTML = `<div class="line-chart-empty"><div class="big-icon">📊</div><div>Test ishlaganingizda bu yerda progress grafigi ko'rinadi</div></div>`;
-    return;
-  }
-
-  const W = 800, H = 260, P = { l: 40, r: 20, t: 20, b: 34 };
-  const chartW = W - P.l - P.r, chartH = H - P.t - P.b;
-  const n = lastN.length;
-
-  const x = i => P.l + (chartW * i) / Math.max(1, n - 1);
-  const y = v => P.t + chartH - (v / 100) * chartH;
-  const yPass = y(50);
-
-  const pts = lastN.map((r, i) => [x(i), y(r.percent)]);
-  const linePath = pts.map((p, i) => `${i === 0 ? 'M' : 'L'} ${p[0]} ${p[1]}`).join(' ');
-  const areaPath = `${linePath} L ${pts[pts.length - 1][0]} ${P.t + chartH} L ${pts[0][0]} ${P.t + chartH} Z`;
-
-  let gridLines = '';
-  [0, 25, 50, 75, 100].forEach(v => {
-    const yy = y(v);
-    gridLines += `<line x1="${P.l}" y1="${yy}" x2="${W - P.r}" y2="${yy}" stroke="var(--border)" stroke-dasharray="${v === 50 ? '6 4' : '3 3'}" stroke-width="1" opacity="${v === 50 ? '0.8' : '0.45'}" />`;
-    gridLines += `<text x="${P.l - 8}" y="${yy + 4}" text-anchor="end" font-size="10" fill="var(--muted)" opacity="0.9">${v}%</text>`;
-  });
-
-  let xLabels = '';
-  lastN.forEach((r, i) => {
-    const d = new Date(r.timestamp);
-    const label = n <= 5 ? `${d.getDate()}/${d.getMonth() + 1}` : (i % Math.ceil(n / 5) === 0 || i === n - 1 ? `T${i + 1}` : '');
-    if (label) {
-      xLabels += `<text x="${x(i)}" y="${H - 12}" text-anchor="middle" font-size="10" fill="var(--muted)" opacity="0.9">${label}</text>`;
-    }
-  });
-
-  let ptsMarkers = '';
-  pts.forEach((p, i) => {
-    const r = lastN[i];
-    ptsMarkers += `<circle cx="${p[0]}" cy="${p[1]}" r="4.5" fill="${r.passed ? 'var(--success)' : 'var(--primary)'}" stroke="#fff" stroke-width="2"/>`;
-    ptsMarkers += `<title>${r.subject} · ${r.title} — ${r.percent}%${r.passed ? ' (PASSED)' : ''}</title>`;
-  });
-
-  container.innerHTML = `
-    <svg viewBox="0 0 ${W} ${H}" preserveAspectRatio="none" xmlns="http://www.w3.org/2000/svg">
-      <defs>
-        <linearGradient id="areaGrad" x1="0" x2="0" y1="0" y2="1">
-          <stop offset="0%" stop-color="var(--primary)" stop-opacity="0.35"/>
-          <stop offset="100%" stop-color="var(--primary)" stop-opacity="0"/>
-        </linearGradient>
-      </defs>
-      ${gridLines}
-      <line x1="${P.l}" y1="${yPass}" x2="${W - P.r}" y2="${yPass}" stroke="var(--success)" stroke-width="2" stroke-dasharray="8 6" opacity="0.75"/>
-      <path d="${areaPath}" fill="url(#areaGrad)"/>
-      <path d="${linePath}" fill="none" stroke="var(--primary)" stroke-width="3" stroke-linejoin="round" stroke-linecap="round"/>
-      ${ptsMarkers}
-      ${xLabels}
-    </svg>
-  `;
-}
-
-function renderDonutChart(u) {
-  const wrap = $("#donutChart");
-  if (!wrap) return;
-  const all = u.testResults || [];
-  const totals = { correct: 0, incorrect: 0, skipped: 0 };
-  all.forEach(r => {
-    totals.correct += r.correct || 0;
-    totals.incorrect += r.incorrect || 0;
-    totals.skipped += r.skipped || 0;
-  });
-
-  $("#csCorrect").textContent = totals.correct;
-  $("#csWrong").textContent = totals.incorrect;
-  $("#csSkipped").textContent = totals.skipped;
-
-  const sum = totals.correct + totals.incorrect + totals.skipped;
-  if (!sum) {
-    wrap.innerHTML = `<div class="donut-empty"><div style="font-size:56px;opacity:0.5">🎯</div><div>Ma'lumotlar mavjud emas</div></div>`;
-    return;
-  }
-
-  const pct = Math.round((totals.correct / sum) * 100);
-  const R = 78, C = 2 * Math.PI * R, CX = 100, CY = 100;
-  const segments = [
-    { val: totals.correct, color: 'var(--success)', label: 'correct' },
-    { val: totals.incorrect, color: 'var(--danger)', label: 'wrong' },
-    { val: totals.skipped, color: 'var(--muted)', label: 'skipped' },
-  ];
-
-  let offset = 0;
-  let circles = '';
-  segments.forEach(s => {
-    if (!s.val) return;
-    const len = (s.val / sum) * C;
-    circles += `<circle cx="${CX}" cy="${CY}" r="${R}"
-      stroke="${s.color}" stroke-width="22" fill="none"
-      stroke-dasharray="${len.toFixed(3)} ${C.toFixed(3)}"
-      stroke-dashoffset="${(-offset).toFixed(3)}"
-      stroke-linecap="butt"
-      transform="rotate(-90 ${CX} ${CY})" />`;
-    offset += len;
-  });
-
-  wrap.innerHTML = `
-    <svg viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg">
-      <circle cx="${CX}" cy="${CY}" r="${R}" stroke="var(--bg)" stroke-width="22" fill="none"/>
-      ${circles}
-    </svg>
-    <div class="donut-center-text">
-      <span class="dc-big">${pct}%</span>
-      <span class="dc-small">Aniqlik</span>
-    </div>
-  `;
-}
-
-/* Fanlar bo'yicha o'rtacha natija — gorizontal bar chart (SVG) */
-function renderBarChart(u) {
-  const container = $("#barChartContainer");
-  if (!container) return;
-
-  const results = u.testResults || [];
-  if (!results.length) {
-    container.innerHTML = `<div class="line-chart-empty"><div class="big-icon">📊</div><div>Test ishlaganingizda fanlar bo'yicha statistika ko'rinadi</div></div>`;
-    return;
-  }
-
-  // Har fan uchun o'rtacha foiz va test sonini hisoblash
-  const bySubject = {};
-  results.forEach(r => {
-    if (!bySubject[r.subject]) bySubject[r.subject] = { sum: 0, count: 0 };
-    bySubject[r.subject].sum += (r.percent || 0);
-    bySubject[r.subject].count += 1;
-  });
-
-  const rows = SUBJECTS
-    .filter(sbj => bySubject[sbj.name])
-    .map(sbj => {
-      const d = bySubject[sbj.name];
-      return { name: sbj.name, icon: sbj.icon, avg: Math.round(d.sum / d.count), count: d.count };
-    })
-    .sort((a, b) => b.avg - a.avg);
-
-  if (!rows.length) {
-    container.innerHTML = `<div class="line-chart-empty"><div class="big-icon">📊</div><div>Ma'lumotlar mavjud emas</div></div>`;
-    return;
-  }
-
-  const W = 800, ROW_H = 44, P = { l: 130, r: 60, t: 8, b: 8 };
-  const H = rows.length * ROW_H + P.t + P.b;
-  const chartW = W - P.l - P.r;
-
-  let bars = '';
-  rows.forEach((row, i) => {
-    const y = P.t + i * ROW_H;
-    const barH = 20;
-    const barY = y + (ROW_H - barH) / 2;
-    const w = Math.max(2, (row.avg / 100) * chartW);
-    const color = row.avg >= 60 ? 'var(--success)' : row.avg >= 40 ? 'var(--warning, #f59e0b)' : 'var(--danger)';
-    const cy = y + ROW_H / 2;
-
-    bars += `
-      <text x="${P.l - 12}" y="${cy + 4}" text-anchor="end" font-size="13" fill="var(--text)" font-weight="600">${row.icon} ${row.name}</text>
-      <rect x="${P.l}" y="${barY}" width="${chartW}" height="${barH}" rx="10" fill="var(--bg)" stroke="var(--border)" stroke-width="1"/>
-      <rect x="${P.l}" y="${barY}" width="${w.toFixed(1)}" height="${barH}" rx="10" fill="${color}" opacity="0.9">
-        <title>${row.name} · o'rtacha ${row.avg}% · ${row.count} ta test</title>
-      </rect>
-      <text x="${(P.l + w + 8).toFixed(1)}" y="${cy + 4}" font-size="12" fill="var(--muted)" font-weight="700">${row.avg}%</text>
-    `;
-  });
-
-  // 50% passed chegarasi chizig'i
-  const passX = P.l + (50 / 100) * chartW;
-  const passLine = `
-    <line x1="${passX}" y1="${P.t}" x2="${passX}" y2="${H - P.b}" stroke="var(--success)" stroke-width="1.5" stroke-dasharray="6 4" opacity="0.6"/>
-    <text x="${passX}" y="${H - P.b - 2}" text-anchor="middle" font-size="9" fill="var(--success)" opacity="0.8">50%</text>
-  `;
-
-  container.innerHTML = `
-    <svg viewBox="0 0 ${W} ${H}" preserveAspectRatio="xMidYMid meet" xmlns="http://www.w3.org/2000/svg" style="width:100%;height:auto;display:block;">
-      ${bars}
-      ${passLine}
-    </svg>
-    <div class="chart-legend">
-      <div class="legend-item"><span class="legend-dot legend-dot-pass" aria-hidden="true"></span> Passed chegarasi (50%)</div>
-      <div class="legend-item muted" style="font-size:12px">🟢 ≥60% · 🟡 40–59% · 🔴 <40%</div>
-    </div>
-  `;
+  const nameEl = $("#ndHeroName");
+  if (nameEl) nameEl.textContent = u.firstname || u.username || "Foydalanuvchi";
 }
 
 /* ====================== TESTS PAGE (fanlar grid) ====================== */
@@ -1737,7 +1613,7 @@ function renderQuestionNav() {
     }
     if (quiz.marked[i]) btn.classList.add("marked");
     btn.textContent = String(i + 1);
-    btn.addEventListener("click", () => { quiz.currentIndex = i; renderQuestion(); renderProgress(); });
+    btn.addEventListener("click", () => { if (quiz.autoNavTimeout) { clearTimeout(quiz.autoNavTimeout); quiz.autoNavTimeout = null; } quiz.currentIndex = i; renderQuestion(); renderProgress(); });
     nav.appendChild(btn);
   }
 }
@@ -1817,7 +1693,7 @@ function renderQuestion() {
   });
 
   $("#prevBtn").disabled = idx === 0;
-  $("#nextBtn").disabled = hasAnswer;
+  $("#nextBtn").disabled = false;
   $("#clearAnswerBtn").disabled = !hasAnswer;
   $("#nextBtn").textContent = idx === quiz.test.questions.length - 1 ? "Yakunlash →" : "Keyingi →";
 
@@ -1968,6 +1844,17 @@ function finishTest({ silent = false } = {}) {
     saveUsersAndCurrent();
   }
 
+  if (window.DailyStreak && typeof window.DailyStreak.onTestFinished === "function") {
+    try {
+      window.DailyStreak.onTestFinished({
+        subject: test.subject,
+        testId: test.id,
+        score: score,
+        passed: passed
+      });
+    } catch (e) { console.warn("DailyStreak test hook xatosi:", e); }
+  }
+
   if (!silent) showToast(passed ? "Test yakunlandi ✓" : "Test yakunlandi", passed ? "success" : "warning");
 
   // Reset quiz state to prevent interference with duel
@@ -2040,38 +1927,7 @@ function bindResultActions() {
   });
 }
 
-/* ====================== RESULTS HISTORY ====================== */
-function renderResultsHistory() {
-  const u = currentUser;
-  const wrap = $("#resultsTableWrap");
-  if (!u) { wrap.innerHTML = ""; return; }
-  const list = (u.testResults || []).slice().sort((a, b) => b.timestamp - a.timestamp);
-  if (!list.length) { wrap.innerHTML = `<div class="empty-state">Hali test ishlanmagan. Testlar sahifasiga o\'tib boshlang.</div>`; return; }
-  wrap.innerHTML = `
-    <div class="table-wrap">
-      <table class="results-table">
-        <thead><tr><th>#</th><th>Fan</th><th>Test</th><th>Qiyinlik</th><th>Sana</th><th>Ball</th><th>Foiz</th><th>Holat</th></tr></thead>
-        <tbody>
-          ${list.map((r, i) => {
-    const d = new Date(r.timestamp);
-    const date = `${String(d.getDate()).padStart(2, '0')}/${String(d.getMonth() + 1).padStart(2, '0')}/${d.getFullYear()}`;
-    return `<tr>
-              <td data-label="#">${i + 1}</td>
-              <td data-label="Fan">${SUBJECTS.find(x => x.name === r.subject)?.icon || '📝'} ${r.subject}</td>
-              <td data-label="Test">${r.title}</td>
-              <td data-label="Qiyinlik">${difficultyBadge(r.difficulty)}</td>
-              <td data-label="Sana" class="muted">${date}</td>
-              <td data-label="Ball"><strong>${r.score}/50</strong></td>
-              <td data-label="Foiz">${r.percent}%</td>
-              <td data-label="Holat">${r.passed ? '<span class="status-pass">Passed</span>' : '<span class="status-fail">Failed</span>'}</td>
-            </tr>`;
-  }).join("")}
-        </tbody>
-      </table>
-    </div>
-  `;
-}
-
+/* RESULTS HISTORY — OLIB TASHLANGAN: Natijalar alohida bolimi olib tashlandi. testResults datasi saqlanadi (XP, Reyting, Yutuqlar uchun). */
 /* ====================== LEADERBOARD (umumiy BALL asosida) ====================== */
 let rankPeriod = "all";
 
@@ -2113,19 +1969,18 @@ function renderLeaderboard() {
 
   // Top 3
   const top = rows.slice(0, 3);
-  const restRows = rows.slice(3);
+  const rest = rows.slice(3);
   const medals = ["🥇", "🥈", "🥉"];
   const podium = document.createElement("div");
   podium.className = "podium";
-  // Foydalanuvchi kiritgan ism/username XSS oldini olish uchun esc() bilan qochiriladi
   podium.innerHTML = top.map((row, i) => {
     const u = row.user;
     return `
       <div class="podium-place place-${i + 1}">
         <div class="podium-medal">${medals[i]}</div>
-        <div class="avatar">${u.avatar || esc(initialsOf(u.firstname))}</div>
-        <div class="p-name">${esc(u.firstname)} ${esc(u.lastname)}</div>
-        <div class="p-username muted">@${esc(u.username)}</div>
+        <div class="avatar">${u.avatar || initialsOf(u.firstname)}</div>
+        <div class="p-name">${u.firstname} ${u.lastname}</div>
+        <div class="p-username muted">@${u.username}</div>
         <div class="p-pts"><strong>${row.pts}</strong> <span class="muted">ball</span></div>
       </div>
     `;
@@ -2134,6 +1989,7 @@ function renderLeaderboard() {
 
   const list = document.createElement("div");
   list.className = "leader-list";
+  const restRows = rows.slice(3);
   if (!restRows.length) list.innerHTML = '<div class="empty-state">Yana ishtirokchilar yo\'q</div>';
   else list.innerHTML = restRows.map((row, i) => {
     const u = row.user;
@@ -2141,10 +1997,10 @@ function renderLeaderboard() {
     return `
       <div class="leader-row ${isMe ? 'me' : ''}">
         <div class="lr-rank">${i + 4}</div>
-        <div class="lr-avatar">${u.avatar || esc(initialsOf(u.firstname))}</div>
+        <div class="lr-avatar">${u.avatar || initialsOf(u.firstname)}</div>
         <div class="lr-info">
-          <div class="lr-name">${esc(u.firstname)} ${esc(u.lastname)} ${isMe ? '<span class="me-tag">Siz</span>' : ''}</div>
-          <div class="lr-user muted">@${esc(u.username)} · ${row.testsCount} ta test</div>
+          <div class="lr-name">${u.firstname} ${u.lastname} ${isMe ? '<span class="me-tag">Siz</span>' : ''}</div>
+          <div class="lr-user muted">@${u.username} · ${row.testsCount} ta test</div>
         </div>
         <div class="lr-pts"><strong>${row.pts}</strong><span class="muted"> ball</span></div>
       </div>
@@ -2209,20 +2065,19 @@ function renderProfile() {
   if (!u) return;
   const st = userStats(u);
   const joined = new Date(u.joinedAt);
-  const xpp = xpProgress(u.xp); // bir marta hisoblanadi (3 qo'ng'iroq o'rniga)
   $("#profileHeader").innerHTML = `
     <div class="profile-avatar">${getActiveAvatar(u)}</div>
     <div class="profile-head-info">
-      <h2>${esc(u.firstname)} ${esc(u.lastname)}</h2>
-      <div class="muted">@${esc(u.username)} · ${esc(u.email)}</div>
+      <h2>${u.firstname} ${u.lastname}</h2>
+      <div class="muted">@${u.username} · ${u.email}</div>
       <div class="profile-level-row">
         <div class="level-badge">Level ${u.level}</div>
         <div class="xp-bar-wrap profile-xp">
           <div class="xp-bar-info">
-            <span>${xpp.current} XP</span>
-            <span>/ ${xpp.next} XP</span>
+            <span>${xpProgress(u.xp).current} XP</span>
+            <span>/ ${xpProgress(u.xp).next} XP</span>
           </div>
-          <div class="xp-bar"><div class="xp-bar-fill" style="width:${xpp.percent}%"></div></div>
+          <div class="xp-bar"><div class="xp-bar-fill" style="width:${xpProgress(u.xp).percent}%"></div></div>
         </div>
       </div>
     </div>
@@ -2242,11 +2097,8 @@ function renderProfile() {
   const gifts = (u.gifts || []).map(gift => {
     const item = storeItem(gift.itemId);
     const sender = userById(gift.from);
-    return item ? `<span class="store-equipped-pill">${item.icon} ${item.name.replace(/^\S+\s/, '')} · ${sender ? esc(sender.firstname) : 'Do‘st'}</span>` : '';
+    return item ? `<span class="store-equipped-pill">${item.icon} ${item.name.replace(/^\S+\s/, '')} · ${sender ? sender.firstname : 'Do‘st'}</span>` : '';
   }).join('');
-  // BUGFIX: avvalgi "Do'kon profili" kartochkasini olib tashlash — har safar yangi kartochka
-  // qo'shib borilishi natijasida sahifada dublikatlar to'planib qolardi.
-  $("#profileStats").parentElement?.querySelectorAll(".profile-store-summary").forEach(el => el.remove());
   $("#profileStats").insertAdjacentHTML("afterend", `
     <div class="card profile-store-summary">
       <div class="card-header"><h3>🛍️ Do'kon profili</h3></div>
@@ -2439,8 +2291,8 @@ function renderDuelHistory() {
     return `
               <tr>
                 <td class="muted">${dateStr}</td>
-                <td>${esc(d.subject)}</td>
-                <td>${esc(d.player2)}</td>
+                <td>${d.subject}</td>
+                <td>${d.player2}</td>
                 <td><span class="${statusCls}">${statusTxt}</span></td>
                 <td><strong>${d.score1} — ${d.score2}</strong></td>
               </tr>
@@ -3203,7 +3055,7 @@ document.addEventListener("DOMContentLoaded", () => {
   loadTheme();
   loadSidebarState();
   bindAuth();
-  bindNav();
+  bindNav(); bindCertificateActions();
   bindTestsPage();
   bindQuizUI();
   bindResultActions();
@@ -3373,8 +3225,7 @@ function openSendGiftModal(itemId) {
   const recipient = $('#giftRecipient');
   const choice = $('#giftChoice');
   if (!recipient || !choice || !recipients.length) return showToast("Sovg'a yuborish uchun do'stlar topilmadi", 'error');
-  // XSS himoyasi: ismlar option matniga qochirilgan holda qo'shiladi
-  recipient.innerHTML = recipients.map(user => `<option value="${esc(user.id)}">${esc(user.firstname)} ${esc(user.lastname)}</option>`).join('');
+  recipient.innerHTML = recipients.map(user => `<option value="${user.id}">${user.firstname} ${user.lastname}</option>`).join('');
   choice.innerHTML = giftItems().map(item => `<option value="${item.id}" ${item.id === itemId ? 'selected' : ''}>${item.icon} ${item.name.replace(/^\S+\s/, '')}</option>`).join('');
   updateGiftPrice();
   openModal('#sendGiftModal');
@@ -4787,6 +4638,10 @@ function openCodePlaygroundWithHtml(rawHtml, returnCtx) {
   const jsEd = $('#jsEditor'); if (jsEd) jsEd.value = '';
   ['html', 'css', 'js'].forEach(l => syncEditorHighlight(l));
   updateAllLineNumbers();
+  // Dars HTML kodi kelganligi sababli doim WEB rejimga qaytamiz (agar user oldin Python/C++ tanlagan bo'lsa ham)
+  codingIdeState.activeLangSelect = 'web';
+  codingIdeState.activeTab = 'html';
+  const langSel = $('#codingLangSelect'); if (langSel) langSel.value = 'web';
   switchEditorTab('html');
   saveCodingIdeBuffers();
   showPage("coding");
@@ -4849,6 +4704,10 @@ function openCodePlaygroundWithCode(rawHtml, rawCss, rawJs, returnCtx) {
   const jsEd = $('#jsEditor'); if (jsEd) jsEd.value = String(rawJs ?? '');
   ['html', 'css', 'js'].forEach(l => syncEditorHighlight(l));
   updateAllLineNumbers();
+  // Loyiha HTML+CSS+JS — doim WEB rejim (user oldin native til tanlagan bo'lsa ham)
+  codingIdeState.activeLangSelect = 'web';
+  codingIdeState.activeTab = 'html';
+  const langSelCode = $('#codingLangSelect'); if (langSelCode) langSelCode.value = 'web';
   switchEditorTab('html');
   saveCodingIdeBuffers();
   showPage("coding");
@@ -4876,6 +4735,31 @@ function openCodePlaygroundWithCode(rawHtml, rawCss, rawJs, returnCtx) {
   } catch (e) { /* ignore */ }
 }
 window.openCodePlaygroundWithCode = openCodePlaygroundWithCode;
+
+/* --- Loyiha auto-save (dars → Coding integratsiyasi ham shu orqali saqlanadi) --- */
+let projectAutoSaveTimer = null;
+function scheduleProjectAutoSave(_lang, _value) {
+  if (projectAutoSaveTimer) clearTimeout(projectAutoSaveTimer);
+  projectAutoSaveTimer = setTimeout(() => { projectAutoSaveTimer = null; saveCurrentProjectFromBuffers(true); }, 1500);
+}
+function flushProjectAutoSave() {
+  if (projectAutoSaveTimer) { clearTimeout(projectAutoSaveTimer); projectAutoSaveTimer = null; }
+}
+function saveCurrentProjectFromBuffers(silent) {
+  try {
+    const user = (typeof window.__itGetCurrentUser === 'function' ? window.__itGetCurrentUser() : null) || currentUser;
+    if (!user) return;
+    const get = id => { const el = $(id); return el ? String(el.value ?? '') : ''; };
+    const project = {
+      html: get('#htmlEditor'), css: get('#cssEditor'), js: get('#jsEditor'),
+      python: get('#pythonEditor'), java: get('#javaEditor'), cpp: get('#cppEditor'),
+      csharp: get('#csharpEditor'), sql: get('#sqlEditor'),
+      at: Date.now()
+    };
+    localStorage.setItem('coding_project_autosave_' + (user.username || 'guest'), JSON.stringify(project));
+    if (!silent) showToast("🔄 Loyiha avtomatik saqlandi", "success");
+  } catch (e) { /* ignore */ }
+}
 
 function saveCodingIdeBuffers() {
   ['html', 'css', 'js', 'python', 'java', 'cpp', 'csharp', 'sql'].forEach(lang => {
@@ -4997,4 +4881,94 @@ function downloadCleanHtml() {
   document.body.removeChild(a);
   URL.revokeObjectURL(url);
   showToast("⬇️ index.html yuklab olindi", "success");
+}
+
+/* ====================== CERTIFICATE PAGE ====================== */
+function renderCertificatePage() {
+  const u = currentUser;
+  const studentNameEl = $("#certStudentName");
+  const courseTitleEl = $("#certCourseTitle");
+  const certDateEl = $("#certDate");
+  const certScoreEl = $("#certScore");
+  const certXpEl = $("#certXp");
+  const certIdEl = $("#certId");
+
+  const fullName = u ? (u.certName || `${u.firstname || ''} ${u.lastname || ''}`.trim() || u.username) : "Foydalanuvchi Ismi";
+  if (studentNameEl) studentNameEl.textContent = fullName;
+
+  // Find best test or completed course
+  const results = u?.testResults || [];
+  const bestScore = results.length ? Math.max(...results.map(r => r.percent || 0)) : 100;
+  if (certScoreEl) certScoreEl.textContent = `${bestScore}% (${bestScore >= 90 ? 'A+' : bestScore >= 80 ? 'A' : 'B'})`;
+  if (certXpEl) certXpEl.textContent = `+${u?.xp || 350} XP`;
+
+  if (certDateEl) {
+    const d = new Date(u?.joinedAt || Date.now());
+    certDateEl.textContent = `${String(d.getDate()).padStart(2, '0')}.${String(d.getMonth() + 1).padStart(2, '0')}.${d.getFullYear()}`;
+  }
+
+  if (certIdEl) {
+    const seed = (u?.id || "u123").replace(/\D/g, '').slice(0, 6) || "202688";
+    certIdEl.textContent = `ITT-2026-${seed.padStart(4, '0')}`;
+  }
+}
+
+function bindCertificateActions() {
+  const editBtn = $("#certEditNameBtn");
+  const editModal = $("#certEditNameModal");
+  const saveBtn = $("#certSaveNameBtn");
+  const nameInput = $("#certFullNameInput");
+  const downloadBtn = $("#certDownloadBtn");
+  const shareBtn = $("#certShareBtn");
+
+  if (editBtn) {
+    editBtn.addEventListener("click", () => {
+      if (nameInput) {
+        nameInput.value = currentUser ? (currentUser.certName || `${currentUser.firstname || ''} ${currentUser.lastname || ''}`.trim()) : "";
+      }
+      openModal("#certEditNameModal");
+    });
+  }
+
+  if (saveBtn) {
+    saveBtn.addEventListener("click", () => {
+      const val = nameInput ? nameInput.value.trim() : "";
+      if (!val) return showToast("Iltimos, ism va familiyangizni kiriting", "warning");
+      if (currentUser) {
+        currentUser.certName = val;
+        saveUsersAndCurrent();
+      }
+      closeModal("#certEditNameModal");
+      renderCertificatePage();
+      showToast("Sertifikatdagi ism saqlandi! 🎉", "success");
+    });
+  }
+
+  if (downloadBtn) {
+    downloadBtn.addEventListener("click", () => {
+      showToast("📜 Sertifikat bosmaga tayyorlanmoqda...", "info");
+      setTimeout(() => { window.print(); }, 400);
+    });
+  }
+
+  if (shareBtn) {
+    shareBtn.addEventListener("click", () => {
+      const certId = $("#certId")?.textContent || "ITT-2026";
+      const shareData = {
+        title: 'ITTest Sertifikati',
+        text: `Men ITTest platformasida IT & AI sertifikatini qo'lga kiritdim! ID: ${certId}`,
+        url: window.location.href
+      };
+      if (navigator.share) {
+        navigator.share(shareData).catch(() => {});
+      } else {
+        try {
+          navigator.clipboard.writeText(shareData.text);
+          showToast("🔗 Sertifikat havolasi nusxalandi!", "success");
+        } catch (_) {
+          showToast("Sertifikat ID: " + certId, "info");
+        }
+      }
+    });
+  }
 }

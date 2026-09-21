@@ -17,7 +17,24 @@
   font-size: 0.92rem;
 }
 
-/* ---------- DAVOM ETTIRISH BANNERI ---------- */
+/* ---------- DAVOM ETTIRISH (joriy dars) — yengil, toza karta ---------- */
+.ls-continue-head {
+  display: flex;
+  align-items: baseline;
+  gap: 10px;
+  flex-wrap: wrap;
+  margin: 4px 0 10px;
+}
+.ls-continue-head h4 {
+  font-size: 1.05rem;
+  font-weight: 800;
+  letter-spacing: -0.01em;
+}
+.ls-continue-head span {
+  color: var(--muted);
+  font-size: 0.84rem;
+  font-weight: 600;
+}
 .ls-continue {
   position: relative;
   display: flex;
@@ -25,72 +42,107 @@
   justify-content: space-between;
   gap: 20px;
   flex-wrap: wrap;
-  padding: 24px 28px;
-  border-radius: var(--radius);
+  padding: 20px 24px;
+  border-radius: 24px;
   margin-bottom: 32px;
-  background: linear-gradient(120deg, var(--primary) 0%, var(--secondary) 130%);
-  color: #fff;
+  background: var(--card);
+  border: 1px solid color-mix(in srgb, var(--primary) 22%, var(--border));
+  color: var(--text);
   overflow: hidden;
-  box-shadow: var(--shadow);
+  box-shadow: var(--shadow-soft);
   animation: lsFadeUp 0.45s var(--bounce) both;
 }
 .ls-continue::after {
   content: '';
   position: absolute;
-  top: -60px;
-  right: -40px;
+  top: -70px;
+  right: -50px;
   width: 220px;
   height: 220px;
-  background: rgba(255, 255, 255, 0.12);
+  background: color-mix(in srgb, var(--primary) 7%, transparent);
   border-radius: 50%;
   pointer-events: none;
 }
 .ls-continue-info {
   display: flex;
   align-items: center;
-  gap: 18px;
+  gap: 16px;
   min-width: 0;
 }
 .ls-continue-icon {
-  width: 58px;
-  height: 58px;
+  width: 54px;
+  height: 54px;
   border-radius: 16px;
-  background: rgba(255, 255, 255, 0.18);
+  background: var(--primary-soft);
+  border: 1px solid color-mix(in srgb, var(--primary) 22%, transparent);
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: 1.7rem;
+  font-size: 1.6rem;
   flex-shrink: 0;
 }
+.ls-continue-course {
+  display: inline-block;
+  font-size: 0.72rem;
+  font-weight: 700;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  color: var(--primary);
+  margin-bottom: 3px;
+}
 .ls-continue-text h3 {
-  font-size: 1.15rem;
+  font-size: 1.12rem;
   font-weight: 800;
   margin-bottom: 2px;
+  line-height: 1.3;
 }
-.ls-continue-text p {
+.ls-continue-sub {
+  color: var(--muted);
   font-size: 0.9rem;
-  opacity: 0.92;
+}
+.ls-continue-meta {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-top: 6px;
+  flex-wrap: wrap;
+}
+.ls-continue-meta span {
+  font-size: 0.76rem;
+  font-weight: 700;
+  color: var(--muted);
+  background: var(--bg-alt);
+  border: 1px solid var(--border);
+  padding: 3px 10px;
+  border-radius: 99px;
+  white-space: nowrap;
+}
+.ls-continue-meta .ls-continue-xp {
+  color: var(--warning);
+  background: color-mix(in srgb, var(--warning) 10%, transparent);
+  border-color: color-mix(in srgb, var(--warning) 28%, transparent);
 }
 .ls-continue-progress {
   display: flex;
   align-items: center;
-  gap: 14px;
+  gap: 12px;
   flex-grow: 1;
-  max-width: 340px;
-  min-width: 200px;
+  max-width: 300px;
+  min-width: 180px;
 }
 .ls-continue-bar {
   flex: 1;
-  height: 10px;
+  height: 9px;
   border-radius: 99px;
-  background: rgba(255, 255, 255, 0.25);
+  background: var(--bg-alt);
+  border: 1px solid var(--border);
   overflow: hidden;
 }
 .ls-continue-bar span {
   display: block;
   height: 100%;
   border-radius: 99px;
-  background: #fff;
+  background: linear-gradient(90deg, var(--primary), var(--secondary));
   transition: width 0.8s var(--bounce);
 }
 .ls-continue-pct {
@@ -98,20 +150,36 @@
   font-size: 0.95rem;
   white-space: nowrap;
 }
+/* Yakunlangan holat — nishonlash kartasi */
+.ls-continue.ls-continue-done {
+  border-color: color-mix(in srgb, var(--success) 32%, var(--border));
+}
+.ls-continue.ls-continue-done .ls-continue-icon {
+  background: color-mix(in srgb, var(--success) 12%, transparent);
+  border-color: color-mix(in srgb, var(--success) 28%, transparent);
+}
+.ls-continue.ls-continue-done .ls-continue-text h3 {
+  color: var(--success);
+}
+/* Global smart CTA — pill, gradient (learning app style) */
 .btn.ls-btn-continue {
-  background: #fff;
-  color: var(--primary);
+  background: linear-gradient(135deg, var(--primary), color-mix(in srgb, var(--secondary) 45%, var(--primary)));
+  color: #fff;
   font-weight: 700;
   border: none;
   white-space: nowrap;
-  transition: transform 0.25s var(--bounce), box-shadow 0.25s ease;
+  min-height: 42px;
+  padding: 10px 22px;
+  border-radius: 99px;
+  transition: transform 0.25s var(--bounce), box-shadow 0.25s ease, background 0.2s;
 }
 .btn.ls-btn-continue:hover {
-  transform: translateY(-2px) scale(1.03);
-  box-shadow: 0 14px 30px rgba(0, 0, 0, 0.3), 0 0 22px rgba(255, 255, 255, 0.25);
+  background: var(--primary-hover);
+  transform: translateY(-2px);
+  box-shadow: 0 12px 26px color-mix(in srgb, var(--primary) 30%, transparent);
 }
 .btn.ls-btn-continue:active {
-  transform: translateY(0) scale(0.96);
+  transform: translateY(0) scale(0.97);
 }
 .ls-btn-arrow {
   display: inline-block;
@@ -121,96 +189,94 @@
   transform: translateX(5px);
 }
 .ls-course-head-actions .btn:hover .ls-btn-arrow,
-.ls-course-card .btn:hover .ls-btn-arrow,
 .ls-course-card:hover .ls-btn-arrow {
-  transform: translateX(4px);
+  transform: translateX(400px);
 }
 
-/* ---------- KURSLAR GRIDI ---------- */
+/* ---------- KURSLAR — ixcham stacked learning list ---------- */
+/* Katta 4-column grid YO'Q: kartalar bir-birining ostida, gorizontal va yumaloq */
 .ls-courses-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(290px, 1fr));
-  gap: 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  max-width: 880px;
 }
 .ls-course-card {
   position: relative;
   display: flex;
-  flex-direction: column;
-  gap: 14px;
-  padding: 22px;
-  border-radius: var(--radius);
+  align-items: center;
+  gap: 16px;
+  padding: 14px 18px;
+  border-radius: 26px;
   background: var(--card);
   border: 1px solid var(--border);
   cursor: pointer;
   transition: transform 0.25s var(--bounce), box-shadow 0.25s var(--bounce), border-color 0.25s;
   animation: lsFadeUp 0.5s var(--bounce) both;
   overflow: hidden;
+  min-width: 0;
 }
 .ls-course-card:hover {
-  transform: translateY(-4px);
+  transform: translateY(-3px);
   border-color: var(--border-focus);
-  box-shadow: var(--shadow);
+  box-shadow: var(--shadow-soft);
 }
-.ls-course-card::before {
-  content: '';
-  position: absolute;
-  inset: 0 0 auto 0;
-  height: 3px;
-  background: linear-gradient(90deg, var(--ls-color, var(--primary)), transparent);
-  opacity: 0.9;
-}
-.ls-course-top {
-  display: flex;
-  align-items: flex-start;
-  justify-content: space-between;
-  gap: 10px;
+.ls-course-card:active {
+  transform: translateY(-1px) scale(0.995);
 }
 .ls-course-icon {
-  width: 54px;
-  height: 54px;
-  border-radius: 14px;
-  font-size: 1.65rem;
+  width: 50px;
+  height: 50px;
+  border-radius: 16px;
+  font-size: 1.5rem;
   display: flex;
   align-items: center;
   justify-content: center;
   background: color-mix(in srgb, var(--ls-color, var(--primary)) 14%, transparent);
-  border: 1px solid color-mix(in srgb, var(--ls-color, var(--primary)) 30%, transparent);
+  border: 1px solid color-mix(in srgb, var(--ls-color, var(--primary)) 26%, transparent);
+  flex-shrink: 0;
 }
-.ls-course-done-badge {
-  font-size: 0.78rem;
-  font-weight: 700;
-  color: var(--success);
-  background: color-mix(in srgb, var(--success) 12%, transparent);
-  border: 1px solid color-mix(in srgb, var(--success) 30%, transparent);
-  padding: 4px 10px;
-  border-radius: 99px;
-  white-space: nowrap;
+.ls-course-id {
+  flex: 1;
+  min-width: 0;
 }
-.ls-course-card h4 {
-  font-size: 1.18rem;
+.ls-course-id h4 {
+  font-size: 1.12rem;
   font-weight: 800;
+  line-height: 1.25;
+  letter-spacing: -0.01em;
 }
-.ls-course-card > p {
+.ls-course-tagline {
   color: var(--muted);
-  font-size: 0.9rem;
-  line-height: 1.5;
-  flex-grow: 1;
+  font-size: 0.84rem;
+  line-height: 1.4;
+  margin-top: 2px;
+  display: -webkit-box;
+  -webkit-line-clamp: 1;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
 }
 .ls-course-meta {
   display: flex;
   align-items: center;
-  gap: 12px;
-  font-size: 0.85rem;
+  gap: 10px;
+  margin-top: 6px;
+  flex-wrap: wrap;
+  font-size: 0.78rem;
+  font-weight: 600;
   color: var(--muted);
 }
-.ls-course-meta strong {
-  color: var(--text);
-}
-.ls-course-progress-row {
+/* O'ng tomon: faqat holat doirasi (✓ yoki mini progress ring + %).
+   Alohida tugma YO'Q — butun karta clickable, status pill faqat holat. */
+.ls-course-side {
   display: flex;
-  align-items: center;
-  gap: 12px;
+  flex-direction: column;
+  align-items: flex-end;
+  justify-content: center;
+  gap: 6px;
+  flex-shrink: 0;
 }
+/* ---------- KURS SAHIFASI (darslar ro'yxati) — progress bar (saqlangan) ---------- */
 .ls-progress-track {
   flex: 1;
   height: 8px;
@@ -1628,6 +1694,21 @@
   }
 }
 
+/* Testlar bilan mos premium kurs kartalari — faqat Darslar overview sahifasi. */
+#page-lessons.active { max-width:1120px; margin:0 auto; padding:18px 16px 32px; }
+#page-lessons .ls-section-head { margin:0 0 18px; padding:20px; border:1px solid color-mix(in srgb,var(--primary) 28%,var(--border)); border-radius:20px; background:linear-gradient(135deg,color-mix(in srgb,var(--primary) 16%,var(--card)),var(--card)); }
+#page-lessons .ls-section-head h3 { margin:0 0 4px; color:var(--text); } #page-lessons .ls-section-head p { margin:0; color:var(--muted); }
+#page-lessons .ls-topics-head { margin:22px 0 12px; color:var(--text); }
+#page-lessons .ls-courses-grid { display:grid; grid-template-columns:repeat(1,minmax(0,1fr)); gap:16px; align-items:start; }
+#page-lessons .ls-course-card { display:grid; grid-template-columns:1fr auto; grid-template-areas:"icon side" "body side" "meta meta" "progress progress" "action action"; gap:10px; min-width:0; height:252px; box-sizing:border-box; padding:18px; border-radius:24px; color:var(--text); background:radial-gradient(110% 100% at 100% 0%,color-mix(in srgb,var(--ls-color,var(--primary)) 20%,transparent),transparent 58%),var(--card); border:1px solid color-mix(in srgb,var(--ls-color,var(--primary)) 28%,var(--border)); box-shadow:var(--shadow-soft); cursor:pointer; overflow:hidden; transition:transform .2s ease,box-shadow .2s ease,border-color .2s ease; }
+#page-lessons .ls-course-card:hover { transform:translateY(-3px); border-color:var(--ls-color,var(--primary)); box-shadow:0 14px 28px color-mix(in srgb,var(--ls-color,var(--primary)) 17%,transparent); } #page-lessons .ls-course-card:active { transform:translateY(-1px) scale(.985); }
+#page-lessons .ls-course-icon { grid-area:icon; width:54px; height:54px; margin:0; border-radius:17px; background:color-mix(in srgb,var(--ls-color,var(--primary)) 18%,var(--card)); border:1px solid color-mix(in srgb,var(--ls-color,var(--primary)) 45%,transparent); font-size:1.7rem; }
+#page-lessons .ls-course-id { grid-area:body; min-width:0; } #page-lessons .ls-course-id h4 { margin:0 0 4px; color:var(--text); font-size:1.08rem; font-weight:800; } #page-lessons .ls-course-tagline { margin:0; color:var(--muted); font-size:.85rem; line-height:1.4; -webkit-line-clamp:2; }
+#page-lessons .ls-course-side { grid-area:side; align-self:start; } #page-lessons .ls-course-meta { grid-area:meta; display:flex; align-items:center; gap:8px; margin:0; color:var(--muted); font-size:.78rem; }
+#page-lessons .ls-course-progress { grid-area:progress; display:flex; align-items:center; gap:10px; } #page-lessons .ls-course-progress-track { flex:1; height:6px; overflow:hidden; border-radius:999px; background:color-mix(in srgb,var(--muted) 18%,transparent); } #page-lessons .ls-course-progress-track span { display:block; height:100%; border-radius:inherit; background:var(--ls-color,var(--primary)); transition:width .7s cubic-bezier(.22,1,.36,1); } #page-lessons .ls-course-progress b { min-width:31px; color:var(--muted); font-size:.75rem; text-align:right; }
+#page-lessons .ls-course-action { grid-area:action; width:100%; min-height:40px; border:1px solid color-mix(in srgb,var(--ls-color,var(--primary)) 60%,transparent); border-radius:12px; background:color-mix(in srgb,var(--ls-color,var(--primary)) 14%,transparent); color:var(--text); font:700 .86rem inherit; pointer-events:none; } #page-lessons .ls-course-action span { margin-left:6px; font-size:1.05rem; }
+@media (min-width:620px){#page-lessons .ls-courses-grid{grid-template-columns:repeat(2,minmax(0,1fr))}} @media (min-width:1180px){#page-lessons .ls-courses-grid{grid-template-columns:repeat(3,minmax(0,1fr))}} @media (max-width:380px){#page-lessons.active{padding:12px}#page-lessons .ls-course-card{height:242px;padding:15px;border-radius:20px}#page-lessons .ls-course-icon{width:48px;height:48px}}
+
 /* ---------- MOBIL (320px–430px): overflow yo'q, matn kesilmasin ---------- */
 @media (max-width: 480px) {
   .ls-viewer-body {
@@ -1734,11 +1815,13 @@
 }
 /* Grid va kartalar hech qachon containerdan tashqariga chiqmaydi */
 .ls-courses-grid,
-.ls-lessons-grid {
+.ls-lessons-grid,
+.ls-cpath {
   max-width: 100%;
 }
 .ls-courses-grid > *,
-.ls-lessons-grid > * {
+.ls-lessons-grid > *,
+.ls-cpath > * {
   min-width: 0;
   max-width: 100%;
 }
@@ -2586,3 +2669,1041 @@
   .ls-wiz-row { flex-direction: row; }
   .ls-wiz-group { flex: 1; }
 }
+
+/* ==========================================================
+   DARSLAR OVERVIEW — REDESIGN (Umumiy progress + Mavzular)
+   Faqat #page-lessons (Darslar bosh sahifasi) ko'rinishi.
+   Faqat mavjud global o'zgaruvchilar ishlatiladi.
+   ========================================================== */
+
+/* ---------- HEADER (qisqa va toza) ---------- */
+.ls-section-head h3 {
+  font-size: 1.5rem;
+  font-weight: 800;
+  letter-spacing: -0.02em;
+  margin-bottom: 6px;
+}
+.ls-section-head p {
+  font-size: 0.95rem;
+  max-width: 640px;
+  line-height: 1.5;
+}
+
+/* ---------- MAVZULAR SARLAVHASI ---------- */
+.ls-topics-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  font-size: 1.08rem;
+  font-weight: 800;
+  margin: 4px 0 16px;
+}
+.ls-topics-count {
+  font-size: 0.82rem;
+  font-weight: 600;
+  color: var(--muted);
+}
+
+/* ---------- UMUMIY PROGRESS KARTASI (gradient — learning app style) ---------- */
+.ls-overall {
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: 22px;
+  flex-wrap: wrap;
+  padding: 22px 26px;
+  border-radius: 28px;
+  background: linear-gradient(135deg, var(--primary), color-mix(in srgb, var(--secondary) 58%, var(--primary)));
+  color: #fff;
+  border: 1px solid color-mix(in srgb, var(--primary) 45%, transparent);
+  margin: 0 0 18px;
+  box-shadow: 0 16px 40px color-mix(in srgb, var(--primary) 24%, transparent);
+  animation: lsFadeUp 0.45s var(--bounce) both;
+  overflow: hidden;
+  max-width: 100%;
+}
+.ls-overall-info {
+  flex: 1;
+  min-width: 200px;
+  position: relative;
+  z-index: 1;
+}
+.ls-overall-label {
+  display: inline-block;
+  font-size: 0.75rem;
+  font-weight: 700;
+  letter-spacing: 0.07em;
+  text-transform: uppercase;
+  color: rgba(255, 255, 255, 0.78);
+  margin-bottom: 4px;
+}
+.ls-overall-pct {
+  font-size: 2.4rem;
+  font-weight: 800;
+  line-height: 1.05;
+  color: #fff;
+  letter-spacing: -0.02em;
+}
+.ls-overall-pct small {
+  font-size: 0.5em;
+  margin-left: 2px;
+  font-weight: 700;
+}
+.ls-overall-stats {
+  color: rgba(255, 255, 255, 0.82);
+  font-size: 0.86rem;
+  margin-top: 4px;
+}
+.ls-overall-stats strong {
+  color: #fff;
+}
+.ls-overall-motive {
+  margin-top: 6px;
+  font-size: 0.86rem;
+  font-weight: 600;
+  color: rgba(255, 255, 255, 0.92);
+}
+/* Circular progress ring — markazda % */
+.ls-overall-ring-wrap {
+  position: relative;
+  width: 104px;
+  height: 104px;
+  flex-shrink: 0;
+  z-index: 1;
+}
+.ls-overall-ring {
+  width: 100%;
+  height: 100%;
+  transform: rotate(-90deg);
+  display: block;
+}
+.ls-ring-bg {
+  fill: none;
+  stroke: rgba(255, 255, 255, 0.25);
+  stroke-width: 8;
+}
+.ls-ring-fill {
+  fill: none;
+  stroke: #fff;
+  stroke-width: 8;
+  stroke-linecap: round;
+  transition: stroke-dashoffset 1s var(--bounce);
+}
+.ls-ring-pct {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.1rem;
+  font-weight: 800;
+  color: #fff;
+}
+.ls-ring-pct small {
+  font-size: 0.68em;
+  margin-left: 1px;
+  font-weight: 700;
+  color: rgba(255, 255, 255, 0.8);
+}
+.ls-overall-robot {
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  z-index: 1;
+}
+.ls-overall-robot .mascot {
+  --mascot-size: 64px;
+}
+
+
+
+/* ---------- KARTA HOLAT DOIRASI: ✓ tugallangan | mini progress ring + % ---------- */
+.ls-course-state {
+  position: relative;
+  width: 46px;
+  height: 46px;
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.ls-course-state svg {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  transform: rotate(-90deg);
+}
+.ls-state-ring-bg {
+  fill: none;
+  stroke: color-mix(in srgb, var(--ls-color, var(--primary)) 16%, transparent);
+  stroke-width: 4.5;
+}
+.ls-state-ring-fill {
+  fill: none;
+  stroke: var(--ls-color, var(--primary));
+  stroke-width: 4.5;
+  stroke-linecap: round;
+  transition: stroke-dashoffset 0.9s var(--bounce);
+}
+.ls-state-ring-pct {
+  position: relative;
+  font-size: 0.64rem;
+  font-weight: 800;
+  color: var(--text);
+}
+.ls-state-idle .ls-state-ring-pct {
+  color: var(--muted);
+}
+.ls-state-done {
+  border-radius: 50%;
+  background: var(--success);
+  color: #fff;
+  font-size: 1.25rem;
+  font-weight: 800;
+  box-shadow: 0 4px 14px color-mix(in srgb, var(--success) 35%, transparent);
+  animation: lsStatePop 0.4s var(--bounce) both;
+}
+@keyframes lsStatePop {
+  from { transform: scale(0.6); opacity: 0; }
+  to { transform: scale(1); opacity: 1; }
+}
+
+/* ---------- STATUS BADGE (pill) ---------- */
+.ls-status {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  font-size: 0.72rem;
+  font-weight: 700;
+  padding: 3px 9px;
+  border-radius: 99px;
+  border: 1px solid transparent;
+  white-space: nowrap;
+}
+.ls-status-done {
+  color: var(--success);
+  background: color-mix(in srgb, var(--success) 12%, transparent);
+  border-color: color-mix(in srgb, var(--success) 30%, transparent);
+}
+.ls-status-active {
+  color: var(--secondary);
+  background: color-mix(in srgb, var(--secondary) 12%, transparent);
+  border-color: color-mix(in srgb, var(--secondary) 30%, transparent);
+}
+/* Boshlanmagan — neytral status pill (action EMAS) */
+.ls-status-idle {
+  color: var(--muted);
+  background: color-mix(in srgb, var(--muted) 10%, transparent);
+  border-color: color-mix(in srgb, var(--muted) 24%, transparent);
+}
+.ls-course-finished {
+  border-color: color-mix(in srgb, var(--success) 32%, transparent);
+}
+
+/* ---------- RESPONSIVE ---------- */
+/* Tablet: 768–1024 — ixchamroq progress kartasi */
+@media (max-width: 1024px) {
+  .ls-overall {
+    padding: 20px 22px;
+    gap: 18px;
+  }
+  .ls-overall-ring-wrap {
+    width: 92px;
+    height: 92px;
+  }
+  .ls-overall-pct {
+    font-size: 2rem;
+  }
+}
+/* Kichik ekranlar — 320–640: karta gorizontal qoladi, ixcham va yumaloq */
+@media (max-width: 640px) {
+  .ls-section-head {
+    margin-bottom: 16px;
+  }
+  .ls-section-head h3 {
+    font-size: 1.35rem;
+  }
+  .ls-overall {
+    padding: 18px 16px;
+    gap: 14px;
+    margin-bottom: 14px;
+    border-radius: 24px;
+  }
+  .ls-overall-ring-wrap {
+    width: 80px;
+    height: 80px;
+  }
+  .ls-overall-pct {
+    font-size: 1.75rem;
+  }
+  .ls-overall-info {
+    min-width: 0;
+    flex-basis: calc(100% - 94px);
+  }
+  .ls-overall-robot {
+    display: none; /* mobil ekranlarda toza ko'rinish */
+  }
+  /* Joriy dars kartasi — vertikal, tugma to'liq kenglik (mobile app ko'rinishi) */
+  .ls-continue {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 14px;
+  }
+  .ls-continue-progress {
+    max-width: none;
+    min-width: 0;
+  }
+  .ls-continue .ls-btn-continue,
+  .ls-continue .btn.ls-btn-continue {
+    width: 100%;
+    justify-content: center;
+  }
+  .ls-continue-head {
+    margin-bottom: 8px;
+  }
+  .ls-topics-head {
+    margin: 0 0 12px;
+    font-size: 1rem;
+  }
+  /* Compact learning card — mobil */
+  .ls-course-card {
+    gap: 12px;
+    padding: 12px 14px;
+    border-radius: 22px;
+  }
+  .ls-course-icon {
+    width: 44px;
+    height: 44px;
+    font-size: 1.3rem;
+    border-radius: 14px;
+  }
+  .ls-course-id h4 {
+    font-size: 1.02rem;
+  }
+  .ls-course-tagline {
+    font-size: 0.8rem;
+  }
+  .ls-course-side {
+    gap: 4px;
+  }
+  .ls-course-state {
+    width: 42px;
+    height: 42px;
+  }
+}
+
+/* Juda tor ekranlar (320–360) — tagline 2 qatorga o'tishi mumkin */
+@media (max-width: 360px) {
+  .ls-course-tagline {
+    -webkit-line-clamp: 2;
+  }
+}
+
+/* ---------- REDUCED MOTION ---------- */
+@media (prefers-reduced-motion: reduce) {
+  .ls-overall,
+  .ls-topics-head,
+  .ls-state-done {
+    animation: none;
+  }
+  .ls-ring-fill,
+  .ls-state-ring-fill {
+    transition: none !important;
+  }
+  .ls-btn-continue {
+    transition: none;
+  }
+}
+
+/* ==========================================================
+   COURSE PATH — SNAKE / WINDING LEARNING ROAD (0'dan qurildi)
+   ==========================================================
+   Eski vertical timeline (.ls-path) va eski journey (.ls-journey)
+   BUTUNLAY o'chirildi — hech qanday qoldiq yo'q.
+   Architecture:
+     .ls-cpath (CoursePath)
+       ├─ .ls-cpath-bg     (PathBackground — dekor, pointer-events:none)
+       ├─ .ls-cpath-road   (SvgLearningRoad — base + progress Bézier)
+       └─ .ls-crow × N     (LessonNode + LessonCard, deterministik zigzag)
+   ========================================================== */
+.ls-cpath {
+  --road-w: 5px;
+  position: relative;
+  margin: 18px 0 8px;
+  padding: 28px 10px 36px;
+  border-radius: 32px;
+  background:
+    radial-gradient(1100px 480px at 12% 0%, color-mix(in srgb, var(--primary) 8%, transparent), transparent 62%),
+    radial-gradient(900px 420px at 88% 100%, color-mix(in srgb, var(--secondary) 8%, transparent), transparent 62%),
+    var(--card);
+  border: 1px solid var(--border);
+  box-shadow: var(--shadow-soft);
+  overflow-x: clip;
+  animation: lsFadeUp 0.45s var(--bounce) both;
+}
+.ls-cpath,
+.ls-cpath > * {
+  max-width: 100%;
+  min-width: 0;
+}
+
+/* ---------- PATH BACKGROUND (dekorativ, pointer-events: none) ---------- */
+.ls-cpath-bg {
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  overflow: hidden;
+  pointer-events: none;
+  z-index: 0;
+}
+.ls-cpath-blob {
+  position: absolute;
+  border-radius: 50%;
+  filter: blur(46px);
+  opacity: 0.55;
+}
+.ls-cpath-blob--a {
+  width: 320px; height: 320px;
+  left: -100px; top: -90px;
+  background: color-mix(in srgb, var(--primary) 13%, transparent);
+}
+.ls-cpath-blob--b {
+  width: 360px; height: 360px;
+  right: -120px; bottom: -130px;
+  background: color-mix(in srgb, var(--secondary) 12%, transparent);
+}
+.ls-cpath-dots {
+  position: absolute;
+  inset: 0;
+  background-image: radial-gradient(color-mix(in srgb, var(--text) 10%, transparent) 1px, transparent 1.4px);
+  background-size: 26px 26px;
+  opacity: 0.32;
+  -webkit-mask-image: linear-gradient(180deg, transparent, #000 10%, #000 90%, transparent);
+          mask-image: linear-gradient(180deg, transparent, #000 10%, #000 90%, transparent);
+}
+.ls-cpath-chip {
+  position: absolute;
+  font-family: ui-monospace, 'Cascadia Code', Consolas, monospace;
+  font-size: 0.72rem;
+  font-weight: 700;
+  color: color-mix(in srgb, var(--primary) 60%, var(--text));
+  background: color-mix(in srgb, var(--primary) 8%, transparent);
+  border: 1px solid color-mix(in srgb, var(--primary) 18%, transparent);
+  border-radius: 10px;
+  padding: 4px 9px;
+  opacity: 0.8;
+}
+.ls-cpath-chip--html { top: 26px; right: 5%; transform: rotate(6deg); }
+.ls-cpath-chip--css { top: 44%; left: 3%; transform: rotate(-5deg); }
+.ls-cpath-chip--js { bottom: 11%; right: 4%; transform: rotate(4deg); }
+.ls-cpath-decor {
+  position: absolute;
+  font-size: 1.5rem;
+  opacity: 0.45;
+  filter: saturate(0.9);
+}
+.ls-cpath-decor--laptop { bottom: 16px; left: 3.5%; transform: rotate(-8deg); }
+
+/* ---------- SVG LEARNING ROAD ---------- */
+.ls-cpath-road {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 1;
+  pointer-events: none;
+  overflow: visible;
+}
+.ls-croad-base,
+.ls-croad-progress {
+  fill: none;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+.ls-croad-base {
+  stroke: color-mix(in srgb, var(--muted) 32%, transparent);
+  stroke-width: var(--road-w);
+}
+.ls-croad-progress {
+  stroke: url(#lsRoadGrad);
+  stroke-width: calc(var(--road-w) + 1px);
+}
+
+/* ---------- ROW (node + karta, deterministik zigzag) ---------- */
+.ls-crow {
+  position: relative;
+  z-index: 2;
+  display: grid;
+  grid-template-columns: minmax(0, var(--l, 1fr)) 76px minmax(0, var(--r, 1fr));
+  align-items: center;
+  padding: 22px 0;
+  animation: lsFadeUp 0.45s var(--bounce) both;
+}
+
+/* ---------- LESSON NODE (circular) ---------- */
+.ls-cnode {
+  --node-size: 64px;
+  grid-row: 1;
+  grid-column: 2;
+  justify-self: center;
+  width: var(--node-size);
+  height: var(--node-size);
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  font-family: inherit;
+  background: var(--card);
+  border: 2px solid var(--border-focus);
+  box-shadow: var(--shadow-soft);
+  transition: transform 0.18s var(--bounce), box-shadow 0.18s ease, border-color 0.18s ease, background 0.18s ease;
+  -webkit-tap-highlight-color: transparent;
+}
+.ls-cnode:hover {
+  transform: translateY(-3px) scale(1.05);
+  box-shadow: var(--glow);
+}
+.ls-cnode:active { transform: scale(0.94); }
+.ls-cnode:focus-visible {
+  outline: 2px solid var(--primary);
+  outline-offset: 3px;
+}
+.ls-cnode-face {
+  font-size: 1.15rem;
+  font-weight: 800;
+  line-height: 1;
+  color: var(--primary);
+}
+
+/* HOLAT: ochiq (boshlanmagan) */
+.ls-cnode--open {
+  background: var(--bg-alt);
+  border-color: var(--border);
+}
+.ls-cnode--open .ls-cnode-face { color: var(--muted); }
+
+/* HOLAT: tugallangan — yashil ✓ */
+.ls-cnode--done {
+  background: color-mix(in srgb, var(--success) 16%, var(--card));
+  border-color: color-mix(in srgb, var(--success) 45%, transparent);
+}
+.ls-cnode--done .ls-cnode-face { color: var(--success); }
+
+/* HOLAT: qulflangan — kulrang 🔒 */
+.ls-cnode--locked {
+  background: var(--bg-alt);
+  border-color: var(--border);
+  cursor: not-allowed;
+  opacity: 0.8;
+}
+.ls-cnode--locked .ls-cnode-face {
+  font-size: 0.95rem;
+  color: var(--muted);
+}
+
+/* HOLAT: joriy — blue/purple glow + pulse */
+.ls-cnode--current {
+  --node-size: 72px;
+  background: linear-gradient(135deg, var(--primary), color-mix(in srgb, var(--primary) 55%, var(--secondary)));
+  border-color: transparent;
+  box-shadow: 0 8px 24px color-mix(in srgb, var(--primary) 35%, transparent);
+  animation: lsCNodePulse 2.4s ease-in-out infinite;
+}
+.ls-cnode--current .ls-cnode-face {
+  color: #fff;
+  font-size: 1.3rem;
+}
+@keyframes lsCNodePulse {
+  0%, 100% {
+    box-shadow: 0 0 0 0 color-mix(in srgb, var(--primary) 35%, transparent),
+                0 8px 24px color-mix(in srgb, var(--primary) 30%, transparent);
+  }
+  50% {
+    box-shadow: 0 0 0 12px color-mix(in srgb, var(--primary) 0%, transparent),
+                0 8px 24px color-mix(in srgb, var(--primary) 30%, transparent);
+  }
+}
+
+/* Qulflangan element shake */
+.ls-cnode.ls-shake,
+.ls-ccard.ls-shake {
+  animation: lsShakeCard 0.45s ease;
+}
+
+/* ---------- LESSON CARD (node yonida, chap-o'ng almashinadi) ---------- */
+.ls-ccard {
+  grid-row: 1;
+  grid-column: var(--card-col, 3);
+  justify-self: var(--card-just, start);
+  width: min(380px, 100%);
+  max-width: 100%;
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: 22px;
+  padding: 14px 18px 15px;
+  box-shadow: var(--shadow-soft);
+  cursor: pointer;
+  transition: transform 0.18s var(--bounce), box-shadow 0.18s ease, border-color 0.18s ease;
+  -webkit-tap-highlight-color: transparent;
+}
+.ls-ccard:hover {
+  transform: translateY(-3px);
+  border-color: var(--border-focus);
+  box-shadow: var(--glow);
+}
+.ls-ccard:focus-visible {
+  outline: 2px solid var(--primary);
+  outline-offset: 3px;
+}
+.ls-ccard-top {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  margin-bottom: 6px;
+}
+.ls-ccard-num {
+  font-size: 0.72rem;
+  font-weight: 800;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: var(--muted);
+  white-space: nowrap;
+}
+.ls-ccard-status {
+  font-size: 0.68rem;
+  font-weight: 700;
+  padding: 3px 10px;
+  border-radius: 999px;
+  white-space: nowrap;
+}
+.ls-ccard-status--current {
+  color: var(--primary);
+  background: color-mix(in srgb, var(--primary) 12%, transparent);
+}
+.ls-ccard-status--done {
+  color: var(--success);
+  background: color-mix(in srgb, var(--success) 12%, transparent);
+}
+.ls-ccard-status--locked {
+  color: var(--muted);
+  background: var(--bg-alt);
+}
+.ls-ccard-status--open {
+  color: var(--secondary);
+  background: color-mix(in srgb, var(--secondary) 12%, transparent);
+}
+.ls-ccard-title {
+  margin: 0 0 4px;
+  font-size: 1rem;
+  font-weight: 800;
+  color: var(--text);
+  line-height: 1.3;
+  overflow-wrap: break-word;
+  word-break: normal;
+}
+.ls-ccard-desc {
+  margin: 0 0 8px;
+  font-size: 0.8rem;
+  color: var(--muted);
+  line-height: 1.45;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+.ls-ccard-meta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px 14px;
+  font-size: 0.74rem;
+  font-weight: 600;
+  color: var(--muted);
+}
+.ls-ccard-action {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  margin-top: 10px;
+  font-size: 0.8rem;
+  font-weight: 800;
+  color: var(--primary);
+}
+.ls-ccard-action b { transition: transform 0.18s ease; }
+.ls-ccard:hover .ls-ccard-action b { transform: translateX(3px); }
+.ls-ccard-action--done { color: var(--success); }
+
+/* Karta holat tirlari */
+.ls-ccard--current {
+  background: linear-gradient(135deg, color-mix(in srgb, var(--primary) 8%, var(--card)), var(--card));
+  border-color: color-mix(in srgb, var(--primary) 30%, transparent);
+}
+.ls-ccard--done {
+  background: linear-gradient(135deg, color-mix(in srgb, var(--success) 7%, var(--card)), var(--card));
+  border-color: color-mix(in srgb, var(--success) 25%, transparent);
+}
+.ls-ccard--locked {
+  opacity: 0.72;
+  cursor: not-allowed;
+}
+.ls-ccard--locked:hover {
+  transform: none;
+  box-shadow: var(--shadow-soft);
+  border-color: var(--border);
+}
+
+/* ---------- RESPONSIVE — MOBIL ALOHIDA LAYOUT (320–640) ---------- */
+@media (max-width: 640px) {
+  .ls-cpath {
+    padding: 18px 6px 28px;
+    border-radius: 26px;
+  }
+  .ls-crow {
+    grid-template-columns: minmax(0, var(--lm, 1fr)) 58px minmax(0, var(--rm, 1fr));
+    padding: 16px 0;
+  }
+  .ls-cnode { --node-size: 52px; }
+  .ls-cnode--current { --node-size: 58px; }
+  .ls-ccard {
+    grid-column: 1 / -1;
+    grid-row: 2;
+    justify-self: var(--card-align, start);
+    width: min(288px, 100%);
+    margin-top: 10px;
+    padding: 12px 14px 13px;
+  }
+  .ls-ccard-title { font-size: 0.92rem; }
+  .ls-ccard-desc { font-size: 0.76rem; }
+  .ls-ccard-action { margin-top: 8px; font-size: 0.76rem; }
+  .ls-cpath-chip { font-size: 0.64rem; padding: 3px 7px; }
+  .ls-cpath-chip--css { display: none; }
+  .ls-cpath-decor--laptop { font-size: 1.2rem; bottom: 10px; }
+}
+
+/* Juda tor ekranlar (320–360) */
+@media (max-width: 360px) {
+  .ls-ccard { width: min(264px, 100%); }
+  .ls-cpath-chip--js { display: none; }
+  .ls-crow { padding: 13px 0; }
+}
+
+/* Keng desktop — yo'l yanada keng yoyiladi (1280+) */
+@media (min-width: 1280px) {
+  .ls-cpath { padding: 34px 14px 42px; }
+  .ls-ccard { width: min(400px, 100%); }
+}
+
+/* ---------- REDUCED MOTION (course path) ---------- */
+@media (prefers-reduced-motion: reduce) {
+  .ls-crow,
+  .ls-cnode--current {
+    animation: none !important;
+  }
+  .ls-cnode,
+  .ls-ccard {
+    transition: none !important;
+  }
+  .ls-croad-progress {
+    transition: none !important;
+  }
+}
+
+
+/* ==========================================================
+   KURS HERO — REFERENCE COMPOSITION (1:1)
+   1) ← Kursga qaytish topbar
+   2) HERO: icon + title + tagline + "N / M dars" + progress + %
+      | ROBOT + floating code badge'lar | quote kartasi
+   3) "Darslar yo'li" sarlavha + subtitle + toolbar
+   ========================================================== */
+.ls-course-topbar {
+  display: flex;
+  justify-content: flex-start;
+  margin-bottom: 14px;
+  animation: lsFadeUp 0.4s var(--bounce) both;
+}
+.ls-back-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 10px 18px;
+  font-family: inherit;
+  font-weight: 700;
+  font-size: 0.9rem;
+  color: var(--text);
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: 14px;
+  box-shadow: var(--shadow-soft);
+  cursor: pointer;
+  transition: transform 0.2s var(--bounce), border-color 0.2s, box-shadow 0.2s;
+  -webkit-tap-highlight-color: transparent;
+}
+.ls-back-btn:hover {
+  transform: translateY(-2px);
+  border-color: var(--border-focus);
+  box-shadow: var(--shadow);
+}
+.ls-back-btn:active { transform: scale(0.98); }
+.ls-back-btn:focus-visible {
+  outline: 2px solid var(--primary);
+  outline-offset: 2px;
+}
+
+/* ---------- HERO CARD (airy futuristic gradient) ---------- */
+.ls-hero {
+  position: relative;
+  align-items: center;
+  gap: 18px;
+  padding: 28px 30px;
+  border-radius: 32px;
+  background: linear-gradient(120deg, #F5F9FF 0%, #FFFFFF 46%, #EAF2FF 100%);
+  border: 1px solid color-mix(in srgb, var(--primary) 14%, transparent);
+  box-shadow: 0 18px 44px -20px color-mix(in srgb, var(--primary) 26%, transparent);
+}
+.ls-hero-main {
+  display: flex;
+  align-items: center;
+  gap: 18px;
+  flex: 1 1 auto;
+  min-width: 0;
+}
+.ls-hero .ls-course-head-icon {
+  width: 76px;
+  height: 76px;
+  border-radius: 20px;
+  font-size: 2.4rem;
+  background: color-mix(in srgb, var(--ls-color, var(--primary)) 12%, #fff);
+  box-shadow: 0 10px 22px -12px color-mix(in srgb, var(--ls-color, var(--primary)) 55%, transparent);
+}
+.ls-hero .ls-course-head-info h3 {
+  font-size: 1.9rem;
+  letter-spacing: -0.02em;
+}
+.ls-hero .ls-course-head-info > p {
+  margin-bottom: 14px;
+}
+.ls-hero-countrow {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  min-width: 0;
+  animation: lsFadeUp 0.45s var(--bounce) 0.08s both;
+}
+.ls-hero-count {
+  font-size: 0.86rem;
+  font-weight: 600;
+  color: var(--muted);
+  white-space: nowrap;
+}
+.ls-hero-count strong { color: var(--primary); }
+.ls-hero-countrow .ls-progress-track { max-width: 220px; }
+/* HERO-CONT (2-qism) pastda davom etadi */
+.ls-hero-tail-marker { display: none; }
+
+/* ---------- HERO ROBOT + FLOATING BADGES ---------- */
+.ls-hero-robot {
+  position: relative;
+  flex: 0 0 auto;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 10px 26px 16px;
+  animation: lsHeroRobotIn 0.6s var(--bounce) 0.12s both;
+}
+@keyframes lsHeroRobotIn {
+  from { opacity: 0; transform: translateY(10px) scale(0.96); }
+  to { opacity: 1; transform: translateY(0) scale(1); }
+}
+.ls-hero-robot .mascot { --mascot-size: 150px; }
+.ls-hero-badge {
+  position: absolute;
+  z-index: 2;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 800;
+  font-size: 0.78rem;
+  letter-spacing: 0.02em;
+  border-radius: 14px;
+  box-shadow: 0 8px 18px -8px color-mix(in srgb, var(--primary) 40%, transparent);
+  animation: lsBadgeFloat 3.6s ease-in-out infinite;
+  pointer-events: none;
+}
+.ls-hero-badge--code {
+  top: -4px;
+  left: 0;
+  width: 52px;
+  height: 52px;
+  font-size: 1.05rem;
+  color: #fff;
+  background: linear-gradient(135deg, var(--primary), var(--secondary));
+  border-radius: 16px;
+}
+.ls-hero-badge--tag {
+  --badge-rot: 6deg;
+  top: 0;
+  right: 0;
+  padding: 5px 10px;
+  color: var(--primary);
+  background: #fff;
+  border: 1px solid var(--border);
+  border-radius: 9px;
+  transform: rotate(6deg);
+  animation-delay: 0.9s;
+}
+@keyframes lsBadgeFloat {
+  0%, 100% { transform: translateY(0) rotate(var(--badge-rot, 0deg)); }
+  50% { transform: translateY(-6px) rotate(var(--badge-rot, 0deg)); }
+}
+
+/* ---------- HERO QUOTE CARD ---------- */
+.ls-hero-quote {
+  position: relative;
+  flex: 0 1 250px;
+  min-width: 0;
+  padding: 18px 52px 18px 20px;
+  font-size: 0.92rem;
+  font-weight: 600;
+  line-height: 1.55;
+  color: var(--text);
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: 18px;
+  box-shadow: var(--shadow-soft);
+  animation: lsFadeUp 0.45s var(--bounce) 0.16s both;
+}
+.ls-hero-quote p { margin: 0; }
+.ls-hero-quote-ico {
+  position: absolute;
+  right: 16px;
+  top: 50%;
+  transform: translateY(-50%);
+  font-size: 1.45rem;
+}
+
+/* ---------- "DARSLAR YO'LI" SARLAVHA + TOOLBAR ---------- */
+.ls-road-head {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 16px;
+  flex-wrap: wrap;
+  margin: 26px 2px 4px;
+  animation: lsFadeUp 0.4s var(--bounce) both;
+}
+.ls-road-title {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  min-width: 0;
+}
+.ls-road-ico { font-size: 1.45rem; line-height: 1.3; }
+.ls-road-title h3 {
+  margin: 0 0 4px;
+  font-size: 1.25rem;
+  font-weight: 800;
+}
+.ls-road-title p {
+  margin: 0;
+  font-size: 0.9rem;
+  color: var(--muted);
+}
+.ls-road-actions {
+  flex-direction: row;
+  align-items: center;
+  flex-wrap: wrap;
+}
+
+/* ---------- RESPONSIVE (hero) ---------- */
+@media (max-width: 1100px) {
+  .ls-hero { flex-wrap: wrap; }
+  .ls-hero-robot .mascot { --mascot-size: 120px; }
+  .ls-hero-quote { flex: 1 1 220px; }
+}
+@media (max-width: 767px) {
+  .ls-course-topbar { margin-bottom: 10px; }
+  .ls-back-btn { padding: 8px 14px; font-size: 0.84rem; border-radius: 12px; }
+  .ls-hero {
+    padding: 18px 16px;
+    border-radius: 22px;
+    gap: 10px;
+  }
+  .ls-hero-main { gap: 12px; }
+  .ls-hero .ls-course-head-icon {
+    width: 54px;
+    height: 54px;
+    border-radius: 15px;
+    font-size: 1.7rem;
+  }
+  .ls-hero .ls-course-head-info h3 { font-size: 1.35rem; }
+  .ls-hero .ls-course-head-info > p { font-size: 0.86rem; margin-bottom: 10px; }
+  .ls-hero-countrow { flex-wrap: wrap; row-gap: 6px; }
+  .ls-hero-countrow .ls-progress-track { max-width: none; flex: 1 1 120px; }
+  .ls-hero-robot { width: 100%; padding: 6px 0 8px; }
+  .ls-hero-robot .mascot { --mascot-size: 96px; }
+  .ls-hero-badge--code { width: 40px; height: 40px; font-size: 0.85rem; top: -6px; }
+  .ls-hero-badge--tag { font-size: 0.7rem; padding: 4px 8px; }
+  .ls-hero-quote { padding: 14px 46px 14px 16px; font-size: 0.86rem; border-radius: 15px; }
+  .ls-road-head { margin-top: 18px; gap: 10px; }
+  .ls-road-title h3 { font-size: 1.1rem; }
+  .ls-road-title p { font-size: 0.84rem; }
+}
+@media (max-width: 360px) {
+  .ls-hero { padding: 16px 13px; }
+  .ls-hero-robot .mascot { --mascot-size: 84px; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .ls-course-topbar,
+  .ls-hero,
+  .ls-hero-quote,
+  .ls-hero-robot,
+  .ls-road-head,
+  .ls-hero-countrow,
+  .ls-hero-badge {
+    animation: none !important;
+  }
+}
+
+/* Darslar katalogi — Testlar namunasi bilan 1:1 vizual tizim. */
+#page-lessons.active { max-width: 1530px; padding: 20px 34px 38px; }
+#page-lessons .ls-catalog-hero { position:relative; display:flex; align-items:center; min-height:158px; padding:28px 78px; overflow:hidden; border-radius:28px; background:radial-gradient(500px 210px at 80% 100%,rgba(55,75,255,.48),transparent 65%),linear-gradient(110deg,#102f82,#071b4b 62%,#10297a); border:1px solid rgba(68,121,255,.65); box-shadow:0 16px 36px rgba(0,0,0,.2); }
+#page-lessons .ls-catalog-hero::before { content:""; position:absolute; width:300px; height:300px; top:-150px; left:-55px; border-radius:50%; background:rgba(3,16,64,.42); }
+#page-lessons .ls-catalog-hero::after { content:""; position:absolute; right:70px; bottom:-18px; width:220px; height:180px; background:url('mascot/it-robot.png') center bottom/contain no-repeat; filter:drop-shadow(0 10px 14px rgba(0,0,0,.28)); }
+#page-lessons .ls-catalog-hero h3,#page-lessons .ls-catalog-hero p { position:relative; z-index:1; color:#fff; } #page-lessons .ls-catalog-hero h3 { max-width:680px; margin:0 0 8px; font-size:2rem; } #page-lessons .ls-catalog-hero h3::before { content:"</> O'RGANISH MARKAZI"; display:block; margin-bottom:9px; color:#22d3ee; font-size:.74rem; font-weight:800; letter-spacing:.1em; } #page-lessons .ls-catalog-hero p { color:rgba(211,225,255,.78); font-size:1rem; }
+#page-lessons #lsOverallSlot,#page-lessons #lsContinueSlot { display:none; }
+#page-lessons .ls-topics-head { margin:18px 0 14px; color:var(--text); }
+#page-lessons .ls-courses-grid { display:grid; grid-template-columns:repeat(3,minmax(0,1fr)); gap:18px; align-items:start; }
+#page-lessons .ls-course-card { display:grid; grid-template-columns:112px minmax(0,1fr); grid-template-rows:minmax(92px,1fr) 17px 6px 43px; gap:7px 20px; height:214px; padding:18px 26px 16px 18px; border-radius:54px; background:radial-gradient(160px 130px at 99% 98%,color-mix(in srgb,var(--ls-color,var(--primary)) 37%,transparent),transparent 74%),radial-gradient(200px 150px at 0% 0%,color-mix(in srgb,var(--ls-color,var(--primary)) 25%,transparent),transparent 72%),#081c38; border:1px solid color-mix(in srgb,var(--ls-color,var(--primary)) 38%,rgba(148,163,184,.16)); box-shadow:0 12px 24px rgba(0,0,0,.22); }
+#page-lessons .ls-course-card::before { content:""; position:absolute; inset:0; pointer-events:none; border-radius:inherit; background:linear-gradient(132deg,rgba(255,255,255,.06),transparent 39%); }
+#page-lessons .ls-course-icon { grid-row:1 / 3; grid-column:1; align-self:start; width:92px; height:92px; border-radius:32px; color:#fff; background:color-mix(in srgb,var(--ls-color,var(--primary)) 37%,#0b1b37); border-color:color-mix(in srgb,var(--ls-color,var(--primary)) 68%,transparent); font-size:3rem; box-shadow:inset 0 1px 0 rgba(255,255,255,.18),0 10px 20px color-mix(in srgb,var(--ls-color,var(--primary)) 22%,transparent); }
+#page-lessons .ls-course-id { grid-row:1; grid-column:2; align-self:center; } #page-lessons .ls-course-id h4 { color:#f8fbff; font-size:1.12rem; } #page-lessons .ls-course-tagline { color:#a8b9d6; font-size:.88rem; }
+#page-lessons .ls-course-side { display:none; } #page-lessons .ls-course-meta { grid-row:2; grid-column:2; color:#93a8cb; font-size:.79rem; } #page-lessons .ls-status { display:none; }
+#page-lessons .ls-course-progress { grid-row:3; grid-column:2; margin:0; } #page-lessons .ls-course-progress-track { background:rgba(148,163,184,.22); } #page-lessons .ls-course-progress b { color:#aebfe0; }
+#page-lessons .ls-course-action { grid-row:4; grid-column:2; min-height:43px; background:color-mix(in srgb,var(--ls-color,var(--primary)) 19%,transparent); border-color:color-mix(in srgb,var(--ls-color,var(--primary)) 85%,transparent); color:#fff; }
+#page-lessons .ls-course-card:hover { transform:translateY(-3px); filter:brightness(1.08); }
+[data-theme="light"] #page-lessons .ls-catalog-hero { background:radial-gradient(500px 220px at 80% 100%,#b9ceff,transparent 65%),linear-gradient(110deg,#dceaff,#f8fbff 70%); border-color:#bad0ff; box-shadow:0 14px 30px rgba(30,64,175,.11); } [data-theme="light"] #page-lessons .ls-catalog-hero h3 { color:#10204a; } [data-theme="light"] #page-lessons .ls-catalog-hero h3::before { color:#087eb9; } [data-theme="light"] #page-lessons .ls-catalog-hero p { color:#526684; }
+[data-theme="light"] #page-lessons .ls-course-card { background:radial-gradient(170px 130px at 99% 98%,color-mix(in srgb,var(--ls-color,var(--primary)) 15%,transparent),transparent 75%),radial-gradient(180px 150px at 0% 0%,color-mix(in srgb,var(--ls-color,var(--primary)) 12%,transparent),transparent 72%),#fff; border-color:color-mix(in srgb,var(--ls-color,var(--primary)) 28%,#dce4f0); box-shadow:0 8px 18px rgba(15,23,42,.08); } [data-theme="light"] #page-lessons .ls-course-id h4 { color:#17213a; } [data-theme="light"] #page-lessons .ls-course-tagline,[data-theme="light"] #page-lessons .ls-course-meta,[data-theme="light"] #page-lessons .ls-course-progress b { color:#61718b; } [data-theme="light"] #page-lessons .ls-course-action { color:#17213a; }
+@media (max-width:1100px){#page-lessons .ls-courses-grid{grid-template-columns:repeat(2,minmax(0,1fr))}} @media (max-width:680px){#page-lessons.active{padding:13px 12px 28px}#page-lessons .ls-catalog-hero{min-height:126px;padding:20px 18px;border-radius:22px}#page-lessons .ls-catalog-hero::after{right:0;width:110px;height:112px;opacity:.75}#page-lessons .ls-catalog-hero h3{max-width:calc(100% - 80px);font-size:1.25rem}#page-lessons .ls-catalog-hero p{max-width:calc(100% - 70px);font-size:.78rem}#page-lessons .ls-courses-grid{grid-template-columns:1fr;gap:12px}#page-lessons .ls-course-card{height:194px;border-radius:28px;grid-template-columns:74px minmax(0,1fr);padding:15px}#page-lessons .ls-course-icon{width:62px;height:62px;border-radius:21px;font-size:2rem}#page-lessons .ls-course-action{min-height:38px}}
+
+/* Darslar katalogi: avvalgi vertikal ro'yxat ko'rinishiga qaytarildi. */
+#page-lessons.active { max-width:none; margin:0; padding:0; }
+#page-lessons #lsOverallSlot,#page-lessons #lsContinueSlot { display:block; }
+#page-lessons .ls-section-head { margin-bottom:24px; padding:0; border:0; border-radius:0; background:transparent; }
+#page-lessons .ls-section-head h3 { font-size:1.5rem; font-weight:800; letter-spacing:-.02em; margin-bottom:6px; color:var(--text); }
+#page-lessons .ls-section-head p { color:var(--muted); font-size:.95rem; max-width:640px; line-height:1.5; }
+#page-lessons .ls-topics-head { margin:4px 0 16px; }
+#page-lessons .ls-courses-grid { display:flex; grid-template-columns:none; flex-direction:column; gap:12px; width:100%; max-width:none; }
+#page-lessons .ls-course-card { position:relative; display:flex; align-self:stretch; flex:0 0 100%; width:100% !important; max-width:none !important; box-sizing:border-box; align-items:center; gap:18px; height:auto; min-height:104px; padding:18px 24px; border-radius:24px; background:linear-gradient(90deg,color-mix(in srgb,var(--ls-color,var(--primary)) 8%,var(--card)),var(--card) 45%); border:1px solid color-mix(in srgb,var(--ls-color,var(--primary)) 28%,var(--border)); box-shadow:0 5px 14px rgba(15,23,42,.05); color:inherit; overflow:hidden; }
+#page-lessons .ls-course-card::after { content:""; position:absolute; right:-65px; top:50%; width:190px; height:190px; border-radius:50%; transform:translateY(-50%); background:color-mix(in srgb,var(--ls-color,var(--primary)) 9%,transparent); pointer-events:none; }
+#page-lessons .ls-course-card:hover { transform:translateY(-2px); border-color:color-mix(in srgb,var(--ls-color,var(--primary)) 55%,var(--border)); box-shadow:0 11px 22px color-mix(in srgb,var(--ls-color,var(--primary)) 12%,transparent); }
+#page-lessons .ls-course-icon { width:50px; height:50px; border-radius:16px; font-size:1.5rem; background:color-mix(in srgb,var(--ls-color,var(--primary)) 14%,transparent); border:1px solid color-mix(in srgb,var(--ls-color,var(--primary)) 26%,transparent); box-shadow:none; }
+#page-lessons .ls-course-id { position:relative; z-index:1; flex:1; } #page-lessons .ls-course-id h4 { color:var(--text); } #page-lessons .ls-course-tagline { color:var(--muted); }
+#page-lessons .ls-course-side { position:relative; z-index:1; display:flex; margin-right:8px; } #page-lessons .ls-course-meta { display:flex; margin:5px 0 0; } #page-lessons .ls-course-progress,#page-lessons .ls-course-action { display:none; }
+@media (max-width:560px) { #page-lessons .ls-course-card { min-height:92px; padding:15px; gap:13px; } #page-lessons .ls-course-side { margin-right:0; } }
+

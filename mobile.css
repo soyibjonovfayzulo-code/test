@@ -45,6 +45,35 @@
     box-sizing: border-box;
   }
 
+  /* Android input zoom prevention & touch response */
+  input,
+  select,
+  textarea {
+    font-size: 16px !important;
+    touch-action: manipulation;
+  }
+
+  button,
+  a,
+  .btn,
+  .icon-btn,
+  .nav-item,
+  .m-chip,
+  .m-course-card,
+  .m-stat-card,
+  [role="button"] {
+    touch-action: manipulation;
+    -webkit-tap-highlight-color: transparent;
+  }
+
+  button:active,
+  .btn:active,
+  .m-course-card:active,
+  .m-chip:active {
+    transform: scale(0.98);
+    transition: transform 0.1s ease;
+  }
+
   #app,
   .app {
     width: 100% !important;
@@ -70,16 +99,18 @@
     width: 100% !important;
     max-width: 100% !important;
     min-width: 0 !important;
-    padding: 12px 12px 32px !important;
+    padding: 12px 12px calc(32px + env(safe-area-inset-bottom, 0px)) !important;
     margin: 0 !important;
     box-sizing: border-box !important;
   }
 
-  /* ------------------------------------------------------------
+  /* ------------------------------------------------------------ 
      2. STICKY MOBILE TOPBAR (HEADER)
+     Sticky: header oqimda qoladi — .main .page endi header OSTIDAN
+     boshlanadi (fixed edi, content header ostiga yashirinib qolardi).
      ------------------------------------------------------------ */
   .topbar {
-    position: fixed !important;
+    position: sticky !important;
     top: 0 !important;
     z-index: 80 !important;
     display: flex !important;
@@ -93,7 +124,7 @@
     padding: 8px 12px !important;
     padding-top: calc(8px + env(safe-area-inset-top, 0px)) !important;
     margin: 0 !important;
-    background: rgba(11, 15, 30, 0.88) !important;
+    background: var(--itt-topbar-bg, rgba(11, 15, 30, 0.88)) !important;
     backdrop-filter: blur(18px) saturate(180%) !important;
     -webkit-backdrop-filter: blur(18px) saturate(180%) !important;
     border-bottom: 1px solid var(--m-border) !important;
@@ -128,7 +159,7 @@
     width: 18px !important;
     height: 2px !important;
     border-radius: 2px !important;
-    background: #e6e9ff !important;
+    background: var(--itt-text, #e6e9ff) !important;
   }
 
   .topbar-left h2,
@@ -136,7 +167,7 @@
     font-size: 17px !important;
     font-weight: 700 !important;
     letter-spacing: -0.2px !important;
-    color: #f8fafc !important;
+    color: var(--itt-text, #f8fafc) !important;
     white-space: nowrap !important;
     overflow: hidden !important;
     text-overflow: ellipsis !important;
@@ -152,17 +183,18 @@
   }
 
   .topbar .icon-btn {
-    width: 38px !important;
-    height: 38px !important;
-    min-width: 38px !important;
-    flex: 0 0 38px !important;
-    border-radius: 11px !important;
+    width: 44px !important;
+    height: 44px !important;
+    min-width: 44px !important;
+    min-height: 44px !important;
+    flex: 0 0 44px !important;
+    border-radius: 12px !important;
     background: var(--m-glass-2) !important;
     border: 1px solid var(--m-border) !important;
     display: inline-flex !important;
     align-items: center !important;
     justify-content: center !important;
-    font-size: 15px !important;
+    font-size: 16px !important;
     cursor: pointer !important;
   }
 
@@ -1018,6 +1050,16 @@
     gap: 8px !important;
   }
 
+  /* Timer (09:57) yuqori o'ng tomonda ixcham, hech narsani yopmaydi */
+  .test-timer {
+    padding: 6px 14px !important;
+    font-size: 16px !important;
+    flex-shrink: 0 !important;
+    position: static !important;
+  }
+
+  /* Test body: savol + navigator vertikal stack — navigator ODDIY OQIM
+     elementi, hech qachon savol matnini yopmaydi */
   .test-body {
     display: flex !important;
     flex-direction: column !important;
@@ -1028,15 +1070,59 @@
     width: 100% !important;
   }
 
+  /* Mobilda "Savollar" paneli — ixcham karta, savol OSTIDA */
   .navigator-area {
+    position: static !important;
     width: 100% !important;
-    margin-top: 10px !important;
+    max-height: none !important;
+    overflow: visible !important;
+    margin-top: 0 !important;
+    padding: 10px 12px 12px !important;
   }
 
+  .navigator-header {
+    margin-bottom: 8px !important;
+    gap: 4px !important;
+  }
+
+  .navigator-legend {
+    gap: 8px !important;
+    font-size: 10px !important;
+  }
+
+  /* Savol raqamlari: ixcham GORIZONTAL SCROLL qator (1 2 3 4 5 6 ...) */
   .question-nav {
-    display: grid !important;
-    grid-template-columns: repeat(5, 1fr) !important;
-    gap: 6px !important;
+    display: flex !important;
+    flex-wrap: nowrap !important;
+    overflow-x: auto !important;
+    gap: 7px !important;
+    margin-bottom: 10px !important;
+    padding-bottom: 2px !important;
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: none;
+  }
+
+  .question-nav::-webkit-scrollbar {
+    display: none;
+  }
+
+  .qn-btn {
+    flex: 0 0 auto !important;
+    width: 38px !important;
+    height: 38px !important;
+    aspect-ratio: auto !important;
+    border-radius: 10px !important;
+    font-size: 13px !important;
+    line-height: 1 !important;
+  }
+
+  .qn-btn:hover {
+    transform: none !important;
+  }
+
+  #finishTestBtn {
+    width: 100% !important;
+    margin-top: 2px !important;
   }
 
   .test-nav-buttons {

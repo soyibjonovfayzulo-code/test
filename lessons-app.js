@@ -83,6 +83,22 @@
       });
     });
   }
+  /** Dars kartasidagi mini progress ring 0'dan haqiqiy qiymatgacha smooth to'ladi */
+  function animateStateRings(scope) {
+    $$('.ls-state-ring .ls-state-ring-fill', scope || document).forEach(function (ring) {
+      const C = 2 * Math.PI * 18;
+      const pct = parseFloat(ring.getAttribute('data-pct') || '0');
+      const target = C * (1 - pct / 100);
+      if (reducedMotion()) { ring.style.strokeDashoffset = String(target); return; }
+      ring.style.transition = 'none';
+      ring.style.strokeDashoffset = String(C);
+      void ring.getBoundingClientRect(); // reflow
+      ring.style.transition = '';
+      requestAnimationFrame(function () {
+        requestAnimationFrame(function () { ring.style.strokeDashoffset = String(target); });
+      });
+    });
+  }
   function page(name) {
     if (typeof window.__itShowPage === 'function') window.__itShowPage(name);
     else console.warn('__itShowPage mavjud emas — script.js yangilanmaganmi?');
@@ -291,7 +307,13 @@
   /* Namuna: window.LessonsHooks.onLessonComplete.push(function (info) { ... });
      info = { courseId, course, lesson, xp, coins, totalCompleted, courseCompleted } */
   const Hooks = {
-    onLessonComplete: [],
+    onLessonComplete: [
+      function (info) {
+        if (window.DailyStreak && typeof window.DailyStreak.onLessonCompleted === 'function') {
+          try { window.DailyStreak.onLessonCompleted(info); } catch (e) { /* noop */ }
+        }
+      }
+    ],
     onLevelChange: []
     // TODO: XP, Coin, Streak, Achievement, Leaderboard integratsiyalari
     // shu hook'lar orqali qo'shiladi — asosiy logikani o'zgartirmasdan.
@@ -316,45 +338,142 @@
   };
 
   /* ==========================================================
-     1) DARSLAR BOSH SAHIFASI — kurslar grid
+     1) DARSLAR BOSH SAHIFASI — Progress-first UX
+     (Umumiy progress → Davom ettirish → Mavzular)
      ========================================================== */
+
+  /** Global smart CTA: foydalanuvchining real state'idan joriy kurs va
+      joriy darsni topib, aynan shu darsni ochadi (existing resume logic). */
+  function continueCurrentLesson() {
+    const activeId = lastActiveCourseId() || firstNotStartedCourseId();
+    const course = activeId ? window.CoursesAPI.getCourse(activeId) : null;
+    if (!course) { toast('Darslarni boshlash uchun kurs tanlang.', 'info'); return; }
+    const res = resumeLesson(course);
+    if (res) openLesson(course.id, res.id);
+    else openCourse(course.id);
+  }
+
   function renderCoursesPage() {
     loadStore();
+    const overallSlot = $('#lsOverallSlot');
     const contSlot = $('#lsContinueSlot');
     const grid = $('#lsCoursesGrid');
     if (!grid) return;
 
-    // --- Davom ettirish banneri ---
+    // --- UMUMIY PROGRESS (real user data: localStorage + lesson data) ---
+    const all = window.CoursesAPI.listCourses();
+    let totalLessons = 0, totalDone = 0;
+    all.forEach(function (c) {
+      totalLessons += c.lessonCount || 0;
+      totalDone += completedCount(c.id);
+    });
+    const allPct = totalLessons ? Math.round((totalDone / totalLessons) * 100) : 0;
+    const allFinished = totalLessons > 0 && totalDone >= totalLessons;
+    const motive = allFinished
+      ? '🎉 Barcha darslarni tugatdingiz — ajoyib natija!'
+      : (allPct >= 70
+        ? 'Zo‘r ishlayapsiz! Keyingi darsga o‘tamiz.'
+        : (allPct > 0
+          ? 'Yaxshi ketmoqda — oldinda qiziq darslar bor!'
+          : 'Birinchi dars bilan boshlang — siz ham qila olasiz! 🚀'));
+    const ringC = 2 * Math.PI * 42;
+    const ringOff = ringC * (1 - allPct / 100);
+    let robotHtml = '';
+    try {
+      if (window.ITMascot && typeof window.ITMascot.html === 'function') {
+        robotHtml = window.ITMascot.html(allFinished ? 'success' : 'idle', 'mascot--sm');
+      }
+    } catch (e) { /* robot ixtiyoriy — sahifa buzilmasin */ }
+    if (overallSlot) {
+      overallSlot.innerHTML =
+        '<div class="ls-overall">' +
+          '<div class="ls-overall-info">' +
+            '<span class="ls-overall-label">Umumiy progress</span>' +
+            '<div class="ls-overall-pct">' + allPct + '<small>%</small></div>' +
+            '<p class="ls-overall-stats"><strong>' + totalDone + '</strong> / ' + totalLessons + ' dars tugallangan</p>' +
+            '<p class="ls-overall-motive">' + motive + '</p>' +
+          '</div>' +
+          '<div class="ls-overall-ring-wrap">' +
+            '<svg class="ls-overall-ring" viewBox="0 0 100 100" aria-hidden="true">' +
+              '<circle class="ls-ring-bg" cx="50" cy="50" r="42"></circle>' +
+              '<circle class="ls-ring-fill" cx="50" cy="50" r="42" stroke-dasharray="' + ringC.toFixed(1) + '" stroke-dashoffset="' + ringOff.toFixed(1) + '"></circle>' +
+            '</svg>' +
+            '<div class="ls-ring-pct">' + allPct + '<small>%</small></div>' +
+          '</div>' +
+          '<div class="ls-overall-robot">' + robotHtml + '</div>' +
+        '</div>';
+      // Halqa 0'dan haqiqiy qiymatgacha smooth to'ladi (reduced-motion'da darhol)
+      const ring = overallSlot.querySelector('.ls-ring-fill');
+      if (ring && !reducedMotion()) {
+        ring.style.transition = 'none';
+        ring.style.strokeDashoffset = String(ringC);
+        requestAnimationFrame(function () {
+          requestAnimationFrame(function () {
+            ring.style.transition = 'stroke-dashoffset 1s var(--bounce)';
+            ring.style.strokeDashoffset = String(ringOff);
+          });
+        });
+      }
+      const ctaEl = overallSlot.querySelector('.ls-overall-cta');
+      if (ctaEl) ctaEl.addEventListener('click', continueCurrentLesson);
+    }
+
+    // --- DAVOM ETTIRISH — joriy dars (real user state asosida) ---
     if (contSlot) {
       const activeId = lastActiveCourseId() || firstNotStartedCourseId();
       const course = activeId ? window.CoursesAPI.getCourse(activeId) : null;
-      if (course) {
+      if (!course) {
+        contSlot.innerHTML = '';
+      } else if (!resumeLesson(course) && allFinished) {
+        // Barcha darslar tugallangan — nishonlash holati
+        contSlot.innerHTML =
+          '<div class="ls-continue ls-continue-done">' +
+            '<div class="ls-continue-info">' +
+              '<div class="ls-continue-icon">🎉</div>' +
+              '<div class="ls-continue-text">' +
+                '<h3>Barcha darslarni tugatdingiz!</h3>' +
+                '<p class="ls-continue-sub">Zo‘r ish! Bilimingizni Testlar bo‘limida mustahkamlab turing.</p>' +
+              '</div>' +
+            '</div>' +
+          '</div>';
+      } else {
         const pct = progressPercent(course.id, course);
         const res = resumeLesson(course);
         contSlot.innerHTML =
+          '<div class="ls-continue-head"><h4>Davom ettirish</h4>' +
+            '<span>' + esc(course.name) + ' kursi &middot; ' + (res ? res.number + '-dars' : 'yakunlangan') + '</span></div>' +
           '<div class="ls-continue">' +
             '<div class="ls-continue-info">' +
               '<div class="ls-continue-icon">' + esc(course.icon) + '</div>' +
               '<div class="ls-continue-text">' +
-                '<h3>👋 O‘qishni davom ettiring</h3>' +
-                '<p>' + esc(course.name) + (res ? ' — ' + res.number + '-dars: ' + esc(res.title) : ' — kurs yakunlangan! 🎉') + '</p>' +
+                (res
+                  ? '<span class="ls-continue-course">' + esc(course.name) + ' &middot; ' + res.number + '-dars</span>' +
+                    '<h3>' + esc(res.title) + '</h3>' +
+                    '<div class="ls-continue-meta"><span>⏱ ' + res.duration + ' daqiqa</span>' +
+                      '<span class="ls-continue-xp">+' + (res.xp || 10) + ' XP</span></div>'
+                  : '<h3>🎉 ' + esc(course.name) + ' kursi yakunlangan!</h3>' +
+                    '<p class="ls-continue-sub">Barcha darslar tugallangan — qolgan kurslarni ko‘rib chiqing.</p>') +
               '</div>' +
             '</div>' +
             '<div class="ls-continue-progress">' +
               '<div class="ls-continue-bar"><span style="width:' + pct + '%"></span></div>' +
               '<span class="ls-continue-pct">' + pct + '%</span>' +
             '</div>' +
-            '<button type="button" class="btn ls-btn-continue" id="lsContinueBtn">Davom ettirish <span class="ls-btn-arrow">→</span></button>' +
+            '<button type="button" class="btn ls-btn-continue" id="lsContinueBtn">' + (res ? '▶ Davom ettirish' : 'Kursni ko‘rish') + ' <span class="ls-btn-arrow">→</span></button>' +
           '</div>';
         const btn = $('#lsContinueBtn');
-        if (btn) btn.addEventListener('click', function () { openCourse(course.id); });
-      } else {
-        contSlot.innerHTML = '';
+        if (btn) btn.addEventListener('click', function () {
+          // Joriy (davom etayotgan) darsni aynan ochish — dars boshiga majburan qaytarilmaydi
+          if (res) openLesson(course.id, res.id);
+          else openCourse(course.id);
+        });
       }
     }
 
     // --- Kurs kartalari ---
     const courses = window.CoursesAPI.listCourses();
+    const tcEl = $('#lsTopicsCount');
+    if (tcEl) tcEl.textContent = courses.length + ' ta fan';
     if (!courses.length) {
       grid.innerHTML =
         '<div class="ls-empty" style="grid-column:1/-1">' +
@@ -368,33 +487,60 @@
       const done = completedCount(c.id);
       const pct = progressPercent(c.id, c);
       const finished = done >= c.lessonCount && c.lessonCount > 0;
-      const label = pct > 0 ? 'Davom ettirish <span class="ls-btn-arrow">→</span>' : 'Boshlash <span class="ls-btn-arrow">→</span>';
+      const inProgress = !finished && pct > 0;
+      /* Kichik STATUS badge — faqat holat, BUTTON emas. Yagona action = butun karta clickable. */
+      const status = finished
+        ? '<span class="ls-status ls-status-done">✅ Tugallangan</span>'
+        : (inProgress
+          ? '<span class="ls-status ls-status-active">Davom etmoqda</span>'
+          : '<span class="ls-status ls-status-idle">Boshlanmagan</span>');
+      /* O'ng tomon holat belgisi: ✓ tugallangan | mini progress ring + % */
+      const RING_C = (2 * Math.PI * 18).toFixed(1);
+      let stateHtml;
+      if (finished) {
+        stateHtml = '<div class="ls-course-state ls-state-done" aria-hidden="true"><span>✓</span></div>';
+      } else {
+        const off = (2 * Math.PI * 18 * (1 - pct / 100)).toFixed(1);
+        stateHtml = '<div class="ls-course-state ls-state-ring' + (inProgress ? '' : ' ls-state-idle') + '" aria-hidden="true">' +
+          '<svg viewBox="0 0 44 44">' +
+            '<circle class="ls-state-ring-bg" cx="22" cy="22" r="18"></circle>' +
+            '<circle class="ls-state-ring-fill" cx="22" cy="22" r="18" data-pct="' + pct + '" stroke-dasharray="' + RING_C + '" stroke-dashoffset="' + off + '"></circle>' +
+          '</svg>' +
+          '<span class="ls-state-ring-pct">' + pct + '%</span>' +
+        '</div>';
+      }
+      /* Ixcham gorizontal learning card: icon + title/desc/count + ring.
+         FAQAT BITTA action: butun karta clickable (pastda bind qilinadi).
+         Alohida "Boshlash/Davom ettirish" tugmasi YO'Q — status pill faqat holat. */
       return (
-        '<div class="ls-course-card" data-course="' + esc(c.id) + '" style="--ls-color:' + esc(c.color) + ';animation-delay:' + (Math.min(i, 11) * 50) + 'ms">' +
-          '<div class="ls-course-top">' +
-            '<div class="ls-course-icon">' + esc(c.icon) + '</div>' +
-            (finished ? '<span class="ls-course-done-badge">✅ Tugallangan</span>' : '') +
+        '<div class="ls-course-card' + (finished ? ' ls-course-finished' : '') + '" data-course="' + esc(c.id) + '" role="button" tabindex="0" style="--ls-color:' + esc(c.color) + ';animation-delay:' + (Math.min(i, 11) * 50) + 'ms">' +
+          '<div class="ls-course-icon">' + esc(c.icon) + '</div>' +
+          '<div class="ls-course-id">' +
+            '<h4>' + esc(c.name) + '</h4>' +
+            '<p class="ls-course-tagline">' + esc(c.tagline) + '</p>' +
+            '<div class="ls-course-meta">' +
+              '<span>📚 ' + c.lessonCount + ' ta dars</span>' +
+              status +
+            '</div>' +
           '</div>' +
-          '<h4>' + esc(c.name) + '</h4>' +
-          '<p>' + esc(c.tagline) + '</p>' +
-          '<div class="ls-course-meta"><span>📚 <strong>' + c.lessonCount + '</strong> ta dars</span>' +
-            (done > 0 ? '<span>✅ <strong>' + done + '</strong> tugallangan</span>' : '') + '</div>' +
-          '<div class="ls-course-progress-row">' +
-            '<div class="ls-progress-track"><span style="width:' + pct + '%"></span></div>' +
-            '<span class="ls-progress-pct">' + pct + '%</span>' +
+          '<div class="ls-course-side">' +
+            stateHtml +
           '</div>' +
-          '<button type="button" class="btn btn-primary ls-course-open">' + label + '</button>' +
         '</div>'
       );
     }).join('');
 
-    // Kartalar bosilishi
+    // Kartalar bosilishi — yagona action (butun karta clickable)
     $$('.ls-course-card', grid).forEach(function (card) {
       card.addEventListener('click', function () { openCourse(card.getAttribute('data-course')); });
+      card.addEventListener('keydown', function (e) {
+        if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); openCourse(card.getAttribute('data-course')); }
+      });
     });
 
     // Progress barlar 0'dan smooth to'lishi
     animateProgressBars($('#page-lessons'));
+    animateStateRings(grid);
   }
 
   /* ==========================================================
@@ -436,26 +582,58 @@
     const titleEl = $('#pageTitle');
     if (titleEl) titleEl.textContent = course.name + ' kursi';
 
+    /* finishedAll — barcha darslar tugallanganmi (robot 'complete' holati uchun) */
+    const finishedAll = done >= course.lessonCount && course.lessonCount > 0;
+    let heroRobot = '';
+    try {
+      if (window.ITMascot && typeof window.ITMascot.html === 'function') {
+        heroRobot = window.ITMascot.html(finishedAll ? 'complete' : 'idle');
+      }
+    } catch (e) { /* mascot mavjud emas — jim o'tkazamiz */ }
+
+    /* REFERENCE COMPOSITION:
+       1) ← Kursga qaytish (yuqori qator)
+       2) HERO: icon + title/tagline + "N / M dars" + progress + % | ROBOT + floating badge'lar | quote kartasi
+       3) "Darslar yo'li" sarlavha + subtitle | level chip + sozlamalar + davom ettirish */
     let head =
-      '<div class="ls-course-head" style="--ls-color:' + esc(course.color) + '">' +
-        '<div class="ls-course-head-icon">' + esc(course.icon) + '</div>' +
-        '<div class="ls-course-head-info">' +
-          '<h3>' + esc(course.name) + ' kursi</h3>' +
-          '<p>' + esc(course.description) + '</p>' +
-          '<div class="ls-course-progress-row">' +
-            '<div class="ls-progress-track"><span style="width:' + pct + '%"></span></div>' +
-            '<span class="ls-progress-pct">' + pct + '%</span>' +
-          '</div>' +
-          '<div class="ls-course-meta" style="margin-top:10px">' +
-            '<span>📚 <strong>' + course.lessonCount + '</strong> ta dars</span>' +
-            '<span>✅ <strong>' + done + '</strong> tugallangan</span>' +
-            (cur ? '<span>🔵 Joriy: <strong>' + cur.number + '-dars</strong></span>' : '<span>🎉 Hammasi tugallangan!</span>') +
+      '<div class="ls-course-topbar">' +
+        '<button type="button" class="ls-back-btn" id="lsBackToLessons">← Kursga qaytish</button>' +
+      '</div>' +
+      '<div class="ls-course-head ls-hero" style="--ls-color:' + esc(course.color) + '">' +
+        '<div class="ls-hero-main">' +
+          '<div class="ls-course-head-icon">' + esc(course.icon) + '</div>' +
+          '<div class="ls-course-head-info">' +
+            '<h3>' + esc(course.name) + '</h3>' +
+            '<p>' + esc(course.tagline || course.description) + '</p>' +
+            '<div class="ls-hero-countrow">' +
+              '<span class="ls-hero-count">📚 <strong>' + done + '</strong> / ' + course.lessonCount + ' dars</span>' +
+              '<div class="ls-progress-track"><span style="width:' + pct + '%"></span></div>' +
+              '<span class="ls-progress-pct">' + pct + '%</span>' +
+            '</div>' +
           '</div>' +
         '</div>' +
-        '<div class="ls-course-head-actions">' +
-          '<button type="button" class="btn btn-ghost ls-course-back" id="lsBackToLessons">← Darslar</button>' +
+        (heroRobot
+          ? '<div class="ls-hero-robot" aria-hidden="true">' + heroRobot +
+              '<span class="ls-hero-badge ls-hero-badge--code">&lt;/&gt;</span>' +
+              '<span class="ls-hero-badge ls-hero-badge--tag">' + esc(course.name) + '</span>' +
+            '</div>'
+          : '') +
+        '<div class="ls-hero-quote">' +
+          '<p>“Katta loyihalar kichik qadamlar bilan boshlanadi.”</p>' +
+          '<span class="ls-hero-quote-ico" aria-hidden="true">🚀</span>' +
+        '</div>' +
+      '</div>' +
+      '<div class="ls-road-head">' +
+        '<div class="ls-road-title">' +
+          '<span class="ls-road-ico" aria-hidden="true">📚</span>' +
+          '<div class="ls-road-title-text">' +
+            '<h3>Darslar yo‘li</h3>' +
+            '<p>Quyidagi ketma-ketlikda darslarni o‘ting va yangi imkoniyatlarni oching!</p>' +
+          '</div>' +
+        '</div>' +
+        '<div class="ls-course-head-actions ls-road-actions">' +
           '<span class="ls-level-chip">🧠 Bilim darajasi: <strong>' + esc(lvl ? LEVEL_LABELS[lvl] : '—') + '</strong></span>' +
-          '<button type="button" class="btn btn-ghost" id="lsSettingsBtn">⚙️ O‘rganish sozlamalari</button>' +
+          '<button type="button" class="btn btn-ghost" id="lsSettingsBtn">⚙️ Sozlamalar</button>' +
           (cur ? '<button type="button" class="btn btn-primary" id="lsResumeBtn">Davom ettirish <span class="ls-btn-arrow">→</span></button>' : '') +
         '</div>' +
       '</div>';
@@ -464,45 +642,105 @@
     if (!course.lessons.length) {
       list = '<div class="ls-empty"><div class="ls-empty-ico">📭</div><h4>Darslar hozircha bo‘sh</h4><p>Ushbu kursga darslar tez orada qo‘shiladi.</p></div>';
     } else {
-      list = '<div class="ls-lessons-grid">' + course.lessons.map(function (l, i) {
+      /* ==========================================================
+         COURSE PATH — SNAKE / WINDING LEARNING ROAD (0'dan qurildi)
+         • Node: deterministik zigzag x-pozitsiya (random emas)
+         • Karta: node'ning qarshi tomonida (chap-o'ng almashadi)
+         • Yo'l: bitta uzluksiz SVG cubic Bézier (base + progress)
+         • Data: mavjud CoursesAPI (title/duration/xp/order/unlock)
+         ========================================================== */
+      /* Desktop zigzag fraksiyalari: juft indeks → chap, toq → o'ng.
+         Amplituda har qadamda ozgina o'zgaradi — "jonli" snake yo'l. */
+      const xLeft = [0.38, 0.3, 0.34];
+      const xRight = [0.66, 0.72, 0.68];
+      const rowsHtml = course.lessons.map(function (l, i) {
         const unlocked = isLessonUnlocked(course, l, i);
         const completed = isLessonCompleted(course.id, l.id);
         const isCur = cur && cur.id === l.id && !completed;
-        let cls = 'ls-lesson-card', ico;
-        if (!unlocked) { cls += ' ls-locked'; ico = '🔒'; }
-        else if (completed) { cls += ' ls-completed'; ico = '✅'; }
-        else {
-          // Joriy (davom ettiriladigan) dars — CSS uslubi .ls-lesson-card.ls-current
-          if (isCur) cls += ' ls-current';
-          ico = isLessonRead(course.id, l.id) ? '📖' : '🧪';
+        let state, face, cardState, statusTxt, actionTxt;
+        if (!unlocked) {
+          state = 'locked'; face = '🔒'; cardState = 'locked';
+          statusTxt = '🔒 Yopiq'; actionTxt = '';
+        } else if (completed) {
+          state = 'done'; face = '✓'; cardState = 'done';
+          statusTxt = '✓ Tugallangan'; actionTxt = 'Qayta ko‘rish';
+        } else if (isCur) {
+          state = 'current'; face = '▶'; cardState = 'current';
+          statusTxt = 'Davom etmoqda'; actionTxt = 'Davom ettirish';
+        } else {
+          state = 'open'; face = String(l.number); cardState = 'open';
+          statusTxt = 'Boshlanmagan'; actionTxt = 'Boshlash';
         }
+        const xf = i % 2 === 0 ? xLeft[(i / 2) % 3] : xRight[((i - 1) / 2) % 3];
+        const mxf = i % 2 === 0 ? 0.62 : 0.38; /* mobil: ±12% ixcham zigzag */
+        const cardCol = xf < 0.5 ? 3 : 1;      /* node chapda → karta o'ngda */
+        const cardJust = cardCol === 3 ? 'start' : 'end';
+        const cardAlign = mxf > 0.5 ? 'end' : 'start'; /* mobil: karta node tomonida */
         return (
-          '<div class="' + cls + '" data-lesson="' + esc(l.id) + '" style="animation-delay:' + (Math.min(i, 12) * 35) + 'ms">' +
-            '<div class="ls-lesson-num">' + String(l.number).padStart(2, '0') +
-              '<span class="ls-state-ico">' + ico + '</span>' +
-            '</div>' +
-            '<div class="ls-lesson-info">' +
-              '<h5>' + esc(l.title) + '</h5>' +
-              '<p><span>' + esc(l.difficulty) + '</span><span>⏱ ' + l.duration + ' daqiqa</span></p>' +
-            '</div>' +
-            '<span class="ls-lesson-arrow">→</span>' +
+          '<div class="ls-crow' + (isCur ? ' ls-crow--current' : '') + '" style="' +
+            '--l:calc((100% - 76px) * ' + xf + ');--r:calc((100% - 76px) * ' + (1 - xf).toFixed(2) + ');' +
+            '--lm:calc((100% - 58px) * ' + mxf + ');--rm:calc((100% - 58px) * ' + (1 - mxf).toFixed(2) + ');' +
+            '--card-col:' + cardCol + ';--card-just:' + cardJust + ';--card-align:' + cardAlign + ';' +
+            'animation-delay:' + (Math.min(i, 12) * 45) + 'ms">' +
+            '<button type="button" class="ls-cnode ls-cnode--' + state + '" data-lesson="' + esc(l.id) + '" data-state="' + state + '"' +
+              ' aria-label="' + l.number + '-dars: ' + esc(l.title) + (completed ? ' (tugallangan)' : (state === 'locked' ? ' (yopiq)' : '')) + '">' +
+              '<span class="ls-cnode-face" aria-hidden="true">' + face + '</span>' +
+            '</button>' +
+            '<article class="ls-ccard ls-ccard--' + cardState + '" data-lesson="' + esc(l.id) + '" tabindex="0" role="button"' +
+              ' aria-label="' + l.number + '-dars: ' + esc(l.title) + '. ' + esc(statusTxt) + '">' +
+              '<div class="ls-ccard-top">' +
+                '<span class="ls-ccard-num">' + l.number + '-dars</span>' +
+                '<span class="ls-ccard-status ls-ccard-status--' + state + '">' + statusTxt + '</span>' +
+              '</div>' +
+              '<h5 class="ls-ccard-title">' + esc(l.title) + '</h5>' +
+              (l.description ? '<p class="ls-ccard-desc">' + esc(l.description) + '</p>' : '') +
+              '<div class="ls-ccard-meta">' +
+                '<span>⏱ ' + l.duration + ' daqiqa</span>' +
+                '<span>⭐ +' + (l.xp || 10) + ' XP</span>' +
+                '<span>' + esc(l.difficulty) + '</span>' +
+              '</div>' +
+              (actionTxt ? '<span class="ls-ccard-action ls-ccard-action--' + state + '">' + actionTxt + ' <b>→</b></span>' : '') +
+            '</article>' +
           '</div>'
         );
-      }).join('') + '</div>';
+      }).join('');
+
+      list =
+        '<div class="ls-cpath" id="lsCoursePath">' +
+          /* PathBackground — dekorativ fon (hammasi pointer-events: none) */
+          '<div class="ls-cpath-bg" aria-hidden="true">' +
+            '<span class="ls-cpath-blob ls-cpath-blob--a"></span>' +
+            '<span class="ls-cpath-blob ls-cpath-blob--b"></span>' +
+            '<span class="ls-cpath-dots"></span>' +
+            '<span class="ls-cpath-chip ls-cpath-chip--html">&lt;/&gt;</span>' +
+            '<span class="ls-cpath-chip ls-cpath-chip--css">{ }</span>' +
+            '<span class="ls-cpath-chip ls-cpath-chip--js">JS</span>' +
+            '<span class="ls-cpath-decor ls-cpath-decor--laptop">💻</span>' +
+          '</div>' +
+          /* SvgLearningRoad — base (kulrang) + progress (gradient, real progress bilan to'ladi) */
+          '<svg class="ls-cpath-road" aria-hidden="true" focusable="false" preserveAspectRatio="none">' +
+            '<defs>' +
+              '<linearGradient id="lsRoadGrad" x1="0" y1="0" x2="0" y2="1">' +
+                '<stop offset="0%" stop-color="#3b82f6" />' +
+                '<stop offset="55%" stop-color="#7c5cff" />' +
+                '<stop offset="100%" stop-color="#06b6d4" />' +
+              '</linearGradient>' +
+            '</defs>' +
+            '<path class="ls-croad-base" />' +
+            '<path class="ls-croad-progress" pathLength="1" />' +
+          '</svg>' +
+          rowsHtml +
+        '</div>';
     }
 
     wrap.innerHTML = head + list;
 
-    // Eventlar
-    $$('.ls-lesson-card', wrap).forEach(function (card) {
-      card.addEventListener('click', function () {
-        const lid = card.getAttribute('data-lesson');
-        const f = window.CoursesAPI.findLesson(state.currentCourseId, lid);
-        // Qulflangan dars: cardga shake + toast (modal openLesson ichida ochiladi)
-        if (f && !isLessonUnlocked(f.course, f.lesson, f.index)) shakeEl(card);
-        openLesson(state.currentCourseId, lid);
-      });
-    });
+    /* Snake yo'lni chizish (SVG Bézier + real progress) + eventlar */
+    bindCoursePathResize();
+    requestAnimationFrame(function () { drawCourseRoad(wrap); });
+    setupCoursePath(wrap, course);
+
+    // Eventlar (settings / back / resume)
     const settingsBtn = $('#lsSettingsBtn');
     if (settingsBtn) settingsBtn.addEventListener('click', function () { openSettingsModal(state.currentCourseId); });
     const backBtn = $('#lsBackToLessons');
@@ -520,6 +758,113 @@
 
     // Progress bar 0'dan smooth to'lishi
     animateProgressBars(wrap);
+  }
+
+  /* ==========================================================
+     2b) COURSE PATH — SNAKE / WINDING ROAD yordamchilari
+         • Uzluksiz SVG cubic Bézier yo'l node markazlari orasida
+         • progressPath stroke-dashoffset bilan real progressga qarab to'ladi
+         • Resize'da debounce bilan qayta chiziladi (passiv listener)
+     ========================================================== */
+  let _cpathResizeBound = false;
+
+  /** Node markazlari orasidan smooth "snake road" chizadi + progressni to'ldiradi */
+  function drawCourseRoad(root) {
+    const pathEl = $('.ls-cpath', root) || (root && root.classList && root.classList.contains('ls-cpath') ? root : null);
+    const svg = pathEl ? $('.ls-cpath-road', pathEl) : null;
+    if (!pathEl || !svg) return;
+    const base = $('.ls-croad-base', svg);
+    const prog = $('.ls-croad-progress', svg);
+    if (!base || !prog) return;
+    const pRect = pathEl.getBoundingClientRect();
+    if (!pRect.width || !pRect.height) return; // jsdom / yashirin holat
+    svg.setAttribute('viewBox', '0 0 ' + Math.round(pRect.width) + ' ' + Math.round(pRect.height));
+    const nodeEls = $$('.ls-cnode', pathEl);
+    if (!nodeEls.length) return;
+    const pts = nodeEls.map(function (n) {
+      const r = n.getBoundingClientRect();
+      return { x: r.left + r.width / 2 - pRect.left, y: r.top + r.height / 2 - pRect.top };
+    });
+    /* Uzluksiz smooth Bézier: har qo'shni juftlik orasida S-curve.
+       Kontrol nuqtalar gorizontal midpointda — node'larda tangent vertikal,
+       shuning uchun yo'lda hech qanday o'tkir burchak yo'q. */
+    let d = 'M' + pts[0].x.toFixed(1) + ' ' + pts[0].y.toFixed(1);
+    for (let i = 1; i < pts.length; i++) {
+      const my = ((pts[i - 1].y + pts[i].y) / 2).toFixed(1);
+      d += ' C' + pts[i - 1].x.toFixed(1) + ' ' + my +
+        ', ' + pts[i].x.toFixed(1) + ' ' + my +
+        ', ' + pts[i].x.toFixed(1) + ' ' + pts[i].y.toFixed(1);
+    }
+    base.setAttribute('d', d);
+    prog.setAttribute('d', d);
+
+    /* REAL PROGRESS: birinchi tugallanmagan (joriy) node markazigacha
+       yo'l uzunligining qanday qismi to'ladi — hech narsa hardcode emas. */
+    const courseId = state.currentCourseId;
+    const courseObj = courseId ? window.CoursesAPI.getCourse(courseId) : null;
+    if (!courseObj) return;
+    let targetIdx = -1;
+    for (let i = 0; i < courseObj.lessons.length; i++) {
+      if (!isLessonCompleted(courseId, courseObj.lessons[i].id)) { targetIdx = i; break; }
+    }
+    prog.style.transition = 'none';
+    if (targetIdx === 0) { prog.style.strokeDasharray = '1'; prog.style.strokeDashoffset = '1'; return; }
+    let frac = 1; // hammasi tugallangan → to'liq yo'l
+    if (targetIdx > 0) {
+      try {
+        const total = prog.getTotalLength();
+        const targetY = pts[targetIdx].y;
+        let best = 0;
+        const STEPS = 64;
+        for (let s = 1; s <= STEPS; s++) {
+          const len = total * s / STEPS;
+          const pt = prog.getPointAtLength(len);
+          if (pt.y <= targetY + 0.5) best = len; else break;
+        }
+        frac = total > 0 ? best / total : 0;
+      } catch (e) { frac = 0; }
+    }
+    const target = String(Math.max(0, 1 - frac));
+    prog.style.strokeDasharray = '1';
+    if (reducedMotion()) { prog.style.strokeDashoffset = target; return; }
+    prog.style.strokeDashoffset = '1';
+    requestAnimationFrame(function () {
+      prog.style.transition = 'stroke-dashoffset 0.9s var(--bounce)';
+      prog.style.strokeDashoffset = target;
+    });
+  }
+
+  function bindCoursePathResize() {
+    if (_cpathResizeBound) return;
+    _cpathResizeBound = true;
+    let t = null;
+    window.addEventListener('resize', function () {
+      if (t) clearTimeout(t);
+      t = setTimeout(function () {
+        const j = document.querySelector('.ls-cpath');
+        if (j) drawCourseRoad(j);
+      }, 160);
+    }, { passive: true });
+  }
+
+  /** Node/karta click → mavjud openLesson oqimi (qulf modal, resume, XP — hammasi saqlanadi) */
+  function setupCoursePath(wrap, course) {
+    const pathEl = $('#lsCoursePath', wrap);
+    if (!pathEl) return;
+    $$('.ls-cnode, .ls-ccard', pathEl).forEach(function (el) {
+      const go = function () {
+        const lid = el.getAttribute('data-lesson');
+        const f = window.CoursesAPI.findLesson(course.id, lid);
+        if (!f) return;
+        // Qulflangan dars: shake + mavjud toast/qulf modal oqimi (openLesson ichida)
+        if (!isLessonUnlocked(f.course, f.lesson, f.index)) shakeEl(el);
+        openLesson(course.id, lid);
+      };
+      el.addEventListener('click', go);
+      el.addEventListener('keydown', function (e) {
+        if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); go(); }
+      });
+    });
   }
 
   /* ==========================================================
@@ -545,6 +890,10 @@
     prog.lastVisit = Date.now();
     store.progress[courseId] = prog;
     saveStore();
+
+    if (window.DailyStreak && typeof window.DailyStreak.onLessonOpened === 'function') {
+      try { window.DailyStreak.onLessonOpened(courseId, lessonId); } catch (e) { /* noop */ }
+    }
 
     renderLessonView();
     page('lessonView');
@@ -2744,6 +3093,7 @@
       ? (next
           ? '<button type="button" class="btn btn-primary ls-btn-test" id="lsGoNextBtn">Keyingi dars →</button>'
           : '<button type="button" class="btn btn-primary ls-btn-test" id="lsGoCourseBtn">🏆 Kurs sahifasiga qaytish</button>') +
+        '<button type="button" class="btn btn-secondary ls-btn-test" id="lsGoTestBridgeBtn">📝 Fan testini ishlash →</button>' +
         '<button type="button" class="btn btn-ghost" id="lsReviewLessonBtn">📚 Darsga qaytish</button>'
       : '<button type="button" class="btn btn-primary" id="lsRetakeBtn">🔄 Qayta topshirish</button>' +
         '<button type="button" class="btn btn-ghost" id="lsReviewLessonBtn">📚 Darsni qayta ko‘rish</button>';
@@ -2777,6 +3127,16 @@
       state.lessonPhase = 'read';
       renderCoursePage();
       page('lessonCourse');
+    });
+    const bridgeBtn = $('#lsGoTestBridgeBtn');
+    if (bridgeBtn) bridgeBtn.addEventListener('click', function () {
+      state.quiz = null;
+      state.lessonPhase = 'read';
+      if (window.DailyStreak && typeof window.DailyStreak.openTestForCourse === 'function') {
+        window.DailyStreak.openTestForCourse(course.id);
+      } else if (typeof window.__itShowPage === 'function') {
+        window.__itShowPage('tests');
+      }
     });
     const nextBtn = $('#lsGoNextBtn');
     if (nextBtn && next) nextBtn.addEventListener('click', function () {
