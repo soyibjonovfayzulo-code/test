@@ -275,12 +275,35 @@ function createUI({ config, db, team, git, telegram, github, agents }) {
     const member = team.findByKey(cmd.memberKey) || { name: cmd.memberKey, githubUsername: null };
     const chatId = cmd.chatId;
     const branch = r.branch || cmd.branch || '—';
-    const ok = cmd.status === 'done';
+    // Status semantikasi: push uchun 'pushed' | 'no_changes' | 'error' (agent git.js);
+    // eski/umumiy qiymatlar: 'done' | 'failed' | 'timeout' (pull va boshqalar uchun)
+    const pushStatus = r.status || (cmd.status === 'done' ? 'pushed' : cmd.status === 'failed' ? 'error' : cmd.status);
+    const ok = ['done', 'pushed', 'no_changes'].includes(cmd.status);
 
     (async () => {
       try {
         if (cmd.type === 'push') {
-          if (ok) {
+          if (ok && pushStatus === 'no_changes') {
+            // Yangi commit yuborilmadi — SUCCESS EMAS, aniq "no_changes" holati
+            db.recordPush({
+              telegramUserId: null,
+              memberName: member.name,
+              githubUsername: member.githubUsername,
+              branch,
+              commitHash: r.commitHash || null,
+              commitMessage: null,
+              result: 'no_changes',
+              source: 'agent',
+            });
+            if (chatId) {
+              await telegram.sendMessage(
+                `ℹ️ <b>GIT PUSH QILINMADI — yangi o'zgarish yo'q</b>\n\n👤 Kim: ${esc(member.name)}\n🌿 Branch: ${esc(branch)}\n\nWorking tree clean — commit va push bajarilmadi.\n(Real push emas, shuning uchun bu SUCCESS emas.)`,
+                { chatId }
+              );
+            }
+            // guruhga GIT ACTIVITY YUBORILMAYDI — hech narsa yuborilmadi
+          } else if (ok && pushStatus === 'pushed') {
+            // Yangi commit remote'ga HAQIQATAN yuborildi (verify qilingan)
             db.recordPush({
               telegramUserId: null,
               memberName: member.name,
@@ -288,7 +311,7 @@ function createUI({ config, db, team, git, telegram, github, agents }) {
               branch,
               commitHash: r.commitHash || null,
               commitMessage: r.commitMessage || null,
-              result: 'success',
+              result: 'pushed',
               source: 'agent',
             });
             if (chatId) {
@@ -304,11 +327,24 @@ function createUI({ config, db, team, git, telegram, github, agents }) {
                 { chatId: config.telegram.chatId }
               ).catch(() => {});
             }
-          } else if (chatId) {
-            await telegram.sendMessage(
-              `❌ <b>GIT PUSH BO'LMADI</b>\n\n👤 ${esc(member.name)}\n🌿 ${esc(branch)}\n\n⚠️ Sabab:\n${esc(r.reason || 'agent push failed')}`,
-              { chatId }
-            );
+          } else {
+            // error — yangi commit yuborilmadi
+            db.recordPush({
+              telegramUserId: null,
+              memberName: member.name,
+              githubUsername: member.githubUsername,
+              branch,
+              commitHash: r.commitHash || null,
+              commitMessage: null,
+              result: 'error',
+              source: 'agent',
+            });
+            if (chatId) {
+              await telegram.sendMessage(
+                `❌ <b>GIT PUSH BO'LMADI</b>\n\n👤 ${esc(member.name)}\n🌿 ${esc(branch)}\n\n⚠️ Sabab:\n${esc(r.reason || 'agent push failed')}`,
+                { chatId }
+              );
+            }
           }
         } else if (cmd.type === 'pull') {
           if (ok) {
@@ -371,9 +407,9 @@ function createUI({ config, db, team, git, telegram, github, agents }) {
       // fallback davom etadi
     }
 
-    // 2) Bot audit logi — oxirgi muvaffaqiyatli push (agent/bot/webhook)
+    // 2) Bot audit logi — oxirgi HAQIQATAN push qilingan holat (agent/bot/webhook)
     const last = db.getLastPush();
-    if (last && last.result === 'success') {
+    if (last && ['pushed', 'success'].includes(last.result)) {
       return telegram.sendMessage(
         `🕒 <b>OXIRGI KODNI KIM O'ZGARTIRDI?</b>\n\n` +
         `(bot/agent audit logi — GitHub API javob bermadi)\n\n` +

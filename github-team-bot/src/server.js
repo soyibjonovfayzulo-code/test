@@ -45,10 +45,12 @@ function createServer(webhookHandler, { port, healthProvider, agents, onAgentRes
             }
             agents.markSeen(memberKey);
             const cmd = agents.completeResult(body.commandId, {
-              status: body.ok === true ? 'done' : 'failed',
+              ok: body.ok === true,
+              status: body.status || (body.ok === true ? 'done' : 'failed'),
               branch: body.branch || null,
               commitHash: body.commitHash || null,
               commitMessage: body.commitMessage || null,
+              message: body.message || null,
               reason: body.reason || null,
               output: body.output || null,
             });

@@ -86,12 +86,13 @@ test('agents: timeout — javob bermagan command timeout statusiga o\'tadi', () 
   assert.strictEqual(db.getAgentCommand(cmd.id).status, 'timeout');
 });
 
-test('agent git: push workflow — dirty repo add+commit+push REAL bajaradi', async () => {
+test('agent git: push workflow — dirty repo add+commit+push REAL bajaradi (B: modified file)', async () => {
   const { dir } = tempGitRepo({ withRemote: true });
   const git = createAgentGit({ repoPath: dir, allowedBranch: 'sardor' });
-  fs.writeFileSync(path.join(dir, 'new.txt'), 'test content');
+  fs.writeFileSync(path.join(dir, 'a.txt'), 'v2-modified');
   const res = await git.push({ branch: 'sardor' });
   assert.strictEqual(res.ok, true, 'real push success (exit code 0)');
+  assert.strictEqual(res.status, 'pushed', 'status aniq: pushed (yangi commit remote\'ga yuborildi)');
   assert.ok(res.commitHash, 'commit hash bor');
   assert.ok(res.commitMessage.includes('Bot push'));
   // remote = local (real push tasdiqlanadi)
@@ -101,14 +102,49 @@ test('agent git: push workflow — dirty repo add+commit+push REAL bajaradi', as
   assert.strictEqual(local, remote);
 });
 
-test('agent git: keraksiz commit YARATMAYDI (clean repo — up-to-date)', async () => {
+test('agent git: untracked fayl — add+commit+push REAL (C: untracked file)', async () => {
+  const { dir } = tempGitRepo({ withRemote: true });
+  const git = createAgentGit({ repoPath: dir, allowedBranch: 'sardor' });
+  fs.writeFileSync(path.join(dir, 'untracked.txt'), 'untracked content');
+  const res = await git.push({ branch: 'sardor' });
+  assert.strictEqual(res.ok, true);
+  assert.strictEqual(res.status, 'pushed', 'untracked fayl commit bo\'lib remote\'ga yuborildi');
+  execSync('git fetch origin', { cwd: dir, stdio: 'pipe' });
+  const local = execSync('git rev-parse HEAD', { cwd: dir, stdio: 'pipe' }).toString().trim();
+  const remote = execSync('git rev-parse origin/sardor', { cwd: dir, stdio: 'pipe' }).toString().trim();
+  assert.strictEqual(local, remote);
+});
+
+test('agent git: clean repo — push QILINMAYDI, status=no_changes (A + keraksiz commit YO\'Q)', async () => {
   const { dir } = tempGitRepo({ withRemote: true });
   const git = createAgentGit({ repoPath: dir, allowedBranch: 'sardor' });
   const before = execSync('git rev-parse HEAD', { cwd: dir, stdio: 'pipe' }).toString().trim();
   const res = await git.push({ branch: 'sardor' });
   assert.strictEqual(res.ok, true);
+  assert.strictEqual(res.status, 'no_changes', 'clean repo — pushed EMAS, no_changes');
+  assert.strictEqual(res.message, "Yangi o'zgarish yo'q");
   const after = execSync('git rev-parse HEAD', { cwd: dir, stdio: 'pipe' }).toString().trim();
   assert.strictEqual(before, after, 'keraksiz commit YO\'Q');
+  // remote ham o'zgarmagan
+  execSync('git fetch origin', { cwd: dir, stdio: 'pipe' });
+  const remote = execSync('git rev-parse origin/sardor', { cwd: dir, stdio: 'pipe' }).toString().trim();
+  assert.strictEqual(before, remote, 'remote\'ga hech narsa yuborilmadi');
+});
+
+test('agent git: "Everything up-to-date" — status=no_changes (E: pushed EMAS)', async () => {
+  const { dir } = tempGitRepo({ withRemote: true });
+  const git = createAgentGit({ repoPath: dir, allowedBranch: 'sardor' });
+  // 1) haqiqiy push (remote yangilanadi)
+  fs.writeFileSync(path.join(dir, 'e.txt'), 'e1');
+  const r1 = await git.push({ branch: 'sardor' });
+  assert.strictEqual(r1.status, 'pushed');
+  // 2) remote-tracking refni ORQAGA suramiz (stale) — rev-list "ahead>0" deydi,
+  //    lekin aslida remote allaqachon shu commitda → push "Everything up-to-date" qaytaradi
+  const oldSha = execSync('git rev-parse origin/sardor~1', { cwd: dir, stdio: 'pipe' }).toString().trim();
+  execSync(`git update-ref refs/remotes/origin/sardor ${oldSha}`, { cwd: dir, stdio: 'pipe' });
+  const res = await git.push({ branch: 'sardor' });
+  assert.strictEqual(res.ok, true);
+  assert.strictEqual(res.status, 'no_changes', '"Everything up-to-date" → pushed EMAS, no_changes');
 });
 
 test('agent git: boshqa branchda tursa — checkout so\'raydi (xavfsiz xato)', async () => {
@@ -144,13 +180,14 @@ test('agent git: shell injection argumentlari rad etiladi', async () => {
   assert.strictEqual(st.ok, true);
 });
 
-test('agent git: push remote yo\'q bo\'lsa — XATO (fake success YO\'Q)', async () => {
+test('agent git: push remote yo\'q bo\'lsa — XATO status=error (D: fake success YO\'Q)', async () => {
   const { dir } = tempGitRepo();
   const git = createAgentGit({ repoPath: dir, allowedBranch: 'sardor' });
   // repo allaqachon sardor branchida (init -b sardor) — checkout kerak emas
   fs.writeFileSync(path.join(dir, 'x.txt'), 'x');
   const res = await git.push({ branch: 'sardor' });
   assert.strictEqual(res.ok, false, 'remote yo\'q — push XATO');
+  assert.strictEqual(res.status, 'error', 'status aniq: error');
   assert.ok(res.reason);
 });
 

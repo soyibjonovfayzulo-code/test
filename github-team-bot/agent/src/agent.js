@@ -71,7 +71,7 @@ async function executeCommand(cmd) {
   if (cmd.type === 'push') {
     log('PUSH boshlandi (branch:', cmd.branch + ')');
     const res = await git.push({ branch: cmd.branch || BRANCH });
-    log('PUSH natija:', res.ok ? 'SUCCESS' : 'FAIL', res.reason || res.commitHash || '');
+    log('PUSH natija:', res.ok ? 'OK' : 'FAIL', 'status=' + (res.status || '?'), res.reason || res.commitHash || res.message || '');
     return res;
   }
   if (cmd.type === 'pull') {
@@ -94,9 +94,11 @@ async function postResult(commandId, result, retries = 5) {
           token: AGENT_TOKEN,
           commandId,
           ok: !!result.ok,
+          status: result.status || null,
           branch: result.branch || BRANCH,
           commitHash: result.commitHash || null,
           commitMessage: result.commitMessage || null,
+          message: result.message || null,
           reason: result.reason || null,
           output: result.output || null,
         }),

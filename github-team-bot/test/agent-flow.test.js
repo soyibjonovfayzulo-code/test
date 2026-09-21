@@ -73,7 +73,7 @@ test('bot: push flow — online agentga command yuboriladi', async () => {
   assert.strictEqual(state.agentCommands[0].type, 'push');
 });
 
-test('bot: agent result push success — GIT PUSH BO\'LDI + group + audit', async () => {
+test('bot: agent result push status=pushed — GIT PUSH BO\'LDI + group + audit', async () => {
   const { bot, tg, db, team, agents } = makeBot();
   team.claim('sardor', 111222);
   team.setBranch('sardor', 'sardor');
@@ -83,7 +83,7 @@ test('bot: agent result push success — GIT PUSH BO\'LDI + group + audit', asyn
   });
   const agentCmd = readState(bot).agentCommands.find((c) => c.type === 'push');
   assert.ok(agentCmd, 'command queueda bor');
-  bot.ctx.ui.onAgentResult({ ...agentCmd, status: 'done', result: { ok: true, branch: 'sardor', commitHash: 'abc1234def', commitMessage: 'Fix mobile tests' } });
+  bot.ctx.ui.onAgentResult({ ...agentCmd, status: 'pushed', result: { ok: true, status: 'pushed', branch: 'sardor', commitHash: 'abc1234def', commitMessage: 'Fix mobile tests' } });
   await new Promise((r) => setTimeout(r, 30));
   const userMsg = tg.sent.find((s) => s.opts && String(s.opts.chatId) === '1' && s.text.includes("GIT PUSH BO'LDI"));
   assert.ok(userMsg, '"GIT PUSH BO\'LDI" bor');
@@ -94,6 +94,49 @@ test('bot: agent result push success — GIT PUSH BO\'LDI + group + audit', asyn
   const last = db.getLastPush();
   assert.strictEqual(last.source, 'agent');
   assert.strictEqual(last.commitHash, 'abc1234def');
+  assert.strictEqual(last.result, 'pushed', 'audit status aniq: pushed');
+});
+
+test('bot: agent result push status=no_changes — GIT PUSH QILINMADI (FAKE SUCCESS YO\'Q)', async () => {
+  const { bot, tg, db, team, agents } = makeBot();
+  team.claim('sardor', 111222);
+  team.setBranch('sardor', 'sardor');
+  agents.markSeen('sardor');
+  await bot.handleCallbackQuery({
+    id: 'q4', data: 'push:confirm:111222', from: { id: 111222 }, message: { chat: { id: 1 } },
+  });
+  const agentCmd = readState(bot).agentCommands.filter((c) => c.type === 'push').pop();
+  bot.ctx.ui.onAgentResult({ ...agentCmd, status: 'no_changes', result: { ok: true, status: 'no_changes', branch: 'sardor', commitHash: 'f0b672d0', message: "Yangi o'zgarish yo'q" } });
+  await new Promise((r) => setTimeout(r, 30));
+  const infoMsg = tg.sent.find((s) => s.opts && String(s.opts.chatId) === '1' && s.text.includes('GIT PUSH QILINMADI'));
+  assert.ok(infoMsg, '"GIT PUSH QILINMADI" bor');
+  assert.ok(infoMsg.text.includes("yangi o'zgarish yo'q"));
+  // FAKE SUCCESS YO'Q:
+  assert.strictEqual(tg.sent.filter((s) => s.opts && s.text.includes("GIT PUSH BO'LDI") && String(s.opts.chatId) === '1').length, 0, '"GIT PUSH BO\'LDI" KO\'RSATILMAYDI');
+  // guruhga GIT ACTIVITY YUBORILMAYDI (hech narsa yuborilmadi)
+  assert.strictEqual(tg.sent.filter((s) => s.opts && String(s.opts.chatId) === '-100999' && s.text.includes('GIT ACTIVITY')).length, 0, 'GIT ACTIVITY spam YO\'Q');
+  // audit aniq status
+  const last = db.getLastPush();
+  assert.strictEqual(last.result, 'no_changes', 'audit status=no_changes');
+  assert.strictEqual(last.commitHash, 'f0b672d0');
+});
+
+test('bot: agent result push status=error — GIT PUSH BO\'LMADI + audit error', async () => {
+  const { bot, tg, db, team, agents } = makeBot();
+  team.claim('sardor', 111222);
+  team.setBranch('sardor', 'sardor');
+  agents.markSeen('sardor');
+  await bot.handleCallbackQuery({
+    id: 'q5', data: 'push:confirm:111222', from: { id: 111222 }, message: { chat: { id: 1 } },
+  });
+  const agentCmd = readState(bot).agentCommands.filter((c) => c.type === 'push').pop();
+  bot.ctx.ui.onAgentResult({ ...agentCmd, status: 'error', result: { ok: false, status: 'error', branch: 'sardor', reason: 'remote rejected' } });
+  await new Promise((r) => setTimeout(r, 30));
+  const failMsg = tg.sent.find((s) => s.opts && String(s.opts.chatId) === '1' && s.text.includes("GIT PUSH BO'LMADI"));
+  assert.ok(failMsg, '"GIT PUSH BO\'LMADI" bor');
+  const last = db.getLastPush();
+  assert.strictEqual(last.result, 'error', 'audit status=error');
+  assert.strictEqual(tg.sent.filter((s) => s.opts && s.text.includes("GIT PUSH BO'LDI") && String(s.opts.chatId) === '1').length, 0, 'FAKE SUCCESS YO\'Q');
 });
 
 test('bot: agent result push failure — GIT PUSH BO\'LMADI (fake success YO\'Q)', async () => {
