@@ -33,13 +33,28 @@ function createDatabase(dataDir) {
       const raw = JSON.parse(fs.readFileSync(file, 'utf8'));
       return Object.assign(emptyState(), raw);
     } catch (e) {
-      console.error('[DB] state o\'qishda xato, yangi state yaratilyapti:', e.message);
+      console.error('[DB] state o\'qishda xato:', e.message, '— .bak dan tiklash urinilmoqda');
+      // recovery: oxirgi to'g'ri nusxadan tiklash (queue/history saqlanadi)
+      try {
+        if (fs.existsSync(file + '.bak')) {
+          const recovered = Object.assign(emptyState(), JSON.parse(fs.readFileSync(file + '.bak', 'utf8')));
+          console.error('[DB] state .bak dan tiklandi');
+          return recovered;
+        }
+      } catch (e2) {
+        console.error('[DB] .bak dan tiklash ham xato:', e2.message);
+      }
+      console.error('[DB] yangi state yaratilyapti (backup ham buzuk/yo\'q)');
       return emptyState();
     }
   }
 
   function write(state) {
     fs.mkdirSync(dataDir, { recursive: true });
+    // backup: yozishdan oldin mavjud faylni .bak ga nusxalash (corrupt recovery)
+    try {
+      if (fs.existsSync(file)) fs.copyFileSync(file, file + '.bak');
+    } catch (_) { /* backup muhim emas — davom etadi */ }
     const tmp = file + '.tmp';
     fs.writeFileSync(tmp, JSON.stringify(state, null, 2));
     fs.renameSync(tmp, file); // atomic write
@@ -221,7 +236,7 @@ function createDatabase(dataDir) {
         branch: branch || null,
         commitHash: commitHash || null,
         commitMessage: commitMessage || null,
-        result: result || 'success',
+        result: result || 'pushed',
         source: source || 'bot', // 'bot' | 'webhook' | 'manual'
       };
       state.lastPush = entry;
@@ -235,6 +250,21 @@ function createDatabase(dataDir) {
       const state = read();
       const h = state.pushHistory || [];
       return limit ? h.slice(-limit).reverse() : [...h].reverse();
+    },
+
+    // ---- Agent navbati statistikasi (/health uchun) ----
+    agentQueueStats() {
+      const state = read();
+      const cmds = state.agentCommands || [];
+      const by = (s) => cmds.filter((c) => c.status === s).length;
+      return {
+        total: cmds.length,
+        pending: by('pending'),
+        sent: by('sent'),
+        done: by('done'),
+        failed: by('failed'),
+        timeout: by('timeout'),
+      };
     },
 
     // ---- Agent command queue (Central Bot -> Local Agent) ----

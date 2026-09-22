@@ -10,8 +10,8 @@
 const { spawn } = require('child_process');
 
 const GIT_TIMEOUT_MS = 60 * 1000;
-const SAFE_ARG_RE = /^[A-Za-z0-9@._\-:/\s]+$/;  // commit message uchun \s va : ruxsat (spawn args — shell yo'q, xavfsiz)
-const STRICT_ARG_RE = /^[A-Za-z0-9@._\-/]+$/;   // oddiy argumentlar
+const SAFE_ARG_RE = /^[A-Za-z0-9@._\-:/\s%]+$/;  // commit message uchun \s, : va % (git --pretty=format) ruxsat (spawn args — shell yo'q, xavfsiz)
+const STRICT_ARG_RE = /^[A-Za-z0-9@._\-/%]+$/;   // oddiy argumentlar (% — --pretty=format uchun)
 
 function runGit(cwd, args, { timeoutMs = GIT_TIMEOUT_MS, allowSpaces = false } = {}) {
   return new Promise((resolve) => {

@@ -103,6 +103,28 @@ function createGitOps({ repoPath }) {
       return { hash: parts[0], message: trimmed.slice(parts[0].length).trim() };
     },
 
+    // To'liq oxirgi commit: author, vaqt, message (handleLastPush fallback uchun)
+    async lastCommitFull() {
+      const r = await runGit(repoPath, ['log', '-1']);
+      if (!r.ok) return null;
+      const out = r.stdout;
+      const hashM = out.match(/^commit\s+([0-9a-f]{7,40})/m);
+      const authorM = out.match(/^Author:\s+(.+?)\s*<[^>]*>/m);
+      const dateM = out.match(/^Date:\s+(.+)$/m);
+      const bodyM = out.match(/\r?\n\r?\n\s*(.+)\s*$/s);
+      let dateIso = null;
+      if (dateM && dateM[1]) {
+        const d = new Date(dateM[1].trim());
+        if (!Number.isNaN(d.getTime())) dateIso = d.toISOString();
+      }
+      return {
+        hash: hashM ? hashM[1] : null,
+        author: authorM ? authorM[1].trim() : null,
+        date: dateIso,
+        message: bodyM ? bodyM[1].trim() : null,
+      };
+    },
+
     // Real git status
     async status() {
       const r = await runGit(repoPath, ['status', '--short']);

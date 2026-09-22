@@ -11,3 +11,7 @@ server/serviceAccountKey.json
 
 # Build natijalari
 dist
+
+# Loglar (bot + dev server)
+*.log
+logs/

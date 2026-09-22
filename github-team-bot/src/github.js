@@ -20,6 +20,7 @@ function createGitHubClient({ owner, repo, token, defaultBranch = 'main' }) {
   const authHeaders = token ? { Authorization: `Bearer ${token}` } : {};
   let remaining = null;
   let resetAt = null;
+  let lastOkAt = null; // /health: oxirgi muvaffaqiyatli API chaqiruvi
 
   async function api(path, options = {}) {
     const url = path.startsWith('http') ? path : `${API_BASE}${path}`;
@@ -50,12 +51,16 @@ function createGitHubClient({ owner, repo, token, defaultBranch = 'main' }) {
     if (!res.ok) {
       throw new GitHubApiError(`GitHub API xato: HTTP ${res.status}`, res.status);
     }
+    lastOkAt = Date.now();
     return res.json();
   }
 
   return {
     getRemainingRateLimit: () => remaining,
     getRateLimitReset: () => resetAt,
+    // /health: oxirgi 5 daqiqa ichida muvaffaqiyatli API chaqiruvi bo'lsa ulangan
+    // (hali chaqiruv bo'lmagan bo'lsa null — "noto'g'ri" emas, "tekshirilmagan")
+    getStatus: () => ({ lastOkAt, ok: lastOkAt ? !!(Date.now() - lastOkAt < 5 * 60 * 1000) : null }),
 
     // Branch ref ma'lumoti (commit sha bilan)
     async getBranch(branch) {

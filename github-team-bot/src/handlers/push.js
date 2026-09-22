@@ -41,10 +41,10 @@ async function handlePush(ctx, payload) {
   const branch = payload.ref.replace('refs/heads/', '');
   const headSha = payload.head_commit.id;
 
-  // DUPLICATE himoya: bot o'zi REAL push qilib xabar qilgan commit — yana xabar YO'Q
+  // DUPLICATE himoya: bot/agent o'zi REAL push qilib xabar qilgan commit — yana xabar YO'Q
   const last = db.getLastPush();
-  if (headSha && last && last.result === 'success' && last.commitHash &&
-      String(last.commitHash).startsWith(headSha.slice(0, 10)) && last.source === 'bot') {
+  if (headSha && last && ['success', 'pushed'].includes(last.result) && last.commitHash &&
+      String(last.commitHash).startsWith(headSha.slice(0, 10)) && ['bot', 'agent'].includes(last.source)) {
     logger.webhook(`push ${headSha.slice(0, 7)} — bot allaqachon xabar qilgan (bot push), skip`);
     return;
   }
@@ -79,7 +79,7 @@ async function handlePush(ctx, payload) {
       branch,
       commitHash: headSha,
       commitMessage: commitMsg,
-      result: 'success',
+      result: 'pushed',
       source: 'webhook',
     });
   } catch (e) {

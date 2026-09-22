@@ -190,7 +190,7 @@ function createUI({ config, db, team, git, telegram, github, agents }) {
     if (!agents) return telegram.sendMessage('❌ Agent tizimi sozlanmagan.', { chatId });
     if (!agents.isOnline(member.key)) {
       return telegram.sendMessage(
-        `🔴 <b>Agent ulanmagan.</b>\n\n👤 ${esc(member.name)} kompyuteridagi agent OFFLINE.\nAgent'ni ishga tushiring (agent papkasida npm start) va qayta urinib ko'ring.`,
+        `❌ <b>Agent offline.</b>\n\n🔴 Agent ulanmagan (OFFLINE) — ${esc(member.name)} kompyuteridagi agent ishlamayapti.\nAgent'ni ishga tushiring (agent papkasida npm start) va qayta urinib ko'ring.`,
         { chatId }
       );
     }
@@ -249,7 +249,7 @@ function createUI({ config, db, team, git, telegram, github, agents }) {
     if (!agents) return telegram.sendMessage('❌ Agent tizimi sozlanmagan.', { chatId });
     if (!agents.isOnline(member.key)) {
       return telegram.sendMessage(
-        `🔴 <b>Agent ulanmagan.</b>\n\n👤 ${esc(member.name)} agenti OFFLINE.\nAgent'ni ishga tushiring va qayta urinib ko'ring.`,
+        `❌ <b>Agent offline.</b>\n\n🔴 Agent ulanmagan (OFFLINE) — ${esc(member.name)} agenti ishlamayapti.\nAgent'ni ishga tushiring va qayta urinib ko'ring.`,
         { chatId }
       );
     }
@@ -423,15 +423,25 @@ function createUI({ config, db, team, git, telegram, github, agents }) {
       );
     }
 
-    // 3) Local git (bot mashinasidagi repo) — oxirgi variant
-    const lastCommit = await git.lastCommit();
-    if (lastCommit) {
+    // 3) Local git (bot mashinasidagi repo) — oxirgi variant (REAL commit, cache emas)
+    const lc = typeof git.lastCommitFull === 'function' ? await git.lastCommitFull() : null;
+    if (lc && lc.hash) {
+      const curBranch = await git.currentBranch();
       return telegram.sendMessage(
-        `🕒 <b>OXIRGI KODNI KIM O'ZGARTIRDI?</b>\n\n(local repo oxirgi commit)\n\n📝 Commit: ${esc(lastCommit.hash)}\n💬 Message: ${esc(lastCommit.message)}`,
+        `🕒 <b>OXIRGI KODNI KIM O'ZGARTIRDI?</b>\n\n` +
+        `(local repo oxirgi commit)\n\n` +
+        `👤 Kim: ${esc(lc.author || '—')}\n` +
+        `🌿 Branch: ${esc(curBranch || '—')}\n` +
+        `📝 Commit: ${esc(lc.hash)}\n` +
+        `💬 Message: ${esc(lc.message || '—')}\n` +
+        `🕐 Vaqt: ${esc(lc.date ? fmtTime(lc.date) : '—')}`,
         { chatId }
       );
     }
-    return telegram.sendMessage('ℹ️ Hali hech qanday push amalga oshirilmagan.', { chatId });
+    return telegram.sendMessage(
+      "⚠️ Ma'lumotni olishning iloji bo'lmadi.\n\nGitHub API, bot audit logi va local git'dan birortasi ham javob bermadi. Keyinroq qayta urinib ko'ring.",
+      { chatId }
+    );
   }
 
   // ---- Callback query (inline tugmalar) ----

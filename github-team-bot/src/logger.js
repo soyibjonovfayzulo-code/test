@@ -11,6 +11,8 @@ const SECRET_ENV_KEYS = [
   'ADMIN_SECRET',
   'SECRET',
   'TOKEN',
+  'AGENT_TOKENS',
+  'AGENT_TOKEN',
 ];
 
 function mask(value) {

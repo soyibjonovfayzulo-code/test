@@ -75,8 +75,12 @@ function createServer(webhookHandler, { port, healthProvider, agents, onAgentRes
         res.end(JSON.stringify({
           ok: true,
           bot: 'orzutalim-dev-bot',
-          telegram: extra.telegram !== undefined ? !!extra.telegram : true,
+          process: 'running',
+          telegram: extra.telegram !== undefined ? extra.telegram : true,
+          github: extra.github !== undefined ? extra.github : null,
           git: extra.git !== undefined ? !!extra.git : null,
+          agents: extra.agents !== undefined ? extra.agents : null,
+          queue: extra.queue !== undefined ? extra.queue : null,
           uptime: extra.uptime !== undefined ? extra.uptime : Math.floor(process.uptime()),
         })); // secretlar QAYTMAYDI
         return;

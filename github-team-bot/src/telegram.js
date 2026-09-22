@@ -53,13 +53,15 @@ function createTelegramBot({ token, chatId }) {
 
       if (data.ok) return data.result;
 
-      // Rate limit — retry_after ga hurmat bilan kutamiz
-      if (res.status === 429 && data.parameters && data.parameters.retry_after) {
+      // Rate limit — retry_after ga hurmat bilan kutamiz (0 ham to'g'ri qiymat)
+      const retryAfterRaw = data.parameters ? Number(data.parameters.retry_after) : NaN;
+      const retryAfter = Number.isFinite(retryAfterRaw) && retryAfterRaw >= 0 ? retryAfterRaw : null;
+      if (res.status === 429 && retryAfter !== null) {
         if (attempt >= retries) {
-          throw new TelegramApiError('Telegram rate limit (429)', 429, data.parameters.retry_after);
+          throw new TelegramApiError('Telegram rate limit (429)', 429, retryAfter);
         }
-        logger.telegram(`rate limit, ${data.parameters.retry_after}s kutamiz`);
-        await sleep((data.parameters.retry_after + 1) * 1000);
+        logger.telegram(`rate limit, ${retryAfter}s kutamiz`);
+        await sleep((retryAfter + 1) * 1000);
         attempt++;
         continue;
       }
@@ -117,6 +119,7 @@ function createTelegramBot({ token, chatId }) {
       let stopped = false;
       let polling = null;
       let backoffMs = 1000;
+      let lastOkAt = null; // /health: oxirgi muvaffaqiyatli poll vaqti
 
       async function loop() {
         while (!stopped) {
@@ -127,6 +130,7 @@ function createTelegramBot({ token, chatId }) {
               allowed_updates: ['message', 'callback_query'],
             }, { retries: 0, timeoutMs: 40000 });
             backoffMs = 1000; // success — backoff reset
+            lastOkAt = Date.now();
             for (const u of updates) {
               currentOffset = u.update_id + 1;
               // har update mustaqil, xato butun pollingni o'ldirmasin
@@ -152,6 +156,8 @@ function createTelegramBot({ token, chatId }) {
           stopped = true;
           return polling;
         },
+        // /health: Telegram connectivity (oxirgi 90s ichida poll ok bo'lsa ulangan)
+        getStatus: () => ({ lastOkAt, connected: !!(lastOkAt && Date.now() - lastOkAt < 90 * 1000) }),
       };
     },
   };

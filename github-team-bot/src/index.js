@@ -133,8 +133,9 @@ function createBot(overrides = {}) {
     const history = db.getPushHistory(10);
     if (!history.length) return telegram.sendMessage('ℹ️ Push history bo\'sh.', { chatId: msg.chat && msg.chat.id });
     let text = '📜 <b>PUSH HISTORY</b>\n\n';
+    const icon = (r) => (r === 'no_changes' ? 'ℹ️' : (['success', 'pushed'].includes(r) ? '✅' : '❌'));
     text += history.map((h) =>
-      `${h.result === 'success' ? '✅' : '❌'} ${esc(h.memberName || '?')} → ${esc(h.branch || '?')}\n  ${esc(h.commitHash || '—')} ${esc((h.commitMessage || '').slice(0, 40))}\n  🕐 ${esc(h.timestamp)}`
+      `${icon(h.result)} [${esc(h.result || '?')}] ${esc(h.memberName || '?')} → ${esc(h.branch || '?')}\n  ${esc(h.commitHash || '—')} ${esc((h.commitMessage || '').slice(0, 40))}\n  🕐 ${esc(h.timestamp)}`
     ).join('\n\n');
     return telegram.sendMessage(text, { chatId: msg.chat && msg.chat.id });
   }
@@ -194,7 +195,15 @@ function createBot(overrides = {}) {
     const webhookHandler = createWebhookHandler(ctx);
     const server = overrides.server || createServer(webhookHandler, {
       port: config.port,
-      healthProvider: () => ({ telegram: true, git: gitReady, uptime: Math.floor(process.uptime()) }),
+      healthProvider: () => ({
+        process: 'running',
+        telegram: telegram.getStatus ? telegram.getStatus() : { polling: true, connected: true },
+        github: github.getStatus ? github.getStatus() : null,
+        git: gitReady,
+        agents: agents.onlineStatuses(),
+        queue: db.agentQueueStats ? db.agentQueueStats() : null,
+        uptime: Math.floor(process.uptime()),
+      }),
       agents,
       onAgentResult: (cmd) => ui.onAgentResult(cmd),
     });
