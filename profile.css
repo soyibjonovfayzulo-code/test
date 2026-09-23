@@ -1,0 +1,389 @@
+/* ============================================================
+   OrzuTalim — PROFILE STYLES (mobile-first)
+   Avatar real photo + skeleton fallback, mastery bars,
+   achievement chips, customization preview, crop modal.
+   Mobile: 320-430px qamrov, 44px+ touch targetlar.
+   ============================================================ */
+
+/* ---------- Topbar / dropdown avatar photo qo'llab-quvvatlashi ---------- */
+.user-avatar,
+#ndHeroAvatar {
+  position: relative;
+  overflow: hidden;
+}
+
+.user-avatar img,
+#ndHeroAvatar img {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  border-radius: 50%;
+}
+
+/* ---------- PROFIL HEADER ---------- */
+.pf-head {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  padding: 28px 16px 24px;
+  margin-bottom: 16px;
+}
+
+.pf-avatar {
+  position: relative;
+  width: var(--pf-av, 96px);
+  height: var(--pf-av, 96px);
+  border-radius: 50%;
+  background: linear-gradient(135deg, var(--primary, #5b7cfa), var(--secondary, #8b5cf6));
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 8px 30px rgba(91, 124, 250, 0.3);
+  flex: 0 0 auto;
+}
+
+.pf-avatar-fallback {
+  font-size: calc(var(--pf-av, 96px) * 0.42);
+  line-height: 1;
+  color: #fff;
+  user-select: none;
+}
+
+.pf-avatar-img {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  border-radius: 50%;
+  opacity: 0;
+  transition: opacity 0.3s ease;
+  z-index: 2;
+}
+
+.pf-avatar-img.loaded {
+  opacity: 1;
+}
+
+.pf-avatar-xl { --pf-av: clamp(104px, 28vw, 136px); }
+.pf-avatar-lg { --pf-av: 84px; }
+.pf-avatar-sm { --pf-av: 56px; }
+
+.pf-cam {
+  position: relative;
+  margin-top: -18px;
+  margin-left: 96px;
+  z-index: 3;
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  border: 2px solid var(--card, #fff);
+  background: var(--primary, #5b7cfa);
+  color: #fff;
+  font-size: 18px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.25);
+  transition: transform 0.2s var(--bounce, ease);
+}
+
+.pf-cam:hover { transform: scale(1.08); }
+.pf-cam:active { transform: scale(0.95); }
+
+.pf-name {
+  margin: 14px 0 2px;
+  font-size: clamp(19px, 5vw, 24px);
+  font-weight: 700;
+  word-break: break-word;
+}
+
+.pf-username {
+  color: var(--muted, #9ca3af);
+  font-size: 14px;
+}
+.pf-bio {
+  margin: 10px 0 0;
+  font-size: 13.5px;
+  line-height: 1.5;
+  max-width: 420px;
+  word-break: break-word;
+}
+
+.pf-meta {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 4px;
+  font-size: 12.5px;
+  margin-top: 8px;
+  word-break: break-all;
+}
+
+.pf-actions {
+  margin-top: 16px;
+  width: 100%;
+  max-width: 320px;
+}
+
+.pf-actions .btn {
+  width: 100%;
+  min-height: 46px;
+}
+
+/* ---------- KARTALAR ---------- */
+.pf-card {
+  margin-bottom: 16px;
+}
+
+.pf-card .card-header h3 {
+  margin: 0;
+}
+
+.pf-details-btn {
+  margin-top: 12px;
+  min-height: 44px;
+}
+
+/* Mastery */
+.pf-mastery-row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 8px 0;
+  min-width: 0;
+}
+
+.pf-mastery-name {
+  flex: 0 0 92px;
+  font-size: 13px;
+  font-weight: 600;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.pf-bar {
+  flex: 1 1 auto;
+  display: flex;
+  gap: 3px;
+  min-width: 0;
+}
+
+.pf-bar-seg {
+  flex: 1 1 0;
+  height: 10px;
+  border-radius: 3px;
+  background: var(--border, rgba(255, 255, 255, 0.12));
+  transition: background 0.3s ease;
+}
+
+.pf-bar-seg.on {
+  background: linear-gradient(90deg, var(--primary, #5b7cfa), var(--secondary, #8b5cf6));
+}
+
+.pf-bar-pct {
+  flex: 0 0 42px;
+  text-align: right;
+  font-size: 12.5px;
+  font-variant-numeric: tabular-nums;
+}
+
+.pf-mastery-attempts {
+  flex: 0 0 auto;
+  font-size: 11.5px;
+}
+/* Achievements */
+.pf-ach-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+.pf-ach {
+  width: 46px;
+  height: 46px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 22px;
+  background: var(--bg, rgba(255, 255, 255, 0.05));
+  border: 1px solid var(--border, rgba(255, 255, 255, 0.12));
+}
+
+.pf-ach.locked {
+  opacity: 0.45;
+  filter: grayscale(0.6);
+}
+
+.pf-ach-note {
+  margin-top: 10px;
+  font-size: 12.5px;
+}
+
+/* Customization preview */
+.pf-cust-preview {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  flex-wrap: wrap;
+}
+
+.pf-cust-preview .store-equipped {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  min-width: 0;
+}
+
+/* ---------- EDIT MODAL — avatar bloki ---------- */
+.pf-edit-avatar-block {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 8px;
+}
+
+.pf-edit-avatar-actions {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  width: 100%;
+  max-width: 300px;
+}
+
+.pf-edit-avatar-actions .btn {
+  min-height: 44px;
+  width: 100%;
+}
+/* ---------- CROP MODAL ---------- */
+.pf-crop-modal {
+  width: min(92vw, 420px);
+}
+
+.pf-crop-stage {
+  position: relative;
+  width: 100%;
+  aspect-ratio: 1 / 1;
+  border-radius: 12px;
+  overflow: hidden;
+  background: #08111F;
+  border: 1px solid var(--border, rgba(255, 255, 255, 0.12));
+  touch-action: none;
+  cursor: grab;
+  user-select: none;
+}
+
+.pf-crop-stage:active { cursor: grabbing; }
+
+#pfCropImg {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform-origin: center;
+  max-width: none;
+  will-change: transform;
+}
+
+.pf-crop-hint {
+  margin: 10px 0 8px;
+  font-size: 12px;
+  color: var(--muted, #9ca3af);
+  text-align: center;
+}
+
+.pf-crop-zoom-row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.pf-crop-zoom-row input[type="range"] {
+  flex: 1 1 auto;
+  min-width: 0;
+}
+
+.pf-crop-zoom-btn {
+  flex: 0 0 44px;
+  height: 44px;
+  border-radius: 10px;
+  border: 1px solid var(--border, rgba(255, 255, 255, 0.12));
+  background: var(--bg, rgba(255, 255, 255, 0.05));
+  color: var(--text, #e5e7eb);
+  font-size: 20px;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+/* ---------- MOBILE (≤640px) ---------- */
+@media (max-width: 640px) {
+  .pf-head {
+    padding: 22px 12px 20px;
+  }
+
+  .pf-cam {
+    margin-left: 76px;
+    width: 42px;
+    height: 42px;
+  }
+
+  .pf-mastery-name {
+    flex-basis: 78px;
+    font-size: 12.5px;
+  }
+
+  .pf-ach {
+    width: 42px;
+    height: 42px;
+    font-size: 20px;
+  }
+}
+/* ---------- KICHIK MOBIL (≤360px) ---------- */
+@media (max-width: 360px) {
+  .pf-mastery-name {
+    flex-basis: 66px;
+    font-size: 11.5px;
+  }
+
+  .pf-bar-pct {
+    flex-basis: 38px;
+  }
+
+  .pf-actions .btn,
+  .pf-edit-avatar-actions .btn,
+  .pf-details-btn {
+    font-size: 13.5px;
+  }
+
+  .pf-cam {
+    margin-left: 64px;
+    width: 40px;
+    height: 40px;
+  }
+}
+
+/* ---------- DESKTOP (≥900px): keng 2 kolonka layout ---------- */
+@media (min-width: 900px) {
+  #profileRoot {
+    display: grid;
+    grid-template-columns: 1.05fr 0.95fr;
+    gap: 16px;
+    align-items: start;
+  }
+
+  .pf-head {
+    grid-column: 1 / -1;
+    padding: 36px 32px 30px;
+  }
+
+  .pf-card {
+    margin-bottom: 0;
+  }
+}

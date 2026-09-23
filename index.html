@@ -27,6 +27,7 @@
   <link rel="stylesheet" href="home-android.css" />
   <link rel="stylesheet" href="testlar-redesign.css" />
   <link rel="stylesheet" href="tests-android.css" />
+  <link rel="stylesheet" href="profile.css" />
 </head>
 
 <body>
@@ -653,14 +654,11 @@
           <div class="achievement-grid" id="achievementGrid"></div>
         </section>
 
-        <!-- PROFILE PAGE -->
+        <!-- PROFILE PAGE (real photo + mastery + achievements + certificates + customization) -->
         <section id="page-profile" class="page">
-          <div class="profile-header" id="profileHeader"></div>
-          <div class="profile-stats" id="profileStats"></div>
-          <div class="profile-actions">
-            <button class="btn btn-primary" id="editProfileBtn" type="button">Profilni tahrirlash</button>
-            <button class="btn btn-ghost" id="profileCertsBtn" type="button">🏆 Sertifikatlarim</button>
-          </div>
+          <div id="profileRoot"></div>
+          <!-- certificates.js renderProfileSummary() konteyneri (hidden — profil moduli
+               o'z cert preview kartasini ko'rsatadi, bu legacy/integratsiya uchun) -->
           <div id="profileCertSummary" class="hidden"></div>
         </section>
 
@@ -1355,6 +1353,14 @@
       </div>
       <div class="modal-body">
         <form id="editProfileForm">
+          <div class="pf-edit-avatar-block">
+            <div class="pf-edit-avatar" id="pfEditAvatarWrap"></div>
+            <div class="pf-edit-avatar-actions">
+              <button type="button" class="btn btn-ghost btn-sm" id="pfEditUploadBtn">📷 Rasmni o‘zgartirish</button>
+              <button type="button" class="btn btn-ghost btn-sm" id="pfEditRemoveBtn">🗑 Profil rasmini olib tashlash</button>
+              <input type="file" id="pfEditFileInput" accept="image/jpeg,image/jpg,image/png,image/webp" hidden />
+            </div>
+          </div>
           <div class="form-row">
             <div class="form-group">
               <label for="editFirstname">Ism</label>
@@ -1373,11 +1379,15 @@
             <label for="editEmail">Email</label>
             <input type="email" id="editEmail" name="editEmail" autocomplete="email" required />
           </div>
+          <div class="form-group">
+            <label for="editBio">Bio</label>
+            <textarea id="editBio" name="editBio" rows="3" maxlength="160" placeholder="O‘zingiz haqingizda qisqacha..."></textarea>
+          </div>
         </form>
       </div>
       <div class="modal-footer">
         <button class="btn btn-ghost" data-close type="button">Bekor qilish</button>
-        <button class="btn btn-primary" id="editProfileSave" type="button">Saqlash</button>
+        <button class="btn btn-primary" id="editProfileSave" type="button">💾 Saqlash</button>
       </div>
     </div>
   </div>
@@ -1599,6 +1609,63 @@
     </div>
   </div>
 
+  <!-- ====================== PROFIL RASM CROP MODAL ====================== -->
+  <div class="modal-overlay" id="pfCropModal" role="dialog" aria-modal="true" aria-labelledby="pfCropTitle">
+    <div class="modal pf-crop-modal">
+      <div class="modal-header">
+        <h3 id="pfCropTitle">📷 Rasmni kesish</h3>
+        <button class="modal-close" data-close aria-label="Yopish" type="button">✕</button>
+      </div>
+      <div class="modal-body">
+        <div class="pf-crop-stage" id="pfCropStage">
+          <img id="pfCropImg" alt="Tanlangan rasm" draggable="false" />
+        </div>
+        <p class="pf-crop-hint">Zoom: slayder yoki g‘ildirak · Surish: barmoq/sichqoncha bilan</p>
+        <div class="pf-crop-zoom-row">
+          <button type="button" class="pf-crop-zoom-btn" id="pfCropZoomOut" aria-label="Kichraytirish">−</button>
+          <input type="range" id="pfCropZoom" min="1" max="3" step="0.01" value="1" aria-label="Zoom" />
+          <button type="button" class="pf-crop-zoom-btn" id="pfCropZoomIn" aria-label="Kattalashtirish">+</button>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button class="btn btn-ghost" data-close type="button">Bekor qilish</button>
+        <button class="btn btn-primary" id="pfCropSave" type="button">Saqlash</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ====================== PROFIL RASM O'CHIRISH TASDIQLASH ====================== -->
+  <div class="modal-overlay" id="pfRemoveConfirmModal" role="dialog" aria-modal="true" aria-labelledby="pfRemoveTitle">
+    <div class="modal modal-sm">
+      <div class="modal-header">
+        <h3 id="pfRemoveTitle">🗑 Profil rasmi</h3>
+        <button class="modal-close" data-close aria-label="Yopish" type="button">✕</button>
+      </div>
+      <div class="modal-body">
+        <p class="ux-logout-question">Profil rasmini olib tashlaysizmi?</p>
+        <p class="ux-logout-note">O‘chirilgandan keyin standart avatar qaytadi.</p>
+      </div>
+      <div class="modal-footer">
+        <button class="btn btn-ghost" data-close type="button">Bekor qilish</button>
+        <button class="btn btn-danger" id="pfRemoveConfirmBtn" type="button">Olib tashlash</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ====================== MASTERY BATAFSIL MODAL ====================== -->
+  <div class="modal-overlay" id="pfMasteryModal" role="dialog" aria-modal="true" aria-labelledby="pfMasteryTitle">
+    <div class="modal">
+      <div class="modal-header">
+        <h3 id="pfMasteryTitle">🧠 Mastery — batafsil</h3>
+        <button class="modal-close" data-close aria-label="Yopish" type="button">✕</button>
+      </div>
+      <div class="modal-body" id="pfMasteryBody"></div>
+      <div class="modal-footer">
+        <button class="btn btn-ghost" data-close type="button">Yopish</button>
+      </div>
+    </div>
+  </div>
+
   <!-- ====================== TOAST ====================== -->
   <div class="toast-container" id="toastContainer" aria-live="polite"></div>
 
@@ -1628,6 +1695,7 @@
   <script type="module" src="push-config.js"></script>
   <script type="module" src="push.js"></script>
   <script src="devtools-guard.js"></script>
+  <script type="module" src="profile.js"></script>
   <script type="module" src="script.js"></script>
   <script type="module" src="auth-fx.js"></script>
   <script type="module" src="widget-sync.js"></script>

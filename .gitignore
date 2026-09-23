@@ -15,3 +15,6 @@ dist
 # Loglar (bot + dev server)
 *.log
 logs/
+
+# Profil rasmlari (server file storage)
+server/uploads/

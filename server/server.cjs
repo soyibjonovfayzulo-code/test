@@ -1,4 +1,4 @@
-const express = require('express');
+﻿const express = require('express');
 const cors = require('cors');
 const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
@@ -24,9 +24,9 @@ try {
     const serviceAccount = JSON.parse(fs.readFileSync(serviceAccountPath, 'utf8'));
     const app2 = admin.initializeApp({ credential: admin.credential.cert(serviceAccount) });
     firebaseMessaging = admin.messaging(app2);
-    console.log('✅ Firebase Admin SDK ulandi — /api/push/send ishlaydi');
+    console.log('âœ… Firebase Admin SDK ulandi â€” /api/push/send ishlaydi');
   } else {
-    console.log('ℹ️ serviceAccountKey.json topilmadi — FCM yuborish o\'chirilgan (/api/push/send 503 qaytaradi)');
+    console.log('â„¹ï¸ serviceAccountKey.json topilmadi â€” FCM yuborish o\'chirilgan (/api/push/send 503 qaytaradi)');
   }
 } catch (e) {
   console.error('Firebase Admin init xatosi:', e.message);
@@ -35,7 +35,7 @@ try {
 // Init DB
 initDb().catch(err => console.error('Database initialization error:', err));
 
-// CORS — allow both Vite dev (5173) and production
+// CORS â€” allow both Vite dev (5173) and production
 app.use(cors({
   origin: [
     'http://localhost:5173',
@@ -49,7 +49,7 @@ app.use(cors({
   ],
   credentials: true,
   methods: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE', 'OPTIONS'],
-  allowedHeaders: ['Content-Type', 'Authorization']
+  allowedHeaders: ['Content-Type', 'Authorization', 'x-it-uid']
 }));
 
 app.use(express.json({ limit: '10mb' }));
@@ -87,7 +87,7 @@ const superAdminMiddleware = (req, res, next) => {
 // -------------------------
 // AUTHENTICATION
 // -------------------------
-// Login — accepts username OR email
+// Login â€” accepts username OR email
 app.post('/api/auth/login', (req, res) => {
   const { username, password, email } = req.body;
   const loginId = email || username;
@@ -158,7 +158,7 @@ app.post('/api/auth/change-password', authMiddleware, async (req, res) => {
 });
 
 // -------------------------
-// SUPER ADMIN — Admins Management
+// SUPER ADMIN â€” Admins Management
 // -------------------------
 
 // List all admins (super_admin only)
@@ -527,7 +527,7 @@ app.get('/api/admin/stats', authMiddleware, (req, res) => {
 // -------------------------
 // PUSH TOKENS (FCM)
 // -------------------------
-// Qurilma FCM tokenni ro'yxatdan o'tkazadi (public — native ilovadan yuboriladi)
+// Qurilma FCM tokenni ro'yxatdan o'tkazadi (public â€” native ilovadan yuboriladi)
 app.post('/api/push/tokens', (req, res) => {
   const { token, userId, platform } = req.body || {};
   if (!token || typeof token !== 'string') {
@@ -561,7 +561,7 @@ app.get('/api/push/tokens', authMiddleware, (req, res) => {
   );
 });
 
-// Tokenni o'chirish (qurilma o'chirilganda/uzoq ishlatilmaganda) — admin
+// Tokenni o'chirish (qurilma o'chirilganda/uzoq ishlatilmaganda) â€” admin
 app.delete('/api/push/tokens/:token', authMiddleware, (req, res) => {
   db.run('DELETE FROM push_tokens WHERE token = ?', [req.params.token], function (err) {
     if (err) return res.status(500).json({ error: err.message });
@@ -582,7 +582,7 @@ app.delete('/api/push/tokens/:token', authMiddleware, (req, res) => {
 app.post('/api/push/send', authMiddleware, async (req, res) => {
   if (!firebaseMessaging) {
     return res.status(503).json({
-      error: "Firebase Admin sozlanmagan. Firebase Console → Project settings → Service accounts → 'Generate new private key' → faylni server/serviceAccountKey.json sifatida saqlang va serverni qayta ishga tushiring."
+      error: "Firebase Admin sozlanmagan. Firebase Console â†’ Project settings â†’ Service accounts â†’ 'Generate new private key' â†’ faylni server/serviceAccountKey.json sifatida saqlang va serverni qayta ishga tushiring."
     });
   }
 
@@ -616,7 +616,7 @@ app.post('/api/push/send', authMiddleware, async (req, res) => {
   }
 
   if (!targetTokens.length) {
-    return res.status(404).json({ error: "Tokenlar topilmadi — hech qurilma ro'yxatdan o'tmagan (ilovani ochib tokenni ro'yxatdan o'tkazing)" });
+    return res.status(404).json({ error: "Tokenlar topilmadi â€” hech qurilma ro'yxatdan o'tmagan (ilovani ochib tokenni ro'yxatdan o'tkazing)" });
   }
 
   // FCM data qiymatlari string bo'lishi shart
@@ -660,13 +660,148 @@ app.post('/api/push/send', authMiddleware, async (req, res) => {
   res.json({ success: true, total: targetTokens.length, ...results });
 });
 
+  // -------------------------
+  // PROFILE IMAGE STORAGE (real file storage + DB record)
+  // -------------------------
+  // Rasm server/uploads/profile/<uid>/ ichida saqlanadi, URL esa
+  // SQLite `profile_images` jadvalida. Fayl nomi HECH QACHON client'dan
+  // olinmaydi — server tomonida generatsiya qilinadi (path traversal yo'q).
+  // Qabul qilinadigan formatlar: JPEG, PNG, WEBP (magic byte'lar bilan
+  // tekshiriladi — extension'a ko'r-ko'rona ishonilmaydi). Max 5 MB.
+  const crypto = require('crypto');
+  const UPLOADS_ROOT = path.join(__dirname, 'uploads');
+  const PROFILE_UPLOAD_DIR = path.join(UPLOADS_ROOT, 'profile');
+  const PROFILE_MAX_BYTES = 5 * 1024 * 1024; // 5 MB
+
+  // Static serving — cache-friendly (fayl nomi har upload'da yangi generatsiya
+  // qilinadi, shuning uchun uzun maxAge xavfsiz).
+  app.use('/uploads', express.static(UPLOADS_ROOT, { maxAge: '7d', fallthrough: true }));
+
+  function safeUid(uid) {
+    return (typeof uid === 'string' && /^[a-zA-Z0-9_-]{1,64}$/.test(uid)) ? uid : null;
+  }
+
+  function sniffImageExt(buf) {
+    if (!buf || buf.length < 12) return null;
+    // JPEG: FF D8 FF
+    if (buf[0] === 0xFF && buf[1] === 0xD8 && buf[2] === 0xFF) return 'jpg';
+    // PNG: 89 50 4E 47 0D 0A 1A 0A
+    if (buf[0] === 0x89 && buf[1] === 0x50 && buf[2] === 0x4E && buf[3] === 0x47 &&
+        buf[4] === 0x0D && buf[5] === 0x0A && buf[6] === 0x1A && buf[7] === 0x0A) return 'png';
+    // WEBP: 'RIFF' ???? 'WEBP'
+    if (buf.slice(0, 4).toString('latin1') === 'RIFF' && buf.slice(8, 12).toString('latin1') === 'WEBP') return 'webp';
+    return null; // SVG / EXE / JS va boshqalar — qat'iy rad etiladi
+  }
+
+  function parseDataUrl(dataUrl) {
+    if (typeof dataUrl !== 'string') return null;
+    const m = /^data:([a-z0-9.+-]+\/[a-z0-9.+-]+);base64,([A-Za-z0-9+/=]+)$/.exec(dataUrl);
+    if (!m) return null;
+    let buf;
+    try { buf = Buffer.from(m[2], 'base64'); } catch (e) { return null; }
+    if (!buf || !buf.length) return null;
+    return { mime: m[1], buf };
+  }
+
+  function getProfileRow(uid, cb) {
+    db.get('SELECT uid, url, file FROM profile_images WHERE uid = ?', [uid], (err, row) => {
+      if (err) return cb(err);
+      cb(null, row || null);
+    });
+  }
+
+  function deleteProfileFileSafe(uid, file) {
+    // Fayl faqat shu user'ning dir'i ichidan o'chiriladi (defense-in-depth)
+    if (!safeUid(uid) || typeof file !== 'string') return;
+    const dir = path.resolve(PROFILE_UPLOAD_DIR, uid);
+    const target = path.resolve(dir, file);
+    if (!target.startsWith(dir + path.sep)) return;
+    fs.unlink(target, () => { /* fayl bo'lmasa ham OK */ });
+  }
+
+  // Profil rasmini yuklash / almashtirish
+  app.post('/api/profile/image', (req, res) => {
+    const { uid: rawUid, dataUrl } = req.body || {};
+    const uid = safeUid(rawUid);
+    if (!uid) return res.status(400).json({ error: "Noto'g'ri foydalanuvchi identifikatori" });
+    // Header bilan body'dagi uid mos kelishi shart — boshqa user path'iga yozish taqiqlanadi
+    const headerUid = req.headers['x-it-uid'];
+    if (headerUid && headerUid !== uid) return res.status(403).json({ error: "Foydalanuvchi identifikatori mos kelmadi" });
+
+    const parsed = parseDataUrl(dataUrl);
+    if (!parsed) return res.status(400).json({ error: "Rasm formati qo'llab-quvvatlanmaydi" });
+    if (parsed.buf.length > PROFILE_MAX_BYTES) return res.status(413).json({ error: 'Rasm hajmi 5 MB dan oshmasligi kerak' });
+
+    const ext = sniffImageExt(parsed.buf);
+    if (!ext) return res.status(400).json({ error: "Rasm formati qo'llab-quvvatlanmaydi" });
+    // Mime <-> magic-byte mosligi ham tekshiriladi
+    const extByMime = { 'image/jpeg': 'jpg', 'image/jpg': 'jpg', 'image/png': 'png', 'image/webp': 'webp' };
+    if (extByMime[parsed.mime] !== ext) return res.status(400).json({ error: "Rasm formati qo'llab-quvvatlanmaydi" });
+
+    fs.mkdir(path.join(PROFILE_UPLOAD_DIR, uid), { recursive: true }, (mkErr) => {
+      if (mkErr) return res.status(500).json({ error: 'Storage xatosi' });
+
+      // Eski faylni topib o'chirish — orphan file qolmasin
+      getProfileRow(uid, (gErr, oldRow) => {
+        if (gErr) return res.status(500).json({ error: 'Database xatosi' });
+        if (oldRow && oldRow.file) deleteProfileFileSafe(uid, oldRow.file);
+
+        // Fayl nomi to'liq server tomonida generatsiya qilinadi
+        const fileName = `${Date.now()}-${crypto.randomBytes(6).toString('hex')}.${ext}`;
+        const filePath = path.join(PROFILE_UPLOAD_DIR, uid, fileName);
+        fs.writeFile(filePath, parsed.buf, (wErr) => {
+          if (wErr) return res.status(500).json({ error: 'Fayl yozishda xatolik' });
+
+          const url = `/uploads/profile/${encodeURIComponent(uid)}/${fileName}`;
+          const now = new Date().toISOString();
+          db.run(
+            `INSERT INTO profile_images (uid, url, file, updated_at) VALUES (?, ?, ?, ?)
+             ON CONFLICT(uid) DO UPDATE SET url = excluded.url, file = excluded.file, updated_at = excluded.updated_at`,
+            [uid, url, fileName, now],
+            (dbErr) => {
+              if (dbErr) { fs.unlink(filePath, () => {}); return res.status(500).json({ error: 'Database xatosi' }); }
+              res.json({ success: true, url, updatedAt: now });
+            }
+          );
+        });
+      });
+    });
+  });
+
+  // Profil rasmini o'qish (boshqa qurilma login qilganda URL olish uchun)
+  app.get('/api/profile/image/:uid', (req, res) => {
+    const uid = safeUid(req.params.uid);
+    if (!uid) return res.status(400).json({ error: "Noto'g'ri foydalanuvchi identifikatori" });
+    getProfileRow(uid, (err, row) => {
+      if (err) return res.status(500).json({ error: 'Database xatosi' });
+      if (!row || !row.url) return res.status(404).json({ error: 'Profil rasmi topilmadi' });
+      res.json({ url: row.url, updatedAt: row.updated_at });
+    });
+  });
+
+  // Profil rasmini o'chirish (default avatar'ga qaytish)
+  app.delete('/api/profile/image/:uid', (req, res) => {
+    const uid = safeUid(req.params.uid);
+    if (!uid) return res.status(400).json({ error: "Noto'g'ri foydalanuvchi identifikatori" });
+    const headerUid = req.headers['x-it-uid'];
+    if (headerUid && headerUid !== uid) return res.status(403).json({ error: "Foydalanuvchi identifikatori mos kelmadi" });
+    getProfileRow(uid, (err, row) => {
+      if (err) return res.status(500).json({ error: 'Database xatosi' });
+      if (row && row.file) deleteProfileFileSafe(uid, row.file);
+      db.run('DELETE FROM profile_images WHERE uid = ?', [uid], (dErr) => {
+        if (dErr) return res.status(500).json({ error: 'Database xatosi' });
+        res.json({ success: true });
+      });
+    });
+  });
+
 // Health check
 app.get('/api/health', (req, res) => {
   res.json({ status: 'ok', time: new Date().toISOString() });
 });
 
 app.listen(PORT, () => {
-  console.log(`✅ Server running on http://localhost:${PORT}`);
+  console.log(`âœ… Server running on http://localhost:${PORT}`);
   console.log(`   Admin Panel: http://localhost:${PORT}/admin/`);
   console.log(`   API: http://localhost:${PORT}/api/health`);
 });

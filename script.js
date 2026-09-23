@@ -945,6 +945,8 @@ function ensureUsers() {
     if (!Array.isArray(u.gifts)) u.gifts = [];
     if (!Array.isArray(u.giftHistory)) u.giftHistory = [];
     if (!u.achievements) u.achievements = [];
+    if (u.bio == null) u.bio = "";
+    if (u.photoUrl === undefined) u.photoUrl = null;
     ensureUserTestProgress(u);
     return u;
   });
@@ -1080,6 +1082,17 @@ window.__itGetSubjectTestOrder = getSubjectTestOrder;
 window.__itGetBankState = () => ({ loaded: QBANK_LOADING.loaded, backend: { loaded: QBANK_LOADING.backend.loaded, error: QBANK_LOADING.backend.error } });
 /* Sertifikat tizimi (certificates.js) ismni user state'ga mirror qilishi uchun */
 window.__itSaveUserState = saveUsersAndCurrent;
+/* Profil moduli (profile.js) uchun expose'lar */
+window.__itGetActiveAvatar = getActiveAvatar;
+window.__itRefreshAvatarUI = function () { refreshUserChip(); refreshUserMenu(); };
+/* ACHIEVEMENTS const pastda e'lon qilingan — TDZ xatosi bo'lmasligi uchun getter */
+window.__itGetAchievements = function () { return ACHIEVEMENTS; };
+window.__itGetStoreInfo = function () {
+  if (!currentUser) return null;
+  const st = storeState(currentUser);
+  return { equipped: st.equipped, inventoryCount: st.inventory.length, points: currentUser.points || 0 };
+};
+window.__itStoreItem = function (id) { return storeItem(id); };
 
 function showPage(name) {
   /* "Natijalar" bo'limi olib tashlangan — eski /#results link/dashboard havolalari
@@ -1301,11 +1314,26 @@ function getActiveAvatar(u = currentUser) {
   return initialsOf(`${u.firstname || ""} ${u.lastname || ""}`) || "U";
 }
 
+/* Avatar node'ga real photo (yuklangan bo'lsa) yoki emoji fallback chizish */
+function setAvatarNode(el, u) {
+  if (!el) return;
+  const photo = u && u.photoUrl;
+  if (photo) {
+    const img = el.querySelector("img");
+    if (img && img.getAttribute("src") === photo) return;
+    el.classList.add("has-photo");
+    el.innerHTML = `<img src="${photo}" alt="" loading="lazy" onerror="this.parentElement.classList.remove('has-photo');this.remove();">`;
+  } else {
+    el.classList.remove("has-photo");
+    if (el.querySelector("img")) el.innerHTML = "";
+    el.textContent = getActiveAvatar(u);
+  }
+}
+
 function refreshUserChip() {
   const u = currentUser;
   $("#topbarUsername").textContent = u ? u.username : "User";
-  const a = $("#topbarAvatar");
-  if (a) a.textContent = getActiveAvatar(u);
+  setAvatarNode($("#topbarAvatar"), u);
 }
 
 /* Profil dropdown menyusi kontentini yangilash */
@@ -1315,8 +1343,7 @@ function refreshUserMenu() {
   if (n) n.textContent = u ? u.username : "User";
   const e = $("#dropdownEmail");
   if (e) e.textContent = u && u.email ? u.email : "";
-  const a = $("#dropdownAvatar");
-  if (a) a.textContent = getActiveAvatar(u);
+  setAvatarNode($("#dropdownAvatar"), u);
 }
 
 function showAuth() {
@@ -2322,66 +2349,36 @@ function renderAchievements() {
 }
 
 /* ====================== PROFILE ====================== */
+/* Render to'liq profile.js (window.ITProfile) moduliga o'tkazildi —
+   real photo, mastery, achievements, certificates, customization.
+   Bu wrapper eski chaqiruv nuqtalari (showPage, refreshStoreViews va h.k.)
+   bilan moslikni saqlaydi. */
 function renderProfile() {
   const u = currentUser;
   if (!u) return;
-  const st = userStats(u);
-  const joined = new Date(u.joinedAt);
-  $("#profileHeader").innerHTML = `
-    <div class="profile-avatar">${getActiveAvatar(u)}</div>
-    <div class="profile-head-info">
-      <h2>${u.firstname} ${u.lastname}</h2>
-      <div class="muted">@${u.username} · ${u.email}</div>
-      <div class="profile-level-row">
-        <div class="level-badge">Level ${u.level}</div>
-        <div class="xp-bar-wrap profile-xp">
-          <div class="xp-bar-info">
-            <span>${xpProgress(u.xp).current} XP</span>
-            <span>/ ${xpProgress(u.xp).next} XP</span>
-          </div>
-          <div class="xp-bar"><div class="xp-bar-fill" style="width:${xpProgress(u.xp).percent}%"></div></div>
-        </div>
+  if (window.ITProfile && typeof window.ITProfile.render === "function") {
+    try { window.ITProfile.render(); return; } catch (e) { console.warn("ITProfile.render xatosi:", e); }
+  }
+  /* Legacy fallback — ITProfile yuklanmagan bo'lsa */
+  const legacyHeader = $("#profileHeader");
+  if (legacyHeader) {
+    legacyHeader.innerHTML = `
+      <div class="profile-avatar">${getActiveAvatar(u)}</div>
+      <div class="profile-head-info">
+        <h2>${u.firstname} ${u.lastname}</h2>
+        <div class="muted">@${u.username} · ${u.email}</div>
       </div>
-    </div>
-  `;
-  $("#profileStats").innerHTML = `
-    <div class="profile-stat-card"><div class="val">${u.points || 0}</div><div class="lbl">Umumiy ball</div></div>
-    <div class="profile-stat-card"><div class="val">${u.xp || 0}</div><div class="lbl">XP</div></div>
-    <div class="profile-stat-card"><div class="val">${u.level || 1}</div><div class="lbl">Level</div></div>
-    <div class="profile-stat-card"><div class="val">${st.total}</div><div class="lbl">Ishlangan testlar</div></div>
-    <div class="profile-stat-card"><div class="val">${st.avgPercent}%</div><div class="lbl">O'rtacha foiz</div></div>
-    <div class="profile-stat-card"><div class="val">${u.streak || 0} kun</div><div class="lbl">Streak</div></div>
-    <div class="profile-stat-card"><div class="val">${(u.achievements || []).length}/${ACHIEVEMENTS.length}</div><div class="lbl">Yutuqlar</div></div>
-    <div class="profile-stat-card"><div class="val">${joined.getDate()}/${joined.getMonth() + 1}/${joined.getFullYear()}</div><div class="lbl">Qo'shilgan</div></div>
-  `;
-  const state = storeState(u);
-  const equipped = Object.values(state.equipped).map(storeItem).filter(Boolean);
-  const gifts = (u.gifts || []).map(gift => {
-    const item = storeItem(gift.itemId);
-    const sender = userById(gift.from);
-    return item ? `<span class="store-equipped-pill">${item.icon} ${item.name.replace(/^\S+\s/, '')} · ${sender ? sender.firstname : 'Do‘st'}</span>` : '';
-  }).join('');
-  $("#profileStats").insertAdjacentHTML("afterend", `
-    <div class="card profile-store-summary">
-      <div class="card-header"><h3>🛍️ Do'kon profili</h3></div>
-      <div class="card-body">
-        <p><strong>💰 ${u.points || 0} ball</strong> · <strong>XP ${u.xp || 0}</strong></p>
-        <p class="muted">Taqilgan buyumlar</p>
-        <div class="store-equipped">${equipped.length ? equipped.map(item => `<span class="store-equipped-pill">${item.icon} ${item.name.replace(/^\S+\s/, '')}</span>`).join('') : '<span class="muted">Hozircha yo‘q</span>'}</div>
-        <p class="muted">Inventar: ${state.inventory.length} ta · Qabul qilingan sovg'alar: ${u.gifts ? u.gifts.length : 0} ta</p>
-        <div class="store-equipped">${gifts || '<span class="muted">Sovg‘alar yo‘q</span>'}</div>
-      </div>
-    </div>
-  `);
-  /* Sertifikatlar umumiy ko'rsatkichi (certificates.js) */
-  if (window.ITCertificates && typeof window.ITCertificates.renderProfileSummary === "function") {
-    try { window.ITCertificates.renderProfileSummary(); } catch (e) { /* noop */ }
+    `;
   }
 }
 
 /* ====================== PROFILE EDIT MODAL ====================== */
 function bindProfileEdit() {
-  $("#editProfileBtn").addEventListener("click", () => {
+  if (window.ITProfile) return;
+  /* Legacy fallback: statik tugma bo'lsa bog'lash (profile.js barchasini boshqaradi) */
+  const btn = $("#editProfileBtn");
+  if (!btn) return;
+  btn.addEventListener("click", () => {
     const u = currentUser; if (!u) return;
     $("#editFirstname").value = u.firstname;
     $("#editLastname").value = u.lastname;
@@ -2389,7 +2386,9 @@ function bindProfileEdit() {
     $("#editEmail").value = u.email;
     openModal("#editProfileModal");
   });
-  $("#editProfileSave").addEventListener("click", () => {
+  const save = $("#editProfileSave");
+  if (!save) return;
+  save.addEventListener("click", () => {
     const u = currentUser; if (!u) return;
     const firstname = $("#editFirstname").value.trim();
     const lastname = $("#editLastname").value.trim();

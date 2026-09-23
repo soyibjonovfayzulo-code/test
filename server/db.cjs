@@ -62,6 +62,17 @@ function initDb() {
         )
       `);
 
+      // Profile images — rasmning URL/path'i bazada saqlanadi, binary fayl
+      // server/uploads/profile/<uid>/ ichida saqlanadi (real storage).
+      db.run(`
+        CREATE TABLE IF NOT EXISTS profile_images (
+          uid TEXT PRIMARY KEY,
+          url TEXT,
+          file TEXT,
+          updated_at TEXT
+        )
+      `);
+
       // Tests / Test Questions table for Question Bank
       db.run(`
         CREATE TABLE IF NOT EXISTS test_questions (

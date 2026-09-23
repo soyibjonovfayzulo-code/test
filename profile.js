@@ -1,0 +1,605 @@
+/* ============================================================
+   OrzuTalim — PROFILE MODULE (real photo + mastery + achievements)
+   - Real profil rasmi: upload → validate → crop → compress → server storage
+   - Server: POST/GET/DELETE /api/profile/image (SQLite + file storage)
+   - Mastery/Achievement/Certificate — FAQAT real data manbalaridan
+   ============================================================ */
+(function () {
+  'use strict';
+
+  /* ================== KONFIG ================== */
+  var MAX_FILE_MB = 5;
+  var MAX_FILE_BYTES = MAX_FILE_MB * 1024 * 1024;
+  var ACCEPTED_TYPES = ['image/jpeg', 'image/jpg', 'image/png', 'image/webp'];
+  var OUTPUT_SIZE = 256;   // 1:1 crop → 256×256 (avatar uchun yetarli, tez)
+  var JPEG_QUALITY = 0.82;
+  var API = '/api/profile/image';
+
+  function $(sel, root) { return (root || document).querySelector(sel); }
+  function esc(s) {
+    return String(s == null ? '' : s)
+      .replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;')
+      .replace(/"/g, '&quot;').replace(/'/g, '&#39;');
+  }
+  function toast(msg, type) {
+    try { if (typeof window.showToast === 'function') { window.showToast(msg, type || 'info'); return; } } catch (e) { /* noop */ }
+    /* Fallback: script.js'ning toast tizimi global bo'lmasa — xuddi shu classlar bilan chizamiz */
+    var c = document.getElementById('toastContainer');
+    if (!c) return;
+    var el = document.createElement('div');
+    el.className = 'toast ' + (type || 'info');
+    el.textContent = msg;
+    c.appendChild(el);
+    setTimeout(function () { el.classList.add('show'); }, 10);
+    setTimeout(function () {
+      el.classList.add('removing');
+      setTimeout(function () { el.remove(); }, 350);
+    }, 2800);
+  }
+  /* Modal yordamchilari — script.js'dagi openModal/closeModal module-scoped,
+     global expose yo'q, shuning uchun to'g'ridan-to'g'ri .active class boshqaramiz */
+  function openModalEl(sel) {
+    var el = document.querySelector(sel);
+    if (el) el.classList.add('active');
+  }
+  function closeModalEl(sel) {
+    var el = document.querySelector(sel);
+    if (el) el.classList.remove('active');
+  }
+  function haptic(kind) {
+    try { if (window.ITHaptics && typeof window.ITHaptics.tap === 'function') window.ITHaptics.tap(kind || 'light'); } catch (e) { /* noop */ }
+  }
+
+  /* ================== USER STATE (global store — duplicate state YO'Q) ================== */
+  function getUser() {
+    try { return typeof window.__itGetCurrentUser === 'function' ? window.__itGetCurrentUser() : null; }
+    catch (e) { return null; }
+  }
+  function saveUser() {
+    try { if (typeof window.__itSaveUserState === 'function') window.__itSaveUserState(); } catch (e) { /* noop */ }
+  }
+  /* User obyektini id bo'yicha real users[] ro'yxatidan topish (migrate/fallback) */
+  function findRealUser(u) {
+    try {
+      var users = JSON.parse(localStorage.getItem('users') || '[]');
+      if (!u || !u.id) return null;
+      for (var i = 0; i < users.length; i++) if (users[i].id === u.id) return users[i];
+      return null;
+    } catch (e) { return null; }
+  }
+  function uidOf(u) {
+    if (!u) return '';
+    if (u.id) return String(u.id);
+    return String(u.username || u.email || '').toLowerCase().replace(/[^a-z0-9_-]/g, '').slice(0, 64);
+  }
+  function photoUrlOf(u) { return u && typeof u.photoUrl === 'string' ? u.photoUrl : ''; }
+
+  /* ================== SERVER STORAGE API ================== */
+  function fetchServerPhoto(uid, cb) {
+    if (!uid) return cb(null);
+    fetch(API + '/' + encodeURIComponent(uid), { headers: { 'x-it-uid': uid } })
+      .then(function (r) { return r.ok ? r.json() : null; })
+      .then(function (d) { cb(d && d.url ? d.url : null); })
+      .catch(function () { cb(null); });
+  }
+  function uploadServerPhoto(uid, dataUrl, cb) {
+    fetch(API, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json', 'x-it-uid': uid },
+      body: JSON.stringify({ uid: uid, dataUrl: dataUrl })
+    })
+      .then(function (r) { return r.json().then(function (d) { return { ok: r.ok, data: d }; }); })
+      .then(function (res) { cb(res.ok ? null : ((res.data && res.data.error) || 'Yuklashda xatolik'), res.data && res.data.url); })
+      .catch(function () { cb('Serverga ulanmadi', null); });
+  }
+  function deleteServerPhoto(uid, cb) {
+    fetch(API + '/' + encodeURIComponent(uid), { method: 'DELETE', headers: { 'x-it-uid': uid } })
+      .then(function (r) { cb(r.ok ? null : 'O\u2018chirishda xatolik'); })
+      .catch(function () { cb('Serverga ulanmadi'); });
+  }
+
+  /* ================== VALIDATION ================== */
+  function validateFile(file) {
+    if (!file) return 'Fayl tanlanmadi';
+    if (file.size > MAX_FILE_BYTES) return 'Rasm hajmi ' + MAX_FILE_MB + ' MB dan oshmasligi kerak';
+    if (!ACCEPTED_TYPES.includes(file.type)) return "Rasm formati qo'llab-quvvatlanmaydi";
+    return null;
+  }
+  /* FileReader + Image yuklash — mime spoof'dan himoya (haqiqiy decode amalga oshadi) */
+  function readAndDecode(file, cb) {
+    var reader = new FileReader();
+    reader.onerror = function () { cb("Rasm formati qo'llab-quvvatlanmaydi"); };
+    reader.onload = function () {
+      var img = new Image();
+      img.onload = function () {
+        if (!img.naturalWidth || !img.naturalHeight) return cb("Rasm formati qo'llab-quvvatlanmaydi");
+        cb(null, img, reader.result);
+      };
+      img.onerror = function () { cb("Rasm formati qo'llab-quvvatlanmaydi"); };
+      img.src = reader.result;
+    };
+    reader.readAsDataURL(file);
+  }
+  /* ================== CROP ENGINE (zoom + move, 1:1) ================== */
+  var crop = {
+    stage: null, loaded: false,
+    scale: 1, minScale: 1, maxScale: 3, baseScale: 1,
+    x: 0, y: 0, dragging: false, startX: 0, startY: 0, baseX: 0, baseY: 0,
+    pinchDist: 0, onDone: null
+  };
+  function clampCropPos() {
+    var s = $('#pfCropStage'), im = $('#pfCropImg');
+    if (!s || !im || !crop.loaded) return;
+    var rw = im.naturalWidth * crop.scale, rh = im.naturalHeight * crop.scale;
+    var maxX = Math.max(0, (rw - s.clientWidth) / 2);
+    var maxY = Math.max(0, (rh - s.clientHeight) / 2);
+    crop.x = Math.min(maxX, Math.max(-maxX, crop.x));
+    crop.y = Math.min(maxY, Math.max(-maxY, crop.y));
+  }
+  function applyCropTransform() {
+    var im = $('#pfCropImg');
+    if (im) im.style.transform = 'translate(' + crop.x + 'px,' + crop.y + 'px) scale(' + crop.scale + ')';
+  }
+  function openCrop(imgSrc, onDone) {
+    var stage = $('#pfCropStage'), img = $('#pfCropImg');
+    if (!stage || !img) { toast('Crop oynasi topilmadi', 'error'); return; }
+    crop.onDone = onDone;
+    crop.loaded = false; crop.scale = 1; crop.minScale = 1; crop.x = 0; crop.y = 0;
+    img.style.transform = 'translate(0px,0px) scale(1)';
+    img.onload = function () {
+      crop.loaded = true;
+      var s = stage.clientWidth || 280;
+      var need = Math.max(s / img.naturalWidth, s / img.naturalHeight);
+      crop.baseScale = need > 1 ? need : 1;
+      crop.minScale = crop.baseScale;
+      crop.scale = Math.max(crop.minScale, Math.min(crop.maxScale, crop.scale));
+      var z = $('#pfCropZoom');
+      if (z) { z.min = String(crop.minScale); z.value = String(crop.scale); }
+      crop.x = 0; crop.y = 0;
+      applyCropTransform();
+      openModalEl('#pfCropModal');
+    };
+    img.onerror = function () { toast("Rasm formati qo'llab-quvvatlanmaydi", 'error'); };
+    img.src = imgSrc;
+  }
+  function bindCrop() {
+    var stage = $('#pfCropStage'), img = $('#pfCropImg');
+    var zoom = $('#pfCropZoom');
+    if (!stage || !img || stage.dataset.pfBound) return;
+    stage.dataset.pfBound = '1';
+
+    function setScale(v) {
+      crop.scale = Math.max(crop.minScale, Math.min(crop.maxScale, v));
+      clampCropPos(); applyCropTransform();
+      if (zoom) zoom.value = String(crop.scale);
+    }
+    if (zoom) zoom.addEventListener('input', function () { setScale(parseFloat(zoom.value)); });
+    var zin = $('#pfCropZoomIn'), zout = $('#pfCropZoomOut');
+    if (zin) zin.addEventListener('click', function () { setScale(crop.scale + 0.2); });
+    if (zout) zout.addEventListener('click', function () { setScale(crop.scale - 0.2); });
+
+    stage.addEventListener('wheel', function (e) {
+      e.preventDefault();
+      setScale(crop.scale - e.deltaY * 0.0015);
+    }, { passive: false });
+
+    stage.addEventListener('pointerdown', function (e) {
+      crop.dragging = true; crop.startX = e.clientX; crop.startY = e.clientY;
+      crop.baseX = crop.x; crop.baseY = crop.y;
+      try { stage.setPointerCapture(e.pointerId); } catch (err) { /* noop */ }
+    });
+    stage.addEventListener('pointermove', function (e) {
+      if (!crop.dragging) return;
+      crop.x = crop.baseX + (e.clientX - crop.startX);
+      crop.y = crop.baseY + (e.clientY - crop.startY);
+      clampCropPos(); applyCropTransform();
+    });
+    function endDrag() { crop.dragging = false; }
+    stage.addEventListener('pointerup', endDrag);
+    stage.addEventListener('pointercancel', endDrag);
+
+    /* Touch pinch-zoom (mobil) */
+    stage.addEventListener('touchstart', function (e) {
+      if (e.touches.length === 2) {
+        crop.pinchDist = Math.hypot(e.touches[0].clientX - e.touches[1].clientX, e.touches[0].clientY - e.touches[1].clientY);
+      }
+    }, { passive: true });
+    stage.addEventListener('touchmove', function (e) {
+      if (e.touches.length === 2 && crop.pinchDist) {
+        e.preventDefault();
+        var d = Math.hypot(e.touches[0].clientX - e.touches[1].clientX, e.touches[0].clientY - e.touches[1].clientY);
+        setScale(crop.scale * (d / crop.pinchDist));
+        crop.pinchDist = d;
+      }
+    }, { passive: false });
+    stage.addEventListener('touchend', function () { crop.pinchDist = 0; }, { passive: true });
+
+    var save = $('#pfCropSave');
+    if (save) save.addEventListener('click', function () {
+      if (!crop.loaded || !crop.onDone) return;
+      var s = stage.clientWidth || 280;
+      var out = document.createElement('canvas');
+      out.width = OUTPUT_SIZE; out.height = OUTPUT_SIZE;
+      var ctx = out.getContext('2d');
+      ctx.fillStyle = '#08111F';
+      ctx.fillRect(0, 0, OUTPUT_SIZE, OUTPUT_SIZE);
+      var w = img.naturalWidth * crop.scale, h = img.naturalHeight * crop.scale;
+      ctx.drawImage(img, (s - w) / 2 + crop.x, (s - h) / 2 + crop.y, w, h, 0, 0, OUTPUT_SIZE, OUTPUT_SIZE);
+      var dataUrl = out.toDataURL('image/jpeg', JPEG_QUALITY);
+      closeModalEl('#pfCropModal');
+      var done = crop.onDone; crop.onDone = null;
+      done(dataUrl);
+    });
+  }
+  /* ================== UPLOAD / REMOVE PIPELINE ================== */
+  var fileInput = null;
+  function setBusy(b) {
+    var save = $('#pfCropSave');
+    if (save) { save.disabled = b; save.textContent = b ? '⏳ Saqlanmoqda...' : 'Saqlash'; }
+  }
+  function pickAndCrop() {
+    var u = getUser();
+    if (!u) return;
+    if (fileInput) fileInput.value = '';
+    if (fileInput) fileInput.click();
+  }
+  function onFilePicked(file) {
+    var err = validateFile(file);
+    if (err) { toast('❌ ' + err, 'error'); return; }
+    readAndDecode(file, function (dErr, img, dataSrc) {
+      if (dErr) { toast('❌ ' + dErr, 'error'); return; }
+      void img;
+      haptic('light');
+      openCrop(dataSrc, function (outDataUrl) {
+        var u = getUser();
+        var real = findRealUser(u) || u;
+        if (!real) { toast('❌ Foydalanuvchi topilmadi', 'error'); return; }
+        var uid = uidOf(real);
+        setBusy(true);
+        uploadServerPhoto(uid, outDataUrl, function (upErr, url) {
+          setBusy(false);
+          if (upErr) { toast('❌ ' + upErr, 'error'); return; }
+          /* URL barcha user kopiylariga yangilanadi (real users[] + currentUser) */
+          real.photoUrl = url;
+          try {
+            var users = JSON.parse(localStorage.getItem('users') || '[]');
+            for (var i = 0; i < users.length; i++) if (users[i].id === real.id) users[i].photoUrl = url;
+            localStorage.setItem('users', JSON.stringify(users));
+          } catch (e) { /* noop */ }
+          if (u && u.id === real.id) u.photoUrl = url;
+          saveUser();
+          if (typeof window.__itRefreshAvatarUI === 'function') { try { window.__itRefreshAvatarUI(); } catch (e) { /* noop */ } }
+          if (typeof window.ITProfile !== 'undefined') window.ITProfile.render();
+          toast('✅ Profil rasmi yangilandi', 'success');
+        });
+      });
+    });
+  }
+  function requestRemovePhoto() {
+    var u = getUser();
+    if (!u || !photoUrlOf(u)) return;
+    openModalEl('#pfRemoveConfirmModal');
+  }
+  function confirmRemovePhoto() {
+    var u = getUser();
+    var real = findRealUser(u) || u;
+    if (!real) return;
+    var uid = uidOf(real);
+    deleteServerPhoto(uid, function (dErr) {
+      closeModalEl('#pfRemoveConfirmModal');
+      if (dErr) { toast('❌ ' + dErr, 'error'); return; }
+      real.photoUrl = null;
+      try {
+        var users = JSON.parse(localStorage.getItem('users') || '[]');
+        for (var i = 0; i < users.length; i++) if (users[i].id === real.id) users[i].photoUrl = null;
+        localStorage.setItem('users', JSON.stringify(users));
+      } catch (e) { /* noop */ }
+      if (u && u.id === real.id) u.photoUrl = null;
+      saveUser();
+      if (typeof window.__itRefreshAvatarUI === 'function') { try { window.__itRefreshAvatarUI(); } catch (e) { /* noop */ } }
+      if (typeof window.ITProfile !== 'undefined') window.ITProfile.render();
+      toast('🗑 Profil rasmi olib tashlandi', 'success');
+    });
+  }
+
+  /* ================== AVATAR HTML (real photo + fallback + skeleton) ================== */
+  function avatarHTML(u, cls) {
+    var fallback = (u && u.avatar) || '🧑‍🎓';
+    try { if (typeof window.__itGetActiveAvatar === 'function') fallback = window.__itGetActiveAvatar(u); } catch (e) { /* noop */ }
+    var clsBase = 'pf-avatar ' + (cls || '');
+    var photo = photoUrlOf(u);
+    var inner = '<span class="pf-avatar-fallback" aria-hidden="true">' + esc(fallback) + '</span>';
+    if (photo) {
+      inner += '<img class="pf-avatar-img" src="' + esc(photo) + '" alt="Profil rasmi" loading="lazy" ' +
+        'onload="this.classList.add(\'loaded\')" onerror="this.remove()">';
+      clsBase += ' has-photo';
+    }
+    return '<div class="' + clsBase + '">' + inner + '</div>';
+  }
+  /* ================== REAL DATA — MASTERY / ACHIEVEMENTS / CERTS ================== */
+  /* Mastery FAQAT real testResults'dan hisoblanadi — fake/mock data YO'Q */
+  function computeMastery(u) {
+    var by = {};
+    var list = (u && Array.isArray(u.testResults)) ? u.testResults : [];
+    list.forEach(function (r) {
+      if (!r || !r.subject) return;
+      if (!by[r.subject]) by[r.subject] = { subject: r.subject, n: 0, sum: 0 };
+      by[r.subject].n += 1;
+      by[r.subject].sum += (typeof r.percent === 'number' ? r.percent : 0);
+    });
+    return Object.keys(by).map(function (k) {
+      var s = by[k];
+      return { subject: s.subject, percent: Math.round(s.sum / s.n), attempts: s.n };
+    }).sort(function (a, b) { return b.percent - a.percent; });
+  }
+  function barHTML(p) {
+    var filled = Math.round(p / 10);
+    var bars = '';
+    for (var i = 0; i < 10; i++) bars += '<span class="pf-bar-seg' + (i < filled ? ' on' : '') + '"></span>';
+    return '<div class="pf-bar" aria-hidden="true">' + bars + '</div><b class="pf-bar-pct">' + p + '%</b>';
+  }
+  function achievementStats(u) {
+    var all = [];
+    try {
+      if (typeof window.__itGetAchievements === 'function') all = window.__itGetAchievements() || [];
+      else if (window.__itAchievements && window.__itAchievements.length) all = window.__itAchievements;
+    } catch (e) { all = []; }
+    var had = {};
+    ((u && u.achievements) || []).forEach(function (id) { had[id] = true; });
+    var unlocked = all.filter(function (a) { return had[a.id]; });
+    var locked = all.filter(function (a) { return !had[a.id]; });
+    return { all: all, unlocked: unlocked, locked: locked, total: all.length };
+  }
+  function certCount() {
+    try {
+      if (window.ITCertificates && typeof window.ITCertificates.allCertificates === 'function') {
+        var list = window.ITCertificates.allCertificates();
+        if (Array.isArray(list)) return list.length;
+      }
+    } catch (e) { /* noop */ }
+    return -1; /* ma'lumot yo'q — fake son YOZMAYMIZ */
+  }
+  function customizationInfo(u) {
+    var equipped = [];
+    try {
+      var info = typeof window.__itGetStoreInfo === 'function' ? window.__itGetStoreInfo() : null;
+      if (info && info.equipped) {
+        Object.keys(info.equipped).forEach(function (type) {
+          var item = typeof window.__itStoreItem === 'function' ? window.__itStoreItem(info.equipped[type]) : null;
+          if (item) equipped.push({ type: type, item: item });
+        });
+      }
+    } catch (e) { /* noop */ }
+    return equipped;
+  }
+  /* ================== PROFILE RENDER (header + mastery + achievements) ================== */
+  function renderProfilePage(u) {
+    var root = $('#profileRoot');
+    if (!root || !u) return;
+    var mastery = computeMastery(u);
+    var ach = achievementStats(u);
+    var certs = certCount();
+    var equippedHTML = (function () {
+      var equipped = customizationInfo(u);
+      if (!equipped.length) return '<span class="muted">Hozircha yo‘q</span>';
+      return equipped.map(function (e) {
+        return '<span class="store-equipped-pill">' + esc(e.item.icon || '') + ' ' +
+          esc(String(e.item.name || '').replace(/^\S+\s/, '')) + '</span>';
+      }).join('');
+    })();
+    var joined = u && u.joinedAt ? new Date(u.joinedAt) : null;
+    var html =
+      /* ——— HEADER ——— */
+      '<div class="card pf-head">' +
+        avatarHTML(u, 'pf-avatar-xl') +
+        '<button type="button" class="pf-cam" id="pfCamBtn" aria-label="Rasmni o‘zgartirish">📷</button>' +
+        '<h2 class="pf-name">' + esc(u.firstname || '') + ' ' + esc(u.lastname || '') + '</h2>' +
+        '<div class="pf-username">@' + esc(u.username || '') + '</div>' +
+        (u.bio ? '<p class="pf-bio">' + esc(u.bio) + '</p>' : '') +
+        '<div class="pf-meta muted">' +
+          (u.email ? '<span>' + esc(u.email) + '</span>' : '') +
+          (joined ? '<span> · ' + joined.getDate() + '/' + (joined.getMonth() + 1) + '/' + joined.getFullYear() + '</span>' : '') +
+        '</div>' +
+        '<div class="pf-actions">' +
+          '<button class="btn btn-primary" id="pfEditBtn" type="button">✏️ Profilni tahrirlash</button>' +
+        '</div>' +
+      '</div>' +
+
+      /* ——— MASTERY (kichik karta → batafsil) ——— */
+      '<div class="card pf-card">' +
+        '<div class="card-header"><h3>🧠 Mastery System</h3></div>' +
+        '<div class="card-body">' +
+        (mastery.length
+          ? mastery.slice(0, 4).map(function (m) {
+              return '<div class="pf-mastery-row"><span class="pf-mastery-name">' + esc(m.subject) + '</span>' +
+                barHTML(m.percent) + '</div>';
+            }).join('')
+          : '<p class="muted">Hali test ishlanmagan — Mastery test natijalari bilan shakllanadi.</p>') +
+        (mastery.length ? '<button class="btn btn-ghost btn-sm pf-details-btn" id="pfMasteryBtn" type="button">Batafsil →</button>' : '') +
+        '</div>' +
+      '</div>' +
+
+      /* ——— ACHIEVEMENTS ——— */
+      '<div class="card pf-card">' +
+        '<div class="card-header"><h3>🏆 Achievementlar</h3><span class="muted">' +
+          (ach.total ? ach.unlocked.length + '/' + ach.total : '') + '</span></div>' +
+        '<div class="card-body">' +
+        (ach.total
+          ? '<div class="pf-ach-row">' +
+              ach.unlocked.slice(0, 6).map(function (a) {
+                return '<span class="pf-ach unlocked" title="' + esc(a.name) + '">' + esc(a.icon) + '</span>';
+              }).join('') +
+              ach.locked.slice(0, Math.max(0, 6 - ach.unlocked.slice(0, 6).length)).map(function (a) {
+                return '<span class="pf-ach locked" title="' + esc(a.name) + ': ' + esc(a.desc) + '">🔒</span>';
+              }).join('') +
+            '</div>' +
+            '<div class="pf-ach-note muted">' +
+              (ach.unlocked.length ? '✅ ' + ach.unlocked.length + ' ta ochildi · ' : '') +
+              (ach.locked.length ? '🔒 ' + ach.locked.length + ' ta yopiq' : '') +
+            '</div>'
+          : '<p class="muted">Yutuqlar testlar va faoliyat bilan ochiladi.</p>') +
+        '<button class="btn btn-ghost btn-sm pf-details-btn" id="pfAchBtn" type="button">Barcha yutuqlar →</button>' +
+        '</div>' +
+      '</div>' +
+
+      /* ——— CERTIFICATES (umumiy preview) ——— */
+      '<div class="card pf-card">' +
+        '<div class="card-header"><h3>🎓 Sertifikatlar</h3></div>' +
+        '<div class="card-body">' +
+          '<p>' + (certs >= 0 ? '<strong>' + certs + ' ta sertifikat</strong>' : 'Sertifikatlar kurslarni tugatgach beriladi') + '</p>' +
+          '<button class="btn btn-primary btn-sm pf-details-btn" id="pfCertBtn" type="button">Sertifikatlarni ko‘rish →</button>' +
+        '</div>' +
+      '</div>' +
+
+      /* ——— CUSTOMIZATION ——— */
+      '<div class="card pf-card">' +
+        '<div class="card-header"><h3>🎨 Avatar / Frame / Badge</h3></div>' +
+        '<div class="card-body">' +
+          '<div class="pf-cust-preview">' + avatarHTML(u, 'pf-avatar-sm') +
+            '<div class="store-equipped">' + equippedHTML + '</div>' +
+          '</div>' +
+          '<button class="btn btn-ghost btn-sm pf-details-btn" id="pfStoreBtn" type="button">Do‘konda sozlash →</button>' +
+        '</div>' +
+      '</div>';
+    root.innerHTML = html;
+    /* ——— EVENTS ——— */
+    var cam = $('#pfCamBtn');
+    if (cam) cam.addEventListener('click', function () { haptic('light'); pickAndCrop(); });
+    var edit = $('#pfEditBtn');
+    if (edit) edit.addEventListener('click', function () { openEditModal(); });
+    var mbtn = $('#pfMasteryBtn');
+    if (mbtn) mbtn.addEventListener('click', function () { renderMasteryDetail(u); });
+    var abtn = $('#pfAchBtn');
+    if (abtn) abtn.addEventListener('click', function () { if (window.__itShowPage) window.__itShowPage('achievements'); });
+    var cbtn = $('#pfCertBtn');
+    if (cbtn) cbtn.addEventListener('click', function () { if (window.__itShowPage) window.__itShowPage('certificate'); });
+    var sbtn = $('#pfStoreBtn');
+    if (sbtn) sbtn.addEventListener('click', function () { if (window.__itShowPage) window.__itShowPage('store'); });
+  }
+
+  function renderMasteryDetail(u) {
+    var body = $('#pfMasteryBody');
+    if (!body) return;
+    var list = computeMastery(u);
+    body.innerHTML = list.length
+      ? list.map(function (m) {
+          var icon = '';
+          try {
+            var subs = (window.__itGetSubjects && window.__itGetSubjects()) || [];
+            for (var i = 0; i < subs.length; i++) if (subs[i].name === m.subject) icon = subs[i].icon || '';
+          } catch (e) { /* noop */ }
+          return '<div class="pf-mastery-row"><span class="pf-mastery-name">' + esc(icon + ' ' + m.subject) + '</span>' +
+            barHTML(m.percent) + '<span class="pf-mastery-attempts muted">' + m.attempts + ' test</span></div>';
+        }).join('')
+      : '<p class="muted">Hali test natijalari yo‘q.</p>';
+    openModalEl('#pfMasteryModal');
+  }
+  /* ================== EDIT MODAL ================== */
+  function openEditModal() {
+    var u = getUser();
+    if (!u) return;
+    $('#editFirstname').value = u.firstname || '';
+    $('#editLastname').value = u.lastname || '';
+    $('#editUsername').value = u.username || '';
+    $('#editEmail').value = u.email || '';
+    $('#editBio').value = u.bio || '';
+    var wrap = $('#pfEditAvatarWrap');
+    if (wrap) wrap.innerHTML = avatarHTML(u, 'pf-avatar-lg');
+    openModalEl('#editProfileModal');
+  }
+  function saveEdit() {
+    var u = getUser();
+    var real = findRealUser(u) || u;
+    if (!real) return;
+    var firstname = $('#editFirstname').value.trim();
+    var lastname = $('#editLastname').value.trim();
+    var username = $('#editUsername').value.trim();
+    var email = $('#editEmail').value.trim();
+    var bio = ($('#editBio').value || '').trim();
+    if (!firstname || !lastname || !username || !email) { toast('Maydonlarni to‘ldiring', 'error'); return; }
+    var btn = $('#editProfileSave');
+    if (btn) { btn.disabled = true; btn.textContent = '⏳ Saqlanmoqda...'; }
+    /* Kichik delay — loading holati foydalanuvchiga ko‘rinadi */
+    setTimeout(function () {
+      try {
+        var users = JSON.parse(localStorage.getItem('users') || '[]');
+        var dupeU = null, dupeE = null;
+        for (var i = 0; i < users.length; i++) {
+          if (real.id && users[i].id === real.id) continue;
+          if (users[i].username && users[i].username.toLowerCase() === username.toLowerCase()) dupeU = users[i];
+          if (users[i].email && users[i].email.toLowerCase() === email.toLowerCase()) dupeE = users[i];
+        }
+        if (dupeU || dupeE) {
+          if (btn) { btn.disabled = false; btn.textContent = '💾 Saqlash'; }
+          toast(dupeU ? '❌ Username band' : '❌ Email band', 'error');
+          return;
+        }
+        real.firstname = firstname; real.lastname = lastname;
+        real.username = username; real.email = email; real.bio = bio;
+        for (var j = 0; j < users.length; j++) if (real.id && users[j].id === real.id) users[j] = real;
+        localStorage.setItem('users', JSON.stringify(users));
+        if (u && u.id === real.id) { u.firstname = firstname; u.lastname = lastname; u.username = username; u.email = email; u.bio = bio; }
+        saveUser();
+        if (btn) { btn.disabled = false; btn.textContent = '💾 Saqlash'; }
+        closeModalEl('#editProfileModal');
+        if (typeof window.__itRefreshAvatarUI === 'function') { try { window.__itRefreshAvatarUI(); } catch (e) { /* noop */ } }
+        if (window.ITProfile) window.ITProfile.render();
+        toast('✅ Profil yangilandi', 'success');
+      } catch (e) {
+        if (btn) { btn.disabled = false; btn.textContent = '💾 Saqlash'; }
+        toast('❌ Profilni saqlashda xatolik yuz berdi', 'error');
+      }
+    }, 250);
+  }
+  /* ================== PUBLIC API + INIT ================== */
+  var api = {
+    /* Test uchun ichki expose (production'da ishlatilmaydi) */
+    _test: { validateFile: validateFile, computeMastery: computeMastery },
+    render: function () {
+      var u = getUser();
+      if (!u) return;
+      /* Server'dan URL sink (boshqa qurilmadan yuklangan bo'lsa) */
+      var local = photoUrlOf(u);
+      fetchServerPhoto(uidOf(u), function (serverUrl) {
+        var cur = getUser();
+        if (!cur) return;
+        if (serverUrl && serverUrl !== photoUrlOf(cur)) {
+          cur.photoUrl = serverUrl;
+          var real = findRealUser(cur);
+          if (real) real.photoUrl = serverUrl;
+          try {
+            var users = JSON.parse(localStorage.getItem('users') || '[]');
+            for (var i = 0; i < users.length; i++) if (cur.id && users[i].id === cur.id) users[i].photoUrl = serverUrl;
+            localStorage.setItem('users', JSON.stringify(users));
+          } catch (e) { /* noop */ }
+        }
+        if (document.querySelector('#page-profile.active')) renderProfilePage(cur);
+      });
+      if (document.querySelector('#page-profile.active')) renderProfilePage(u);
+    }
+  };
+  window.ITProfile = api;
+
+  function bindOnce() {
+    if (api._bound) return;
+    api._bound = true;
+    fileInput = $('#pfEditFileInput');
+    if (fileInput) fileInput.addEventListener('change', function (e) {
+      var f = e.target.files && e.target.files[0];
+      if (f) onFilePicked(f);
+      e.target.value = '';
+    });
+    var upBtn = $('#pfEditUploadBtn');
+    if (upBtn) upBtn.addEventListener('click', pickAndCrop);
+    var rmBtn = $('#pfEditRemoveBtn');
+    if (rmBtn) rmBtn.addEventListener('click', requestRemovePhoto);
+    var rmConfirm = $('#pfRemoveConfirmBtn');
+    if (rmConfirm) rmConfirm.addEventListener('click', confirmRemovePhoto);
+    var saveBtn = $('#editProfileSave');
+    if (saveBtn) saveBtn.addEventListener('click', saveEdit);
+    bindCrop();
+  }
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', function () { bindOnce(); api.render(); });
+  } else { bindOnce(); api.render(); }
+})();

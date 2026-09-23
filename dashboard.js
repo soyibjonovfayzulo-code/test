@@ -218,7 +218,19 @@
     var av = $('#ndHeroAvatar');
     if (av) {
       var top = $('#topbarAvatar');
-      av.textContent = (top && top.textContent) ? top.textContent : (u.avatar || 'U');
+      var topImg = top && top.querySelector('img');
+      if (topImg) {
+        /* Real profil rasmi — topbar'dagi img ni nusxalash (data consistency) */
+        if (!av.querySelector('img') || av.querySelector('img').getAttribute('src') !== topImg.getAttribute('src')) {
+          av.classList.add('has-photo');
+          av.innerHTML = '';
+          av.appendChild(topImg.cloneNode(false));
+        }
+      } else {
+        av.classList.remove('has-photo');
+        if (av.querySelector('img')) av.innerHTML = '';
+        av.textContent = (top && top.textContent) ? top.textContent : (u.avatar || 'U');
+      }
     }
     var lvl = u.level || 1;
     var base = (u.xp || 0) % 100;
