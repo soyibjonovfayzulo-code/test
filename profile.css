@@ -72,6 +72,111 @@
 .pf-avatar-xl { --pf-av: clamp(104px, 28vw, 136px); }
 .pf-avatar-lg { --pf-av: 84px; }
 .pf-avatar-sm { --pf-av: 56px; }
+.pf-avatar-xs { --pf-av: 34px; }
+
+/* ---------- STICKY PROFILE BAR (scroll paytida ixcham header) ----------
+   - .pf-sticky: `position: sticky` shell, balandligi 0 → oqimda joy egallamaydi
+     (hero card ham, boshqa kartalar ham surilmaydi / ustma-ust tushmaydi)
+   - .pf-sticky-bar: abs ichki bar — shell bilan birga yopishadi
+   - top: real topbar balandligi (JS --pf-sticky-top ni o'lchab qo'yadi)
+   - z-index: 60 → desktop topbar(90)/sidebar(100) va mobil topbar(80) OSTIDA
+   - fon: opaque (blur faqat qo'shimcha effekt) */
+.pf-sticky {
+  position: sticky;
+  top: var(--pf-sticky-top, 64px);
+  height: 0;
+  margin: 0;
+  z-index: 60;
+  pointer-events: none;
+}
+
+.pf-sticky-bar {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  box-sizing: border-box;
+  max-width: 100%;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  min-height: 56px;
+  padding: 7px 12px;
+  border: 1px solid var(--border, rgba(255, 255, 255, 0.08));
+  border-radius: var(--radius-sm, 12px);
+  background: var(--bg, #070a13); /* opaque fallback (color-mix yo'q brauzerlar) */
+  background: color-mix(in srgb, var(--bg, #070a13) 93%, var(--primary, #6366f1));
+  backdrop-filter: blur(14px) saturate(160%);
+  -webkit-backdrop-filter: blur(14px) saturate(160%);
+  box-shadow: 0 10px 26px rgba(0, 0, 0, 0.32);
+  opacity: 0;
+  visibility: hidden;
+  transform: translateY(-14px);
+  pointer-events: none;
+  transition: opacity 0.2s ease, transform 0.26s cubic-bezier(0.16, 1, 0.3, 1), visibility 0.26s linear;
+}
+
+.pf-sticky.is-stuck .pf-sticky-bar {
+  opacity: 1;
+  visibility: visible;
+  transform: translateY(0);
+  pointer-events: auto;
+}
+
+.pf-sticky-id {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex: 1 1 auto;
+  min-width: 0;
+  min-height: 44px;
+  padding: 0 4px 0 0;
+  border: 0;
+  border-radius: 10px;
+  background: none;
+  color: inherit;
+  text-align: left;
+  cursor: pointer;
+}
+
+.pf-sticky-id:active { transform: scale(0.99); }
+
+.pf-sticky-text {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+  line-height: 1.18;
+}
+
+.pf-sticky-name {
+  font-size: 15px;
+  font-weight: 700;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 100%;
+}
+
+.pf-sticky-user {
+  font-size: 12px;
+  color: var(--muted, #94a3b8);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 100%;
+}
+
+.pf-sticky-edit {
+  flex: 0 0 auto;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  min-height: 40px;
+  padding: 0 14px;
+  font-size: 13.5px;
+  white-space: nowrap;
+}
+
 
 .pf-cam {
   position: relative;
@@ -328,6 +433,33 @@
     padding: 22px 12px 20px;
   }
 
+  /* Sticky bar — mobil uchun ixcham (ekran maydonini ko'p egallamaydi) */
+  .pf-sticky-bar {
+    min-height: 52px;
+    padding: 6px 10px;
+    gap: 8px;
+    border-radius: 12px;
+  }
+
+  .pf-sticky-id {
+    gap: 8px;
+  }
+
+  .pf-sticky-name {
+    font-size: 14px;
+  }
+
+  .pf-sticky-user {
+    font-size: 11.5px;
+  }
+
+  .pf-sticky-edit {
+    min-height: 38px;
+    padding: 0 11px;
+    gap: 5px;
+    font-size: 12.5px;
+  }
+
   .pf-cam {
     margin-left: 76px;
     width: 42px;
@@ -347,6 +479,25 @@
 }
 /* ---------- KICHIK MOBIL (≤360px) ---------- */
 @media (max-width: 360px) {
+  /* 320–360px: joy tejash — tahrirlash tugmasi ikonka ko'rinishida
+     (aria-label saqlanadi, touch target 38px) */
+  .pf-sticky-edit-txt {
+    display: none;
+  }
+
+  .pf-sticky-edit {
+    padding: 0 13px;
+    font-size: 15px;
+  }
+
+  .pf-sticky-name {
+    font-size: 13.5px;
+  }
+
+  .pf-sticky-user {
+    font-size: 11px;
+  }
+
   .pf-mastery-name {
     flex-basis: 66px;
     font-size: 11.5px;

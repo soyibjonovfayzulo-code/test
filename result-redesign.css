@@ -1,0 +1,843 @@
+/* ============================================================================
+   ITTest — RESULT PAGE REDESIGN (result-redesign.css)
+   ----------------------------------------------------------------------------
+   Maqsad: natija sahifasi (#page-result) uchun YANGI, yagona design language —
+   mobil + tablet + desktop.
+   MUHIM: bu fayl faqat PRESENTATION qatlami. Test logikasi (scoring, answer
+   checking, timer, API, XP, streak) O'ZGARMAYDI — barcha qiymatlar script.js
+   renderResult() tomonidan real session/user datasidan yoziladi.
+
+   YUKLASH TARTIBI: style.css -> ... -> testlar-redesign.css -> tests-android.css
+   -> result-redesign.css (eng oxirida => bu fayl ustun turadi).
+   Android native (body.itnative-tests) override'lari yuqori specificity bilan
+   tests-android.css'da qoladi — buzilmaydi.
+   ============================================================================ */
+
+/* ============================================================
+   1. RESULT-ONLY TOKENS
+   ============================================================ */
+#page-result {
+  --rr-max: 1240px;
+  --rr-hero-pad: clamp(24px, 3vw, 44px);
+  --rr-gap: clamp(12px, 1.3vw, 18px);
+  --rr-radius: 26px;
+  --rr-ring-size: 210px;
+  --rr-ring-stroke: 9;
+  --rr-primary-bright: var(--itt-primary-bright, #60A5FA);
+  --rr-surface: var(--itt-surface, #0F172A);
+  --rr-surface-2: var(--itt-surface-2, #111C31);
+  --rr-border: var(--itt-border, #23314B);
+  --rr-border-soft: var(--itt-border-soft, #1B2740);
+  --rr-text: var(--itt-text, #F8FAFC);
+  --rr-muted: var(--itt-muted, #94A3B8);
+  --rr-success: var(--itt-success, #22C55E);
+  --rr-danger: var(--itt-danger, #EF4444);
+  --rr-warning: var(--itt-warning, #F59E0B);
+  --rr-xp: var(--itt-xp, #FACC15);
+  --rr-streak: var(--itt-streak, #38BDF8);
+  --rr-ease: var(--itt-ease-spring, cubic-bezier(0.16, 1, 0.3, 1));
+  --rr-shadow: var(--itt-shadow-md, 0 8px 30px rgba(2, 6, 23, 0.42));
+}
+
+/* ============================================================
+   2. SHELL — desktopda markazlashgan (max ~1240px), full-screen emas
+   ============================================================ */
+#page-result .result-shell {
+  position: relative;
+  width: 100%;
+  max-width: var(--rr-max);
+  margin: 0 auto;
+  display: flex;
+  flex-direction: column;
+  gap: var(--rr-gap);
+}
+
+/* ============================================================
+   3. HERO PANEL — celebration
+   ============================================================ */
+#page-result .result-hero {
+  position: relative;
+  overflow: hidden;
+  isolation: isolate;
+  margin: 0;
+  padding: var(--rr-hero-pad);
+  text-align: center;
+  border-radius: var(--rr-radius);
+  border: 1px solid var(--rr-border);
+  background:
+    radial-gradient(120% 100% at 50% -25%, rgba(37, 99, 235, 0.26), transparent 62%),
+    radial-gradient(80% 60% at 6% 112%, rgba(56, 189, 248, 0.14), transparent 66%),
+    radial-gradient(80% 60% at 95% 110%, rgba(139, 92, 246, 0.13), transparent 66%),
+    var(--rr-surface);
+  box-shadow: var(--rr-shadow);
+}
+
+/* Robot mascot — burchakda, dekorativ (mavjud ITMascot API shu elementda ishlaydi) */
+#page-result .result-mascot {
+  --mascot-size: clamp(52px, 4.6vw, 74px);
+  position: absolute;
+  top: clamp(8px, 1.6vw, 20px);
+  right: clamp(8px, 1.6vw, 20px);
+  z-index: 2;
+  opacity: 0.95;
+  pointer-events: none;
+}
+
+#page-result .result-emoji {
+  font-size: clamp(42px, 5vw, 62px);
+  line-height: 1;
+  margin-bottom: 10px;
+}
+
+#page-result .result-kicker {
+  margin: 0 0 6px;
+  font-size: clamp(12px, 1.1vw, 14px);
+  font-weight: 800;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--rr-primary-bright);
+}
+
+#page-result .result-headline {
+  margin: 0 0 clamp(16px, 2vw, 24px);
+  font-size: clamp(19px, 2.5vw, 29px);
+  font-weight: 800;
+  line-height: 1.25;
+  letter-spacing: -0.01em;
+  color: var(--rr-text);
+}
+/* ============================================================
+   4. SCORE RING + PASSED/FAILED
+   ============================================================ */
+#page-result .result-ring-row {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: clamp(12px, 1.4vw, 18px);
+}
+
+#page-result .result-ring {
+  position: relative;
+  width: var(--rr-ring-size);
+  height: var(--rr-ring-size);
+  flex: none;
+}
+
+#page-result .result-ring-svg {
+  width: 100%;
+  height: 100%;
+  display: block;
+  transform: rotate(-90deg);
+  overflow: visible;
+}
+
+#page-result .result-ring-track {
+  fill: none;
+  stroke: var(--rr-border);
+  stroke-width: 9;
+  opacity: 0.75;
+}
+
+#page-result .result-ring-bar {
+  fill: none;
+  stroke: url(#rrRingPass);
+  stroke-width: 9;
+  stroke-linecap: round;
+  filter: drop-shadow(0 0 6px rgba(37, 99, 235, 0.35));
+}
+
+#page-result .result-ring-center {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 2px;
+  padding: 0 10px;
+}
+
+#page-result .result-score {
+  font-size: clamp(24px, 2.6vw, 34px);
+  font-weight: 800;
+  letter-spacing: -0.02em;
+  line-height: 1.1;
+  color: var(--rr-text);
+  font-variant-numeric: tabular-nums;
+}
+
+#page-result .result-percent {
+  font-size: clamp(15px, 1.4vw, 19px);
+  font-weight: 800;
+  color: var(--rr-primary-bright);
+  font-variant-numeric: tabular-nums;
+}
+
+#page-result .result-status {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 22px;
+  border-radius: 999px;
+  font-size: clamp(13px, 1.2vw, 15px);
+  font-weight: 800;
+  letter-spacing: 0.08em;
+}
+
+#page-result .result-status::before {
+  font-size: 1.05em;
+  line-height: 1;
+}
+
+#page-result .result-status.passed {
+  color: var(--rr-success);
+  background: rgba(34, 197, 94, 0.12);
+  border: 1px solid rgba(34, 197, 94, 0.34);
+}
+
+#page-result .result-status.passed::before {
+  content: '✅';
+}
+
+#page-result .result-status.failed {
+  color: var(--rr-danger);
+  background: rgba(239, 68, 68, 0.1);
+  border: 1px solid rgba(239, 68, 68, 0.34);
+}
+
+#page-result .result-status.failed::before {
+  content: '❌';
+}
+
+/* ============================================================
+   5. XP + STREAK REWARDS
+   ============================================================ */
+#page-result .result-rewards {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  margin-top: clamp(16px, 1.8vw, 22px);
+}
+
+#page-result .result-reward {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 9px 18px;
+  border-radius: 999px;
+  border: 1px solid transparent;
+  font-size: clamp(13px, 1.2vw, 15px);
+  font-weight: 800;
+  white-space: nowrap;
+}
+
+#page-result .result-reward-ico {
+  font-size: 1.05em;
+  line-height: 1;
+}
+
+#page-result .result-reward-val {
+  font-variant-numeric: tabular-nums;
+}
+
+#page-result .result-reward--xp {
+  color: var(--rr-xp);
+  background: rgba(250, 204, 21, 0.12);
+  border-color: rgba(250, 204, 21, 0.34);
+}
+
+#page-result .result-reward--streak {
+  color: var(--rr-streak);
+  background: rgba(56, 189, 248, 0.12);
+  border-color: rgba(56, 189, 248, 0.34);
+}
+/* ============================================================
+   6. MOTIVATIONAL MESSAGE (matn JS tomonidan foizga qarab yoziladi)
+   ============================================================ */
+#page-result .result-motivation {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  max-width: 620px;
+  margin: clamp(16px, 1.8vw, 22px) auto 0;
+  padding: 14px 18px;
+  text-align: left;
+  border-radius: 18px;
+  border: 1px solid var(--rr-border-soft);
+  background: var(--rr-surface-2);
+}
+
+#page-result .result-motivation-ico {
+  flex: none;
+  font-size: 26px;
+  line-height: 1;
+}
+
+#page-result .result-motivation-body {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  min-width: 0;
+}
+
+#page-result .result-motivation-title {
+  font-size: 15px;
+  font-weight: 800;
+  color: var(--rr-text);
+}
+
+#page-result .result-motivation-text {
+  font-size: 13.5px;
+  line-height: 1.5;
+  color: var(--rr-muted);
+}
+
+/* ============================================================
+   7. ACTIONS
+   ============================================================ */
+#page-result .result-actions {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  margin: 0;
+}
+
+#page-result .result-cta {
+  min-width: min(260px, 100%);
+  font-weight: 800;
+}
+
+/* ============================================================
+   8. STATS — 6 card (desktop 6x1, tablet/mobil 3x2)
+   ============================================================ */
+#page-result .result-stats {
+  display: grid;
+  grid-template-columns: repeat(6, minmax(0, 1fr));
+  gap: 12px;
+  margin: 0;
+}
+
+#page-result .result-stat-card {
+  position: relative;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+  padding: 16px 10px 18px;
+  text-align: center;
+  border-radius: 16px;
+  border: 1px solid var(--rr-border);
+  background: var(--rr-surface);
+  transition: transform 0.25s var(--rr-ease), border-color 0.25s ease;
+}
+
+#page-result .result-stat-card .result-stat-ico {
+  font-size: 15px;
+  line-height: 1;
+  color: var(--rr-stat-accent, var(--rr-muted));
+}
+
+#page-result .result-stat-card .val {
+  font-size: clamp(17px, 1.7vw, 22px);
+  font-weight: 800;
+  line-height: 1.15;
+  color: var(--rr-text);
+  font-variant-numeric: tabular-nums;
+}
+
+#page-result .result-stat-card .lbl {
+  font-size: 12px;
+  line-height: 1.3;
+  color: var(--rr-muted);
+}
+
+#page-result .result-stat-card::after {
+  content: '';
+  position: absolute;
+  left: 22%;
+  right: 22%;
+  bottom: 0;
+  height: 3px;
+  border-radius: 3px 3px 0 0;
+  background: var(--rr-stat-accent, transparent);
+  opacity: 0.8;
+}
+
+#page-result .result-stat-card[data-stat='correct'] {
+  --rr-stat-accent: var(--rr-success);
+}
+
+#page-result .result-stat-card[data-stat='incorrect'] {
+  --rr-stat-accent: var(--rr-danger);
+}
+
+#page-result .result-stat-card[data-stat='skipped'] {
+  --rr-stat-accent: var(--rr-warning);
+}
+
+#page-result .result-stat-card[data-stat='percent'] {
+  --rr-stat-accent: var(--rr-primary-bright);
+}
+
+#page-result .result-stat-card[data-stat='score'] {
+  --rr-stat-accent: var(--rr-xp);
+}
+
+#page-result .result-stat-card[data-stat='time'] {
+  --rr-stat-accent: var(--rr-streak);
+}
+
+/* ============================================================
+   9. REVIEW CARD (mavjud "Natijani ko'rish" oqimi saqlanadi)
+   ============================================================ */
+#page-result .review-card {
+  scroll-margin-top: 84px;
+}
+/* ============================================================
+   10. SIDE CONFETTI BURST (2-3 sekund, keyin to'xtaydi — infinite EMAS)
+   ============================================================ */
+#page-result .result-confetti {
+  --rr-travel: 300px;
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+  pointer-events: none;
+  z-index: 3;
+  border-radius: inherit;
+}
+
+#page-result .result-confetti-bit {
+  position: absolute;
+  top: var(--rr-y, 20%);
+  width: var(--rr-size, 12px);
+  height: var(--rr-size, 12px);
+  border-radius: 3px;
+  opacity: 0;
+  will-change: transform, opacity;
+}
+
+#page-result .result-confetti-bit--left {
+  left: 0;
+  animation: rrConfettiLeft var(--rr-dur, 1.4s) cubic-bezier(0.22, 0.61, 0.36, 1) var(--rr-delay, 0s) both;
+}
+
+#page-result .result-confetti-bit--right {
+  right: 0;
+  animation: rrConfettiRight var(--rr-dur, 1.4s) cubic-bezier(0.22, 0.61, 0.36, 1) var(--rr-delay, 0s) both;
+}
+
+#page-result .result-confetti-bit.is-emoji {
+  width: auto;
+  height: auto;
+  background: none !important;
+  font-size: var(--rr-size, 14px);
+  line-height: 1;
+}
+
+@keyframes rrConfettiLeft {
+  0% {
+    opacity: 0;
+    transform: translate3d(-18px, 0, 0) rotate(0deg);
+  }
+
+  12% {
+    opacity: 1;
+  }
+
+  70% {
+    opacity: 1;
+  }
+
+  100% {
+    opacity: 0;
+    transform: translate3d(var(--rr-travel), var(--rr-drift, 0px), 0) rotate(var(--rr-rot, 0deg));
+  }
+}
+
+@keyframes rrConfettiRight {
+  0% {
+    opacity: 0;
+    transform: translate3d(18px, 0, 0) rotate(0deg);
+  }
+
+  12% {
+    opacity: 1;
+  }
+
+  70% {
+    opacity: 1;
+  }
+
+  100% {
+    opacity: 0;
+    transform: translate3d(calc(-1 * var(--rr-travel)), var(--rr-drift, 0px), 0) rotate(var(--rr-rot, 0deg));
+  }
+}
+
+/* ============================================================
+   11. INTRO ANIMATSIYALAR (hero fade/scale, elementlar ketma-ket)
+   ============================================================ */
+@keyframes rrHeroIn {
+  from {
+    opacity: 0;
+    transform: translate3d(0, 18px, 0) scale(0.975);
+  }
+
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+@keyframes rrRiseIn {
+  from {
+    opacity: 0;
+    transform: translate3d(0, 14px, 0);
+  }
+
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+#page-result .result-shell.is-intro .result-hero {
+  animation: rrHeroIn 0.55s var(--rr-ease) both;
+}
+
+#page-result .result-shell.is-intro .result-kicker {
+  animation: rrRiseIn 0.5s ease-out 0.1s both;
+}
+
+#page-result .result-shell.is-intro .result-headline {
+  animation: rrRiseIn 0.5s ease-out 0.16s both;
+}
+
+#page-result .result-shell.is-intro .result-ring-row {
+  animation: rrRiseIn 0.55s ease-out 0.22s both;
+}
+
+#page-result .result-shell.is-intro .result-rewards {
+  animation: rrRiseIn 0.5s ease-out 0.34s both;
+}
+
+#page-result .result-shell.is-intro .result-motivation {
+  animation: rrRiseIn 0.5s ease-out 0.4s both;
+}
+
+#page-result .result-shell.is-intro .result-actions {
+  animation: rrRiseIn 0.5s ease-out 0.48s both;
+}
+
+/* ============================================================
+   12. XATOLIK HOLATI — natija yuklanmasa (fake result ko'rsatilmaydi)
+   ============================================================ */
+#page-result .result-error {
+  max-width: 560px;
+  margin: clamp(24px, 5vw, 64px) auto;
+  padding: clamp(22px, 3vw, 34px);
+  text-align: center;
+  border-radius: var(--rr-radius);
+  border: 1px solid rgba(239, 68, 68, 0.34);
+  background: rgba(239, 68, 68, 0.07);
+}
+
+#page-result .result-error-ico {
+  font-size: 42px;
+  line-height: 1;
+}
+
+#page-result .result-error-title {
+  margin: 12px 0 6px;
+  font-size: clamp(17px, 1.8vw, 20px);
+  font-weight: 800;
+  color: var(--rr-text);
+}
+
+#page-result .result-error-text {
+  margin: 0;
+  font-size: 14px;
+  line-height: 1.55;
+  color: var(--rr-muted);
+}
+
+#page-result .result-error-actions {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 10px;
+  margin-top: 18px;
+}
+
+#page-result .result-error-actions .btn {
+  min-width: min(220px, 100%);
+  font-weight: 800;
+}
+/* ============================================================
+   13. TABLET (768 – 1100) — buzilmaydigan o'rta holat
+   ============================================================ */
+@media (min-width: 768px) and (max-width: 1100px) {
+  #page-result {
+    --rr-ring-size: 182px;
+    --rr-hero-pad: clamp(22px, 3.4vw, 34px);
+  }
+
+  #page-result .result-confetti {
+    --rr-travel: 210px;
+  }
+
+  #page-result .result-stats {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+
+  #page-result .result-stat-card .val {
+    font-size: 19px;
+  }
+}
+
+/* ============================================================
+   14. MOBILE (<= 767) — vertical, compact, touch friendly
+   ============================================================ */
+@media (max-width: 767px) {
+  #page-result {
+    --rr-max: 100%;
+    --rr-hero-pad: 24px 16px;
+    --rr-gap: 12px;
+    --rr-radius: 20px;
+    --rr-ring-size: 156px;
+  }
+
+  #page-result .result-mascot {
+    --mascot-size: 46px;
+    top: 10px;
+    right: 10px;
+    opacity: 0.9;
+  }
+
+  #page-result .result-emoji {
+    font-size: 40px;
+    margin-bottom: 8px;
+  }
+
+  #page-result .result-headline {
+    margin-bottom: 16px;
+    font-size: clamp(18px, 5.2vw, 22px);
+  }
+
+  #page-result .result-ring-row {
+    gap: 12px;
+  }
+
+  #page-result .result-score {
+    font-size: 24px;
+  }
+
+  #page-result .result-percent {
+    font-size: 16px;
+  }
+
+  #page-result .result-status {
+    padding: 7px 18px;
+    font-size: 13px;
+  }
+
+  #page-result .result-reward {
+    gap: 6px;
+    padding: 8px 14px;
+    font-size: 13px;
+  }
+
+  #page-result .result-motivation {
+    margin-top: 14px;
+    padding: 12px 14px;
+    gap: 10px;
+    border-radius: 16px;
+  }
+
+  #page-result .result-motivation-ico {
+    font-size: 22px;
+  }
+
+  #page-result .result-motivation-title {
+    font-size: 14px;
+  }
+
+  #page-result .result-motivation-text {
+    font-size: 12.5px;
+  }
+
+  /* Stats: 3 ustun x 2 qator (mobil reference layout) */
+  #page-result .result-stats {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 8px;
+  }
+
+  #page-result .result-stat-card {
+    gap: 4px;
+    padding: 12px 8px 14px;
+    border-radius: 14px;
+  }
+
+  #page-result .result-stat-card .result-stat-ico {
+    font-size: 13px;
+  }
+
+  #page-result .result-stat-card .val {
+    font-size: 16px;
+  }
+
+  #page-result .result-stat-card .lbl {
+    font-size: 10.5px;
+  }
+
+  #page-result .result-stat-card::after {
+    left: 26%;
+    right: 26%;
+    height: 2.5px;
+  }
+
+  /* Side burst — tor ekranda kompakt, contentni yopmaydi */
+  #page-result .result-confetti {
+    --rr-travel: 130px;
+  }
+
+  #page-result .result-error {
+    margin: 20px auto;
+    border-radius: 18px;
+  }
+
+  #page-result .result-error-actions {
+    flex-direction: column;
+  }
+
+  #page-result .result-error-actions .btn {
+    width: 100%;
+  }
+}
+
+/* ============================================================
+   15. KICHIK MOBIL (<= 360 / 320) — matn va raqamlar sig'ishi
+   ============================================================ */
+@media (max-width: 360px) {
+  #page-result {
+    --rr-ring-size: 142px;
+  }
+
+  #page-result .result-hero {
+    padding: 20px 12px;
+  }
+
+  #page-result .result-headline {
+    font-size: 17px;
+  }
+
+  #page-result .result-reward {
+    gap: 6px;
+    padding: 7px 11px;
+    font-size: 12px;
+  }
+
+  #page-result .result-stat-card .val {
+    font-size: 15px;
+  }
+
+  #page-result .result-stat-card .lbl {
+    font-size: 10px;
+  }
+}
+/* ============================================================
+   16. LIGHT MODE — oq / yumshoq pastel, branding saqlanadi
+   ============================================================ */
+[data-theme='light'] #page-result .result-hero {
+  background:
+    radial-gradient(120% 100% at 50% -25%, rgba(37, 99, 235, 0.12), transparent 62%),
+    radial-gradient(80% 60% at 6% 112%, rgba(56, 189, 248, 0.14), transparent 66%),
+    radial-gradient(80% 60% at 95% 110%, rgba(139, 92, 246, 0.1), transparent 66%),
+    #FFFFFF;
+  border-color: rgba(37, 99, 235, 0.16);
+  box-shadow: 0 12px 40px rgba(37, 99, 235, 0.1);
+}
+
+[data-theme='light'] #page-result .result-kicker,
+[data-theme='light'] #page-result .result-percent {
+  color: #1D4ED8;
+}
+
+[data-theme='light'] #page-result .result-ring-track {
+  stroke: rgba(37, 99, 235, 0.16);
+}
+
+[data-theme='light'] #page-result .result-reward--xp {
+  color: #B45309;
+  background: rgba(250, 204, 21, 0.18);
+  border-color: rgba(217, 119, 6, 0.32);
+}
+
+[data-theme='light'] #page-result .result-reward--streak {
+  color: #0369A1;
+  background: rgba(56, 189, 248, 0.16);
+  border-color: rgba(2, 132, 199, 0.32);
+}
+
+[data-theme='light'] #page-result .result-status.passed {
+  color: #15803D;
+  background: rgba(34, 197, 94, 0.14);
+  border-color: rgba(21, 128, 61, 0.3);
+}
+
+[data-theme='light'] #page-result .result-status.failed {
+  color: #B91C1C;
+  background: rgba(239, 68, 68, 0.12);
+  border-color: rgba(185, 28, 28, 0.3);
+}
+
+[data-theme='light'] #page-result .result-motivation {
+  background: #F8FAFC;
+  border-color: rgba(15, 23, 42, 0.08);
+}
+
+[data-theme='light'] #page-result .result-stat-card {
+  background: #FFFFFF;
+  border-color: rgba(15, 23, 42, 0.08);
+  box-shadow: 0 4px 16px rgba(15, 23, 42, 0.04);
+}
+
+[data-theme='light'] #page-result .result-score {
+  color: #0F172A;
+}
+
+[data-theme='light'] #page-result .result-error {
+  background: rgba(239, 68, 68, 0.06);
+}
+
+/* ============================================================
+   17. PREFERS-REDUCED-MOTION — animatsiyalar qisqartiriladi
+   ============================================================ */
+@media (prefers-reduced-motion: reduce) {
+
+  #page-result .result-shell.is-intro .result-hero,
+  #page-result .result-shell.is-intro .result-kicker,
+  #page-result .result-shell.is-intro .result-headline,
+  #page-result .result-shell.is-intro .result-ring-row,
+  #page-result .result-shell.is-intro .result-rewards,
+  #page-result .result-shell.is-intro .result-motivation,
+  #page-result .result-shell.is-intro .result-actions {
+    animation: none !important;
+  }
+
+  #page-result .result-emoji,
+  #page-result .result-status.passed,
+  #page-result .result-status.failed,
+  #page-result .result-stat-card {
+    animation: none !important;
+  }
+
+  #page-result .result-confetti {
+    display: none !important;
+  }
+}

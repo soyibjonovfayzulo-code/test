@@ -235,7 +235,7 @@
   var fileInput = null;
   function setBusy(b) {
     var save = $('#pfCropSave');
-    if (save) { save.disabled = b; save.textContent = b ? '⏳ Saqlanmoqda...' : 'Saqlash'; }
+    if (save) { save.disabled = b; save.textContent = b ? '⏳ Rasm yuklanmoqda...' : 'Saqlash'; }
   }
   function pickAndCrop() {
     var u = getUser();
@@ -372,6 +372,108 @@
     } catch (e) { /* noop */ }
     return equipped;
   }
+  /* ================== STICKY PROFILE BAR (scroll paytida ixcham header) ==================
+     - Katta hero card (.pf-head) OQIMDA qoladi — u sticky EMAS (ikkinchi marta
+       yopishib qolmaydi), faqat ixcham bar yopishadi.
+     - Bar #page-profile ichida `position: sticky` bo'ladi. Balandligi oqimga
+       ta'sir qilmaydi (shell height:0 + abs ichki bar) → scroll'da layout shift YO'Q.
+     - Ko'rinish: hero tepasi topbar ostidan chiqib ketgach (transform/opacity),
+       ya'ni sahifa tepasida bar ko'rinmaydi, scroll boshlanganda chiqadi.
+     - top offset: real topbar balandligi o'lchanadi → --pf-sticky-top. */
+  var stickyBar = { el: null, hero: null, top: 64, stuck: null, ticking: false, bound: false };
+
+  function stickyRaf(fn) {
+    if (typeof window.requestAnimationFrame === 'function') return window.requestAnimationFrame(fn);
+    return window.setTimeout(fn, 16);
+  }
+  /* Topbar (desktop/mobil) real balandligi → CSS top offset */
+  function stickyTopbarHeight() {
+    var tb = document.querySelector('.topbar');
+    var h = 0;
+    if (tb && tb.getBoundingClientRect) h = Math.round(tb.getBoundingClientRect().height);
+    if (!h || h < 36 || h > 240) h = 64;
+    stickyBar.top = h;
+    try { document.documentElement.style.setProperty('--pf-sticky-top', h + 'px'); } catch (e) { /* noop */ }
+    return h;
+  }
+  function stickySet(on) {
+    stickyBar.stuck = !!on;
+    var el = stickyBar.el || (stickyBar.el = document.getElementById('pfSticky'));
+    if (el) el.classList.toggle('is-stuck', !!on);
+  }
+  function stickyUpdate() {
+    stickyBar.ticking = false;
+    var el = stickyBar.el || (stickyBar.el = document.getElementById('pfSticky'));
+    if (!el) return;
+    var page = document.getElementById('page-profile');
+    if (!page || !page.classList.contains('active')) { stickySet(false); return; }
+    var hero = stickyBar.hero || (stickyBar.hero = document.querySelector('#profileRoot .pf-head'));
+    if (!hero) { stickySet(false); return; }
+    var line = stickyTopbarHeight();
+    var top = hero.getBoundingClientRect().top;
+    /* Histerezis (1–8px): chegara atrofida miltillash bo'lmaydi */
+    var next = stickyBar.stuck === true ? (top < line + 8) : (top <= line + 1);
+    stickySet(next);
+  }
+  function stickySchedule() {
+    if (stickyBar.ticking) return;
+    stickyBar.ticking = true;
+    stickyRaf(stickyUpdate);
+  }
+  function bindSticky() {
+    if (stickyBar.bound) return;
+    stickyBar.bound = true;
+    window.addEventListener('scroll', stickySchedule, { passive: true });
+    window.addEventListener('resize', function () { stickyTopbarHeight(); stickySchedule(); }, { passive: true });
+    window.addEventListener('orientationchange', function () { stickyTopbarHeight(); stickySchedule(); }, { passive: true });
+    var tb = document.querySelector('.topbar');
+    if (tb && typeof window.ResizeObserver === 'function') {
+      try { new window.ResizeObserver(function () { stickyTopbarHeight(); stickySchedule(); }).observe(tb); } catch (e) { /* noop */ }
+    }
+    stickyTopbarHeight();
+  }
+  function renderStickyBar(u) {
+    var page = document.getElementById('page-profile');
+    if (!page || !u) return;
+    var el = document.getElementById('pfSticky');
+    if (!el) {
+      el = document.createElement('div');
+      el.id = 'pfSticky';
+      el.className = 'pf-sticky';
+      el.setAttribute('role', 'region');
+      el.setAttribute('aria-label', 'Profil qisqa paneli');
+      page.insertBefore(el, page.firstChild);
+    }
+    stickyBar.el = el;
+    stickyBar.hero = null; /* hero har render'da yangilanadi */
+    var fullName = String((u.firstname || '') + ' ' + (u.lastname || '')).replace(/\s+/g, ' ').trim();
+    if (!fullName) fullName = u.username ? '@' + u.username : 'Profil';
+    el.innerHTML =
+      '<div class="pf-sticky-bar">' +
+        '<button type="button" class="pf-sticky-id" id="pfStickyTop" aria-label="Profil boshiga qaytish">' +
+          avatarHTML(u, 'pf-avatar-xs') +
+          '<span class="pf-sticky-text">' +
+            '<span class="pf-sticky-name">' + esc(fullName) + '</span>' +
+            '<span class="pf-sticky-user">@' + esc(u.username || '') + '</span>' +
+          '</span>' +
+        '</button>' +
+        '<button type="button" class="btn btn-primary btn-sm pf-sticky-edit" id="pfStickyEdit" aria-label="Profilni tahrirlash">' +
+          '<span aria-hidden="true">✏️</span><span class="pf-sticky-edit-txt">Tahrirlash</span>' +
+        '</button>' +
+      '</div>';
+    var backTop = document.getElementById('pfStickyTop');
+    if (backTop) backTop.addEventListener('click', function () {
+      haptic('light');
+      try { window.scrollTo({ top: 0, behavior: 'smooth' }); }
+      catch (e) { try { window.scrollTo(0, 0); } catch (e2) { /* noop */ } }
+    });
+    var edit = document.getElementById('pfStickyEdit');
+    if (edit) edit.addEventListener('click', function () { haptic('light'); openEditModal(); });
+    bindSticky();
+    stickyTopbarHeight();
+    stickyUpdate();
+  }
+
   /* ================== PROFILE RENDER (header + mastery + achievements) ================== */
   function renderProfilePage(u) {
     var root = $('#profileRoot');
@@ -462,6 +564,8 @@
         '</div>' +
       '</div>';
     root.innerHTML = html;
+    /* Sticky bar ham shu ma'lumotlardan quriladi (hero render bo'lgach) */
+    renderStickyBar(u);
     /* ——— EVENTS ——— */
     var cam = $('#pfCamBtn');
     if (cam) cam.addEventListener('click', function () { haptic('light'); pickAndCrop(); });
@@ -554,7 +658,20 @@
   /* ================== PUBLIC API + INIT ================== */
   var api = {
     /* Test uchun ichki expose (production'da ishlatilmaydi) */
-    _test: { validateFile: validateFile, computeMastery: computeMastery },
+    _test: {
+      validateFile: validateFile,
+      computeMastery: computeMastery,
+      stickyUpdate: stickyUpdate,
+      stickyTopbarHeight: stickyTopbarHeight,
+      stickyState: function () {
+        return {
+          stuck: stickyBar.stuck,
+          topOffset: stickyBar.top,
+          hasBar: !!stickyBar.el,
+          bound: stickyBar.bound
+        };
+      }
+    },
     render: function () {
       var u = getUser();
       if (!u) return;
@@ -598,6 +715,8 @@
     var saveBtn = $('#editProfileSave');
     if (saveBtn) saveBtn.addEventListener('click', saveEdit);
     bindCrop();
+    /* Scroll/resize → sticky bar holati (listener bir marta) */
+    bindSticky();
   }
   if (document.readyState === 'loading') {
     document.addEventListener('DOMContentLoaded', function () { bindOnce(); api.render(); });

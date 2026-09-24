@@ -8,6 +8,12 @@ export default defineConfig({
       '/api': {
         target: 'http://localhost:3000',
         changeOrigin: true
+      },
+      // Profil rasmlari Express server file storage'ida (server/uploads) —
+      // dev rejimda ham rasm ko'rinishi uchun proxy qilinadi.
+      '/uploads': {
+        target: 'http://localhost:3000',
+        changeOrigin: true
       }
     }
   }

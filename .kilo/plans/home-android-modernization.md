@@ -13,7 +13,7 @@
 | `.ih-quick-card` | 162-176 qat | `background` → `var(--itt-surface-2)`, `border` → `var(--itt-border-strong)`, + hover (desktop only) |
 | `.ih-grid-item` | 385-402 qat | `background` → `var(--itt-surface-2)`, `border` → `var(--itt-border-strong)`, + hover (desktop only) |
 | `.ih-me` | 407-413 qat | `background` → `var(--itt-surface-2)`, `border` → `var(--itt-border-strong)` |
-| `.ih-continue` | 264-273 qat | `background` → gradient + surface-2, `border` → `rgba(37,99,235,0.3)` |
+| `.ih-continue` | 264-273 qat | `background` → gradient + surface-2, `border` → `rgba(235, 166, 37, 0.3)` |
 | `.ih-banner` | 205-220 qat | Gradient 3-layer (2 radial + 1 linear), dark-optimal |
 | `.ih-search` | 89-99 qat | `+ :focus-within { border-color: primary; box-shadow: ring; }` |
 | `.ih-bottomnav button.active` | 497-499 qat | `position: relative;` + `::before { indicator bar }` + `.ih-nav-ico { drop-shadow glow }` |

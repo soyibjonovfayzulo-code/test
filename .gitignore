@@ -18,3 +18,17 @@ logs/
 
 # Profil rasmlari (server file storage)
 server/uploads/
+
+# Vaqtinchalik fayllar va backup'lar
+scratch/
+*.bak
+*.tmp
+*.old
+*.orig
+*.copy
+*.out.txt
+*out*.txt
+
+# IDE / worktrees
+.kilo/
+.trae/

@@ -721,12 +721,14 @@ app.post('/api/push/send', authMiddleware, async (req, res) => {
 
   // Profil rasmini yuklash / almashtirish
   app.post('/api/profile/image', (req, res) => {
+    // Auth majburiy: x-it-uid header'siz 401 (spoofing minimallashtiriladi,
+    // mos kelmasa 403 — boshqa user path'iga yozish taqiqlanadi)
+    const headerUid = req.headers['x-it-uid'];
+    if (!headerUid) return res.status(401).json({ error: 'Avtorizatsiya talab qilinadi' });
     const { uid: rawUid, dataUrl } = req.body || {};
     const uid = safeUid(rawUid);
     if (!uid) return res.status(400).json({ error: "Noto'g'ri foydalanuvchi identifikatori" });
-    // Header bilan body'dagi uid mos kelishi shart — boshqa user path'iga yozish taqiqlanadi
-    const headerUid = req.headers['x-it-uid'];
-    if (headerUid && headerUid !== uid) return res.status(403).json({ error: "Foydalanuvchi identifikatori mos kelmadi" });
+    if (headerUid !== uid) return res.status(403).json({ error: "Foydalanuvchi identifikatori mos kelmadi" });
 
     const parsed = parseDataUrl(dataUrl);
     if (!parsed) return res.status(400).json({ error: "Rasm formati qo'llab-quvvatlanmaydi" });
@@ -741,10 +743,11 @@ app.post('/api/push/send', authMiddleware, async (req, res) => {
     fs.mkdir(path.join(PROFILE_UPLOAD_DIR, uid), { recursive: true }, (mkErr) => {
       if (mkErr) return res.status(500).json({ error: 'Storage xatosi' });
 
-      // Eski faylni topib o'chirish — orphan file qolmasin
+      // TRANSACTIONAL (spec §11): avval YANGI fayl yoziladi → DB yangilanadi →
+      // faqat muvaffaqiyatdan keyin ESKI fayl tozalanadi. Yangi upload xato
+      // bo'lsa eski avatar tirik qoladi.
       getProfileRow(uid, (gErr, oldRow) => {
         if (gErr) return res.status(500).json({ error: 'Database xatosi' });
-        if (oldRow && oldRow.file) deleteProfileFileSafe(uid, oldRow.file);
 
         // Fayl nomi to'liq server tomonida generatsiya qilinadi
         const fileName = `${Date.now()}-${crypto.randomBytes(6).toString('hex')}.${ext}`;
@@ -760,6 +763,8 @@ app.post('/api/push/send', authMiddleware, async (req, res) => {
             [uid, url, fileName, now],
             (dbErr) => {
               if (dbErr) { fs.unlink(filePath, () => {}); return res.status(500).json({ error: 'Database xatosi' }); }
+              // Yangi fayl bazada tasdiqlandi — endi eskisini xavfsiz tozalaymiz
+              if (oldRow && oldRow.file && oldRow.file !== fileName) deleteProfileFileSafe(uid, oldRow.file);
               res.json({ success: true, url, updatedAt: now });
             }
           );
@@ -770,8 +775,11 @@ app.post('/api/push/send', authMiddleware, async (req, res) => {
 
   // Profil rasmini o'qish (boshqa qurilma login qilganda URL olish uchun)
   app.get('/api/profile/image/:uid', (req, res) => {
+    const headerUid = req.headers['x-it-uid'];
+    if (!headerUid) return res.status(401).json({ error: 'Avtorizatsiya talab qilinadi' });
     const uid = safeUid(req.params.uid);
     if (!uid) return res.status(400).json({ error: "Noto'g'ri foydalanuvchi identifikatori" });
+    if (headerUid !== uid) return res.status(403).json({ error: "Foydalanuvchi identifikatori mos kelmadi" });
     getProfileRow(uid, (err, row) => {
       if (err) return res.status(500).json({ error: 'Database xatosi' });
       if (!row || !row.url) return res.status(404).json({ error: 'Profil rasmi topilmadi' });
@@ -781,10 +789,11 @@ app.post('/api/push/send', authMiddleware, async (req, res) => {
 
   // Profil rasmini o'chirish (default avatar'ga qaytish)
   app.delete('/api/profile/image/:uid', (req, res) => {
+    const headerUid = req.headers['x-it-uid'];
+    if (!headerUid) return res.status(401).json({ error: 'Avtorizatsiya talab qilinadi' });
     const uid = safeUid(req.params.uid);
     if (!uid) return res.status(400).json({ error: "Noto'g'ri foydalanuvchi identifikatori" });
-    const headerUid = req.headers['x-it-uid'];
-    if (headerUid && headerUid !== uid) return res.status(403).json({ error: "Foydalanuvchi identifikatori mos kelmadi" });
+    if (headerUid !== uid) return res.status(403).json({ error: "Foydalanuvchi identifikatori mos kelmadi" });
     getProfileRow(uid, (err, row) => {
       if (err) return res.status(500).json({ error: 'Database xatosi' });
       if (row && row.file) deleteProfileFileSafe(uid, row.file);

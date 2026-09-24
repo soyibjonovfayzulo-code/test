@@ -12,9 +12,9 @@
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap"
-    rel="stylesheet" />
-  <script type="module" crossorigin src="/assets/index-D__J0whW.js"></script>
-  <link rel="stylesheet" crossorigin href="/assets/index-WawbMaOo.css">
+    rel="stylesheet" />
+  <script type="module" crossorigin src="/assets/index-BQNRS0AW.js"></script>
+  <link rel="stylesheet" crossorigin href="/assets/index-C1ZqJk6r.css">
 </head>
 
 <body>
@@ -594,28 +594,90 @@
         </section>
 
         <!-- RESULT PAGE -->
-        <section id="page-result" class="page">
-          <div class="result-hero" id="resultHero">
-            <div class="mascot mascot--idle" id="resultMascot" aria-hidden="true">
-              <img src="/assets/it-robot-BLx0jrbI.png" alt="" draggable="false" loading="lazy"
-                onerror="this.closest('.mascot')&&this.closest('.mascot').classList.add('mascot-broken')" />
+        <section id="page-result" class="page" aria-labelledby="resultHeadline">
+          <!-- XATOLIK HOLATI — natija yuklanmasa (fake result ko'rsatilmaydi) -->
+          <div class="result-error hidden" id="resultError" role="alert">
+            <div class="result-error-ico" aria-hidden="true">❌</div>
+            <h3 class="result-error-title">Natijani yuklashda xatolik yuz berdi.</h3>
+            <p class="result-error-text">Ma'lumot yuklanmadi. Qayta urinib ko'ring — natija saqlangan bo'lsa tiklanadi.</p>
+            <div class="result-error-actions">
+              <button class="btn btn-primary" id="resultRetryBtn" type="button">↻ Qayta urinish</button>
+              <button class="btn btn-ghost" data-nav="dashboard" type="button">🏠 Bosh sahifa</button>
             </div>
-            <div class="result-emoji" id="resultEmoji" aria-hidden="true">🎉</div>
-            <h1 id="resultScore">0 / 0</h1>
-            <div class="result-percent" id="resultPercent">0%</div>
-            <div class="result-status" id="resultStatus">PASSED</div>
           </div>
-          <div class="result-stats" id="resultStats"></div>
-          <div class="result-actions">
-            <button class="btn btn-primary" id="reviewBtn" type="button">Natijani ko'rish</button>
-            <button class="btn btn-ghost" id="retakeBtn" type="button">Qayta ishlash</button>
-            <button class="btn btn-ghost" data-nav="dashboard" type="button">Dashboardga qaytish</button>
-          </div>
-          <div class="card review-card" id="reviewCard">
-            <div class="card-header">
-              <h3>Javoblarni ko'rish</h3>
+
+          <div class="result-shell" id="resultShell">
+            <header class="result-hero" id="resultHero">
+              <div class="result-confetti" id="resultConfetti" aria-hidden="true"></div>
+              <div class="mascot mascot--idle result-mascot" id="resultMascot" aria-hidden="true">
+                <img src="/assets/it-robot-BLx0jrbI.png" alt="" draggable="false" loading="lazy"
+                  onerror="this.closest('.mascot')&&this.closest('.mascot').classList.add('mascot-broken')" />
+              </div>
+              <div class="result-emoji" id="resultEmoji" aria-hidden="true">🎉</div>
+              <p class="result-kicker" id="resultKicker">🎊 TABRIKLAYMIZ!</p>
+              <h1 class="result-headline" id="resultHeadline">Testni muvaffaqiyatli yakunladingiz!</h1>
+
+              <div class="result-ring-row">
+                <div class="result-ring" id="resultRing" role="img" aria-label="Natija: 0 foiz">
+                  <svg class="result-ring-svg" viewBox="0 0 120 120" aria-hidden="true" focusable="false">
+                    <defs>
+                      <linearGradient id="rrRingPass" x1="0%" y1="0%" x2="100%" y2="100%">
+                        <stop offset="0%" stop-color="#22C55E" />
+                        <stop offset="55%" stop-color="#38BDF8" />
+                        <stop offset="100%" stop-color="#2563EB" />
+                      </linearGradient>
+                      <linearGradient id="rrRingFail" x1="0%" y1="0%" x2="100%" y2="100%">
+                        <stop offset="0%" stop-color="#F59E0B" />
+                        <stop offset="100%" stop-color="#EF4444" />
+                      </linearGradient>
+                    </defs>
+                    <circle class="result-ring-track" cx="60" cy="60" r="52"></circle>
+                    <circle class="result-ring-bar" id="resultRingBar" cx="60" cy="60" r="52"></circle>
+                  </svg>
+                  <span class="result-ring-center">
+                    <span class="result-score" id="resultScore">0 / 0</span>
+                    <span class="result-percent" id="resultPercent">0%</span>
+                  </span>
+                </div>
+                <div class="result-status" id="resultStatus">PASSED</div>
+              </div>
+
+              <div class="result-rewards">
+                <div class="result-reward result-reward--xp">
+                  <span class="result-reward-ico" aria-hidden="true">⚡</span>
+                  <span class="result-reward-val" id="resultXpVal">+0 XP</span>
+                </div>
+                <div class="result-reward result-reward--streak">
+                  <span class="result-reward-ico" aria-hidden="true">🔥</span>
+                  <span class="result-reward-val" id="resultStreakVal">0</span>
+                </div>
+              </div>
+
+              <div class="result-motivation" id="resultMotivation">
+                <span class="result-motivation-ico" id="resultMotivationIcon" aria-hidden="true">📈</span>
+                <span class="result-motivation-body">
+                  <strong class="result-motivation-title" id="resultMotivationTitle">Yaxshi natija!</strong>
+                  <span class="result-motivation-text" id="resultMotivationText">Keyingi safar undan ham yuqori natijaga
+                    erishishingiz mumkin.</span>
+                </span>
+              </div>
+            </header>
+
+            <div class="result-actions">
+              <button class="btn btn-primary result-cta" id="reviewBtn" type="button" aria-expanded="false"
+                aria-controls="reviewCard">📄 Natijani ko'rish <span aria-hidden="true">→</span></button>
+              <button class="btn btn-ghost" id="retakeBtn" type="button">↻ Qayta ishlash</button>
+              <button class="btn btn-ghost" data-nav="dashboard" type="button">🏠 Bosh sahifa</button>
             </div>
-            <div class="card-body" id="reviewBody"></div>
+
+            <div class="result-stats" id="resultStats" role="list" aria-label="Test statistikasi"></div>
+
+            <div class="card review-card" id="reviewCard">
+              <div class="card-header">
+                <h3>Javoblarni ko'rish</h3>
+              </div>
+              <div class="card-body" id="reviewBody"></div>
+            </div>
           </div>
         </section>
 

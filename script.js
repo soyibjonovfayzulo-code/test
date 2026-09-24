@@ -1125,6 +1125,8 @@ function showPage(name) {
   else if (name === "coding") renderCodingPage();
   else if (name === "projects") { if (typeof renderProjectsPage === "function") renderProjectsPage(); }
   else if (name === "certificate") renderCertificatePage();
+  /* Result sahifasi ochilganda intro animatsiyalar (count-up, ring, confetti) */
+  else if (name === "result") playResultIntro();
   else if (name === "lessons" || name === "lessonCourse" || name === "lessonView") {
     if (window.Lessons) window.Lessons.handlePage(name);
   }
@@ -2124,14 +2126,24 @@ function finishTest({ silent = false } = {}) {
   };
   lastResult = result;
 
-  // User uchun save
+  // User uchun save — XP / streak REAL user state'dan hisoblanadi (hardcode yo'q)
+  let xpAwarded = 0;
+  let streakDelta = 0;
   if (currentUser) {
+    const streakBefore = currentUser.streak || 0;
     currentUser.testResults = currentUser.testResults || [];
     currentUser.testResults.push(result);
     updateStreakOnTest(currentUser);
     awardXPAndPoints(currentUser, score);
+    xpAwarded = score;                                                     // awardXPAndPoints(score) → real XP
+    streakDelta = Math.max(0, (currentUser.streak || 0) - streakBefore);    // real streak o'sishi
     saveUsersAndCurrent();
   }
+  result.xpAwarded = xpAwarded;
+  result.streakDelta = streakDelta;
+  result.streakTotal = currentUser ? (currentUser.streak || 0) : 0;
+  result.totalQuestions = test.questions.length;                          // 10 (QUESTIONS_PER_TEST)
+  result.maxScore = test.questions.length * SCORE_PER_CORRECT;            // hardcode emas: total * 5
 
   if (window.DailyStreak && typeof window.DailyStreak.onTestFinished === "function") {
     try {
@@ -2158,29 +2170,190 @@ function finishTest({ silent = false } = {}) {
   showPage("result");
 }
 
-function renderResult(r) {
-  const passed = r.passed;
-  $("#resultEmoji").textContent = passed ? (r.percent === 100 ? "🏆" : "🎉") : (r.percent >= 40 ? "💪" : "📚");
+/* ====================== RESULT REDESIGN — INTRO (count-up, ring, confetti) ====================== */
+let resultIntroPending = false;
+let resultBurstNodes = [];
+let resultBurstTimer = null;
+const RESULT_RING_R = 52;
+const RESULT_RING_C = 2 * Math.PI * RESULT_RING_R;
 
-  // 🤖 Robot bayram yoki rag'bat holati
+function resultReducedMotion() {
+  try {
+    return !!(window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches);
+  } catch (e) { return false; }
+}
+
+/* 🔥 Streak chip matni — real qiymatlardan (delta 0 bo'lsa joriy streak kunlari) */
+function resultStreakText(delta, total) {
+  if (delta > 0) return `+${delta} Streak`;
+  return `${total || 0} kun`;
+}
+
+/* Progress ring — real percent (0..100) */
+function setRingProgress(bar, percent) {
+  if (!bar) return;
+  const p = Math.max(0, Math.min(100, Number(percent) || 0));
+  bar.style.strokeDasharray = String(RESULT_RING_C);
+  bar.style.strokeDashoffset = String(RESULT_RING_C * (1 - p / 100));
+}
+
+function animateRing(bar, percent, duration) {
+  if (!bar) return;
+  const p = Math.max(0, Math.min(100, Number(percent) || 0));
+  if (resultReducedMotion() || duration <= 0) { setRingProgress(bar, p); return; }
+  bar.style.strokeDasharray = String(RESULT_RING_C);
+  const start = (window.performance && performance.now) ? performance.now() : Date.now();
+  const step = (now) => {
+    const t = Math.min(1, ((now || Date.now()) - start) / duration);
+    const eased = 1 - Math.pow(1 - t, 3);
+    bar.style.strokeDashoffset = String(RESULT_RING_C * (1 - (p * eased) / 100));
+    if (t < 1) window.requestAnimationFrame(step);
+  };
+  bar.style.strokeDashoffset = String(RESULT_RING_C);
+  window.requestAnimationFrame(step);
+}
+
+/* rAF count-up — reduced motion bo'lsa darhol yakuniy qiymat */
+function resultCountUp(el, to, format, duration) {
+  if (!el) return;
+  const target = Number(to) || 0;
+  if (resultReducedMotion() || target <= 0 || duration <= 0) {
+    el.textContent = format(target);
+    return;
+  }
+  const start = (window.performance && performance.now) ? performance.now() : Date.now();
+  const step = (now) => {
+    const t = Math.min(1, ((now || Date.now()) - start) / duration);
+    const eased = 1 - Math.pow(1 - t, 3);
+    el.textContent = format(Math.round(target * eased));
+    if (t < 1) window.requestAnimationFrame(step);
+  };
+  window.requestAnimationFrame(step);
+}
+
+/* ---------- RESULT RENDER (xatolik holati bilan — fake result ko'rsatilmaydi) ---------- */
+function renderResult(r) {
+  try {
+
+    if (!r || typeof r !== "object" || !Number.isFinite(r.score) || !Number.isFinite(r.percent)) {
+      showResultError();
+      return;
+    }
+    hideResultError();
+    stopResultConfetti();
+    renderResultContent(r);
+    resultIntroPending = true;
+    playResultIntro();
+  } catch (e) {
+    console.error("Result render xatosi:", e);
+    showResultError();
+  }
+}
+
+/* ---------- RESULT REDESIGN — real datadan render (hardcode YO'Q) ---------- */
+function resultMaxScore(r) {
+  if (Number.isFinite(r.maxScore) && r.maxScore > 0) return r.maxScore;
+  const total = Number.isFinite(r.totalQuestions) && r.totalQuestions > 0
+    ? r.totalQuestions
+    : (r.correct || 0) + (r.incorrect || 0) + (r.skipped || 0);
+  return total * SCORE_PER_CORRECT;
+}
+
+function resultMotivation(percent) {
+  if (percent >= 90) {
+    return { icon: "🏆", title: "Ajoyib natija!", text: "Mavzuni juda yaxshi o'zlashtirgansiz." };
+  }
+  if (percent >= 70) {
+    return { icon: "📈", title: "Yaxshi natija!", text: "Yana bir oz mashq qilsangiz yanada yuqori natija olasiz." };
+  }
+  if (percent >= 50) {
+    return { icon: "🚀", title: "Yaxshi boshlanish!", text: "Xatolarni ko'rib yana urinib ko'ring." };
+  }
+  return { icon: "💪", title: "Harakatni davom ettiring.", text: "Xatolaringizni ko'rib qayta mashq qiling." };
+}
+
+function renderResultContent(r) {
+  const passed = !!r.passed;
+  const maxScore = resultMaxScore(r);
+  const motivation = resultMotivation(r.percent);
+
+  // 1) Emoji + celebration sarlavhalari (holatga qarab, real passed)
+  $("#resultEmoji").textContent = passed ? (r.percent === 100 ? "🏆" : "🎉") : (r.percent >= 40 ? "💪" : "📚");
+  $("#resultKicker").textContent = passed ? "🎊 TABRIKLAYMIZ! 🎊" : "💪 KEYINGI SAFAR YANADA YAXSHI!";
+  $("#resultHeadline").textContent = passed
+    ? "Testni muvaffaqiyatli yakunladingiz!"
+    : "Test yakunlandi — xatolaringizni ko'rib qayta urinib ko'ring.";
+
+  // 2) Robot mascot (mavjud ITMascot integratsiyasi saqlanadi)
   const rm = $("#resultMascot");
   if (rm && window.ITMascot) {
     ITMascot.setState(rm, passed ? "complete" : "error");
     if (passed) ITMascot.showXP(rm, `+${r.score} XP`);
   }
 
-  $("#resultScore").textContent = `${r.score} / 50`;
+  // 3) Score / percent / status — real qiymatlar
+  $("#resultScore").textContent = `${r.score} / ${maxScore}`;
   $("#resultPercent").textContent = `${r.percent}%`;
-  $("#resultStatus").textContent = passed ? "PASSED" : "FAILED";
-  $("#resultStatus").className = `result-status ${passed ? 'passed' : 'failed'}`;
+  const statusEl = $("#resultStatus");
+  statusEl.textContent = passed ? "PASSED" : "FAILED";
+  statusEl.className = `result-status ${passed ? "passed" : "failed"}`;
 
+  const ring = $("#resultRing");
+  const ringBar = $("#resultRingBar");
+  if (ring) {
+    ring.setAttribute("aria-label", `Natija: ${r.percent} foiz, ${r.score} / ${maxScore} ball, ${passed ? "PASSED" : "FAILED"}`);
+  }
+  if (ringBar) {
+    ringBar.setAttribute("stroke", passed ? "url(#rrRingPass)" : "url(#rrRingFail)");
+    setRingProgress(ringBar, 0);
+  }
+
+  // 4) XP + streak — real user state / session datasi
+  const xpVal = Number.isFinite(r.xpAwarded) ? r.xpAwarded : r.score;
+  const streakDelta = Number.isFinite(r.streakDelta) ? r.streakDelta : 0;
+  const streakTotal = Number.isFinite(r.streakTotal)
+    ? r.streakTotal
+    : (currentUser && currentUser.streak) || 0;
+  $("#resultXpVal").textContent = `+${xpVal} XP`;
+  $("#resultStreakVal").textContent = resultStreakText(streakDelta, streakTotal);
+
+  // 5) Motivational message — foizga qarab dynamic
+  $("#resultMotivationIcon").textContent = motivation.icon;
+  $("#resultMotivationTitle").textContent = motivation.title;
+  $("#resultMotivationText").textContent = motivation.text;
+
+  // 6) Stats — 6 card (real session datasidan)
   $("#resultStats").innerHTML = `
-    <div class="result-stat-card"><div class="val">${r.correct}</div><div class="lbl">To'g'ri</div></div>
-    <div class="result-stat-card"><div class="val">${r.incorrect}</div><div class="lbl">Noto'g'ri</div></div>
-    <div class="result-stat-card"><div class="val">${r.skipped}</div><div class="lbl">O'tkazilgan</div></div>
-    <div class="result-stat-card"><div class="val">${r.percent}%</div><div class="lbl">Foiz</div></div>
-    <div class="result-stat-card"><div class="val">${r.score}/50</div><div class="lbl">Ball</div></div>
-    <div class="result-stat-card"><div class="val">${formatTime(r.durationSec)}</div><div class="lbl">Vaqt</div></div>
+    <div class="result-stat-card" data-stat="correct" role="listitem">
+      <span class="result-stat-ico" aria-hidden="true">✅</span>
+      <span class="val">${r.correct}</span>
+      <span class="lbl">To'g'ri</span>
+    </div>
+    <div class="result-stat-card" data-stat="incorrect" role="listitem">
+      <span class="result-stat-ico" aria-hidden="true">❌</span>
+      <span class="val">${r.incorrect}</span>
+      <span class="lbl">Noto'g'ri</span>
+    </div>
+    <div class="result-stat-card" data-stat="skipped" role="listitem">
+      <span class="result-stat-ico" aria-hidden="true">⊘</span>
+      <span class="val">${r.skipped}</span>
+      <span class="lbl">O'tkazilgan</span>
+    </div>
+    <div class="result-stat-card" data-stat="percent" role="listitem">
+      <span class="result-stat-ico" aria-hidden="true">📊</span>
+      <span class="val">${r.percent}%</span>
+      <span class="lbl">Foiz</span>
+    </div>
+    <div class="result-stat-card" data-stat="score" role="listitem">
+      <span class="result-stat-ico" aria-hidden="true">🎯</span>
+      <span class="val">${r.score}/${maxScore}</span>
+      <span class="lbl">Ball</span>
+    </div>
+    <div class="result-stat-card" data-stat="time" role="listitem">
+      <span class="result-stat-ico" aria-hidden="true">⏱</span>
+      <span class="val">${formatTime(r.durationSec || 0)}</span>
+      <span class="lbl">Vaqt</span>
+    </div>
   `;
 
   // Review default hidden, toggle qilindi
@@ -2204,16 +2377,158 @@ function renderResult(r) {
     `;
     rb.appendChild(row);
   }
+
+  const reviewBtn = $("#reviewBtn");
+  if (reviewBtn) reviewBtn.setAttribute("aria-expanded", "false");
+}
+
+/* ---------- SIDE CONFETTI BURST — 2-3s, keyin to'xtaydi (infinite EMAS) ---------- */
+function stopResultConfetti() {
+  if (resultBurstTimer) {
+    window.clearTimeout(resultBurstTimer);
+    resultBurstTimer = null;
+  }
+  if (resultBurstNodes.length) {
+    resultBurstNodes.forEach((n) => n.remove());
+    resultBurstNodes = [];
+  }
+  const layer = $("#resultConfetti");
+  if (layer && layer.firstChild) layer.innerHTML = "";
+}
+
+function startResultConfetti() {
+  const layer = $("#resultConfetti");
+  if (!layer) return;
+  stopResultConfetti();
+  if (resultReducedMotion()) return;
+
+  const compact = window.innerWidth < 768;
+  const perSide = compact ? 8 : 14;                       /* mobil: kompakt burst */
+  const glyphs = ["✨", "🎉", "⭐", "🎊", "💫"];
+  const colors = ["#2563EB", "#38BDF8", "#22C55E", "#FACC15", "#8B5CF6", "#F97316"];
+  const frag = document.createDocumentFragment();
+
+  for (let side = 0; side < 2; side++) {
+    for (let i = 0; i < perSide; i++) {
+      const el = document.createElement("i");
+      const emoji = Math.random() < 0.45;
+      el.className = "result-confetti-bit result-confetti-bit--" + (side ? "right" : "left") + (emoji ? " is-emoji" : "");
+      if (emoji) {
+        el.textContent = glyphs[Math.floor(Math.random() * glyphs.length)];
+        el.style.setProperty("--rr-size", ((compact ? 11 : 13) + Math.random() * 9).toFixed(0) + "px");
+      } else {
+        el.style.background = colors[Math.floor(Math.random() * colors.length)];
+        el.style.setProperty("--rr-size", ((compact ? 5 : 6) + Math.random() * 5).toFixed(0) + "px");
+      }
+      el.style.setProperty("--rr-y", (6 + Math.random() * (compact ? 36 : 44)).toFixed(1) + "%");
+      el.style.setProperty("--rr-delay", (Math.random() * 0.5).toFixed(2) + "s");
+      el.style.setProperty("--rr-dur", (1.15 + Math.random() * 0.75).toFixed(2) + "s");
+      el.style.setProperty("--rr-drift", (Math.random() * 70 - 35).toFixed(0) + "px");
+      el.style.setProperty("--rr-rot", (Math.random() * 260 - 130).toFixed(0) + "deg");
+      frag.appendChild(el);
+      resultBurstNodes.push(el);
+    }
+  }
+  layer.appendChild(frag);
+  /* 3.1s dan keyin node'lar o'chiriladi — animatsiya abadiy aylanmaydi */
+  resultBurstTimer = window.setTimeout(stopResultConfetti, 3100);
+}
+
+/* ---------- INTRO: hero fade/scale + score count-up + ring + XP/streak + confetti ---------- */
+function playResultIntro() {
+  if (!resultIntroPending || !lastResult) return;
+  const page = $("#page-result");
+  if (!page || !page.classList.contains("active")) return;   /* sahifa ko'ringanda chaqiriladi */
+  resultIntroPending = false;
+
+  const r = lastResult;
+  const maxScore = resultMaxScore(r);
+  const reduced = resultReducedMotion();
+
+  const shell = $("#resultShell");
+  if (shell) {
+    shell.classList.remove("is-intro");
+    void shell.offsetWidth;                                   /* animatsiyani qayta boshlash */
+    shell.classList.add("is-intro");
+  }
+
+  const xpVal = Number.isFinite(r.xpAwarded) ? r.xpAwarded : r.score;
+  const streakDelta = Number.isFinite(r.streakDelta) ? r.streakDelta : 0;
+  const streakTotal = Number.isFinite(r.streakTotal) ? r.streakTotal : (currentUser && currentUser.streak) || 0;
+
+  if (reduced) {
+    $("#resultScore").textContent = `${r.score} / ${maxScore}`;
+    $("#resultPercent").textContent = `${r.percent}%`;
+    $("#resultXpVal").textContent = `+${xpVal} XP`;
+    $("#resultStreakVal").textContent = resultStreakText(streakDelta, streakTotal);
+    setRingProgress($("#resultRingBar"), r.percent);
+    return;
+  }
+
+  animateRing($("#resultRingBar"), r.percent, 900);
+  resultCountUp($("#resultScore"), r.score, (v) => `${v} / ${maxScore}`, 900);
+  resultCountUp($("#resultPercent"), r.percent, (v) => `${v}%`, 900);
+  resultCountUp($("#resultXpVal"), xpVal, (v) => `+${v} XP`, 900);
+  resultCountUp(
+    $("#resultStreakVal"),
+    streakDelta > 0 ? streakDelta : streakTotal,
+    (v) => (streakDelta > 0 ? `+${v} Streak` : `${v} kun`),
+    900
+  );
+  startResultConfetti();
+}
+
+
+/* ---------- XATOLIK HOLATI — natija yuklanmasa (fake result ko'rsatilmaydi) ---------- */
+function showResultError() {
+  stopResultConfetti();
+  const err = $("#resultError");
+  const shell = $("#resultShell");
+  if (shell) shell.classList.add("hidden");
+  if (err) err.classList.remove("hidden");
+}
+
+function hideResultError() {
+  const err = $("#resultError");
+  const shell = $("#resultShell");
+  if (err) err.classList.add("hidden");
+  if (shell) shell.classList.remove("hidden");
+}
+
+function retryLoadResult() {
+  let r = lastResult;
+  if (!r && currentUser && Array.isArray(currentUser.testResults) && currentUser.testResults.length) {
+    r = currentUser.testResults[currentUser.testResults.length - 1];
+  }
+  if (r && Array.isArray(r.questions) && r.questions.length) {
+    lastResult = r;
+    renderResult(r);
+    showToast("✅ Natija tiklandi", "success");
+    return;
+  }
+  showResultError();
+  showToast("❌ Natija topilmadi — testni qaytadan ishlang", "error");
 }
 
 function bindResultActions() {
   $("#reviewBtn").addEventListener("click", () => {
-    $("#reviewCard").classList.toggle("active");
-    $("#reviewBtn").textContent = $("#reviewCard").classList.contains("active") ? "Javoblarni yashirish" : "Natijani ko\'rish";
+    const card = $("#reviewCard");
+    const open = card.classList.toggle("active");
+    $("#reviewBtn").setAttribute("aria-expanded", open ? "true" : "false");
+    $("#reviewBtn").innerHTML = open
+      ? "📄 Javoblarni yashirish"
+      : "📄 Natijani ko'rish <span aria-hidden=\"true\">→</span>";
+    if (open) {
+      card.scrollIntoView({ behavior: resultReducedMotion() ? "auto" : "smooth", block: "start" });
+    }
   });
   $("#retakeBtn").addEventListener("click", () => {
     if (lastResult) { const id = lastResult.testId; lastResult = null; openStartTestModal(id); }
   });
+  const retry = $("#resultRetryBtn");
+  if (retry) retry.addEventListener("click", retryLoadResult);
+  /* Sahifa yopilganda confetti node'lari tozalanadi — memory leak yo'q */
+  window.addEventListener("pagehide", stopResultConfetti);
 }
 
 /* RESULTS HISTORY — OLIB TASHLANGAN: Natijalar alohida bolimi olib tashlandi. testResults datasi saqlanadi (XP, Reyting, Yutuqlar uchun). */
