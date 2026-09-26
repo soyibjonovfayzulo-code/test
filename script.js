@@ -1,4 +1,4 @@
-/* ==========================================================
+﻿/* ==========================================================
    IT/AI TEST PLATFORM — Vanilla JavaScript
    ========================================================== */
 
@@ -19,21 +19,44 @@ function itHaptic(kind) {
 /* ====================== SUBJECTS META (9 FAN) ====================== */
 
 const SUBJECTS = [
-  { name: 'Python', icon: '🐍', description: 'Python dasturlash asoslari va ilg\'or tushunchalar' },
-  { name: 'JavaScript', icon: '⚡', description: 'Web dasturlash tili — DOM, ES6+, Async' },
-  { name: 'Java', icon: '☕', description: 'Universal OOP tili — Collections, JVM' },
-  { name: 'C++', icon: '🔧', description: 'Tizim dasturlash — OOP, STL, Pointerlar' },
-  { name: 'C#', icon: '🔷', description: '.NET ekotizimi — OOP, LINQ, Async' },
-  { name: 'HTML', icon: '🌐', description: 'Web sahifa tuzilishi — Semantic, Forms' },
-  { name: 'CSS', icon: '🎨', description: 'Web sahifa stillari — Flex, Grid, Responsive' },
-  { name: 'SQL', icon: '🗄', description: 'Ma\'lumotlar bazasi — JOIN, GROUP BY, INDEX' },
-  { name: 'AI', icon: '🤖', description: 'Sun\'iy intellekt — ML, NN, NLP' },
+  { name: 'Python', icon: '🐍', description: 'Python dasturlash asoslari va ilg\'or tushunchalar', difficulty: 'beginner' },
+  { name: 'JavaScript', icon: '⚡', description: 'Web dasturlash tili — DOM, ES6+, Async', difficulty: 'intermediate' },
+  { name: 'Java', icon: '☕', description: 'Universal OOP tili — Collections, JVM', difficulty: 'intermediate' },
+  { name: 'C++', icon: '🔧', description: 'Tizim dasturlash — OOP, STL, Pointerlar', difficulty: 'advanced' },
+  { name: 'C#', icon: '🔷', description: '.NET ekotizimi — OOP, LINQ, Async', difficulty: 'intermediate' },
+  { name: 'HTML', icon: '🌐', description: 'Web sahifa tuzilishi — Semantic, Forms', difficulty: 'beginner' },
+  { name: 'CSS', icon: '🎨', description: 'Web sahifa stillari — Flex, Grid, Responsive', difficulty: 'beginner' },
+  { name: 'SQL', icon: '🗄', description: 'Ma\'lumotlar bazasi — JOIN, GROUP BY, INDEX', difficulty: 'intermediate' },
+  { name: 'AI', icon: '🤖', description: 'Sun\'iy intellekt — ML, NN, NLP', difficulty: 'advanced' },
 ];
 
 const DIFFICULTY_LABELS = { beginner: 'Beginner', intermediate: 'Intermediate', advanced: 'Advanced' };
 const DIFF_COUNT = { beginner: 3, intermediate: 3, advanced: 3 };
 const QUESTIONS_PER_TEST = 10;
 const TEST_DURATION_SEC = 10 * 60;
+
+/* ====================== TIMER REGISTRY (Auto-cleanup) ====================== */
+(function installTimerRegistry() {
+  try {
+    const TIMER_REGISTRY = new Set();
+    const _setI = window.setInterval.bind(window);
+    const _setT = window.setTimeout.bind(window);
+    const _clrI = window.clearInterval.bind(window);
+    const _clrT = window.clearTimeout.bind(window);
+    window.setInterval = function () { const id = _setI.apply(window, arguments); TIMER_REGISTRY.add({ k: 'i', id }); return id; };
+    window.setTimeout = function () { const id = _setT.apply(window, arguments); TIMER_REGISTRY.add({ k: 't', id }); return id; };
+    window.clearInterval = function (id) { for (const t of TIMER_REGISTRY) if (t.id === id) { TIMER_REGISTRY.delete(t); break; } return _clrI(id); };
+    window.clearTimeout = function (id) { for (const t of TIMER_REGISTRY) if (t.id === id) { TIMER_REGISTRY.delete(t); break; } return _clrT(id); };
+    window.clearAppTimers = function clearAppTimers(scope) {
+      for (const t of Array.from(TIMER_REGISTRY)) {
+        if (scope === 'test' && !t._test) continue;
+        if (t.k === 'i') _clrI(t.id); else _clrT(t.id);
+        TIMER_REGISTRY.delete(t);
+      }
+    };
+    Object.defineProperty(window, '__timerRegistrySize', { get: () => TIMER_REGISTRY.size, configurable: true });
+  } catch (e) { /* ignore */ }
+})();
 
 /* ====================== SAVOLLAR BANKI (REAL SAVOLLAR) ====================== */
 /* JSON fayllardan yuklanadi */
@@ -191,8 +214,9 @@ const FALLBACK_Q_BANK = {
 function prepareShuffledQuestions(questions) {
   if (!Array.isArray(questions) || !questions.length) return [];
 
-  // Deep clone questions to avoid mutating original source bank
-  const cloned = JSON.parse(JSON.stringify(questions));
+  const cloned = ('structuredClone' in self)
+    ? structuredClone(questions)
+    : JSON.parse(JSON.stringify(questions));
 
   // Create a sequence of balanced target answer positions (0, 1, 2, 3 -> A, B, C, D)
   const basePositions = [0, 1, 2, 3];
@@ -442,112 +466,189 @@ async function loadBackendQuestionBank() {
   }
 }
 
-/* ====================== JSON LOADER ====================== */
+/* ====================== JSON LOADER (LAZY) ====================== */
 
-async function loadQuestionBank() {
+const QBANK_JSON_SUBJECTS = [
+  { file: 'python',    key: 'Python'     },
+  { file: 'javascript',key: 'JavaScript' },
+  { file: 'java',      key: 'Java'       },
+  { file: 'cpp',       key: 'C++',       alt: 'CPlusPlus' },
+  { file: 'csharp',    key: 'C#',        alt: 'CSharp'    },
+  { file: 'html',      key: 'HTML'       },
+  { file: 'css',       key: 'CSS'        },
+  { file: 'sql',       key: 'SQL'        },
+  { file: 'ai',        key: 'AI'         },
+];
+const QBANK_LOADED_SUBJECTS = new Set();
+let QBANK_BACKEND_LOADER = null;
+let QBANK_BACKEND_LOADED = false;
+const QBANK_INITIAL_SUBSET = ['python', 'javascript'];
+
+function resolveJsonBaseDir() {
+  if (location.href.startsWith('file:///')) {
+    return location.href.includes('android_asset')
+      ? 'file:///android_asset/public/data/'
+      : new URL('./data/', location.href).href;
+  }
+  return './data/';
+}
+
+async function fetchOneSubjectJson(fileKey) {
+  const baseDir = resolveJsonBaseDir();
+  const candidatePaths = [
+    `${baseDir}${fileKey}.json`,
+    `./data/${fileKey}.json`,
+    `data/${fileKey}.json`,
+    `./public/data/${fileKey}.json`,
+    `public/data/${fileKey}.json`,
+    new URL(`./data/${fileKey}.json`, location.href).href
+  ];
+  for (const p of candidatePaths) {
+    try {
+      const res = await fetch(p);
+      if (res && res.ok) return await res.json();
+    } catch (_) {}
+  }
+  return null;
+}
+
+function mergeJsonIntoQBank(key, data, altKey) {
+  if (!key || !data) return false;
+  const incoming = {
+    beginner: data.beginner || [],
+    intermediate: data.intermediate || [],
+    advanced: data.advanced || []
+  };
+  const existing = Q_BANK[key] || { beginner: [], intermediate: [], advanced: [] };
+  const seen = new Set();
+  const mergeLevel = (fallbackArr, jsonArr) => {
+    const out = [];
+    for (const q of [...(jsonArr || []), ...(fallbackArr || [])]) {
+      const k = normalizeQuestionText(q && q.q);
+      if (!k || seen.has(k)) continue;
+      seen.add(k);
+      out.push(q);
+    }
+    return out;
+  };
+  Q_BANK[key] = {
+    beginner: mergeLevel(existing.beginner, incoming.beginner),
+    intermediate: mergeLevel(existing.intermediate, incoming.intermediate),
+    advanced: mergeLevel(existing.advanced, incoming.advanced)
+  };
+  if (altKey) Q_BANK[altKey] = Q_BANK[key];
+  return true;
+}
+
+function finalizeQBankAliases() {
+  Q_BANK['C++'] = Q_BANK['C++'] || Q_BANK['CPlusPlus'] || { beginner: [], intermediate: [], advanced: [] };
+  Q_BANK['C#'] = Q_BANK['C#'] || Q_BANK['CSharp'] || { beginner: [], intermediate: [], advanced: [] };
+  Q_BANK['CPlusPlus'] = Q_BANK['CPlusPlus'] || Q_BANK['C++'];
+  Q_BANK['CSharp'] = Q_BANK['CSharp'] || Q_BANK['C#'];
+}
+
+function rebuildTestsForSubjects(subjectKeys) {
+  if (!Array.isArray(subjectKeys) || !subjectKeys.length) return;
+  const affected = new Set(subjectKeys.map(k => k.toLowerCase()));
+  for (const sbj of SUBJECTS) {
+    if (!affected.has(sbj.name.toLowerCase())) continue;
+    const bank = Q_BANK[sbj.name];
+    if (!bank) continue;
+    const tests = [];
+    for (const diff of ['beginner', 'intermediate', 'advanced']) {
+      tests.push(...buildTestsFromPool(sbj.name, diff, bank[diff] || []));
+    }
+    ALL_TESTS[sbj.name] = tests;
+  }
+}
+
+async function loadSubjectJson(fileKey) {
+  const subject = QBANK_JSON_SUBJECTS.find(s => s.file === fileKey);
+  if (!subject) return false;
+  if (QBANK_LOADED_SUBJECTS.has(fileKey)) return true;
+  const data = await fetchOneSubjectJson(fileKey);
+  if (data) {
+    mergeJsonIntoQBank(subject.key, data, subject.alt);
+  }
+  QBANK_LOADED_SUBJECTS.add(fileKey);
+  finalizeQBankAliases();
+  return true;
+}
+
+async function ensureBackendMerged() {
+  if (QBANK_BACKEND_LOADED) return;
+  if (!QBANK_BACKEND_LOADER) {
+    QBANK_BACKEND_LOADER = (async () => {
+      try { await loadBackendQuestionBank(); } catch (_) {}
+      finally { QBANK_BACKEND_LOADED = true; }
+    })();
+  }
+  await QBANK_BACKEND_LOADER;
+}
+
+function rerenderActiveTestsPageIfNeeded() {
   try {
-    const subjects = ['python', 'javascript', 'java', 'cpp', 'csharp', 'html', 'css', 'sql', 'ai'];
+    const active = document.querySelector('.page.active');
+    if (!active) return;
+    const id = active.id || '';
+    if (id === 'page-tests') renderTestsPage();
+    else if (id === 'page-testlist' && currentSubject) openSubjectTests(currentSubject);
+  } catch (_) {}
+}
 
-    for (const subject of subjects) {
+async function loadQuestionBank(onlyFiles) {
+  try {
+    const files = Array.isArray(onlyFiles) && onlyFiles.length
+      ? QBANK_JSON_SUBJECTS.filter(s => onlyFiles.includes(s.file)).map(s => s.file)
+      : QBANK_JSON_SUBJECTS.map(s => s.file);
+    for (const fileKey of files) {
       try {
-        let response = null;
-        const baseDir = (location.href || '').includes('file:///')
-          ? (location.href.includes('android_asset')
-              ? 'file:///android_asset/public/data/'
-              : new URL('./data/', location.href).href)
-          : './data/';
-        const candidatePaths = [
-          `${baseDir}${subject}.json`,
-          `./data/${subject}.json`,
-          `data/${subject}.json`,
-          `./public/data/${subject}.json`,
-          `public/data/${subject}.json`,
-          new URL(`./data/${subject}.json`, location.href).href
-        ];
-        for (const p of candidatePaths) {
-          try {
-            const res = await fetch(p);
-            if (res && res.ok) { response = res; break; }
-          } catch (_) {}
-        }
-        if (!response) continue;
-
-        const data = await response.json();
-
-        const keyMap = {
-          'python': 'Python',
-          'javascript': 'JavaScript',
-          'java': 'Java',
-          'cpp': 'C++',
-          'csharp': 'C#',
-          'html': 'HTML',
-          'css': 'CSS',
-          'sql': 'SQL',
-          'ai': 'AI'
-        };
-
-        const key = keyMap[subject];
-        if (key && data) {
-          const merged = {
-            beginner: data.beginner || [],
-            intermediate: data.intermediate || [],
-            advanced: data.advanced || []
-          };
-          const current = Q_BANK[key] || { beginner: [], intermediate: [], advanced: [] };
-          const seen = new Set();
-          const mergeLevel = (fallbackArr, jsonArr) => {
-            const out = [];
-            for (const q of [...(jsonArr || []), ...(fallbackArr || [])]) {
-              const k = normalizeQuestionText(q && q.q);
-              if (!k || seen.has(k)) continue;
-              seen.add(k);
-              out.push(q);
-            }
-            return out;
-          };
-          Q_BANK[key] = {
-            beginner: mergeLevel(current.beginner, merged.beginner),
-            intermediate: mergeLevel(current.intermediate, merged.intermediate),
-            advanced: mergeLevel(current.advanced, merged.advanced)
-          };
-          if (key === 'C++') Q_BANK['CPlusPlus'] = Q_BANK['C++'];
-          if (key === 'C#') Q_BANK['CSharp'] = Q_BANK['C#'];
-        }
+        await loadSubjectJson(fileKey);
       } catch (e) {
-        console.debug(`Failed to load ${subject}.json (using fallback):`, e.message);
+        console.debug(`Failed to load ${fileKey}.json (using fallback):`, e.message);
       }
     }
-
-    Q_BANK['C++'] = Q_BANK['C++'] || Q_BANK['CPlusPlus'] || { beginner: [], intermediate: [], advanced: [] };
-    Q_BANK['C#'] = Q_BANK['C#'] || Q_BANK['CSharp'] || { beginner: [], intermediate: [], advanced: [] };
-    Q_BANK['CPlusPlus'] = Q_BANK['CPlusPlus'] || Q_BANK['C++'];
-    Q_BANK['CSharp'] = Q_BANK['CSharp'] || Q_BANK['C#'];
-
-    /* DB (test_questions) savollarini birlashtirish — admin qo'shan yangi
-       testlar shu yo'l bilan frontendga yetib boradi. Xato bo'lsa fallback. */
-    await loadBackendQuestionBank();
-
-    console.log('Question bank loaded:', Object.keys(Q_BANK));
-
+    finalizeQBankAliases();
+    await ensureBackendMerged();
+    finalizeQBankAliases();
     const rebuilt = rebuildAllTests();
     for (const k of Object.keys(rebuilt)) ALL_TESTS[k] = rebuilt[k];
-    console.log('ALL_TESTS rebuilt after JSON load.');
-    QBANK_LOADING.loaded = true;
-    // Agar hozir tests/testlist sahifalarida bo'lsa, JSON yuklangandan keyin qayta render qil (APKda ko'rinmagan testlarni ko'rinishi uchun).
-    try {
-      const active = document.querySelector('.page.active');
-      if (active) {
-        const id = active.id || '';
-        if (id === 'page-tests') renderTestsPage();
-        else if (id === 'page-testlist' && currentSubject) openSubjectTests(currentSubject);
-      }
-    } catch (_) {}
+    if (!onlyFiles || (Array.isArray(files) && files.length === QBANK_JSON_SUBJECTS.length)) {
+      QBANK_LOADING.loaded = true;
+      console.log('Question bank loaded:', Object.keys(Q_BANK));
+      console.log('ALL_TESTS rebuilt after JSON load.');
+    } else {
+      rebuildTestsForSubjects(files.map(f => {
+        const s = QBANK_JSON_SUBJECTS.find(x => x.file === f);
+        return s ? s.key : f;
+      }).filter(Boolean));
+    }
+    rerenderActiveTestsPageIfNeeded();
   } catch (error) {
     console.error('Error loading question bank:', error);
   }
 }
 
-QBANK_LOADING.promise = loadQuestionBank();
+async function ensureAllSubjectsLoaded() {
+  const remaining = QBANK_JSON_SUBJECTS.map(s => s.file).filter(f => !QBANK_LOADED_SUBJECTS.has(f));
+  if (!remaining.length && QBANK_BACKEND_LOADED) return;
+  QBANK_LOADING.loaded = false;
+  await loadQuestionBank(remaining);
+  QBANK_LOADING.loaded = true;
+}
+
+async function ensureSubjectLoaded(subjectName) {
+  if (!subjectName) return;
+  const entry = QBANK_JSON_SUBJECTS.find(s =>
+    s.key === subjectName || s.alt === subjectName || s.file === subjectName.toLowerCase()
+  );
+  if (entry && !QBANK_LOADED_SUBJECTS.has(entry.file)) {
+    await loadQuestionBank([entry.file]);
+  }
+  await ensureBackendMerged();
+}
+
+QBANK_LOADING.promise = loadQuestionBank(QBANK_INITIAL_SUBSET);
 
 /* Question banks are loaded from JSON files and custom banks below. */
 
@@ -849,8 +950,20 @@ function markTestCompletedAndUnlockNext(user, completedTestId) {
 }
 
 /* ====================== DOM / STORAGE HELPERS ====================== */
-const $ = (sel, parent = document) => parent.querySelector(sel);
+const _DOM_CACHE = new Map();
+const $ = (sel, parent = document) => {
+  const isDoc = parent === document;
+  const isIdOnly = typeof sel === 'string' && sel.startsWith('#') && !sel.includes(' ') && !sel.includes('.') && !sel.includes(':');
+  if (isDoc && isIdOnly) {
+    if (_DOM_CACHE.has(sel)) return _DOM_CACHE.get(sel);
+    const el = parent.getElementById(sel.slice(1));
+    if (el) _DOM_CACHE.set(sel, el);
+    return el;
+  }
+  return parent.querySelector(sel);
+};
 const $$ = (sel, parent = document) => Array.from(parent.querySelectorAll(sel));
+window.__invalidateDomCache = function () { _DOM_CACHE.clear(); };
 
 /* ====================== STORE CATALOG ====================== */
 const STORE_ITEMS = [
@@ -910,10 +1023,33 @@ const RARITY_LABELS = {
   legendary: 'Afsonaviy'
 };
 
+const _LS_MEM = new Map();
 const LS = {
-  get(key, def = null) { try { const v = localStorage.getItem(key); return v ? JSON.parse(v) : def; } catch (e) { return def; } },
-  set(key, val) { try { localStorage.setItem(key, JSON.stringify(val)); return true; } catch (e) { console.warn('LS.set failed:', key, e?.message || e); return false; } },
-  del(key) { try { localStorage.removeItem(key); return true; } catch (e) { console.warn('LS.del failed:', key, e?.message || e); return false; } },
+  get(key, def = null) {
+    if (_LS_MEM.has(key)) return _LS_MEM.get(key);
+    try {
+      const raw = localStorage.getItem(key);
+      if (!raw) { _LS_MEM.set(key, def); return def; }
+      let v;
+      try { v = JSON.parse(raw); } catch (parseErr) { v = raw; }
+      _LS_MEM.set(key, v);
+      return v;
+    } catch (e) { return def; }
+  },
+  set(key, val) {
+    try {
+      _LS_MEM.set(key, val);
+      localStorage.setItem(key, JSON.stringify(val));
+      return true;
+    } catch (e) { console.warn('LS.set failed:', key, e?.message || e); return false; }
+  },
+  del(key) {
+    try {
+      _LS_MEM.delete(key);
+      localStorage.removeItem(key);
+      return true;
+    } catch (e) { console.warn('LS.del failed:', key, e?.message || e); return false; }
+  },
 };
 
 /* ====================== AUTH & USER ====================== */
@@ -1095,6 +1231,9 @@ window.__itGetStoreInfo = function () {
 window.__itStoreItem = function (id) { return storeItem(id); };
 
 function showPage(name) {
+  if (typeof window.clearAppTimers === 'function') {
+    try { window.clearAppTimers(); } catch (e) { /* noop */ }
+  }
   /* "Natijalar" bo'limi olib tashlangan — eski /#results link/dashboard havolalari
      Bosh sahifaga yo'naltiriladi (broken page / bo'sh sahifa bo'lmaydi) */
   if (name === "results") { showToast("📊 Natijalar bo'limi olib tashlandi — Bosh sahifaga yo'naltirildi", "info"); name = "dashboard"; }
@@ -1599,6 +1738,7 @@ function subjectCard(sbj) {
   const isCompleted = pct >= 100;
 
   const ctaText = isCompleted ? 'Qayta ishlash' : (pct > 0 ? 'Davom ettirish' : 'Boshlash');
+  const diffBadge = sbj.difficulty ? difficultyBadge(sbj.difficulty) : '';
 
   const card = document.createElement("article");
   card.className = "test-card" + (isCompleted ? " completed" : "");
@@ -1609,7 +1749,7 @@ function subjectCard(sbj) {
       </div>
     </div>
     <div class="test-card__content">
-      <h2 class="test-card__title">${sbj.name === 'HTML' ? 'HTML &amp; CSS' : sbj.name}</h2>
+      <h2 class="test-card__title">${sbj.name === 'HTML' ? 'HTML &amp; CSS' : sbj.name}${diffBadge ? ' ' + diffBadge : ''}</h2>
       <p class="test-card__desc">${sbj.description}</p>
       <div class="test-card__meta">
         ${testCount
@@ -1689,26 +1829,31 @@ function difficultyBadge(diff) {
   return `<span class="${m.cls}">${m.txt}</span>`;
 }
 
-function openSubjectTests(name) {
+async function openSubjectTests(name) {
   currentSubject = name;
   const title = $("#testListTitle");
   const s = SUBJECTS.find(x => x.name === name);
   if (title) title.innerHTML = `${s ? s.icon : '📝'} ${name} testlari`;
-  const list = ALL_TESTS[name] || [];
   const container = $("#testListContainer");
+  container.innerHTML = `<div class="empty-state" style="padding:48px 16px;text-align:center;"><div class="spinner" style="display:inline-block;vertical-align:middle;margin-right:10px;border:3px solid var(--itt-muted,#94A3B8);border-top-color:var(--itt-primary,#2563EB);border-radius:50%;width:22px;height:22px;animation:spin 0.9s linear infinite;"></div>${name} testlari yuklanmoqda... Iltimos kuting.</div>`;
+  showPage("testlist");
+
+  try {
+    await ensureSubjectLoaded(name);
+  } catch (err) {
+    console.error('ensureSubjectLoaded failed:', err);
+  }
+
+  const list = ALL_TESTS[name] || [];
   container.innerHTML = "";
   if (!list.length) {
-    if (!QBANK_LOADING.loaded) {
-      container.innerHTML = `<div class="empty-state" style="padding:48px 16px;text-align:center;"><div class="spinner" style="display:inline-block;vertical-align:middle;margin-right:10px;border:3px solid var(--itt-muted,#94A3B8);border-top-color:var(--itt-primary,#2563EB);border-radius:50%;width:22px;height:22px;animation:spin 0.9s linear infinite;"></div>${name} testlari yuklanmoqda... Iltimos kuting.</div>`;
-    } else {
-      const bErr = QBANK_LOADING.backend && QBANK_LOADING.backend.error;
-      container.innerHTML = `<div class="empty-state" style="padding:40px 16px;text-align:center;">
-        <div style="font-size:34px;margin-bottom:8px;">📭</div>
-        <p style="margin:0 0 6px;font-weight:600;">${name} uchun testlar mavjud emas</p>
-        ${bErr ? `<p class="muted" style="margin:0 0 4px;font-size:12.5px;">Bazadan yuklashda xatolik: ${String(bErr).slice(0, 120)}</p>` : ''}
-        <button type="button" class="btn btn-ghost bank-retry-btn" style="margin-top:12px;">🔄 Qayta urinib ko'rish</button>
-      </div>`;
-    }
+    const bErr = QBANK_LOADING.backend && QBANK_LOADING.backend.error;
+    container.innerHTML = `<div class="empty-state" style="padding:40px 16px;text-align:center;">
+      <div style="font-size:34px;margin-bottom:8px;">📭</div>
+      <p style="margin:0 0 6px;font-weight:600;">${name} uchun testlar mavjud emas</p>
+      ${bErr ? `<p class="muted" style="margin:0 0 4px;font-size:12.5px;">Bazadan yuklashda xatolik: ${String(bErr).slice(0, 120)}</p>` : ''}
+      <button type="button" class="btn btn-ghost bank-retry-btn" style="margin-top:12px;">🔄 Qayta urinib ko'rish</button>
+    </div>`;
   }
 
   const retryBtn = container.querySelector(".bank-retry-btn");
@@ -1769,7 +1914,6 @@ function openSubjectTests(name) {
       el.addEventListener("click", () => showPage(el.getAttribute("data-back")));
     }
   });
-  showPage("testlist");
 }
 
 /* ====================== QUIZ STATE ====================== */
@@ -2978,7 +3122,18 @@ function startMatchmaking() {
   }, 150);
 }
 
-function startDuelMatch() {
+async function startDuelMatch() {
+  const subjVal = $("#duelSubjectSelect").value;
+  try {
+    if (subjVal === "all") {
+      await ensureAllSubjectsLoaded();
+    } else {
+      await ensureSubjectLoaded(subjVal);
+    }
+  } catch (err) {
+    console.error('Duel subject preload failed:', err);
+  }
+
   $("#duelMatchmaking").classList.add("hidden");
   $("#duelGameplay").classList.remove("hidden");
 
@@ -2994,7 +3149,6 @@ function startDuelMatch() {
   duelState.startTime = Date.now();
 
   // Set selected subject
-  const subjVal = $("#duelSubjectSelect").value;
   duelState.subject = subjVal;
 
   // Pool questions

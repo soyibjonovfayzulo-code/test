@@ -369,62 +369,127 @@
   width: 100%;
 }
 /* ---------- CROP MODAL ---------- */
-.pf-crop-modal {
-  width: min(92vw, 420px);
+.modal.pf-crop-modal {
+  width: min(92vw, 440px) !important;
+  max-width: min(92vw, 440px) !important;
+  max-height: calc(100vh - 32px) !important;
+  margin: auto !important;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden !important;
+  padding: 0 !important;
+  border-radius: 18px !important;
+}
+
+.pf-crop-modal .modal-header {
+  flex: 0 0 auto;
+  padding: 14px 18px;
+}
+
+.pf-crop-modal .modal-header h3 {
+  font-size: 16px;
+  margin: 0;
+}
+
+.pf-crop-modal .modal-body {
+  flex: 1 1 auto;
+  overflow: hidden !important;
+  padding: 4px 18px 8px !important;
+}
+
+.pf-crop-modal .modal-footer {
+  flex: 0 0 auto;
+  padding: 10px 18px 18px !important;
+  gap: 10px;
+  border-top: 1px solid var(--border, rgba(255, 255, 255, 0.08));
+}
+
+.pf-crop-modal .modal-footer .btn {
+  min-height: 44px;
 }
 
 .pf-crop-stage {
   position: relative;
   width: 100%;
   aspect-ratio: 1 / 1;
-  border-radius: 12px;
+  max-height: min(62vh, 420px);
+  border-radius: 16px;
   overflow: hidden;
-  background: #08111F;
+  background: #070a13;
   border: 1px solid var(--border, rgba(255, 255, 255, 0.12));
   touch-action: none;
   cursor: grab;
   user-select: none;
+  -webkit-user-drag: none;
 }
 
 .pf-crop-stage:active { cursor: grabbing; }
 
 #pfCropImg {
   position: absolute;
-  top: 50%;
-  left: 50%;
-  transform-origin: center;
+  top: 0;
+  left: 0;
+  transform-origin: top left;
   max-width: none;
+  max-height: none;
   will-change: transform;
+  pointer-events: none;
+  display: block;
+  -webkit-user-drag: none;
+}
+
+.pf-crop-overlay {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  box-shadow: 0 0 0 9999px rgba(4, 6, 16, 0.55);
+  border-radius: 16px;
+}
+
+.pf-crop-frame {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  border-radius: 16px;
+  border: 2px solid rgba(255, 255, 255, 0.92);
+  box-shadow:
+    inset 0 0 0 1px rgba(0, 0, 0, 0.25),
+    0 0 0 1px rgba(255, 255, 255, 0.12);
+}
+
+.pf-crop-frame::before,
+.pf-crop-frame::after {
+  content: "";
+  position: absolute;
+  background: rgba(255, 255, 255, 0.35);
+}
+
+.pf-crop-frame::before {
+  top: 33.333%;
+  bottom: 33.333%;
+  left: 0;
+  right: 0;
+  border-top: 1px solid rgba(255, 255, 255, 0.28);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.28);
+  background: transparent;
+}
+
+.pf-crop-frame::after {
+  left: 33.333%;
+  right: 33.333%;
+  top: 0;
+  bottom: 0;
+  border-left: 1px solid rgba(255, 255, 255, 0.28);
+  border-right: 1px solid rgba(255, 255, 255, 0.28);
+  background: transparent;
 }
 
 .pf-crop-hint {
-  margin: 10px 0 8px;
-  font-size: 12px;
+  margin: 12px 0 2px;
+  font-size: 12.5px;
   color: var(--muted, #9ca3af);
   text-align: center;
-}
-
-.pf-crop-zoom-row {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-}
-
-.pf-crop-zoom-row input[type="range"] {
-  flex: 1 1 auto;
-  min-width: 0;
-}
-
-.pf-crop-zoom-btn {
-  flex: 0 0 44px;
-  height: 44px;
-  border-radius: 10px;
-  border: 1px solid var(--border, rgba(255, 255, 255, 0.12));
-  background: var(--bg, rgba(255, 255, 255, 0.05));
-  color: var(--text, #e5e7eb);
-  font-size: 20px;
-  font-weight: 700;
-  cursor: pointer;
+  line-height: 1.4;
 }
 
 /* ---------- MOBILE (≤640px) ---------- */

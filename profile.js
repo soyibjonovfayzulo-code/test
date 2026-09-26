@@ -120,115 +120,158 @@
     };
     reader.readAsDataURL(file);
   }
-  /* ================== CROP ENGINE (zoom + move, 1:1) ================== */
+  /* ================== CROP ENGINE (drag-only, 1:1 cover fit) ================== */
   var crop = {
-    stage: null, loaded: false,
-    scale: 1, minScale: 1, maxScale: 3, baseScale: 1,
-    x: 0, y: 0, dragging: false, startX: 0, startY: 0, baseX: 0, baseY: 0,
-    pinchDist: 0, onDone: null
+    loaded: false,
+    scale: 1,
+    displayW: 0, displayH: 0,
+    x: 0, y: 0,
+    dragging: false, startX: 0, startY: 0, baseX: 0, baseY: 0,
+    onDone: null
   };
+
   function clampCropPos() {
-    var s = $('#pfCropStage'), im = $('#pfCropImg');
-    if (!s || !im || !crop.loaded) return;
-    var rw = im.naturalWidth * crop.scale, rh = im.naturalHeight * crop.scale;
-    var maxX = Math.max(0, (rw - s.clientWidth) / 2);
-    var maxY = Math.max(0, (rh - s.clientHeight) / 2);
-    crop.x = Math.min(maxX, Math.max(-maxX, crop.x));
-    crop.y = Math.min(maxY, Math.max(-maxY, crop.y));
+    var s = $('#pfCropStage');
+    if (!s || !crop.loaded) return;
+    var sw = s.clientWidth, sh = s.clientHeight;
+    var iw = crop.displayW, ih = crop.displayH;
+    if (iw <= sw) { crop.x = (sw - iw) / 2; }
+    else {
+      var minX = sw - iw;
+      var maxX = 0;
+      if (crop.x < minX) crop.x = minX;
+      if (crop.x > maxX) crop.x = maxX;
+    }
+    if (ih <= sh) { crop.y = (sh - ih) / 2; }
+    else {
+      var minY = sh - ih;
+      var maxY = 0;
+      if (crop.y < minY) crop.y = minY;
+      if (crop.y > maxY) crop.y = maxY;
+    }
   }
+
   function applyCropTransform() {
     var im = $('#pfCropImg');
-    if (im) im.style.transform = 'translate(' + crop.x + 'px,' + crop.y + 'px) scale(' + crop.scale + ')';
+    if (!im) return;
+    var s = $('#pfCropStage');
+    var sw = s ? s.clientWidth : 0;
+    var sh = s ? s.clientHeight : 0;
+    var offX = (sw - crop.displayW) / 2 + crop.x;
+    var offY = (sh - crop.displayH) / 2 + crop.y;
+    im.style.width = crop.displayW + 'px';
+    im.style.height = crop.displayH + 'px';
+    im.style.transform = 'translate(' + offX + 'px,' + offY + 'px)';
   }
+
   function openCrop(imgSrc, onDone) {
     var stage = $('#pfCropStage'), img = $('#pfCropImg');
     if (!stage || !img) { toast('Crop oynasi topilmadi', 'error'); return; }
     crop.onDone = onDone;
-    crop.loaded = false; crop.scale = 1; crop.minScale = 1; crop.x = 0; crop.y = 0;
-    img.style.transform = 'translate(0px,0px) scale(1)';
+    crop.loaded = false;
+    crop.scale = 1; crop.x = 0; crop.y = 0;
+    img.style.transform = 'none';
+    img.style.width = '';
+    img.style.height = '';
     img.onload = function () {
       crop.loaded = true;
-      var s = stage.clientWidth || 280;
-      var need = Math.max(s / img.naturalWidth, s / img.naturalHeight);
-      crop.baseScale = need > 1 ? need : 1;
-      crop.minScale = crop.baseScale;
-      crop.scale = Math.max(crop.minScale, Math.min(crop.maxScale, crop.scale));
-      var z = $('#pfCropZoom');
-      if (z) { z.min = String(crop.minScale); z.value = String(crop.scale); }
+      var sw = stage.clientWidth || 280;
+      var sh = stage.clientHeight || sw;
+      var nw = img.naturalWidth;
+      var nh = img.naturalHeight;
+      if (!nw || !nh) { toast("Rasm formati qo'llab-quvvatlanmaydi", 'error'); return; }
+      var scale = Math.max(sw / nw, sh / nh);
+      crop.scale = scale;
+      crop.displayW = Math.round(nw * scale);
+      crop.displayH = Math.round(nh * scale);
+      var maxX = Math.max(0, (crop.displayW - sw) / 2);
+      var maxY = Math.max(0, (crop.displayH - sh) / 2);
+      if (crop.displayW <= sw) crop.x = 0; else crop.x = -maxX + (2 * maxX) / 2;
+      if (crop.displayH <= sh) crop.y = 0; else crop.y = -maxY + (2 * maxY) / 2;
       crop.x = 0; crop.y = 0;
       applyCropTransform();
       openModalEl('#pfCropModal');
+      requestAnimationFrame(function () {
+        applyCropTransform();
+      });
     };
     img.onerror = function () { toast("Rasm formati qo'llab-quvvatlanmaydi", 'error'); };
     img.src = imgSrc;
   }
+
   function bindCrop() {
     var stage = $('#pfCropStage'), img = $('#pfCropImg');
-    var zoom = $('#pfCropZoom');
     if (!stage || !img || stage.dataset.pfBound) return;
     stage.dataset.pfBound = '1';
 
-    function setScale(v) {
-      crop.scale = Math.max(crop.minScale, Math.min(crop.maxScale, v));
-      clampCropPos(); applyCropTransform();
-      if (zoom) zoom.value = String(crop.scale);
-    }
-    if (zoom) zoom.addEventListener('input', function () { setScale(parseFloat(zoom.value)); });
-    var zin = $('#pfCropZoomIn'), zout = $('#pfCropZoomOut');
-    if (zin) zin.addEventListener('click', function () { setScale(crop.scale + 0.2); });
-    if (zout) zout.addEventListener('click', function () { setScale(crop.scale - 0.2); });
-
-    stage.addEventListener('wheel', function (e) {
-      e.preventDefault();
-      setScale(crop.scale - e.deltaY * 0.0015);
-    }, { passive: false });
-
     stage.addEventListener('pointerdown', function (e) {
-      crop.dragging = true; crop.startX = e.clientX; crop.startY = e.clientY;
+      if (!crop.loaded) return;
+      crop.dragging = true;
+      crop.startX = e.clientX; crop.startY = e.clientY;
       crop.baseX = crop.x; crop.baseY = crop.y;
       try { stage.setPointerCapture(e.pointerId); } catch (err) { /* noop */ }
     });
     stage.addEventListener('pointermove', function (e) {
-      if (!crop.dragging) return;
+      if (!crop.dragging || !crop.loaded) return;
       crop.x = crop.baseX + (e.clientX - crop.startX);
       crop.y = crop.baseY + (e.clientY - crop.startY);
-      clampCropPos(); applyCropTransform();
+      clampCropPos();
+      applyCropTransform();
     });
     function endDrag() { crop.dragging = false; }
     stage.addEventListener('pointerup', endDrag);
     stage.addEventListener('pointercancel', endDrag);
-
-    /* Touch pinch-zoom (mobil) */
-    stage.addEventListener('touchstart', function (e) {
-      if (e.touches.length === 2) {
-        crop.pinchDist = Math.hypot(e.touches[0].clientX - e.touches[1].clientX, e.touches[0].clientY - e.touches[1].clientY);
-      }
-    }, { passive: true });
-    stage.addEventListener('touchmove', function (e) {
-      if (e.touches.length === 2 && crop.pinchDist) {
-        e.preventDefault();
-        var d = Math.hypot(e.touches[0].clientX - e.touches[1].clientX, e.touches[0].clientY - e.touches[1].clientY);
-        setScale(crop.scale * (d / crop.pinchDist));
-        crop.pinchDist = d;
-      }
-    }, { passive: false });
-    stage.addEventListener('touchend', function () { crop.pinchDist = 0; }, { passive: true });
+    stage.addEventListener('pointerleave', endDrag);
 
     var save = $('#pfCropSave');
     if (save) save.addEventListener('click', function () {
       if (!crop.loaded || !crop.onDone) return;
-      var s = stage.clientWidth || 280;
+      var s = stage;
+      var sw = s.clientWidth || 280;
+      var sh = s.clientHeight || sw;
       var out = document.createElement('canvas');
       out.width = OUTPUT_SIZE; out.height = OUTPUT_SIZE;
       var ctx = out.getContext('2d');
       ctx.fillStyle = '#08111F';
       ctx.fillRect(0, 0, OUTPUT_SIZE, OUTPUT_SIZE);
-      var w = img.naturalWidth * crop.scale, h = img.naturalHeight * crop.scale;
-      ctx.drawImage(img, (s - w) / 2 + crop.x, (s - h) / 2 + crop.y, w, h, 0, 0, OUTPUT_SIZE, OUTPUT_SIZE);
-      var dataUrl = out.toDataURL('image/jpeg', JPEG_QUALITY);
+      var nw = img.naturalWidth;
+      var nh = img.naturalHeight;
+      var renderedScale = Math.max(sw / nw, sh / nh);
+      var renderedW = nw * renderedScale;
+      var renderedH = nh * renderedScale;
+      var offsetX = (sw - renderedW) / 2 + crop.x;
+      var offsetY = (sh - renderedH) / 2 + crop.y;
+      var naturalOffsetX = offsetX / renderedScale;
+      var naturalOffsetY = offsetY / renderedScale;
+      var naturalCropW = sw / renderedScale;
+      var naturalCropH = sh / renderedScale;
+      ctx.drawImage(img, naturalOffsetX, naturalOffsetY, naturalCropW, naturalCropH, 0, 0, OUTPUT_SIZE, OUTPUT_SIZE);
+      var dataUrl;
+      try {
+        dataUrl = out.toDataURL('image/jpeg', JPEG_QUALITY);
+      } catch (e) {
+        toast('Rasmni saqlashda xatolik', 'error');
+        return;
+      }
       closeModalEl('#pfCropModal');
       var done = crop.onDone; crop.onDone = null;
       done(dataUrl);
+    });
+
+    window.addEventListener('resize', function () {
+      if (!document.querySelector('#pfCropModal.active')) return;
+      if (!crop.loaded) return;
+      var s = $('#pfCropStage');
+      if (!s) return;
+      var sw = s.clientWidth, sh = s.clientHeight;
+      var nw = img.naturalWidth, nh = img.naturalHeight;
+      if (!nw || !nh) return;
+      var scale = Math.max(sw / nw, sh / nh);
+      crop.scale = scale;
+      crop.displayW = Math.round(nw * scale);
+      crop.displayH = Math.round(nh * scale);
+      clampCropPos();
+      applyCropTransform();
     });
   }
   /* ================== UPLOAD / REMOVE PIPELINE ================== */

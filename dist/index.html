@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="uz" data-theme="dark">
+
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
@@ -12,9 +13,17 @@
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap"
-    rel="stylesheet" />
-  <script type="module" crossorigin src="/assets/index-BQNRS0AW.js"></script>
-  <link rel="stylesheet" crossorigin href="/assets/index-C1ZqJk6r.css">
+    rel="stylesheet" />
+
+
+
+
+
+
+
+
+  <script type="module" crossorigin src="/assets/index-Cu1ZHcHj.js"></script>
+  <link rel="stylesheet" crossorigin href="/assets/index-CIR5wzcF.css">
 </head>
 
 <body>
@@ -62,7 +71,7 @@
       <div class="auth-robot-halo"></div>
       <div class="auth-robot-inner">
         <div class="auth-robot-peeker">
-          <img class="auth-robot-img" src="/assets/it-robot-BLx0jrbI.png" alt="" draggable="false" loading="lazy"
+          <img class="auth-robot-img" src="./mascot/it-robot.png" alt="" draggable="false" loading="lazy"
             onerror="this.closest('.auth-robot')&&this.closest('.auth-robot').classList.add('auth-robot-broken')" />
           <span class="auth-robot-sweep"></span>
         </div>
@@ -273,6 +282,8 @@
             class="nav-label">Profil</span></a>
         <a href="#settings" class="nav-item" data-page="settings"><span class="nav-icon"
             aria-hidden="true">⚙️</span><span class="nav-label">Sozlamalar</span></a>
+        <a href="/admin/" class="nav-item" id="adminPanelLink" style="display:none;color:#60a5fa;border:1px dashed rgba(96,165,250,0.3);margin-top:6px"><span class="nav-icon"
+            aria-hidden="true">🛡️</span><span class="nav-label">Admin Panel</span></a>
       </nav>
       <div class="sidebar-footer">
         <button class="nav-item logout-btn" id="logoutBtn" type="button"><span class="nav-icon"
@@ -422,119 +433,47 @@
               </article>
             </section>
 
+            <!-- 5. RECENT ACTIVITY — compact timeline (oxirgi 3–4 real event) -->
+            <section class="nd-row">
+              <article class="nd-card nd-card--activity nd-reveal" aria-labelledby="ndActivityTitle">
+                <header class="nd-card-head">
+                  <h2 class="nd-card-title" id="ndActivityTitle"><span aria-hidden="true">🕓</span> So‘nggi faoliyat</h2>
+                </header>
+                <div class="nd-activity-body" id="ndActivityBody"></div>
+              </article>
+            </section>
 
-
-
+            <!-- 6. SO'NGGI NATIJALAR — in-page statistika (alohida Results page'ga link YO'Q) -->
+            <section class="nd-row">
+              <article class="nd-card nd-card--recent nd-reveal" aria-labelledby="ndRecentTitle">
+                <header class="nd-card-head">
+                  <h2 class="nd-card-title" id="ndRecentTitle"><span aria-hidden="true">📊</span> So‘nggi natijalar</h2>
+                  <span class="nd-chip-note" aria-hidden="true">LAST 5</span>
+                </header>
+                <div class="nd-recent-body" id="recentResults"></div>
+              </article>
+            </section>
           </div>
-        </section>
-
-        <!-- HOME PAGE — FAQAT ANDROID NATIVE (Capacitor APK). Brauzerda
-             home-android.js bu section'ni DOMdan olib tashlaydi. -->
-        <section id="page-home" class="page" aria-label="Asosiy">
-          <div class="ih-top">
-            <div class="ih-brand"><span class="ih-brand-logo" aria-hidden="true">🧠</span><b>ITTest</b></div>
-            <div class="ih-topchips">
-              <button type="button" class="ih-chip ih-chip--streak" data-ih-goto="achievements">🔥 <b
-                  id="ihStreakVal">0</b>&nbsp;kun</button>
-              <button type="button" class="ih-chip ih-chip--xp" data-ih-goto="achievements">⭐ <b id="ihXpVal">0</b>&nbsp;XP</button>
-            </div>
-          </div>
-
-          <form class="ih-search" role="search" onsubmit="return false;">
-            <span aria-hidden="true">🔍</span>
-            <label for="ihSearchInput" class="visually-hidden">Kurs yoki dars qidirish</label>
-            <input type="search" id="ihSearchInput" placeholder="Kurs yoki dars qidirish…" autocomplete="off" />
-          </form>
-          <div class="ih-search-results" id="ihSearchResults" hidden></div>
-
-          <div class="ih-quick">
-            <button type="button" class="ih-quick-card" data-ih-goto="lessons">
-              <span class="ih-quick-ico" aria-hidden="true">🤖</span>
-              <span class="ih-quick-name">Boshlang‘ich<br />kurslar</span>
-              <span class="ih-quick-link">Darslar ›</span>
-            </button>
-            <button type="button" class="ih-quick-card" data-ih-goto="tests">
-              <span class="ih-quick-ico" aria-hidden="true">👑</span>
-              <span class="ih-quick-name">Professional<br />testlar</span>
-              <span class="ih-quick-link">Sinash ›</span>
-            </button>
-          </div>
-
-          <div class="ih-banner">
-            <div class="ih-banner-text">
-              <h2>ITTest Ligasi</h2>
-              <p>Reytingda yuqoriga ko‘tariling va eng yaxshilar qatoriga qo‘shiling!</p>
-              <button type="button" data-ih-goto="ranking">Ligada qatnashish</button>
-            </div>
-            <div class="ih-banner-art" aria-hidden="true">🏆</div>
-          </div>
-
-          <div class="ih-continue">
-            <div class="ih-continue-head">
-              <span class="ih-continue-label">🎯 Davom ettirish</span>
-              <span class="ih-xp-badge">+XP har dars</span>
-            </div>
-            <div class="ih-continue-body" id="ihContinueBody"></div>
-          </div>
-
-          <h3 class="ih-section-title">Tezkor bo‘limlar</h3>
-          <div class="ih-grid">
-            <button type="button" class="ih-grid-item" data-ih-goto="duel"><span class="ih-grid-ico"
-                aria-hidden="true">⚔️</span>Duel</button>
-            <button type="button" class="ih-grid-item" data-ih-goto="coding"><span class="ih-grid-ico"
-                aria-hidden="true">💻</span>Coding</button>
-            <button type="button" class="ih-grid-item" data-ih-goto="achievements"><span class="ih-grid-ico"
-                aria-hidden="true">🎖</span>Yutuqlar</button>
-            <button type="button" class="ih-grid-item" data-ih-goto="certificate"><span class="ih-grid-ico"
-                aria-hidden="true">📜</span>Sertifikat</button>
-            <button type="button" class="ih-grid-item" data-ih-goto="store"><span class="ih-grid-ico"
-                aria-hidden="true">🛍️</span>Do‘kon</button>
-            <button type="button" class="ih-grid-item" data-ih-goto="profile"><span class="ih-grid-ico"
-                aria-hidden="true">👤</span>Profil</button>
-          </div>
-
-          <div class="ih-me" id="ihMe"></div>
-
-          <nav class="ih-bottomnav" aria-label="Asosiy navigatsiya">
-            <button type="button" class="active" data-ih-goto="home"><span class="ih-nav-ico"
-                aria-hidden="true">🏠</span><span>Asosiy</span></button>
-            <button type="button" data-ih-goto="lessons"><span class="ih-nav-ico" aria-hidden="true">📚</span><span>Darslar</span></button>
-            <button type="button" data-ih-goto="tests"><span class="ih-nav-ico" aria-hidden="true">📝</span><span>Testlar</span></button>
-            <button type="button" data-ih-goto="ranking"><span class="ih-nav-ico" aria-hidden="true">🏆</span><span>Reyting</span></button>
-            <button type="button" data-ih-goto="profile"><span class="ih-nav-ico" aria-hidden="true">👤</span><span>Profil</span></button>
-          </nav>
         </section>
 
         <!-- TESTS PAGE -->
-        <section id="page-tests" class="page" style="padding-top: 14px;">
-          <!-- Search hidden visually but kept for logic -->
-          <input type="hidden" id="testSearch" value="" />
-          
-          <!-- Hero Banner -->
-          <div class="hero-card">
-            <div class="hero-text">
-              <div class="hero-badge">
-                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="16 18 22 12 16 6"></polyline><polyline points="8 6 2 12 8 18"></polyline></svg>
-                Bilim darajasi
-              </div>
-              <h1 class="hero-heading">Bilimingizni sinab ko‘ring!</h1>
-              <p class="hero-subtext">Testlar orqali bilimlaringizni tekshiring va natijalaringizni yaxshilang.</p>
+        <section id="page-tests" class="page">
+          <div class="page-toolbar">
+            <div class="search-box">
+              <span class="search-icon" aria-hidden="true">🔍</span>
+              <label for="testSearch" class="visually-hidden">Fan qidirish</label>
+              <input type="text" id="testSearch" placeholder="Fan qidirish..." />
             </div>
-            <div class="hero-mascot-wrapper">
-              <img src="/assets/it-robot-BLx0jrbI.png" alt="ITTest Robot Mascot" class="hero-mascot-img" onerror="this.style.display='none'; this.nextElementSibling.style.display='block';" />
+            <div class="filter-chips" id="diffFilter" role="tablist" aria-label="Qiyinlik darajasi bo'yicha filtr">
+              <button class="chip active" data-diff="all" type="button" role="tab"
+                aria-selected="true">Barchasi</button>
+              <button class="chip" data-diff="beginner" type="button" role="tab" aria-selected="false">Beginner</button>
+              <button class="chip" data-diff="intermediate" type="button" role="tab"
+                aria-selected="false">Intermediate</button>
+              <button class="chip" data-diff="advanced" type="button" role="tab" aria-selected="false">Advanced</button>
             </div>
           </div>
-
-          <!-- Category Filter Chips -->
-          <nav class="filter-scroll" id="diffFilter" aria-label="Kategoriyalar">
-            <button class="filter-chip active" data-diff="all" type="button">Barchasi</button>
-            <button class="filter-chip" data-diff="dev" type="button">Dasturlash</button>
-            <button class="filter-chip" data-diff="web" type="button">Web</button>
-            <button class="filter-chip" data-diff="it" type="button">IT</button>
-          </nav>
-
-          <!-- Test Cards List -->
-          <div class="test-list" id="testsGrid"></div>
+          <div class="subject-cards" id="testsGrid"></div>
         </section>
 
         <!-- TEST LIST (for a selected subject) -->
@@ -565,20 +504,18 @@
           <div class="test-mini-stats" id="testMiniStats"></div>
           <div class="test-body">
             <div class="question-area" id="questionArea"></div>
-            <aside class="test-sidebar">
-              <div class="navigator-area">
-                <div class="navigator-header">
-                  <span>Savollar</span>
-                  <span class="navigator-legend">
-                    <span class="legend-dot legend-correct" aria-hidden="true"></span> To'g'ri
-                    <span class="legend-dot legend-wrong" aria-hidden="true"></span> Noto'g'ri
-                    <span class="legend-dot legend-marked" aria-hidden="true"></span> Belgilangan
-                  </span>
-                </div>
-                <div class="question-nav" id="questionNav"></div>
-                <button class="btn btn-danger btn-block" id="finishTestBtn" type="button">Testni yakunlash</button>
+            <div class="navigator-area">
+              <div class="navigator-header">
+                <span>Savollar</span>
+                <span class="navigator-legend">
+                  <span class="legend-dot legend-correct" aria-hidden="true"></span> To'g'ri
+                  <span class="legend-dot legend-wrong" aria-hidden="true"></span> Noto'g'ri
+                  <span class="legend-dot legend-marked" aria-hidden="true"></span> Belgilangan
+                </span>
               </div>
-            </aside>
+              <div class="question-nav" id="questionNav"></div>
+              <button class="btn btn-danger btn-block" id="finishTestBtn" type="button">Testni yakunlash</button>
+            </div>
           </div>
           <div class="test-nav-buttons">
             <button class="btn btn-ghost" id="prevBtn" type="button">← Oldingi</button>
@@ -594,90 +531,28 @@
         </section>
 
         <!-- RESULT PAGE -->
-        <section id="page-result" class="page" aria-labelledby="resultHeadline">
-          <!-- XATOLIK HOLATI — natija yuklanmasa (fake result ko'rsatilmaydi) -->
-          <div class="result-error hidden" id="resultError" role="alert">
-            <div class="result-error-ico" aria-hidden="true">❌</div>
-            <h3 class="result-error-title">Natijani yuklashda xatolik yuz berdi.</h3>
-            <p class="result-error-text">Ma'lumot yuklanmadi. Qayta urinib ko'ring — natija saqlangan bo'lsa tiklanadi.</p>
-            <div class="result-error-actions">
-              <button class="btn btn-primary" id="resultRetryBtn" type="button">↻ Qayta urinish</button>
-              <button class="btn btn-ghost" data-nav="dashboard" type="button">🏠 Bosh sahifa</button>
+        <section id="page-result" class="page">
+          <div class="result-hero" id="resultHero">
+            <div class="mascot mascot--idle" id="resultMascot" aria-hidden="true">
+              <img src="./mascot/it-robot.png" alt="" draggable="false" loading="lazy"
+                onerror="this.closest('.mascot')&&this.closest('.mascot').classList.add('mascot-broken')" />
             </div>
+            <div class="result-emoji" id="resultEmoji" aria-hidden="true">🎉</div>
+            <h1 id="resultScore">0 / 0</h1>
+            <div class="result-percent" id="resultPercent">0%</div>
+            <div class="result-status" id="resultStatus">PASSED</div>
           </div>
-
-          <div class="result-shell" id="resultShell">
-            <header class="result-hero" id="resultHero">
-              <div class="result-confetti" id="resultConfetti" aria-hidden="true"></div>
-              <div class="mascot mascot--idle result-mascot" id="resultMascot" aria-hidden="true">
-                <img src="/assets/it-robot-BLx0jrbI.png" alt="" draggable="false" loading="lazy"
-                  onerror="this.closest('.mascot')&&this.closest('.mascot').classList.add('mascot-broken')" />
-              </div>
-              <div class="result-emoji" id="resultEmoji" aria-hidden="true">🎉</div>
-              <p class="result-kicker" id="resultKicker">🎊 TABRIKLAYMIZ!</p>
-              <h1 class="result-headline" id="resultHeadline">Testni muvaffaqiyatli yakunladingiz!</h1>
-
-              <div class="result-ring-row">
-                <div class="result-ring" id="resultRing" role="img" aria-label="Natija: 0 foiz">
-                  <svg class="result-ring-svg" viewBox="0 0 120 120" aria-hidden="true" focusable="false">
-                    <defs>
-                      <linearGradient id="rrRingPass" x1="0%" y1="0%" x2="100%" y2="100%">
-                        <stop offset="0%" stop-color="#22C55E" />
-                        <stop offset="55%" stop-color="#38BDF8" />
-                        <stop offset="100%" stop-color="#2563EB" />
-                      </linearGradient>
-                      <linearGradient id="rrRingFail" x1="0%" y1="0%" x2="100%" y2="100%">
-                        <stop offset="0%" stop-color="#F59E0B" />
-                        <stop offset="100%" stop-color="#EF4444" />
-                      </linearGradient>
-                    </defs>
-                    <circle class="result-ring-track" cx="60" cy="60" r="52"></circle>
-                    <circle class="result-ring-bar" id="resultRingBar" cx="60" cy="60" r="52"></circle>
-                  </svg>
-                  <span class="result-ring-center">
-                    <span class="result-score" id="resultScore">0 / 0</span>
-                    <span class="result-percent" id="resultPercent">0%</span>
-                  </span>
-                </div>
-                <div class="result-status" id="resultStatus">PASSED</div>
-              </div>
-
-              <div class="result-rewards">
-                <div class="result-reward result-reward--xp">
-                  <span class="result-reward-ico" aria-hidden="true">⚡</span>
-                  <span class="result-reward-val" id="resultXpVal">+0 XP</span>
-                </div>
-                <div class="result-reward result-reward--streak">
-                  <span class="result-reward-ico" aria-hidden="true">🔥</span>
-                  <span class="result-reward-val" id="resultStreakVal">0</span>
-                </div>
-              </div>
-
-              <div class="result-motivation" id="resultMotivation">
-                <span class="result-motivation-ico" id="resultMotivationIcon" aria-hidden="true">📈</span>
-                <span class="result-motivation-body">
-                  <strong class="result-motivation-title" id="resultMotivationTitle">Yaxshi natija!</strong>
-                  <span class="result-motivation-text" id="resultMotivationText">Keyingi safar undan ham yuqori natijaga
-                    erishishingiz mumkin.</span>
-                </span>
-              </div>
-            </header>
-
-            <div class="result-actions">
-              <button class="btn btn-primary result-cta" id="reviewBtn" type="button" aria-expanded="false"
-                aria-controls="reviewCard">📄 Natijani ko'rish <span aria-hidden="true">→</span></button>
-              <button class="btn btn-ghost" id="retakeBtn" type="button">↻ Qayta ishlash</button>
-              <button class="btn btn-ghost" data-nav="dashboard" type="button">🏠 Bosh sahifa</button>
+          <div class="result-stats" id="resultStats"></div>
+          <div class="result-actions">
+            <button class="btn btn-primary" id="reviewBtn" type="button">Natijani ko'rish</button>
+            <button class="btn btn-ghost" id="retakeBtn" type="button">Qayta ishlash</button>
+            <button class="btn btn-ghost" data-nav="dashboard" type="button">Dashboardga qaytish</button>
+          </div>
+          <div class="card review-card" id="reviewCard">
+            <div class="card-header">
+              <h3>Javoblarni ko'rish</h3>
             </div>
-
-            <div class="result-stats" id="resultStats" role="list" aria-label="Test statistikasi"></div>
-
-            <div class="card review-card" id="reviewCard">
-              <div class="card-header">
-                <h3>Javoblarni ko'rish</h3>
-              </div>
-              <div class="card-body" id="reviewBody"></div>
-            </div>
+            <div class="card-body" id="reviewBody"></div>
           </div>
         </section>
 
@@ -703,11 +578,14 @@
           <div class="achievement-grid" id="achievementGrid"></div>
         </section>
 
-        <!-- PROFILE PAGE (real photo + mastery + achievements + certificates + customization) -->
+        <!-- PROFILE PAGE -->
         <section id="page-profile" class="page">
-          <div id="profileRoot"></div>
-          <!-- certificates.js renderProfileSummary() konteyneri (hidden — profil moduli
-               o'z cert preview kartasini ko'rsatadi, bu legacy/integratsiya uchun) -->
+          <div class="profile-header" id="profileHeader"></div>
+          <div class="profile-stats" id="profileStats"></div>
+          <div class="profile-actions">
+            <button class="btn btn-primary" id="editProfileBtn" type="button">Profilni tahrirlash</button>
+            <button class="btn btn-ghost" id="profileCertsBtn" type="button">🏆 Sertifikatlarim</button>
+          </div>
           <div id="profileCertSummary" class="hidden"></div>
         </section>
 
@@ -1108,7 +986,7 @@
             <aside id="aiPanel" class="ai-panel hidden" aria-label="AI Coding Assistant panel">
               <div class="ai-panel-head">
                 <div class="mascot mascot--idle mascot-ai" aria-hidden="true">
-                  <img src="/assets/it-robot-BLx0jrbI.png" alt="" draggable="false" loading="lazy"
+                  <img src="./mascot/it-robot.png" alt="" draggable="false" loading="lazy"
                     onerror="this.closest('.mascot')&&this.closest('.mascot').classList.add('mascot-broken')" />
                 </div>
                 <span id="aiPanelLang">🤖 AI Coding Assistant</span>
@@ -1332,19 +1210,19 @@
         <section id="page-certificate" class="page">
           <div class="certp-head">
             <h3>🏆 Sertifikatlar</h3>
-            <p>To&lsquo;liq kurs/modul uchun premium sertifikat — kurs 100% tugagach qulfdan chiqadi.</p>
+            <p>Har bir dars uchun alohida sertifikat — ko&lsquo;ring, yuklab oling va ulashing.</p>
           </div>
           <div class="certp-summary" id="certSummaryRow" aria-live="polite"></div>
           <div class="certp-controls">
             <div class="search-box">
               <span class="search-icon" aria-hidden="true">🔍</span>
               <label for="certSearch" class="visually-hidden">Sertifikat qidirish</label>
-              <input type="text" id="certSearch" placeholder="Kurs qidirish: HTML, Python..." />
+              <input type="text" id="certSearch" placeholder="Qidirish: HTML 2, Python 1..." />
             </div>
             <div class="filter-chips certp-filters" id="certFilters" role="tablist" aria-label="Sertifikat filtrlari">
               <button class="chip active" data-cfilter="all" type="button" role="tab" aria-selected="true">Barchasi</button>
               <button class="chip" data-cfilter="completed" type="button" role="tab" aria-selected="false">Tugallangan</button>
-              <button class="chip" data-cfilter="locked" type="button" role="tab" aria-selected="false">Qulflangan</button>
+              <button class="chip" data-cfilter="preview" type="button" role="tab" aria-selected="false">Preview</button>
             </div>
           </div>
           <div class="certp-namebar" id="certNameBar"></div>
@@ -1402,14 +1280,6 @@
       </div>
       <div class="modal-body">
         <form id="editProfileForm">
-          <div class="pf-edit-avatar-block">
-            <div class="pf-edit-avatar" id="pfEditAvatarWrap"></div>
-            <div class="pf-edit-avatar-actions">
-              <button type="button" class="btn btn-ghost btn-sm" id="pfEditUploadBtn">📷 Rasmni o‘zgartirish</button>
-              <button type="button" class="btn btn-ghost btn-sm" id="pfEditRemoveBtn">🗑 Profil rasmini olib tashlash</button>
-              <input type="file" id="pfEditFileInput" accept="image/jpeg,image/jpg,image/png,image/webp" hidden />
-            </div>
-          </div>
           <div class="form-row">
             <div class="form-group">
               <label for="editFirstname">Ism</label>
@@ -1428,15 +1298,11 @@
             <label for="editEmail">Email</label>
             <input type="email" id="editEmail" name="editEmail" autocomplete="email" required />
           </div>
-          <div class="form-group">
-            <label for="editBio">Bio</label>
-            <textarea id="editBio" name="editBio" rows="3" maxlength="160" placeholder="O‘zingiz haqingizda qisqacha..."></textarea>
-          </div>
         </form>
       </div>
       <div class="modal-footer">
         <button class="btn btn-ghost" data-close type="button">Bekor qilish</button>
-        <button class="btn btn-primary" id="editProfileSave" type="button">💾 Saqlash</button>
+        <button class="btn btn-primary" id="editProfileSave" type="button">Saqlash</button>
       </div>
     </div>
   </div>
@@ -1658,63 +1524,6 @@
     </div>
   </div>
 
-  <!-- ====================== PROFIL RASM CROP MODAL ====================== -->
-  <div class="modal-overlay" id="pfCropModal" role="dialog" aria-modal="true" aria-labelledby="pfCropTitle">
-    <div class="modal pf-crop-modal">
-      <div class="modal-header">
-        <h3 id="pfCropTitle">📷 Rasmni kesish</h3>
-        <button class="modal-close" data-close aria-label="Yopish" type="button">✕</button>
-      </div>
-      <div class="modal-body">
-        <div class="pf-crop-stage" id="pfCropStage">
-          <img id="pfCropImg" alt="Tanlangan rasm" draggable="false" />
-        </div>
-        <p class="pf-crop-hint">Zoom: slayder yoki g‘ildirak · Surish: barmoq/sichqoncha bilan</p>
-        <div class="pf-crop-zoom-row">
-          <button type="button" class="pf-crop-zoom-btn" id="pfCropZoomOut" aria-label="Kichraytirish">−</button>
-          <input type="range" id="pfCropZoom" min="1" max="3" step="0.01" value="1" aria-label="Zoom" />
-          <button type="button" class="pf-crop-zoom-btn" id="pfCropZoomIn" aria-label="Kattalashtirish">+</button>
-        </div>
-      </div>
-      <div class="modal-footer">
-        <button class="btn btn-ghost" data-close type="button">Bekor qilish</button>
-        <button class="btn btn-primary" id="pfCropSave" type="button">Saqlash</button>
-      </div>
-    </div>
-  </div>
-
-  <!-- ====================== PROFIL RASM O'CHIRISH TASDIQLASH ====================== -->
-  <div class="modal-overlay" id="pfRemoveConfirmModal" role="dialog" aria-modal="true" aria-labelledby="pfRemoveTitle">
-    <div class="modal modal-sm">
-      <div class="modal-header">
-        <h3 id="pfRemoveTitle">🗑 Profil rasmi</h3>
-        <button class="modal-close" data-close aria-label="Yopish" type="button">✕</button>
-      </div>
-      <div class="modal-body">
-        <p class="ux-logout-question">Profil rasmini olib tashlaysizmi?</p>
-        <p class="ux-logout-note">O‘chirilgandan keyin standart avatar qaytadi.</p>
-      </div>
-      <div class="modal-footer">
-        <button class="btn btn-ghost" data-close type="button">Bekor qilish</button>
-        <button class="btn btn-danger" id="pfRemoveConfirmBtn" type="button">Olib tashlash</button>
-      </div>
-    </div>
-  </div>
-
-  <!-- ====================== MASTERY BATAFSIL MODAL ====================== -->
-  <div class="modal-overlay" id="pfMasteryModal" role="dialog" aria-modal="true" aria-labelledby="pfMasteryTitle">
-    <div class="modal">
-      <div class="modal-header">
-        <h3 id="pfMasteryTitle">🧠 Mastery — batafsil</h3>
-        <button class="modal-close" data-close aria-label="Yopish" type="button">✕</button>
-      </div>
-      <div class="modal-body" id="pfMasteryBody"></div>
-      <div class="modal-footer">
-        <button class="btn btn-ghost" data-close type="button">Yopish</button>
-      </div>
-    </div>
-  </div>
-
   <!-- ====================== TOAST ====================== -->
   <div class="toast-container" id="toastContainer" aria-live="polite"></div>
 
@@ -1728,8 +1537,16 @@
 
   <!-- ====================== ONBOARDING (yangi user uchun) ====================== -->
   <div id="onboardingRoot" hidden></div>
-
-  <script src="devtools-guard.js"></script>
+
+
+
+
+
+
+
+
+
+
 </body>
 
 </html>

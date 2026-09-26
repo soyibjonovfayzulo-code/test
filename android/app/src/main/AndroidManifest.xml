@@ -16,13 +16,78 @@
             android:theme="@style/AppTheme.NoActionBarLaunch"
             android:launchMode="singleTask"
             android:exported="true">
+        </activity>
 
+        <!-- Dynamic Launcher Icon Activity Aliases -->
+        <activity-alias
+            android:name=".OrzuTalimActive"
+            android:targetActivity=".MainActivity"
+            android:icon="@mipmap/ic_launcher_active"
+            android:roundIcon="@mipmap/ic_launcher_active_round"
+            android:label="@string/title_activity_main"
+            android:enabled="true"
+            android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
+        </activity-alias>
 
-        </activity>
+        <activity-alias
+            android:name=".OrzuTalimSleeping"
+            android:targetActivity=".MainActivity"
+            android:icon="@mipmap/ic_launcher_sleeping"
+            android:roundIcon="@mipmap/ic_launcher_sleeping_round"
+            android:label="@string/title_activity_main"
+            android:enabled="false"
+            android:exported="true">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity-alias>
+
+        <activity-alias
+            android:name=".OrzuTalimMissing"
+            android:targetActivity=".MainActivity"
+            android:icon="@mipmap/ic_launcher_missing"
+            android:roundIcon="@mipmap/ic_launcher_missing_round"
+            android:label="@string/title_activity_main"
+            android:enabled="false"
+            android:exported="true">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity-alias>
+
+        <activity-alias
+            android:name=".OrzuTalimAngry"
+            android:targetActivity=".MainActivity"
+            android:icon="@mipmap/ic_launcher_angry"
+            android:roundIcon="@mipmap/ic_launcher_angry_round"
+            android:label="@string/title_activity_main"
+            android:enabled="false"
+            android:exported="true">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity-alias>
+
+        <activity-alias
+            android:name=".OrzuTalimWelcome"
+            android:targetActivity=".MainActivity"
+            android:icon="@mipmap/ic_launcher_welcome"
+            android:roundIcon="@mipmap/ic_launcher_welcome_round"
+            android:label="@string/title_activity_main"
+            android:enabled="false"
+            android:exported="true">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity-alias>
 
         <!-- ITTest SMALL home screen widget -->
         <receiver

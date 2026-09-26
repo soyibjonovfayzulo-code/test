@@ -12,7 +12,17 @@ public class MainActivity extends BridgeActivity {
         super.onCreate(savedInstanceState);
         /* ITTest widget bridge plugin (real daily/streak state -> widget) */
         registerPlugin(ITWidgetPlugin.class);
+        /* Real Dynamic Launcher Icon plugin */
+        registerPlugin(LauncherIconPlugin.class);
+
         ITWidgetPlugin.handleWidgetIntent(this, getIntent());
+        DynamicIconManager.onAppLaunched(this);
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        DynamicIconManager.checkAndSync(this);
     }
 
     @Override

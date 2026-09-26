@@ -25,11 +25,11 @@
   }
 
   /* ------------------------------------------------------------
-     1. ZERO HORIZONTAL SCROLL & RESET
+     1. ZERO HORIZONTAL SCROLL & RESET + TYPOGRAPHY + MIN-WIDTH
      ------------------------------------------------------------ */
   html,
   body {
-    overflow-x: hidden !important;
+    overflow-x: clip !important;
     width: 100% !important;
     max-width: 100vw !important;
     margin: 0;
@@ -43,6 +43,27 @@
   *::before,
   *::after {
     box-sizing: border-box;
+    min-width: 0;
+  }
+
+  /* Global typography wrap — NO mid-word harsh breaks */
+  body,
+  p,
+  h1, h2, h3, h4, h5, h6,
+  a, span, label,
+  .btn, .btn-primary, .btn-ghost,
+  .test-card__title, .test-card__desc, .test-card__meta,
+  .m-course-title, .m-course-desc, .m-hero-course, .m-hero-lesson,
+  .result-stat-val, .result-stat-lbl,
+  .profile-stats *, .pf-name, .pf-username, .pf-bio,
+  .qn-btn, .option-text,
+  .ls-viewer-hero h3, .ls-quiz-option,
+  .nav-item, .sidebar .nav-item {
+    word-break: normal !important;
+    overflow-wrap: anywhere !important;
+    -webkit-hyphens: auto;
+    hyphens: auto;
+    line-height: 1.4;
   }
 
   /* Android input zoom prevention & touch response */
@@ -51,6 +72,7 @@
   textarea {
     font-size: 16px !important;
     touch-action: manipulation;
+    line-height: 1.4;
   }
 
   button,
@@ -61,9 +83,42 @@
   .m-chip,
   .m-course-card,
   .m-stat-card,
+  .filter-chip,
+  .qn-btn,
+  .ls-quiz-option,
   [role="button"] {
     touch-action: manipulation;
     -webkit-tap-highlight-color: transparent;
+  }
+
+  /* Global touch-friendly button minimum height (≥ 48px) */
+  button,
+  .btn,
+  .btn-primary,
+  .btn-ghost,
+  .btn-action,
+  .result-cta,
+  .m-chip,
+  .filter-chip,
+  .store-tab,
+  .nav-item {
+    min-height: 48px !important;
+    padding-top: 10px !important;
+    padding-bottom: 10px !important;
+  }
+
+  .icon-btn {
+    min-height: 44px !important;
+    min-width: 44px !important;
+    height: 44px !important;
+    width: 44px !important;
+  }
+
+  .qn-btn {
+    min-height: 44px !important;
+    min-width: 44px !important;
+    height: 44px !important;
+    width: 44px !important;
   }
 
   button:active,
@@ -81,7 +136,7 @@
     min-width: 0 !important;
     margin: 0 !important;
     padding: 0 !important;
-    overflow-x: hidden !important;
+    overflow-x: clip !important;
     display: flex;
     flex-direction: column;
   }
@@ -99,7 +154,7 @@
     width: 100% !important;
     max-width: 100% !important;
     min-width: 0 !important;
-    padding: 12px 12px calc(32px + env(safe-area-inset-bottom, 0px)) !important;
+    padding: 12px 12px calc(40px + env(safe-area-inset-bottom, 0px)) !important;
     margin: 0 !important;
     box-sizing: border-box !important;
   }
@@ -1299,38 +1354,1436 @@
   }
 
   /* ------------------------------------------------------------
-     12. MODALS & DIALOGS
+     12. MODALS & DIALOGS (SAFE AREA)
      ------------------------------------------------------------ */
   .modal-overlay {
-    padding: 10px !important;
+    padding: 10px 10px calc(10px + env(safe-area-inset-bottom, 0px)) !important;
   }
 
   .modal {
     width: min(480px, calc(100vw - 16px)) !important;
     max-width: calc(100vw - 16px) !important;
-    max-height: 88vh !important;
+    max-height: calc(88vh - env(safe-area-inset-top, 0px)) !important;
     margin: auto !important;
     overflow-y: auto !important;
     border-radius: 18px !important;
-    padding: 16px !important;
+    padding: 16px 16px calc(16px + env(safe-area-inset-bottom, 0px)) !important;
   }
 
   .modal-footer {
     display: flex !important;
     flex-direction: column !important;
     gap: 8px !important;
+    padding-top: 8px !important;
   }
 
   .modal-footer .btn {
     width: 100% !important;
-    min-height: 42px !important;
+    min-height: 48px !important;
+  }
+
+  /* Profile edit / avatar crop modals — specific safe-area */
+  #editProfileModal,
+  #pfCropModal,
+  #pfRemoveConfirmModal,
+  .pf-edit-avatar-block,
+  .pf-crop-modal {
+    padding-bottom: calc(20px + env(safe-area-inset-bottom, 0px)) !important;
+  }
+
+  /* ------------------------------------------------------------
+     13. TESTS PAGE — SUBJECT CARDS (MOBILE STACK LAYOUT)
+     Mobile layout: [icon] → [title + difficulty] → [meta] → [progress] → [btn]
+     ------------------------------------------------------------ */
+  #page-tests .test-card,
+  .test-card {
+    display: flex !important;
+    flex-direction: column !important;
+    align-items: flex-start !important;
+    gap: 8px !important;
+    padding: 14px !important;
+    width: 100% !important;
+    max-width: 100% !important;
+    min-width: 0 !important;
+    box-sizing: border-box !important;
+  }
+
+  .test-card__body {
+    display: flex !important;
+    flex-direction: column !important;
+    gap: 4px !important;
+    width: 100% !important;
+    min-width: 0 !important;
+    order: 2;
+  }
+
+  #page-tests .lang-box,
+  .test-card .lang-box {
+    width: 48px !important;
+    height: 48px !important;
+    min-width: 48px !important;
+    order: 1;
+    align-self: flex-start;
+  }
+
+  .test-card__title {
+    font-size: 17px !important;
+    font-weight: 800 !important;
+    white-space: normal !important;
+    overflow: visible !important;
+    text-overflow: clip !important;
+    line-height: 1.3 !important;
+    width: 100% !important;
+    min-width: 0 !important;
+    display: flex !important;
+    flex-wrap: wrap !important;
+    align-items: center !important;
+    gap: 6px !important;
+  }
+
+  .test-card__desc {
+    font-size: 13px !important;
+    white-space: normal !important;
+    overflow: visible !important;
+    text-overflow: clip !important;
+    line-height: 1.4 !important;
+    min-width: 0 !important;
+    width: 100% !important;
+  }
+
+  .test-card__meta {
+    display: flex !important;
+    flex-direction: row !important;
+    flex-wrap: wrap !important;
+    align-items: center !important;
+    gap: 6px !important;
+    width: 100% !important;
+    min-width: 0 !important;
+    font-size: 12px !important;
+    line-height: 1.4 !important;
+  }
+
+  .test-card__meta span,
+  .test-card__meta .sep {
+    min-width: 0 !important;
+    white-space: normal !important;
+    word-break: normal !important;
+    overflow-wrap: anywhere !important;
+  }
+
+  .test-card__progress {
+    display: flex !important;
+    flex-direction: row !important;
+    flex-wrap: nowrap !important;
+    align-items: center !important;
+    gap: 8px !important;
+    width: 100% !important;
+    min-width: 0 !important;
+  }
+
+  .test-card__progress .progress-track {
+    flex: 1 1 auto !important;
+    min-width: 0 !important;
+    width: 100% !important;
+  }
+
+  .test-card .btn-action {
+    width: 100% !important;
+    min-height: 48px !important;
+    margin-top: 4px !important;
+    font-size: 14px !important;
+    font-weight: 700 !important;
+    order: 5;
+    align-self: stretch !important;
+  }
+
+  /* Badge-diff: display inline next to title if rendered */
+  .badge-diff {
+    display: inline-flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    min-height: 24px !important;
+    height: 24px !important;
+    padding: 2px 10px !important;
+    font-size: 11px !important;
+    font-weight: 700 !important;
+    border-radius: 999px !important;
+    white-space: nowrap !important;
+  }
+
+  /* ------------------------------------------------------------
+     14. TEST CATEGORY TABS — FILTER CHIPS (horizontal scroll inside)
+     ------------------------------------------------------------ */
+  .page-toolbar {
+    width: 100% !important;
+    min-width: 0 !important;
+    max-width: 100% !important;
+  }
+
+  .filter-scroll,
+  .filter-chips {
+    display: flex !important;
+    flex-direction: row !important;
+    flex-wrap: nowrap !important;
+    overflow-x: auto !important;
+    overflow-y: hidden !important;
+    -webkit-overflow-scrolling: touch !important;
+    scrollbar-width: none !important;
+    gap: 6px !important;
+    width: 100% !important;
+    min-width: 0 !important;
+    max-width: 100% !important;
+    padding: 2px 2px 6px !important;
+  }
+
+  .filter-scroll::-webkit-scrollbar,
+  .filter-chips::-webkit-scrollbar {
+    display: none !important;
+  }
+
+  .filter-chip {
+    flex: 0 0 auto !important;
+    min-width: auto !important;
+    padding: 8px 16px !important;
+    font-size: 13px !important;
+    font-weight: 600 !important;
+    border-radius: 999px !important;
+    white-space: nowrap !important;
+  }
+
+  /* ------------------------------------------------------------
+     15. TEST QUESTION PAGE — BOTTOM NAV + NAVIGATOR NO OVERLAP
+     ------------------------------------------------------------ */
+  /* Brauzer mobile uchun: tests-android.css faqat body.itnative-tests ga scoped */
+  .test-nav-buttons {
+    position: fixed !important;
+    bottom: 0 !important;
+    left: 0 !important;
+    right: 0 !important;
+    z-index: 60 !important;
+    display: flex !important;
+    flex-direction: row !important;
+    flex-wrap: nowrap !important;
+    align-items: center !important;
+    justify-content: space-between !important;
+    gap: 6px !important;
+    padding: 10px 12px calc(10px + env(safe-area-inset-bottom, 0px)) !important;
+    margin: 0 !important;
+    background: rgba(14, 18, 36, 0.96) !important;
+    backdrop-filter: blur(18px) !important;
+    -webkit-backdrop-filter: blur(18px) !important;
+    border-top: 1px solid var(--m-border, rgba(124, 92, 255, 0.24)) !important;
+    box-shadow: 0 -6px 24px rgba(0, 0, 0, 0.4) !important;
+  }
+
+  .test-nav-buttons .btn {
+    min-height: 48px !important;
+    padding: 8px 12px !important;
+    font-size: 13.5px !important;
+    font-weight: 700 !important;
+    white-space: nowrap !important;
+  }
+
+  .test-nav-center {
+    display: flex !important;
+    flex-direction: column !important;
+    align-items: stretch !important;
+    justify-content: center !important;
+    gap: 6px !important;
+    flex: 1 1 auto !important;
+    min-width: 0 !important;
+  }
+
+  /* Page-test content: pastga qadar 140px joy → .navigator-area (~80) + .test-nav-buttons (~60) */
+  #page-test.page {
+    padding-bottom: calc(160px + env(safe-area-inset-bottom, 0px)) !important;
+  }
+
+  /* Savollar navigatori */
+  .navigator-area {
+    position: static !important;
+    width: 100% !important;
+    min-width: 0 !important;
+    max-width: 100% !important;
+    max-height: none !important;
+    overflow: visible !important;
+    margin: 10px 0 0 !important;
+    padding: 12px 12px 12px !important;
+    border-radius: 18px !important;
+    box-sizing: border-box !important;
+  }
+
+  .navigator-header {
+    display: flex !important;
+    flex-direction: row !important;
+    flex-wrap: wrap !important;
+    justify-content: space-between !important;
+    align-items: center !important;
+    gap: 6px !important;
+    margin-bottom: 10px !important;
+    min-width: 0 !important;
+    width: 100% !important;
+  }
+
+  .navigator-legend {
+    display: flex !important;
+    flex-direction: row !important;
+    flex-wrap: wrap !important;
+    align-items: center !important;
+    gap: 10px !important;
+    font-size: 11px !important;
+    line-height: 1.3 !important;
+    min-width: 0 !important;
+    width: 100% !important;
+  }
+
+  .question-nav {
+    display: flex !important;
+    flex-wrap: nowrap !important;
+    overflow-x: auto !important;
+    overflow-y: hidden !important;
+    gap: 7px !important;
+    margin-bottom: 12px !important;
+    padding-bottom: 4px !important;
+    -webkit-overflow-scrolling: touch !important;
+    scrollbar-width: none !important;
+    min-width: 0 !important;
+    width: 100% !important;
+  }
+
+  .question-nav::-webkit-scrollbar {
+    display: none !important;
+  }
+
+  #finishTestBtn {
+    width: 100% !important;
+    min-height: 48px !important;
+    font-size: 15px !important;
+    font-weight: 700 !important;
+    padding: 10px 16px !important;
+  }
+
+  /* Answer options: A/B/C/D label + text space */
+  .question-area,
+  .question-card {
+    width: 100% !important;
+    min-width: 0 !important;
+    max-width: 100% !important;
+  }
+
+  .question-title,
+  .question-title h2 {
+    white-space: normal !important;
+    word-break: normal !important;
+    overflow-wrap: anywhere !important;
+    line-height: 1.4 !important;
+    font-size: 17px !important;
+    width: 100% !important;
+    min-width: 0 !important;
+  }
+
+  .option,
+  .option-btn {
+    display: flex !important;
+    flex-direction: row !important;
+    align-items: flex-start !important;
+    gap: 12px !important;
+    padding: 14px 14px !important;
+    min-height: 56px !important;
+    width: 100% !important;
+    min-width: 0 !important;
+    box-sizing: border-box !important;
+  }
+
+  .option-label,
+  .option-letter {
+    flex: 0 0 auto !important;
+    width: 34px !important;
+    height: 34px !important;
+    min-width: 34px !important;
+    border-radius: 10px !important;
+    display: inline-flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    font-size: 15px !important;
+    font-weight: 800 !important;
+  }
+
+  .option-text,
+  .option-body {
+    flex: 1 1 auto !important;
+    min-width: 0 !important;
+    white-space: normal !important;
+    word-break: normal !important;
+    overflow-wrap: anywhere !important;
+    line-height: 1.45 !important;
+    font-size: 14.5px !important;
+    align-self: center !important;
+  }
+
+  /* ------------------------------------------------------------
+     16. RESULT PAGE — 2-COL STATS + COMPACT HERO + SAFE AREA BTNS
+     ------------------------------------------------------------ */
+  .result-shell,
+  #resultShell {
+    width: 100% !important;
+    min-width: 0 !important;
+    max-width: 100% !important;
+  }
+
+  .result-hero {
+    position: relative !important;
+    width: 100% !important;
+    min-width: 0 !important;
+    padding: 20px 16px !important;
+    border-radius: 22px !important;
+    text-align: center !important;
+    overflow: hidden !important;
+  }
+
+  .result-mascot,
+  .result-hero img,
+  .result-hero svg,
+  .result-hero picture {
+    max-height: 100px !important;
+    width: auto !important;
+    height: auto !important;
+    max-width: 100% !important;
+    display: block !important;
+    margin: 0 auto 8px !important;
+  }
+
+  .result-rewards,
+  .result-motivation {
+    margin-top: 10px !important;
+  }
+
+  .result-ring-center {
+    display: flex !important;
+    flex-direction: column !important;
+    align-items: center !important;
+    justify-content: center !important;
+    gap: 4px !important;
+    line-height: 1 !important;
+  }
+
+  .result-score,
+  .result-score span,
+  .result-score-big {
+    font-size: 36px !important;
+    line-height: 1.1 !important;
+    font-weight: 900 !important;
+    margin: 0 !important;
+    text-align: center !important;
+  }
+
+  .result-percent,
+  .result-percentage {
+    font-size: 28px !important;
+    line-height: 1.1 !important;
+    font-weight: 800 !important;
+    margin: 0 !important;
+    text-align: center !important;
+  }
+
+  .result-status {
+    display: inline-flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    min-height: 40px !important;
+    padding: 6px 22px !important;
+    border-radius: 999px !important;
+    font-size: 14px !important;
+    font-weight: 800 !important;
+    margin: 8px auto 0 !important;
+    text-align: center !important;
+  }
+
+  .result-stats {
+    display: grid !important;
+    grid-template-columns: repeat(2, 1fr) !important;
+    gap: 10px !important;
+    margin: 14px 0 !important;
+    width: 100% !important;
+    min-width: 0 !important;
+  }
+
+  .result-stat-card {
+    display: flex !important;
+    flex-direction: column !important;
+    align-items: center !important;
+    justify-content: center !important;
+    gap: 4px !important;
+    padding: 14px 10px !important;
+    border-radius: 18px !important;
+    min-height: 92px !important;
+    min-width: 0 !important;
+    width: 100% !important;
+    box-sizing: border-box !important;
+    text-align: center !important;
+  }
+
+  .result-stat-card .val,
+  .result-stat-card .stat-num,
+  .result-stat-val {
+    font-size: 22px !important;
+    font-weight: 900 !important;
+    line-height: 1.1 !important;
+    min-width: 0 !important;
+    white-space: nowrap !important;
+  }
+
+  .result-stat-card .lbl,
+  .result-stat-card .stat-label,
+  .result-stat-lbl {
+    font-size: 11.5px !important;
+    line-height: 1.3 !important;
+    min-width: 0 !important;
+    white-space: normal !important;
+    word-break: normal !important;
+    overflow-wrap: anywhere !important;
+  }
+
+  .result-actions {
+    display: flex !important;
+    flex-direction: column !important;
+    gap: 8px !important;
+    margin: 14px 0 0 !important;
+    padding-bottom: calc(4px + env(safe-area-inset-bottom, 0px)) !important;
+    width: 100% !important;
+    min-width: 0 !important;
+  }
+
+  .result-actions .btn,
+  .result-cta {
+    width: 100% !important;
+    min-height: 48px !important;
+    padding: 10px 16px !important;
+    font-size: 14.5px !important;
+    font-weight: 700 !important;
+  }
+
+  #page-result.page {
+    padding-bottom: calc(28px + env(safe-area-inset-bottom, 0px)) !important;
+  }
+
+  /* ------------------------------------------------------------
+     17. PROFILE PAGE — FULL SECTIONS + MASTERY LAYOUT
+     ------------------------------------------------------------ */
+  #page-profile .profile-header,
+  .profile-header {
+    flex-direction: column !important;
+    align-items: center !important;
+    text-align: center !important;
+    padding: 18px 14px !important;
+    gap: 10px !important;
+  }
+
+  #page-profile .profile-avatar,
+  .profile-header .profile-avatar,
+  .pf-avatar {
+    width: 88px !important;
+    height: 88px !important;
+    min-width: 88px !important;
+    border-radius: 50% !important;
+  }
+
+  #pfCamBtn {
+    min-height: 40px !important;
+    width: 40px !important;
+    height: 40px !important;
+  }
+
+  .profile-stats {
+    display: grid !important;
+    grid-template-columns: 1fr 1fr !important;
+    gap: 8px !important;
+    margin: 10px 0 16px !important;
+    width: 100% !important;
+    min-width: 0 !important;
+  }
+
+  .profile-stats > * {
+    padding: 10px 8px !important;
+    min-width: 0 !important;
+    width: 100% !important;
+  }
+
+  .profile-actions {
+    display: flex !important;
+    flex-direction: column !important;
+    gap: 8px !important;
+    width: 100% !important;
+  }
+
+  .profile-actions .btn,
+  #pfEditBtn {
+    width: 100% !important;
+    min-height: 48px !important;
+  }
+
+  /* Mastery rows: wrap so bar + name no overlap */
+  .pf-card,
+  .profile-section,
+  #pfMasteryBody,
+  .pf-mastery-row {
+    width: 100% !important;
+    min-width: 0 !important;
+    max-width: 100% !important;
+  }
+
+  .pf-mastery-row {
+    display: flex !important;
+    flex-direction: column !important;
+    align-items: flex-start !important;
+    gap: 6px !important;
+    padding: 10px 10px !important;
+    width: 100% !important;
+    min-width: 0 !important;
+    box-sizing: border-box !important;
+  }
+
+  .pf-mastery-name {
+    font-size: 14px !important;
+    font-weight: 700 !important;
+    width: 100% !important;
+    min-width: 0 !important;
+    white-space: normal !important;
+    word-break: normal !important;
+    overflow-wrap: anywhere !important;
+  }
+
+  .pf-bar {
+    width: 100% !important;
+    min-width: 0 !important;
+    order: 2;
+  }
+
+  .pf-bar-pct {
+    font-size: 12px !important;
+    font-weight: 700 !important;
+    align-self: flex-end !important;
+    order: 3;
+  }
+
+  .pf-details-btn {
+    min-height: 40px !important;
+    padding: 8px 12px !important;
+    font-size: 12px !important;
+    border-radius: 10px !important;
+  }
+
+  /* Achievements + Certificates + Customization cards: 2-column mobile */
+  .achievement-grid {
+    display: grid !important;
+    grid-template-columns: repeat(2, 1fr) !important;
+    gap: 8px !important;
+  }
+
+  /* ============================================================
+     18. CODING PAGE — mobile layout (editor no horizontal overflow)
+     ============================================================ */
+  #page-coding {
+    padding-bottom: calc(24px + env(safe-area-inset-bottom, 0px)) !important;
+  }
+
+  .coding-wrapper {
+    display: flex !important;
+    flex-direction: column !important;
+    gap: 12px !important;
+    min-width: 0 !important;
+  }
+
+  .coding-sidebar,
+  .coding-main {
+    width: 100% !important;
+    min-width: 0 !important;
+    max-width: 100% !important;
+  }
+
+  .coding-sidebar {
+    max-height: 320px !important;
+    overflow-y: auto !important;
+  }
+
+  .coding-workspace {
+    flex-direction: column !important;
+    gap: 12px !important;
+    min-width: 0 !important;
+    width: 100% !important;
+  }
+
+  .coding-editor-wrap,
+  .coding-output-wrap,
+  .coding-console-wrap {
+    width: 100% !important;
+    min-width: 0 !important;
+    max-width: 100% !important;
+  }
+
+  .coding-toolbar {
+    flex-wrap: wrap !important;
+    gap: 8px !important;
+    min-height: 44px !important;
+    padding: 6px !important;
+  }
+
+  .coding-toolbar .btn {
+    min-height: 40px !important;
+    padding: 8px 12px !important;
+    font-size: 13px !important;
+  }
+
+  .coding-lang-select {
+    width: 100% !important;
+    max-width: 100% !important;
+    min-width: 0 !important;
+  }
+
+  .code-editor,
+  #codeEditor,
+  #codingCode,
+  .code-textarea {
+    max-width: 100% !important;
+    width: 100% !important;
+    min-width: 0 !important;
+    overflow-x: auto !important;
+    overflow-wrap: normal !important;
+    word-break: normal !important;
+    white-space: pre !important;
+    font-size: 13px !important;
+    line-height: 1.55 !important;
+  }
+
+  .coding-output,
+  #codingOutput,
+  .coding-console {
+    max-width: 100% !important;
+    width: 100% !important;
+    min-width: 0 !important;
+    overflow-x: auto !important;
+    overflow-wrap: anywhere !important;
+    word-break: normal !important;
+    font-size: 12.5px !important;
+    line-height: 1.5 !important;
+  }
+
+  .coding-actions {
+    display: grid !important;
+    grid-template-columns: 1fr 1fr !important;
+    gap: 8px !important;
+    width: 100% !important;
+    min-width: 0 !important;
+  }
+
+  .coding-actions .btn {
+    width: 100% !important;
+    min-width: 0 !important;
+    min-height: 44px !important;
+    white-space: normal !important;
+    line-height: 1.3 !important;
+  }
+
+  /* Auto-run toggle label hidden, but checkbox state preserved via localStorage */
+  .auto-run-switch {
+    min-height: 40px !important;
+    flex-wrap: wrap !important;
+  }
+  .auto-run-label {
+    font-size: 12px !important;
+  }
+
+  /* ============================================================
+     19. LESSONS PAGE — no horizontal overflow, stack layouts
+     ============================================================ */
+  #page-lessons {
+    padding-bottom: calc(24px + env(safe-area-inset-bottom, 0px)) !important;
+  }
+
+  .lessons-layout,
+  .ls-layout,
+  .course-layout,
+  .lesson-viewer-layout {
+    display: flex !important;
+    flex-direction: column !important;
+    gap: 12px !important;
+    min-width: 0 !important;
+    width: 100% !important;
+  }
+
+  .lessons-sidebar,
+  .lessons-content,
+  .ls-sidebar,
+  .ls-content,
+  .course-sidebar,
+  .course-content,
+  .lesson-sidebar,
+  .lesson-content {
+    width: 100% !important;
+    min-width: 0 !important;
+    max-width: 100% !important;
+  }
+
+  .lessons-sidebar {
+    max-height: 340px !important;
+    overflow-y: auto !important;
+  }
+
+  .course-list,
+  .lesson-list {
+    min-width: 0 !important;
+    width: 100% !important;
+  }
+
+  .course-card,
+  .lesson-card,
+  .ls-card,
+  .m-card {
+    min-width: 0 !important;
+    width: 100% !important;
+    max-width: 100% !important;
+  }
+
+  .m-course-title,
+  .ls-card-title,
+  .lesson-card-title {
+    white-space: normal !important;
+    word-break: normal !important;
+    overflow-wrap: anywhere !important;
+    line-height: 1.35 !important;
+  }
+
+  .m-course-meta,
+  .lesson-card-meta,
+  .ls-card-meta {
+    flex-wrap: wrap !important;
+    gap: 6px !important;
+    min-width: 0 !important;
+  }
+
+  .lesson-actions,
+  .ls-viewer-actions,
+  .course-actions {
+    display: flex !important;
+    flex-wrap: wrap !important;
+    gap: 8px !important;
+    width: 100% !important;
+  }
+
+  .lesson-actions .btn,
+  .ls-viewer-actions .btn,
+  .course-actions .btn {
+    flex: 1 1 auto !important;
+    min-width: calc(50% - 8px) !important;
+    min-height: 46px !important;
+  }
+
+  .ls-viewer-hero {
+    min-width: 0 !important;
+    width: 100% !important;
+  }
+
+  .ls-viewer-hero h3 {
+    line-height: 1.35 !important;
+    word-break: normal !important;
+    overflow-wrap: anywhere !important;
+  }
+
+  .ls-quiz-option {
+    min-height: 52px !important;
+    padding: 10px 12px !important;
+  }
+
+  /* ============================================================
+     20. DASHBOARD PAGE — gamification stats responsive, no overflow
+     ============================================================ */
+  #page-dashboard {
+    padding-bottom: calc(24px + env(safe-area-inset-bottom, 0px)) !important;
+  }
+
+  .m-hero {
+    display: flex !important;
+    flex-direction: column !important;
+    gap: 10px !important;
+    min-width: 0 !important;
+    width: 100% !important;
+  }
+
+  .m-hero-main {
+    min-width: 0 !important;
+    width: 100% !important;
+  }
+
+  .m-hero-art {
+    display: none !important;
+  }
+
+  .m-stats {
+    display: grid !important;
+    grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+    gap: 8px !important;
+    width: 100% !important;
+    min-width: 0 !important;
+  }
+
+  .m-stat {
+    min-width: 0 !important;
+    width: 100% !important;
+    min-height: 80px !important;
+  }
+
+  .m-stat-val {
+    line-height: 1.15 !important;
+    font-size: 18px !important;
+    font-weight: 800 !important;
+  }
+
+  .m-stat-lbl {
+    line-height: 1.3 !important;
+    font-size: 12px !important;
+    word-break: normal !important;
+    overflow-wrap: anywhere !important;
+  }
+
+  .m-today,
+  .m-mission,
+  .today-section,
+  .mission-section {
+    min-width: 0 !important;
+    width: 100% !important;
+    gap: 10px !important;
+  }
+
+  .m-mission-title,
+  .m-section-title {
+    white-space: normal !important;
+    word-break: normal !important;
+    overflow-wrap: anywhere !important;
+    line-height: 1.35 !important;
+  }
+
+  .m-hero-btn,
+  .dashboard-cta {
+    width: 100% !important;
+    min-width: 0 !important;
+    min-height: 48px !important;
+    white-space: normal !important;
+    line-height: 1.35 !important;
+  }
+
+  .xp-bar-wrap,
+  .level-bar-wrap,
+  .streak-bar-wrap {
+    min-width: 0 !important;
+    width: 100% !important;
+  }
+
+  .xp-bar-fill,
+  .level-bar-fill,
+  .streak-bar-fill {
+    min-width: 0 !important;
+  }
+
+  /* ============================================================
+     21. REMAINING PAGES — Duel, Ranking, Certificates, Premium, Store, Settings, Achievements
+     ============================================================ */
+  /* Duel page: wrap mode chips, no horizontal overflow */
+  #page-duel {
+    padding-bottom: calc(24px + env(safe-area-inset-bottom, 0px)) !important;
+  }
+
+  .duel-modes,
+  .duel-tabs,
+  .duel-chips {
+    display: flex !important;
+    flex-wrap: wrap !important;
+    gap: 8px !important;
+    overflow-x: visible !important;
+    width: 100% !important;
+    min-width: 0 !important;
+  }
+
+  .duel-chip,
+  .duel-mode,
+  .duel-tab {
+    flex: 0 0 auto !important;
+    min-height: 44px !important;
+    padding: 10px 14px !important;
+  }
+
+  .duel-layout,
+  .duel-main {
+    display: flex !important;
+    flex-direction: column !important;
+    gap: 12px !important;
+    width: 100% !important;
+    min-width: 0 !important;
+  }
+
+  .duel-player-card {
+    min-width: 0 !important;
+    width: 100% !important;
+  }
+
+  .duel-question,
+  .duel-question-title {
+    min-width: 0 !important;
+    width: 100% !important;
+    word-break: normal !important;
+    overflow-wrap: anywhere !important;
+    line-height: 1.4 !important;
+  }
+
+  .duel-options,
+  .duel-option {
+    min-width: 0 !important;
+    width: 100% !important;
+  }
+
+  .duel-option {
+    min-height: 52px !important;
+    padding: 10px 12px !important;
+  }
+
+  .duel-timer-wrap {
+    min-width: 0 !important;
+    width: 100% !important;
+  }
+
+  /* Ranking page: 3 columns → 2 columns, leaderboard cards no overflow */
+  #page-ranking {
+    padding-bottom: calc(24px + env(safe-area-inset-bottom, 0px)) !important;
+  }
+
+  .ranking-tabs,
+  .ranking-chips {
+    display: flex !important;
+    flex-wrap: wrap !important;
+    gap: 8px !important;
+    width: 100% !important;
+    min-width: 0 !important;
+  }
+
+  .ranking-chip,
+  .ranking-tab {
+    min-height: 44px !important;
+    padding: 10px 14px !important;
+  }
+
+  .leaderboard-table,
+  .ranking-table,
+  .ranking-list {
+    min-width: 0 !important;
+    width: 100% !important;
+    max-width: 100% !important;
+    overflow-x: auto !important;
+    display: block !important;
+  }
+
+  .leaderboard-row,
+  .ranking-row,
+  .ranking-item {
+    min-width: 0 !important;
+    width: 100% !important;
+    flex-wrap: wrap !important;
+    gap: 6px !important;
+  }
+
+  .leaderboard-name,
+  .ranking-name {
+    word-break: normal !important;
+    overflow-wrap: anywhere !important;
+    line-height: 1.3 !important;
+  }
+
+  .ranking-top3,
+  .ranking-podium {
+    display: flex !important;
+    flex-wrap: wrap !important;
+    gap: 8px !important;
+    width: 100% !important;
+    min-width: 0 !important;
+  }
+
+  .podium-card,
+  .rank-card {
+    flex: 1 1 calc(33.33% - 8px) !important;
+    min-width: 0 !important;
+  }
+
+  /* Certificates page: grid 2 columns, card detail responsive */
+  #page-certificate,
+  #page-certificates {
+    padding-bottom: calc(24px + env(safe-area-inset-bottom, 0px)) !important;
+  }
+
+  .cert-grid,
+  .cert-list,
+  .certificates-grid {
+    display: grid !important;
+    grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+    gap: 10px !important;
+    width: 100% !important;
+    min-width: 0 !important;
+  }
+
+  .cert-card,
+  .certificate-card {
+    min-width: 0 !important;
+    width: 100% !important;
+    padding: 12px !important;
+  }
+
+  .cert-title,
+  .cert-card-title,
+  .certificate-title {
+    white-space: normal !important;
+    word-break: normal !important;
+    overflow-wrap: anywhere !important;
+    line-height: 1.35 !important;
+  }
+
+  .cert-meta,
+  .cert-card-meta {
+    flex-wrap: wrap !important;
+    gap: 6px !important;
+    min-width: 0 !important;
+  }
+
+  .cert-actions,
+  .certificate-actions {
+    display: flex !important;
+    flex-direction: column !important;
+    gap: 8px !important;
+    width: 100% !important;
+  }
+
+  .cert-actions .btn,
+  .certificate-actions .btn {
+    width: 100% !important;
+    min-height: 46px !important;
+    white-space: normal !important;
+    line-height: 1.3 !important;
+  }
+
+  .cert-detail,
+  .certificate-detail,
+  .certificate-viewer {
+    min-width: 0 !important;
+    width: 100% !important;
+    max-width: 100% !important;
+  }
+
+  .certificate-canvas,
+  #certCanvas,
+  .cert-image-wrap {
+    max-width: 100% !important;
+    width: 100% !important;
+    min-width: 0 !important;
+    height: auto !important;
+  }
+
+  .certificate-canvas canvas,
+  #certCanvas canvas {
+    max-width: 100% !important;
+    height: auto !important;
+  }
+
+  /* Premium page: plans 1 column, features stack */
+  #page-premium,
+  #page-store {
+    padding-bottom: calc(24px + env(safe-area-inset-bottom, 0px)) !important;
+  }
+
+  .premium-plans,
+  .plans-grid,
+  .store-grid {
+    display: flex !important;
+    flex-direction: column !important;
+    gap: 12px !important;
+    width: 100% !important;
+    min-width: 0 !important;
+  }
+
+  .plan-card,
+  .premium-card,
+  .store-card {
+    min-width: 0 !important;
+    width: 100% !important;
+    padding: 14px !important;
+  }
+
+  .plan-title,
+  .premium-title,
+  .store-title {
+    white-space: normal !important;
+    word-break: normal !important;
+    overflow-wrap: anywhere !important;
+    line-height: 1.35 !important;
+  }
+
+  .plan-features,
+  .premium-features {
+    min-width: 0 !important;
+    padding-left: 16px !important;
+  }
+
+  .plan-features li,
+  .premium-features li {
+    word-break: normal !important;
+    overflow-wrap: anywhere !important;
+    line-height: 1.45 !important;
+  }
+
+  .plan-cta,
+  .premium-cta {
+    width: 100% !important;
+    min-width: 0 !important;
+    min-height: 48px !important;
+    white-space: normal !important;
+    line-height: 1.35 !important;
+  }
+
+  .store-tabs,
+  .filter-tabs {
+    display: flex !important;
+    flex-wrap: wrap !important;
+    gap: 8px !important;
+    width: 100% !important;
+    min-width: 0 !important;
+  }
+
+  .store-tab,
+  .filter-tab {
+    min-height: 44px !important;
+    padding: 10px 14px !important;
+  }
+
+  /* Settings + Achievements: no horizontal overflow */
+  #page-settings,
+  #page-achievements,
+  #page-inventory,
+  #page-mastery {
+    padding-bottom: calc(24px + env(safe-area-inset-bottom, 0px)) !important;
+  }
+
+  .settings-grid,
+  .settings-layout,
+  .achievements-layout,
+  .inventory-grid,
+  .mastery-layout {
+    display: flex !important;
+    flex-direction: column !important;
+    gap: 12px !important;
+    width: 100% !important;
+    min-width: 0 !important;
+  }
+
+  .settings-card,
+  .achievement-card,
+  .inventory-item,
+  .mastery-card {
+    min-width: 0 !important;
+    width: 100% !important;
+  }
+
+  .settings-title,
+  .achievement-title,
+  .inventory-title,
+  .mastery-title {
+    white-space: normal !important;
+    word-break: normal !important;
+    overflow-wrap: anywhere !important;
+    line-height: 1.35 !important;
+  }
+
+  .settings-desc,
+  .achievement-desc,
+  .inventory-desc,
+  .mastery-desc {
+    white-space: normal !important;
+    word-break: normal !important;
+    overflow-wrap: anywhere !important;
+    line-height: 1.45 !important;
+  }
+
+  .settings-actions,
+  .settings-toggles {
+    display: flex !important;
+    flex-direction: column !important;
+    gap: 8px !important;
+    width: 100% !important;
+  }
+
+  .settings-actions .btn,
+  .settings-toggles .btn {
+    width: 100% !important;
+    min-height: 46px !important;
+    white-space: normal !important;
+    line-height: 1.3 !important;
+  }
+
+  .setting-toggle,
+  .toggle-row {
+    flex-wrap: wrap !important;
+    gap: 8px !important;
+    align-items: center !important;
+    min-height: 48px !important;
+  }
+
+  /* Mastery section */
+  .mastery-grid,
+  .mastery-list {
+    display: grid !important;
+    grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+    gap: 10px !important;
+    width: 100% !important;
+    min-width: 0 !important;
+  }
+
+  .mastery-progress-bar,
+  .mastery-bar {
+    min-width: 0 !important;
+    width: 100% !important;
+  }
+
+  .mastery-bar-fill {
+    min-width: 0 !important;
+  }
+
+  /* Inventory grid */
+  .inventory-list {
+    display: grid !important;
+    grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+    gap: 8px !important;
+    width: 100% !important;
+    min-width: 0 !important;
   }
 }
 
 /* ============================================================
-   FINE-TUNING FOR NARROW SCREENS (<= 360px & <= 320px)
+   FINE-TUNING FOR COMMON MOBILE (430, 412, 390, 375, 360, 320px)
    ============================================================ */
+@media (max-width: 430px) {
+  /* 430px: keng mobil (iPhone 14 Pro Max / Pixel 7 Pro) */
+  .result-score-big {
+    font-size: 38px !important;
+  }
+  .result-percentage {
+    font-size: 28px !important;
+  }
+}
+
+@media (max-width: 412px) {
+  /* 412px: Android keng (S21/S22/S23 Ultra standart) — eng ko'p */
+  .topbar-left h2,
+  #pageTitle {
+    max-width: calc(100vw - 185px) !important;
+  }
+
+  .result-score-big {
+    font-size: 34px !important;
+  }
+  .result-percentage {
+    font-size: 26px !important;
+  }
+
+  .test-nav-buttons .btn {
+    font-size: 13px !important;
+    padding: 8px 10px !important;
+  }
+
+  .test-card__title {
+    font-size: 16px !important;
+  }
+}
+
+@media (max-width: 390px) {
+  /* 390px: iPhone 12/13/14 standart */
+  .topbar-left h2,
+  #pageTitle {
+    font-size: 16px !important;
+    max-width: calc(100vw - 175px) !important;
+  }
+
+  .m-hero-course {
+    font-size: 18px !important;
+  }
+
+  .result-score-big {
+    font-size: 32px !important;
+  }
+
+  .test-nav-buttons .btn {
+    font-size: 12.5px !important;
+    padding: 8px 8px !important;
+  }
+
+  .filter-chip {
+    padding: 8px 14px !important;
+    font-size: 12.5px !important;
+  }
+}
+
+@media (max-width: 375px) {
+  /* 375px: iPhone SE/11/XR juda ko'p */
+  .topbar-left h2,
+  #pageTitle {
+    font-size: 16px !important;
+    max-width: calc(100vw - 170px) !important;
+  }
+
+  .m-hero-course {
+    font-size: 17.5px !important;
+  }
+
+  .m-stat-val {
+    font-size: 16px !important;
+  }
+
+  .result-score-big {
+    font-size: 30px !important;
+  }
+  .result-percentage {
+    font-size: 24px !important;
+  }
+
+  .result-stat-card .stat-num {
+    font-size: 20px !important;
+  }
+
+  .test-card__title {
+    font-size: 15.5px !important;
+  }
+  .test-card__desc {
+    font-size: 12.5px !important;
+  }
+  .test-card__meta {
+    font-size: 11.5px !important;
+  }
+
+  .test-nav-buttons .btn {
+    font-size: 12px !important;
+    padding: 8px 7px !important;
+    min-height: 46px !important;
+  }
+
+  .filter-chip {
+    padding: 8px 13px !important;
+    font-size: 12px !important;
+  }
+
+  .achievement-grid {
+    grid-template-columns: 1fr !important;
+  }
+
+  .profile-stats {
+    gap: 7px !important;
+  }
+}
+
 @media (max-width: 360px) {
+  /* 360px: kichikroq Android (older / low-end) */
   .topbar-left h2,
   #pageTitle {
     font-size: 15px !important;
@@ -1356,11 +2809,27 @@
   .store-grid {
     grid-template-columns: 1fr !important;
   }
+
+  .result-score-big {
+    font-size: 28px !important;
+  }
+  .result-percentage {
+    font-size: 22px !important;
+  }
+
+  .result-stat-card {
+    padding: 12px 8px !important;
+    min-height: 88px !important;
+  }
+  .result-stat-card .stat-num {
+    font-size: 19px !important;
+  }
 }
 
 @media (max-width: 320px) {
+  /* 320px: minimal (iPhone SE 1st gen / old Android) */
   .main .page {
-    padding: 8px 8px 24px !important;
+    padding: 8px 8px calc(32px + env(safe-area-inset-bottom, 0px)) !important;
   }
 
   .m-hero {
@@ -1373,6 +2842,68 @@
 
   .m-stats {
     grid-template-columns: 1fr !important;
+  }
+
+  .topbar .icon-btn {
+    width: 40px !important;
+    height: 40px !important;
+    min-width: 40px !important;
+    min-height: 40px !important;
+  }
+
+  .topbar .hamburger {
+    width: 38px !important;
+    height: 38px !important;
+    min-width: 38px !important;
+  }
+
+  .qn-btn {
+    width: 40px !important;
+    height: 40px !important;
+    min-width: 40px !important;
+    min-height: 40px !important;
+  }
+
+  .result-score-big {
+    font-size: 26px !important;
+  }
+  .result-percentage {
+    font-size: 20px !important;
+  }
+
+  .result-stats {
+    grid-template-columns: 1fr 1fr !important;
+    gap: 8px !important;
+  }
+
+  .result-stat-card {
+    padding: 10px 6px !important;
+    min-height: 80px !important;
+  }
+  .result-stat-card .stat-num,
+  .result-stat-card .val {
+    font-size: 18px !important;
+  }
+  .result-stat-card .stat-label,
+  .result-stat-card .lbl {
+    font-size: 10.5px !important;
+  }
+
+  .test-nav-buttons .btn {
+    font-size: 11.5px !important;
+    padding: 7px 6px !important;
+    min-height: 44px !important;
+  }
+
+  .test-card__title {
+    font-size: 15px !important;
+  }
+
+  .profile-avatar,
+  .pf-avatar {
+    width: 76px !important;
+    height: 76px !important;
+    min-width: 76px !important;
   }
 }
 
